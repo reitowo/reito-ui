@@ -147,3 +147,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### DataTable 列管理 · 2026-09-07
 
 实现核对 TanStack Table v8 的 [Visibility](https://tanstack.com/table/v8/docs/guide/column-visibility)、[Ordering](https://tanstack.com/table/v8/docs/guide/column-ordering)、[Sizing](https://tanstack.com/table/v8/docs/guide/column-sizing) 与 [Pinning](https://tanstack.com/table/v8/docs/guide/column-pinning) 状态/API。Reito UI 用原有 Graphite tokens 实现管理菜单、sticky 单表布局、指针 separator 和键盘操作；未复制上游示例代码或 CSS。
+
+### DataTable 行展开与分组 · 2026-09-07
+
+实现核对 TanStack Table v8 的 [Expanding Guide](https://tanstack.com/table/v8/docs/guide/expanding) 与 [Grouping Guide](https://tanstack.com/table/v8/docs/guide/grouping)：展开状态是 `true | Record<rowId, boolean>`，层级数据由 `getSubRows` 提供，自定义详情可通过 `getRowCanExpand` 开放；行分组由有序字段数组、grouped/aggregated/placeholder 单元格状态与列聚合函数组成。Reito UI 在此行为引擎上实现自己的紧凑菜单、组头/汇总插槽、稳定叶行选择和 Graphite 样式；未复制上游示例代码、CSS 或资源。

@@ -37,6 +37,13 @@ const [selection, setSelection] = useState<RowSelectionState>({})
 | `filterDefinitions` | 为匹配的叶列增加紧凑筛选菜单。支持 `text`、`select`、`number`、`date`；定义的 `id` 必须等于列 `id` 或字符串 `accessorKey`。 |
 | `columnVisibility` / `columnOrder` / `columnSizing` / `columnPinning` | 四组均支持受控值、`default*` 初值和 `on*Change` 回调，可由宿主持久化。 |
 | `manageColumns` / `resizableColumns` / `columnLabels` | 开启列管理菜单、指针/键盘宽度调节，并为非字符串表头提供可读名称。 |
+| `expanded` / `defaultExpanded` / `onExpandedChange` | 受控或非受控展开状态；键是稳定行 ID，`true` 表示全部展开。 |
+| `getSubRows` / `getRowCanExpand` / `renderExpandedRow` | 分别声明层级子行、可展开范围和详情内容。详情回调只负责内容，组件负责完整宽度行、按钮和 `aria-expanded`。 |
+| `grouping` / `defaultGrouping` / `onGroupingChange` | 受控或非受控行分组字段顺序。分组改变会回到第 1 页。 |
+| `groupingDefinitions` | 添加紧凑行分组菜单；定义 ID 必须对应可分组叶列。选择顺序就是嵌套层级，可用按钮或 Alt+↑/↓ 调整。 |
+| `renderGroupHeader` / `renderGroupSummary` | 自定义组头和全宽汇总行。聚合数据单元格继续使用 TanStack `ColumnDef.aggregatedCell` / `aggregationFn`。 |
+| `manualExpanding` / `manualGrouping` | 分别把展开或分组交给宿主，独立于远程筛选/排序/分页的 `manual`。 |
+| `filterFromLeafRows` / `paginateExpandedRows` | 默认由叶行向上保留匹配父组，并让展开子行跟随父行所在页；可显式改写。 |
 | `pagination` / `defaultPagination` / `onPaginationChange` | 受控或非受控 `{ pageIndex, pageSize }`。`pageIndex` 从 0 开始。只传 `pageSize` 时，它作为非受控初值。 |
 | `manual` | 同时关闭客户端筛选、排序和分页。宿主必须用最新状态请求并传回已经处理好的一页数据。 |
 | `rowCount` / `pageCount` | manual 模式的远程总量或页数。优先传 `rowCount`，组件按当前 `pageSize` 推导页数；后端不知道终页时可传 `pageCount={-1}`。两者都不传时只能把当前页行数当作总量回退。 |
@@ -76,4 +83,12 @@ manual 模式不会在当前页再次执行列筛选。宿主可直接使用受�
 
 `manageColumns` 提供显隐、左右固定和前后排序。至少保留一列可见；按钮和聚焦行的 Alt+↑/↓ 都能重排。`resizableColumns` 提供指针拖动和可聚焦 separator，左右键每次调整 16px，双击恢复。四组状态均可受控持久化；固定列用 TanStack start/after 偏移和语义 token 保持在横向滚动边缘。可见列和 header group 共用同一模型，隐藏或排序叶列时分组表头同步更新。
 
-[Storybook 类型化列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--column-filters) 展示四种编辑器；[远程列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-column-filters) 展示受控条件、远程结果和序列化查询；[受控远程分页](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-controlled) 展示远程排序、分页和跨页选择。[参数调试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--playground) 在同一 Canvas 用 Controls 切换 `manual`、总量、页码、全局查询、列筛选、负责人条件和错误/空态。默认、本地交互、加载、错误、空数据和隐藏选择列均有独立预设。
+## 行展开与行分组
+
+层级子行由 `getSubRows` 提供；详情面板由 `renderExpandedRow` 提供。两者都使用同一份 `expanded` 状态和行内展开按钮，宿主可以只启用一种，也可以让父行展开子行、叶行展开详情。稳定 ID 必须在整棵树中唯一。默认 `paginateExpandedRows={false}`，因此子行留在父行所在页。
+
+行分组使用 `grouping` 字段数组，其顺序决定嵌套层级。`groupingDefinitions` 只负责可见的分组菜单；是否允许某列分组仍由 `ColumnDef.enableGrouping` 决定。组头使用 `renderGroupHeader`，全宽说明使用 `renderGroupSummary`，数值聚合使用列定义的 `aggregationFn` 与 `aggregatedCell`。分组 checkbox 只把真实叶行 ID 写入选择状态，不把 TanStack 生成的临时组 ID 暴露给宿主；折叠后选择仍保留。
+
+本地筛选默认 `filterFromLeafRows`，命中的叶行会保留祖先分组；排序、固定列、可见列和分组共用 TanStack 行/列模型。`manualGrouping` 和 `manualExpanding` 用于服务端已经产出相应结构的场景，宿主负责返回结构、聚合值和对应状态；组件不发送网络请求。
+
+[Storybook 类型化列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--column-filters) 展示四种编辑器；[远程列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-column-filters) 展示受控条件、远程结果和序列化查询；[受控远程分页](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-controlled) 展示远程排序、分页和跨页选择；[层级与详情展开](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-expansion) 和[数据行分组](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-grouping) 分开展示两种结构。[参数调试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--playground) 在同一 Canvas 用 Controls 切换查询、列、分组、展开和状态参数。

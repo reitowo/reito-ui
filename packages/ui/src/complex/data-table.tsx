@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Fragment, useMemo, useState, type ReactNode } from 'react';
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import {
-  flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable,
-  type Column, type ColumnDef, type ColumnFiltersState, type ColumnOrderState, type ColumnPinningState, type ColumnSizingState, type FilterFn, type PaginationState, type RowSelectionState, type SortingState, type Updater, type VisibilityState,
+  flexRender, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getGroupedRowModel, getPaginationRowModel, getSortedRowModel, useReactTable,
+  type Column, type ColumnDef, type ColumnFiltersState, type ColumnOrderState, type ColumnPinningState, type ColumnSizingState, type ExpandedState, type FilterFn, type GroupingState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater, type VisibilityState,
 } from '@tanstack/react-table';
 import { Button } from '../primitives/button.js';
 import { Checkbox } from '../primitives/checkbox.js';
@@ -10,16 +10,18 @@ import { Input } from '../primitives/input.js';
 import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
 import { DataTableColumnFilterMenu, dataTableColumnFilterFn, isDataTableColumnFilterActive, type DataTableColumnFilterDefinition, type DataTableColumnFiltersState } from './data-table-filter.js';
 import { DataTableColumnManager } from './data-table-columns.js';
+import { DataTableGroupingMenu, type DataTableGroupingDefinition } from './data-table-grouping.js';
 import { cx } from './shared.js';
 
 export { isDataTableColumnFilterActive, matchesDataTableColumnFilter, serializeDataTableColumnFilters } from './data-table-filter.js';
 export type { DataTableColumnFilterDefinition, DataTableColumnFilterOption, DataTableColumnFiltersState, DataTableColumnFilterValue, DataTableDateFilterValue, DataTableFilterQueryClause, DataTableNumberFilterValue, DataTableSelectFilterValue, DataTableTextFilterValue } from './data-table-filter.js';
+export type { DataTableGroupingDefinition } from './data-table-grouping.js';
 
 export interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
   /** Stable IDs are required so selection survives sorting, filtering and insertion. */
-  getRowId: (row: TData) => string;
+  getRowId: (row: TData, index: number, parent?: Row<TData>) => string;
   caption?: string;
   searchPlaceholder?: string;
   pageSize?: number;
@@ -50,6 +52,22 @@ export interface DataTableProps<TData> {
   manageColumns?: boolean;
   resizableColumns?: boolean;
   columnLabels?: Record<string, string>;
+  expanded?: ExpandedState;
+  defaultExpanded?: ExpandedState;
+  onExpandedChange?: (expanded: ExpandedState) => void;
+  getSubRows?: (row: TData, index: number) => TData[] | undefined;
+  getRowCanExpand?: (row: Row<TData>) => boolean;
+  renderExpandedRow?: (row: Row<TData>) => ReactNode;
+  grouping?: GroupingState;
+  defaultGrouping?: GroupingState;
+  onGroupingChange?: (grouping: GroupingState) => void;
+  groupingDefinitions?: DataTableGroupingDefinition[];
+  renderGroupHeader?: (row: Row<TData>) => ReactNode;
+  renderGroupSummary?: (row: Row<TData>) => ReactNode;
+  manualExpanding?: boolean;
+  manualGrouping?: boolean;
+  filterFromLeafRows?: boolean;
+  paginateExpandedRows?: boolean;
   pagination?: PaginationState;
   defaultPagination?: PaginationState;
   onPaginationChange?: (pagination: PaginationState) => void;
@@ -76,6 +94,9 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   columnVisibility, defaultColumnVisibility = {}, onColumnVisibilityChange, columnOrder, defaultColumnOrder = [], onColumnOrderChange,
   columnSizing, defaultColumnSizing = {}, onColumnSizingChange, columnPinning, defaultColumnPinning = { left: [], right: [] }, onColumnPinningChange,
   manageColumns = false, resizableColumns = manageColumns, columnLabels = {},
+  expanded, defaultExpanded = {}, onExpandedChange, getSubRows, getRowCanExpand, renderExpandedRow,
+  grouping, defaultGrouping = [], onGroupingChange, groupingDefinitions = [], renderGroupHeader, renderGroupSummary,
+  manualExpanding = false, manualGrouping = false, filterFromLeafRows = true, paginateExpandedRows = false,
   pagination, defaultPagination, onPaginationChange, manual = false, rowCount: externalRowCount, pageCount: externalPageCount,
   selectable = true, rowSelection, onRowSelectionChange, loading = false, error, onRetry, emptyMessage = '没有符合条件的记录', className }: DataTableProps<TData>) {
   const [internalSorting, setInternalSorting] = useState<SortingState>(defaultSorting);
@@ -85,6 +106,8 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   const [internalColumnOrder, setInternalColumnOrder] = useState<ColumnOrderState>(defaultColumnOrder);
   const [internalColumnSizing, setInternalColumnSizing] = useState<ColumnSizingState>(defaultColumnSizing);
   const [internalColumnPinning, setInternalColumnPinning] = useState<ColumnPinningState>(defaultColumnPinning);
+  const [internalExpanded, setInternalExpanded] = useState<ExpandedState>(defaultExpanded);
+  const [internalGrouping, setInternalGrouping] = useState<GroupingState>(defaultGrouping);
   const [internalPagination, setInternalPagination] = useState<PaginationState>(defaultPagination ?? { pageIndex: 0, pageSize: Math.max(1, pageSize) });
   const [internalSelection, setInternalSelection] = useState<RowSelectionState>({});
   const currentSorting = sorting ?? internalSorting;
@@ -94,13 +117,15 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   const currentColumnOrder = columnOrder ?? internalColumnOrder;
   const currentColumnSizing = columnSizing ?? internalColumnSizing;
   const currentColumnPinning = columnPinning ?? internalColumnPinning;
+  const currentExpanded = expanded ?? internalExpanded;
+  const currentGrouping = grouping ?? internalGrouping;
   const currentPagination = pagination ?? internalPagination;
   const selection = rowSelection ?? internalSelection;
   function updateSorting(update: Updater<SortingState>) {
     const next = typeof update === 'function' ? update(currentSorting) : update;
     if (sorting === undefined) setInternalSorting(next);
     onSortingChange?.(next);
-    if (manual && currentPagination.pageIndex !== 0) updatePagination(current => ({ ...current, pageIndex: 0 }));
+    if (currentPagination.pageIndex !== 0) updatePagination(current => ({ ...current, pageIndex: 0 }));
   }
   function updateFilter(update: Updater<string>) {
     const next = typeof update === 'function' ? update(query) : update;
@@ -117,6 +142,8 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   function updateColumnOrder(update: Updater<ColumnOrderState>) { const next = typeof update === 'function' ? update(currentColumnOrder) : update; if (columnOrder === undefined) setInternalColumnOrder(next); onColumnOrderChange?.(next); }
   function updateColumnSizing(update: Updater<ColumnSizingState>) { const next = typeof update === 'function' ? update(currentColumnSizing) : update; if (columnSizing === undefined) setInternalColumnSizing(next); onColumnSizingChange?.(next); }
   function updateColumnPinning(update: Updater<ColumnPinningState>) { const next = typeof update === 'function' ? update(currentColumnPinning) : update; if (columnPinning === undefined) setInternalColumnPinning(next); onColumnPinningChange?.(next); }
+  function updateExpanded(update: Updater<ExpandedState>) { const next = typeof update === 'function' ? update(currentExpanded) : update; if (expanded === undefined) setInternalExpanded(next); onExpandedChange?.(next); }
+  function updateGrouping(update: Updater<GroupingState>) { const next = typeof update === 'function' ? update(currentGrouping) : update; if (grouping === undefined) setInternalGrouping(next); onGroupingChange?.(next); if (currentPagination.pageIndex !== 0) updatePagination(current => ({ ...current, pageIndex: 0 })); }
   function updatePagination(update: Updater<PaginationState>) {
     const next = typeof update === 'function' ? update(currentPagination) : update;
     if (pagination === undefined) setInternalPagination(next);
@@ -126,6 +153,16 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
     const next = typeof update === 'function' ? update(selection) : update;
     if (rowSelection === undefined) setInternalSelection(next);
     onRowSelectionChange?.(next);
+  }
+  function updateGroupSelection(row: Row<TData>, checked: boolean) {
+    updateSelection(current => {
+      const next = { ...current };
+      for (const leaf of row.getLeafRows()) {
+        if (checked) next[leaf.id] = true;
+        else delete next[leaf.id];
+      }
+      return next;
+    });
   }
   const definitionById = useMemo(() => new Map(filterDefinitions.map(definition => [definition.id, definition])), [filterDefinitions]);
   const resolvedColumns = useMemo(() => {
@@ -139,20 +176,24 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   }, [columns, definitionById]);
   const table = useReactTable({
     data, columns: resolvedColumns, getRowId,
-    state: { sorting: currentSorting, globalFilter: query, columnFilters: currentColumnFilters, columnVisibility: currentColumnVisibility, columnOrder: currentColumnOrder, columnSizing: currentColumnSizing, columnPinning: currentColumnPinning, pagination: currentPagination, rowSelection: selection },
+    state: { sorting: currentSorting, globalFilter: query, columnFilters: currentColumnFilters, columnVisibility: currentColumnVisibility, columnOrder: currentColumnOrder, columnSizing: currentColumnSizing, columnPinning: currentColumnPinning, expanded: currentExpanded, grouping: currentGrouping, pagination: currentPagination, rowSelection: selection },
     onSortingChange: updateSorting, onPaginationChange: updatePagination, onRowSelectionChange: updateSelection,
     onGlobalFilterChange: updateFilter, onColumnFiltersChange: updateColumnFilters, enableRowSelection: selectable, globalFilterFn: 'includesString',
     onColumnVisibilityChange: updateColumnVisibility, onColumnOrderChange: updateColumnOrder, onColumnSizingChange: updateColumnSizing, onColumnPinningChange: updateColumnPinning,
+    onExpandedChange: updateExpanded, onGroupingChange: updateGrouping, getSubRows,
+    getRowCanExpand: row => getRowCanExpand?.(row) ?? Boolean(row.subRows.length || renderExpandedRow),
+    manualExpanding, manualGrouping, filterFromLeafRows, paginateExpandedRows, groupedColumnMode: false,
     enableColumnResizing: resizableColumns, columnResizeMode: 'onChange',
     manualSorting: manual, manualFiltering: manual, manualPagination: manual, rowCount: manual ? externalRowCount ?? data.length : undefined,
-    pageCount: manual ? externalPageCount : undefined, autoResetPageIndex: manual ? false : undefined,
-    getCoreRowModel: getCoreRowModel(), getFilteredRowModel: getFilteredRowModel(), getSortedRowModel: getSortedRowModel(), getPaginationRowModel: getPaginationRowModel(),
+    pageCount: manual ? externalPageCount : undefined, autoResetPageIndex: manual || pagination !== undefined ? false : undefined,
+    getCoreRowModel: getCoreRowModel(), getFilteredRowModel: getFilteredRowModel(), getGroupedRowModel: getGroupedRowModel(), getSortedRowModel: getSortedRowModel(), getExpandedRowModel: getExpandedRowModel(), getPaginationRowModel: getPaginationRowModel(),
   });
   const resolvedRowCount = manual ? externalRowCount ?? data.length : table.getFilteredRowModel().rows.length;
   const selectedCount = Object.values(selection).filter(Boolean).length;
   const activeColumnFilterCount = currentColumnFilters.filter(filter => isDataTableColumnFilterActive(filter.value)).length;
   const resolvedPageCount = table.getPageCount();
   const headerGroups = table.getHeaderGroups();
+  const visibleRows = table.getRowModel().rows;
   const columnCount = table.getVisibleLeafColumns().length + Number(selectable);
   const hasLeftPinned = table.getLeftVisibleLeafColumns().length > 0;
   function pinnedStyle(column: Column<TData, unknown>) {
@@ -171,7 +212,7 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   return <section data-slot="data-table" aria-label={caption} aria-busy={loading} className={cx('min-w-0 space-y-[var(--rui-content-gap)] font-sans text-sm text-foreground', className)}>
     <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)]">
       <div className="relative w-full max-w-xs"><Search aria-hidden="true" className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-2.5 size-4 text-muted-foreground" /><Input aria-label={`筛选${caption}`} placeholder={searchPlaceholder} className="pl-9" disabled={loading} value={query} onChange={event => { updateFilter(event.target.value); updatePagination(current => ({ ...current, pageIndex: 0 })); }} /></div>
-      <div className="flex items-center gap-[var(--rui-content-gap)]"><span className="text-xs text-muted-foreground">共 {resolvedRowCount} 条{selectable && ` · 已选 ${selectedCount} 条`}{activeColumnFilterCount > 0 && ` · ${activeColumnFilterCount} 个列筛选`}</span>{activeColumnFilterCount > 0 && <Button variant="ghost" size="xs" disabled={loading} onClick={() => updateColumnFilters([])}>清除列筛选</Button>}{manageColumns && <DataTableColumnManager table={table} labels={columnLabels} disabled={loading} />}</div>
+      <div className="flex items-center gap-[var(--rui-content-gap)]"><span className="text-xs text-muted-foreground">共 {resolvedRowCount} 条{selectable && ` · 已选 ${selectedCount} 条`}{activeColumnFilterCount > 0 && ` · ${activeColumnFilterCount} 个列筛选`}{currentGrouping.length > 0 && ` · ${currentGrouping.length} 层分组`}</span>{activeColumnFilterCount > 0 && <Button variant="ghost" size="xs" disabled={loading} onClick={() => updateColumnFilters([])}>清除列筛选</Button>}{groupingDefinitions.length > 0 && <DataTableGroupingMenu table={table} definitions={groupingDefinitions} disabled={loading} />}{manageColumns && <DataTableColumnManager table={table} labels={columnLabels} disabled={loading} />}</div>
     </div>
     {error && <div role="alert" className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] rounded-lg border border-destructive/30 bg-destructive/5 p-[var(--rui-content-padding)] text-destructive"><span>{error}</span>{onRetry && <Button variant="outline" size="sm" onClick={onRetry}>重试</Button>}</div>}
     <div className="overflow-auto rounded-lg border border-border">
@@ -184,10 +225,15 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
             {header.column.getCanResize() && !header.isPlaceholder && <div role="separator" aria-label={`调整${columnLabels[header.column.id] ?? header.column.id}列宽`} aria-orientation="vertical" aria-valuemin={header.column.columnDef.minSize ?? 20} aria-valuemax={header.column.columnDef.maxSize ?? 1000} aria-valuenow={Math.round(header.column.getSize())} tabIndex={0} onMouseDown={header.getResizeHandler()} onTouchStart={header.getResizeHandler()} onDoubleClick={() => header.column.resetSize()} onKeyDown={event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); resizeColumn(header.column, event.key === 'ArrowLeft' ? -16 : 16); } }} className="absolute inset-y-0 right-0 w-1 cursor-col-resize touch-none outline-none hover:bg-ring focus-visible:bg-ring" />}
           </th>)}
         </tr>)}</thead>
-        <tbody>{loading ? <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground"><span role="status">正在加载记录…</span></td></tr> : table.getRowModel().rows.length ? table.getRowModel().rows.map(row => <tr key={row.id} data-selected={row.getIsSelected() || undefined} className="group border-t border-border hover:bg-muted/30 data-selected:bg-muted/60">
-          {selectable && <td className={cx('w-[var(--rui-control-height-lg)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]', hasLeftPinned && 'sticky left-0 z-[var(--rui-z-navigation)] border-r border-border bg-background group-hover:bg-muted')}><Checkbox aria-label={`选择记录 ${row.id}`} checked={row.getIsSelected()} onCheckedChange={checked => row.toggleSelected(checked)} /></td>}
-          {row.getVisibleCells().map(cell => <td key={cell.id} style={pinnedStyle(cell.column)} className={cx('max-w-sm px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] align-middle', pinnedClass(cell.column, 'body'))}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>)}
-        </tr>) : <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground">{emptyMessage}{query && <div className="mt-3"><Button variant="outline" size="sm" onClick={() => { updateFilter(''); updatePagination(current => ({ ...current, pageIndex: 0 })); }}>清除筛选</Button></div>}</td></tr>}</tbody>
+        <tbody>{loading ? <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground"><span role="status">正在加载记录…</span></td></tr> : visibleRows.length ? visibleRows.map((row, rowIndex) => {
+          const grouped = row.getIsGrouped();
+          const nextDepth = visibleRows[rowIndex + 1]?.depth ?? -1;
+          const closingGroups = renderGroupSummary ? [...row.getParentRows(), ...(grouped ? [row] : [])].reverse().filter(group => group.getIsGrouped() && nextDepth <= group.depth) : [];
+          return <Fragment key={row.id}><tr data-row-id={row.id} data-grouped={grouped || undefined} data-selected={row.getIsSelected() || undefined} className={cx('group border-t border-border hover:bg-muted/30 data-selected:bg-muted/60', grouped && 'bg-muted/20 font-medium')}>
+            {selectable && <td className={cx('w-[var(--rui-control-height-lg)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]', hasLeftPinned && 'sticky left-0 z-[var(--rui-z-navigation)] border-r border-border bg-background group-hover:bg-muted')}><Checkbox aria-label={`${grouped ? '选择分组' : '选择记录'} ${row.id}`} checked={grouped ? row.getIsAllSubRowsSelected() : row.getIsSelected()} indeterminate={row.getIsSomeSelected()} onCheckedChange={checked => grouped ? updateGroupSelection(row, checked) : row.toggleSelected(checked)} /></td>}
+            {row.getVisibleCells().map((cell, cellIndex) => { const expanderCell = grouped ? cell.getIsGrouped() : cellIndex === 0; return <td key={cell.id} style={pinnedStyle(cell.column)} className={cx('max-w-sm px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] align-middle', pinnedClass(cell.column, 'body'))}><div className={cx('flex min-w-0 items-center gap-1.5', expanderCell && 'whitespace-nowrap')} style={expanderCell && row.depth > 0 ? { paddingInlineStart: `calc(var(--rui-space-3) * ${row.depth})` } : undefined}>{expanderCell && row.getCanExpand() && <Button variant="ghost" size="icon-xs" className="size-[var(--rui-table-expander-size)]" aria-label={`${row.getIsExpanded() ? '折叠' : '展开'}${grouped ? '分组' : '记录'} ${row.id}`} aria-expanded={row.getIsExpanded()} onClick={row.getToggleExpandedHandler()}><ChevronDown aria-hidden="true" className={cx('transition-transform', !row.getIsExpanded() && '-rotate-90')} /></Button>}{cell.getIsGrouped() ? renderGroupHeader?.(row) ?? <span>{String(cell.getValue())} <span className="font-normal text-muted-foreground">({row.subRows.length})</span></span> : cell.getIsAggregated() ? flexRender(cell.column.columnDef.aggregatedCell ?? cell.column.columnDef.cell, cell.getContext()) : cell.getIsPlaceholder() ? null : flexRender(cell.column.columnDef.cell, cell.getContext())}</div></td>; })}
+          </tr>{!grouped && row.getIsExpanded() && renderExpandedRow && <tr data-expanded-row={row.id} className="border-t border-border bg-muted/10"><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">{renderExpandedRow(row)}</td></tr>}{closingGroups.map(group => <tr key={`summary-${group.id}`} data-group-summary={group.id} className="border-t border-border bg-muted/10"><td colSpan={columnCount} className="px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground">{renderGroupSummary?.(group)}</td></tr>)}</Fragment>;
+        }) : <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground">{emptyMessage}{query && <div className="mt-3"><Button variant="outline" size="sm" onClick={() => { updateFilter(''); updatePagination(current => ({ ...current, pageIndex: 0 })); }}>清除筛选</Button></div>}</td></tr>}</tbody>
       </table>
     </div>
     <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] text-xs text-muted-foreground">

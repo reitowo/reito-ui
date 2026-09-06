@@ -41,7 +41,7 @@ Reito UI 0.4 工作区按应用场景提供 **54 个基础组件族、15 个复�
 
 | 组件族及实际导出 | 关键契约与边界 |
 | --- | --- |
-| [`DataTable`](../packages/ui/src/complex/data-table.tsx) | 泛型 `data: TData[]`、`columns: ColumnDef<TData>[]`、必填 `getRowId(row)`。TanStack Table v8 完成本地排序、全列筛选和分页；`rowSelection` / `onRowSelectionChange` 可接管选择。稳定行 ID 保持跨页、排序和筛选后的选择身份。提供 `loading`、`error`、`onRetry`、`emptyMessage`。**这是完整本地数据模型，不含行虚拟化、服务端查询或服务端分页 API。** |
+| [`DataTable`](../packages/ui/src/complex/data-table.tsx) | 泛型 `data` / `columns` 与稳定 `getRowId`；本地或 manual 远程筛选、排序、分页，类型化列筛选、列管理/固定/宽度，以及层级展开、详情和数据行分组/聚合。查询、选择、列、展开与分组状态均可由宿主接管。网络、缓存、编辑、导出和行虚拟化仍由后续验收项覆盖。 |
 | [`DisclosureTree`](../packages/ui/src/complex/disclosure-tree.tsx) | `nodes` 使用稳定 `id`、`label`、可选 `children`；`value` / `onValueChange` 控制叶节点选择，`defaultExpanded` 初始化展开目录，叶节点支持 `disabled`。使用原生 `details` / `summary`；Tab 逐项移动，Enter / Space 展开。**它不是 ARIA tree，没有树控件的方向键导航模型。** |
 | [`SearchFilterBar`](../packages/ui/src/complex/search-filter-bar.tsx) | `query` / `onQueryChange` 与 `selected` / `onSelectedChange` 均受控；`filters` 定义可选条件、数量和禁用项。组件发出筛选状态，宿主负责根据状态过滤数据；`resultCount` 由宿主传入。 |
 | [`DateRangePicker`](../packages/ui/src/complex/date-range-picker.tsx) | `value: DateRange \| undefined` 与 `onValueChange` 必填。日历与日期输入编辑本地草稿；“应用范围”提交，“取消”或关闭丢弃草稿，“清除”提交 `undefined`。`minDate` / `maxDate` 和开始、结束顺序参与校验。使用本地日历日期，不内置时区转换。 |
