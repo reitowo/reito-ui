@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 54,
-    "complex": 21,
+    "complex": 22,
     "ai": 19
   },
-  "total": 94,
-  "stories": 666,
+  "total": 95,
+  "stories": 672,
   "entries": [
     {
       "layer": "basic",
@@ -606,6 +606,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "AsyncTreeViewDemo",
       "stories": 7
+    },
+    {
+      "layer": "complex",
+      "id": "reorderable-tree-view",
+      "name": "ReorderableTreeView 树重排",
+      "description": "受控树内与跨树移动、合法落点和键盘等价操作。",
+      "storyId": "复杂-reorderabletreeview-树重排--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ReorderableTreeViewDemo",
+      "stories": 6
     },
     {
       "layer": "complex",

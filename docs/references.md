@@ -127,3 +127,7 @@ Behavior follows the W3C WAI-ARIA APG Tree View Pattern at https://www.w3.org/WA
 ### AsyncTreeView · 2026-09-07
 
 Capability comparison uses PrimeVue 5 Tree Lazy at https://primevue.dev/tree/ and Nuxt UI Tree documentation at https://ui.nuxt.com/docs/components/tree. Reito UI composes its own TreeView with AbortController cancellation, refresh keys, request-identity stale guards and node-level status controls; no upstream source, CSS or assets copied.
+
+### ReorderableTreeView · 2026-09-07
+
+Capability comparison uses the DragDrop and Multiple sections of PrimeVue 5 Tree at https://primevue.dev/tree/. Reito UI adds original controlled move helpers, scope matching, cycle and disabled-target guards, native pointer drop zones, Alt+Arrow equivalents and focus restoration; no upstream source, CSS or assets copied.

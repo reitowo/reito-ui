@@ -1,10 +1,21 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { Check, ChevronRight, File, Folder, Minus } from 'lucide-react';
 import { cx } from './shared.js';
 
 export interface TreeViewNode { id: string; label: string; description?: string; disabled?: boolean; busy?: boolean; emptyMessage?: string | null; children?: TreeViewNode[] }
 export type TreeViewSelectionMode = 'single' | 'checkbox';
 export type TreeViewCheckPropagation = 'cascade' | 'independent';
+export type TreeViewDropPosition = 'before' | 'inside' | 'after';
+export interface TreeViewItemInteraction {
+  draggable?: boolean;
+  dropPosition?: TreeViewDropPosition;
+  onDragStart?: (event: DragEvent<HTMLLIElement>) => void;
+  onDragOver?: (event: DragEvent<HTMLLIElement>) => void;
+  onDragLeave?: (event: DragEvent<HTMLLIElement>) => void;
+  onDrop?: (event: DragEvent<HTMLLIElement>) => void;
+  onDragEnd?: (event: DragEvent<HTMLLIElement>) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLLIElement>) => void;
+}
 export interface TreeViewProps {
   nodes: TreeViewNode[];
   value?: string;
@@ -21,6 +32,7 @@ export interface TreeViewProps {
   rangeSelection?: boolean;
   bulkSelection?: boolean;
   renderTrailing?: (node: TreeViewNode) => ReactNode;
+  getItemInteraction?: (node: TreeViewNode) => TreeViewItemInteraction | undefined;
   label?: string;
   emptyMessage?: string;
   className?: string;
@@ -32,7 +44,7 @@ type CheckState = boolean | 'mixed';
 /** ARIA tree with single selection or tri-state checkbox selection and a roving keyboard focus. */
 export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
   selectionMode = 'single', checked, defaultChecked = [], onCheckedChange, checkPropagation = 'cascade', rangeSelection = true,
-  bulkSelection = true, renderTrailing, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
+  bulkSelection = true, renderTrailing, getItemInteraction, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [internalExpanded, setInternalExpanded] = useState(() => new Set(defaultExpanded));
   const [internalChecked, setInternalChecked] = useState(() => new Set(defaultChecked));
@@ -130,7 +142,10 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
     if (!id) return; setActiveId(id); requestAnimationFrame(() => itemRefs.current.get(id)?.focus());
   }, []);
   useLayoutEffect(() => {
-    if (activeId && visible.some(item => item.node.id === activeId)) return;
+    if (activeId && visible.some(item => item.node.id === activeId)) {
+      if (focusOwned.current && itemRefs.current.get(activeId) !== document.activeElement) requestAnimationFrame(() => itemRefs.current.get(activeId)?.focus());
+      return;
+    }
     let candidate = activeId ? all.get(activeId)?.parentId : undefined;
     while (candidate && !visible.some(item => item.node.id === candidate)) candidate = all.get(candidate)?.parentId;
     candidate ??= selected && visible.some(item => item.node.id === selected) ? selected : visible[0]?.node.id;
@@ -162,15 +177,18 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
   const render = (items: TreeViewNode[], level: number, parentId?: string) => <>{items.map((node, index) => {
     const branch = Boolean(node.children); const isOpen = branch && open.has(node.id); const state = checkState(node.id);
     const item = { node, parentId, level, posInSet: index + 1, setSize: items.length };
+    const interaction = getItemInteraction?.(node);
     return <li key={node.id} ref={element => { if (element) itemRefs.current.set(node.id, element); else itemRefs.current.delete(node.id); }}
       role="treeitem" aria-level={level} aria-posinset={index + 1} aria-setsize={items.length} aria-expanded={branch ? isOpen : undefined}
       aria-selected={selectionMode === 'single' && !node.disabled ? selected === node.id : undefined}
       aria-checked={selectionMode === 'checkbox' && !node.disabled ? state : undefined} aria-disabled={node.disabled || undefined} aria-busy={node.busy || undefined} tabIndex={activeId === node.id ? 0 : -1}
-      className="group/treeitem min-w-0 outline-none" onFocus={event => { if (event.target !== event.currentTarget) return; focusOwned.current = true; setActiveId(node.id); }} onKeyDown={event => keyDown(event, item)}>
+      className="group/treeitem min-w-0 outline-none" draggable={interaction?.draggable} onDragStart={interaction?.onDragStart} onDragOver={interaction?.onDragOver}
+      onDragLeave={interaction?.onDragLeave} onDrop={interaction?.onDrop} onDragEnd={interaction?.onDragEnd}
+      onFocus={event => { if (event.target !== event.currentTarget) return; focusOwned.current = true; setActiveId(node.id); }} onKeyDown={event => { interaction?.onKeyDown?.(event); if (!event.defaultPrevented) keyDown(event, item); }}>
       <div data-slot="tree-item-row" data-selected={selectionMode === 'single' && selected === node.id || undefined}
-        data-checked={selectionMode === 'checkbox' ? state : undefined} data-disabled={node.disabled || undefined}
+        data-checked={selectionMode === 'checkbox' ? state : undefined} data-disabled={node.disabled || undefined} data-drop-position={interaction?.dropPosition}
         title={[node.label, node.description].filter(Boolean).join('\n')}
-        className={cx('flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1 rounded-sm px-1 text-sm leading-5 hover:bg-muted group-focus/treeitem:ring-[length:var(--rui-outline-width)] group-focus/treeitem:ring-ring data-[selected=true]:bg-muted data-[selected=true]:font-medium data-[checked=true]:bg-muted data-[disabled=true]:opacity-[var(--rui-opacity-disabled)]')}
+        className={cx('flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1 rounded-sm border-y border-transparent px-1 text-sm leading-5 hover:bg-muted group-focus/treeitem:ring-[length:var(--rui-outline-width)] group-focus/treeitem:ring-ring data-[selected=true]:bg-muted data-[selected=true]:font-medium data-[checked=true]:bg-muted data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[drop-position=before]:border-t-primary data-[drop-position=inside]:bg-muted data-[drop-position=inside]:ring-[length:var(--rui-outline-width)] data-[drop-position=inside]:ring-ring data-[drop-position=after]:border-b-primary')}
         onClick={event => activate(event, node)} onDoubleClick={() => { if (branch && !node.disabled) toggle(node.id); }}>
         {branch ? <ChevronRight className={cx('size-3 shrink-0 text-muted-foreground', isOpen && 'rotate-90')} aria-hidden="true" /> : <span className="size-3 shrink-0" aria-hidden="true" />}
         {selectionMode === 'checkbox' && <span aria-hidden="true" data-state={state}

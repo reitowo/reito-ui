@@ -14,8 +14,9 @@ import { FormDemo } from './form-demo.js';
 import { AsyncFormDemo } from './async-form-demo.js';
 import { VirtualListDemo } from './virtual-list-demo.js';
 import { VirtualGridDemo } from './virtual-grid-demo.js';
-import { TreeView } from './tree-view.js';
+import { TreeView, type TreeViewNode } from './tree-view.js';
 import { AsyncTreeView, type AsyncTreeViewNode } from './async-tree-view.js';
+import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 export { FormDemo } from './form-demo.js';
 import {
   AppShell, CommandSearch, DataTable, DateRangePicker, DisclosureTree, FileUpload, PropertyList,
@@ -72,6 +73,11 @@ export function AsyncTreeViewDemo() {
     const timer = window.setTimeout(() => resolve(node.id === 'workspace' ? [{ id: 'src', label: 'src', children: [{ id: 'app', label: 'App.tsx' }] }] : []), 320);
     signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once: true });
   })} />;
+}
+export function ReorderableTreeViewDemo() {
+  const [nodes, setNodes] = useState<TreeViewNode[]>(demoNodes);
+  const [selected, setSelected] = useState('button');
+  return <ReorderableTreeView nodes={nodes} treeId="catalog-tree" defaultExpanded={['src', 'components']} value={selected} onValueChange={setSelected} label="可重排项目树" onMove={intent => { const next = moveTreeNode(nodes, intent); if (next) setNodes(next); }} />;
 }
 
 export function SearchFilterBarDemo() {
@@ -223,6 +229,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'virtual-grid', name: 'VirtualGrid 虚拟网格', description: '双轴窗口、稳定单元格、行列定位和二维可见范围。', component: VirtualGridDemo },
   { id: 'tree-view', name: 'TreeView 树形导航', description: 'ARIA 树、受控展开选择、方向键导航和焦点恢复。', component: TreeViewDemo },
   { id: 'async-tree-view', name: 'AsyncTreeView 异步树', description: '按需子节点、加载错误重试、刷新和过期响应隔离。', component: AsyncTreeViewDemo },
+  { id: 'reorderable-tree-view', name: 'ReorderableTreeView 树重排', description: '受控树内与跨树移动、合法落点和键盘等价操作。', component: ReorderableTreeViewDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
