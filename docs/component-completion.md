@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**20 项完成，1 项进行中，82 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`、`SELECT-01` 已完成，当前推进 `TAGS-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**21 项完成，1 项进行中，81 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01` 已完成，当前推进 `COLOR-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,13 +41,13 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01 的异步查询契约已完成，当前接入 TAGS-02 标签高级输入，再推进其他选择器增强；基础输入可按依赖并行推进。
+SELECT-01 与 TAGS-02 已完成，当前推进 COLOR-01；其后按依赖补齐日期、时间与其他选择器增强。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
 | TAGS-01 | InputTags：任意标签创建、分隔输入、去重策略/上限、编辑/删除、受控值；与仅选择 options 的 MultiSelect 分开 | FORM-01 | ✅ 完成 | 基础-inputtags--playground；另有创建/分隔/去重/上限/编辑/只读/禁用/错误/表单预设 | [InputTags 验收](validation-input-tags.md)：16 项交互、52 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/input-tags.md) |
-| TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | 进行中 | 待关联 | 待记录 |
-| COLOR-01 | ColorPicker / ColorInput：色板/区域/通道/文本输入、支持格式转换、透明度边界、无效输入、键盘和提交事件；组件 chrome 使用 token | FORM-01 | 待完成 | 待关联 | 待记录 |
+| TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | ✅ 完成 | 基础-inputtags--playground；批量粘贴/IME/建议/异步创建/标签状态/键盘预设，本族共 23 个 Story | [高级验收](validation-input-tags-advanced.md)：16 项新增、16 项回归、92 次 Story 组合；check/build 通过；[用法](components/input-tags.md) |
+| COLOR-01 | ColorPicker / ColorInput：色板/区域/通道/文本输入、支持格式转换、透明度边界、无效输入、键盘和提交事件；组件 chrome 使用 token | FORM-01 | 进行中 | 待关联 | 待记录 |
 | DATE-01 | InputDate：日期分段或明确等效输入、locale/格式、合法性/范围、键盘、清除与日历联动；不重复建设 Calendar 已透传的多选/多月 | FORM-01 | 待完成 | 待关联 | 待记录 |
 | TIME-01 | InputTime：时间分段、小时制/精度/步进、上下限、空值与键盘；明确时间值不默认携带任意日期 | FORM-01 | 待完成 | 待关联 | 待记录 |
 | DATETIME-01 | DateTimePicker：日期与时间一致提交、跨日边界、格式/locale；明确 date-only、local datetime 与带时区值的支持边界 | DATE-01、TIME-01 | 待完成 | 待关联 | 待记录 |

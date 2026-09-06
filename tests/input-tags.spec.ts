@@ -110,15 +110,15 @@ test('native form submission preserves repeated tag values', async ({ page }) =>
 test('Playground changes behavior props without leaving the story', async ({ page }) => {
   await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
-  await expect(frame.getByRole('textbox', { name: '项目标签', exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(frame.locator('[data-slot="input-tags-input"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
   const path = new URL(page.url()).searchParams.get('path');
   await page.locator('[id="control-duplicateBehavior"]').selectOption({ label: 'allow' });
-  const input = frame.getByRole('textbox', { name: '项目标签', exact: true });
+  const input = frame.locator('[data-slot="input-tags-input"]');
   await input.fill('React');
   await input.press('Enter');
   await expect(frame.getByRole('button', { name: '编辑标签 React' })).toHaveCount(2);
-  await page.getByRole('switch', { name: 'disabled' }).press('Space');
+  await page.getByRole('switch', { name: 'disabled', exact: true }).press('Space');
   await expect(input).toBeDisabled();
   expect(new URL(page.url()).searchParams.get('path')).toBe(path);
 });

@@ -25,4 +25,10 @@ export function ProjectTags() {
 
 数量到达 `maxTags` 后仍允许查看输入焦点，但新值会以 `limit` 拒绝。`onReject` 接收 `duplicate | limit` 及候选值；`ignore` 重复策略只显示状态并清空草稿，不触发拒绝回调。`error` 表示宿主字段错误，内部拒绝也通过可访问状态文本反馈。
 
-当前基础契约支持 Enter 与单个配置分隔键。粘贴整批拆分、动态建议/创建状态、逐标签禁用或错误、完整标签方向键导航属于 TAGS-02。
+`splitOnPaste` 默认启用；`pasteSeparators` 默认包含中英文逗号、换行和 Tab，一次粘贴只触发一次最终值更新。组合输入期间不会因逗号或 Enter 提前创建，`compositionend` 后才处理最终文本。
+
+`suggestions` 提供本地建议；`loadSuggestions(query, { signal })` 提供宿主异步建议，并复用 AsyncCombobox 的防抖、取消、过期响应保护和 error/retry 状态。`suggestionMinQueryLength / suggestionDebounceMs` 控制触发条件。启用建议时，输入具有 combobox/listbox 语义；方向键选择建议，Enter 提交，Escape 关闭。未匹配的草稿显示明确“创建”项。
+
+`onCreateTag(value, { signal })` 可在标签写入前执行宿主异步校验或创建。期间输入只读并显示进度；失败保留草稿和错误。批量创建按原顺序执行，首次失败后停止，已经成功的标签仍提交。组件卸载或新的创建事务会中止旧 signal。
+
+`disabledTags` 中的标签保留展示但不能编辑或移除；`tagErrors` 以标签原值为键，为单个 chip 提供可见错误图标和隐藏描述。主输入为空时，ArrowLeft 或 Backspace 聚焦最后一个可编辑标签；标签间用左右键、Home / End 导航，Delete / Backspace 删除并恢复相邻焦点。

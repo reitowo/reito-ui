@@ -166,7 +166,9 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 
 ### InputTags · 2026-09-07
 
-能力范围核对 Nuxt UI 4 [InputTags](https://ui.nuxt.com/docs/components/input-tags) 的任意标签、分隔符、重复值和数量上限，以及 PrimeVue 3 [Chips](https://v3.primevue.org/chips/) 的受控数组、分隔输入、模板与键盘说明。Reito UI 实现独立的 React 受控/非受控契约、三种去重策略、原位编辑、删除焦点恢复、原生重复表单值和 Graphite 紧凑 tokens；未复制上游源码、CSS、模板或资源。粘贴拆分、动态建议和完整标签键盘导航留在 TAGS-02。
+能力范围核对 Nuxt UI 4 [InputTags](https://ui.nuxt.com/docs/components/input-tags) 的任意标签、分隔符、重复值、数量上限与拖放/删除方向，以及 PrimeVue 3 [Chips](https://v3.primevue.org/chips/) 的受控数组、分隔输入、模板与键盘说明。Reito UI 实现独立的 React 受控/非受控契约、三种去重策略、批量粘贴、IME、原位编辑、标签级状态、删除焦点恢复、原生重复表单值和 Graphite 紧凑 tokens；未复制上游源码、CSS、模板或资源。
+
+TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号状态机，并按 Base UI [Combobox](https://base-ui.com/react/components/combobox) 的输入、listbox 和活动项语义实现可选弹层；异步创建保持宿主回调边界。它不是 Nuxt 或 PrimeVue 组件的 React 移植。
 
 ### AsyncCombobox · 2026-09-07
 

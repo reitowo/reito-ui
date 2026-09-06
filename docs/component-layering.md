@@ -30,7 +30,7 @@ Reito UI 0.4 工作区按应用场景提供 **57 个基础组件族、22 个复�
 | --- | --- |
 | [`ToastProvider / useToastManager / createToastManager`](../packages/ui/src/basic/feedback.tsx) | 用 Provider 声明通知区域，在其范围内通过 manager 新增、更新和关闭通知。Provider 支持 `viewportLabel / viewportClassName / closeLabel`，保留 Base UI 管理器、计时和焦点语义。通知中的实际业务操作由宿主提供。 |
 | [`MultiSelect`](../packages/ui/src/basic/multi-select.tsx) | 必填 `label / options`，选项使用 `value / label / disabled`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。基于 Combobox 的多值选择、过滤和 chip 移除，支持 `loading / error / description / disabled`。 |
-| [`InputTags`](../packages/ui/src/basic/input-tags.tsx) | 必填 `label`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。输入任意字符串后按 Enter 或配置的分隔键创建，支持忽略/拒绝/允许重复、数量/长度上限、原位编辑、删除、只读、禁用和原生重复表单值。只允许选择既有 options 时使用 MultiSelect。 |
+| [`InputTags`](../packages/ui/src/basic/input-tags.tsx) | 必填 `label`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。支持分隔输入、批量粘贴、IME、本地/异步建议、异步创建、重复/数量规则、原位编辑、标签级禁用/错误、键盘 chip 导航和原生重复表单值。只允许选择既有 options 时使用 MultiSelect。 |
 | [`AsyncCombobox`](../packages/ui/src/basic/async-combobox.tsx) | 必填 `label / loadOptions`；`query / onQueryChange` 与 `value / onValueChange` 分别可受控。宿主 loader 接收 AbortSignal；组件防止过期结果覆盖、呈现 idle/loading/error/empty/retry，并缓存单选标签。它不内置网络端点或业务搜索。 |
 | [`AsyncMultiSelect`](../packages/ui/src/basic/async-multi-select.tsx) | 必填 `label / loadOptions`；查询和值分别受控或非受控。复用异步取消、过期保护和状态机，以 chips 呈现多值，并缓存已选标签，使远程结果翻页或过滤后仍能解析已有选择。原生表单使用重复同名值。 |
 | [`NumberField`](../packages/ui/src/basic/number-field.tsx) | 必填 `label`，其余值、范围、步进、格式与提交事件采用 Base UI NumberField Root 契约。支持 `description / error / incrementLabel / decrementLabel`；宿主应允许输入过程中的 `null`，不能把空输入强制解释成 0。 |
