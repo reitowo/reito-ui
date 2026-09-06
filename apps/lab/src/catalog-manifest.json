@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 54,
-    "complex": 19,
+    "complex": 20,
     "ai": 19
   },
-  "total": 92,
-  "stories": 649,
+  "total": 93,
+  "stories": 655,
   "entries": [
     {
       "layer": "basic",
@@ -586,6 +586,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "VirtualGridDemo",
       "stories": 5
+    },
+    {
+      "layer": "complex",
+      "id": "tree-view",
+      "name": "TreeView 树形导航",
+      "description": "ARIA 树、受控展开选择、方向键导航和焦点恢复。",
+      "storyId": "复杂-treeview-树形导航--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "TreeViewDemo",
+      "stories": 6
     },
     {
       "layer": "complex",

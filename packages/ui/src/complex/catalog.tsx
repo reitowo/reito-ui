@@ -14,6 +14,7 @@ import { FormDemo } from './form-demo.js';
 import { AsyncFormDemo } from './async-form-demo.js';
 import { VirtualListDemo } from './virtual-list-demo.js';
 import { VirtualGridDemo } from './virtual-grid-demo.js';
+import { TreeView } from './tree-view.js';
 export { FormDemo } from './form-demo.js';
 import {
   AppShell, CommandSearch, DataTable, DateRangePicker, DisclosureTree, FileUpload, PropertyList,
@@ -53,6 +54,12 @@ export const demoNodes: DisclosureNode[] = [
 export function DisclosureTreeDemo() {
   const [selected, setSelected] = useState('button');
   return <div className="space-y-[var(--rui-content-gap)]"><DisclosureTree nodes={demoNodes} defaultExpanded={['src', 'components']} value={selected} onValueChange={setSelected} /><p role="status" className="border-t border-border pt-[var(--rui-content-gap)] text-xs text-muted-foreground">当前选择：{selected}</p></div>;
+}
+
+export function TreeViewDemo() {
+  const [selected, setSelected] = useState('button');
+  const [expanded, setExpanded] = useState(['src', 'components']);
+  return <div className="space-y-[var(--rui-content-gap)]"><TreeView nodes={demoNodes} value={selected} onValueChange={setSelected} expanded={expanded} onExpandedChange={setExpanded} label="项目树" /><p role="status" className="border-t border-border pt-[var(--rui-content-gap)] text-xs text-muted-foreground">当前节点：{selected} · 展开 {expanded.length} 项</p></div>;
 }
 
 export function SearchFilterBarDemo() {
@@ -202,6 +209,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'async-form', name: 'AsyncForm 异步表单', description: '可取消的异步校验、过期响应隔离、记录切换和提交恢复。', component: AsyncFormDemo },
   { id: 'virtual-list', name: 'VirtualList 虚拟列表', description: '窗口化行、稳定 key、滚动定位、可见范围和按需加载。', component: VirtualListDemo },
   { id: 'virtual-grid', name: 'VirtualGrid 虚拟网格', description: '双轴窗口、稳定单元格、行列定位和二维可见范围。', component: VirtualGridDemo },
+  { id: 'tree-view', name: 'TreeView 树形导航', description: 'ARIA 树、受控展开选择、方向键导航和焦点恢复。', component: TreeViewDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
