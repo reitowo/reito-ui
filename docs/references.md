@@ -137,3 +137,9 @@ Capability comparison uses the DragDrop and Multiple sections of PrimeVue 5 Tree
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。
 
 Reito UI 用单一 `manual` 边界统一这三项远程处理，并新增本地/受控双模式、筛选与排序回到第 1 页、跨页选择计数和当前页全选范围。Graphite 的紧凑表格布局、状态文案、Story 和宿主契约均为本项目实现；未复制 TanStack、PrimeReact 或 PrimeVue 的 CSS、示例源码或资源。
+
+### DataTable 列筛选 · 2026-09-07
+
+TanStack Table v8 的 [Column Filtering Guide](https://tanstack.com/table/v8/docs/guide/column-filtering) 定义了多列筛选状态、受控回调、manual server-side filtering 和列级 filter functions；安装版本 8.21.3 的类型与 API 已同时核对。PrimeVue 5 [DataTable Filter](https://primevue.dev/datatable/) 用 filter model 和自定义 editor 支持行内/菜单两种表现、匹配方式、清除/应用与远程 lazy 数据，作为能力范围和轻色表面视觉参考。
+
+Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number` / `date` 判别联合与稳定 JSON 子句。不同列是 AND，同列枚举值是 OR，区间包含端点；网络、数据库表达式和时区解释留给宿主。没有复制参考实现的源码、CSS、模板或资源。

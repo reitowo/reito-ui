@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**12 项完成，1 项进行中，90 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01` 已完成，当前推进 `TABLE-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**13 项完成，1 项进行中，89 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-02` 已完成，当前推进 `TABLE-03`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -32,8 +32,8 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 | TREE-03 | 异步树：按需子节点、节点级 loading/error/retry、空子节点、展开中刷新和过期响应处理；加载与选择语义明确 | TREE-01、TREE-02 | ✅ 完成 | 复杂-asynctreeview-异步树--playground；加载/空/错误重试/刷新竞态/取消/复选预设 | [异步树验收](validation-async-tree-view.md)：11 项交互、28 次 Story 组合、受控取消与过期响应隔离；check/build 通过 |
 | TREE-04 | 树重排：树内/允许的跨树移动、受控顺序、禁止环与无效落点、键盘等价操作、移动后选择/焦点保持 | TREE-02 | ✅ 完成 | 复杂-reorderabletreeview-树重排--playground；键盘/环路/禁用/窄宽度/跨树预设 | [树重排验收](validation-reorderable-tree-view.md)：9 项交互、24 次 Story 组合、焦点恢复与跨树 scope；check/build 通过 |
 | TABLE-01 | DataTable 受控与远程：sorting/filter/pagination 对外状态、manual 数据模式、total/count、稳定 ID 与跨页选择范围；保留已有客户端能力 | — | ✅ 完成 | 复杂-datatable-数据表格--remote-controlled / --playground；另有本地/空/加载/错误预设 | [DataTable 验收](validation-data-table-controlled.md)：10 项交互、32 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/data-table.md) |
-| TABLE-02 | 列筛选：文本/数字/日期等匹配、清空与组合规则、服务端序列化边界；不能仅增加无效筛选按钮 | TABLE-01、FORM-01 | 进行中 | 待关联 | 下一步实现列过滤状态、类型化 filter 与远程查询序列化契约 |
-| TABLE-03 | 列管理：显隐/顺序/宽度/固定列、受控状态、分组表头兼容、横滚与键盘操作；不把已支持的分组表头记为新增 | TABLE-01 | 待完成 | 待关联 | 待记录 |
+| TABLE-02 | 列筛选：文本/数字/日期等匹配、清空与组合规则、服务端序列化边界；不能仅增加无效筛选按钮 | TABLE-01、FORM-01 | ✅ 完成 | 复杂-datatable-数据表格--column-filters / --remote-column-filters / --playground | [列筛选验收](validation-data-table-column-filters.md)：11 项新增交互、10 项远程回归、40 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/data-table.md#列筛选) |
+| TABLE-03 | 列管理：显隐/顺序/宽度/固定列、受控状态、分组表头兼容、横滚与键盘操作；不把已支持的分组表头记为新增 | TABLE-01 | 进行中 | 待关联 | 下一步实现列显隐、顺序、宽度和固定列的受控状态与键盘操作 |
 | TABLE-04 | 行展开与行分组：受控展开、组头/汇总插槽、分组筛选/排序/选择一致性；区分已有列分组表头与新增行分组 | TABLE-01 | 待完成 | 待关联 | 待记录 |
 | TABLE-05 | 单元格/行编辑：草稿、提交/取消、同步/异步错误、焦点和键盘流、失败保留/重试、宿主数据更新；自定义 cell 插槽不算完整编辑器 | TABLE-01、FORM-02 | 待完成 | 待关联 | 待记录 |
 | TABLE-06 | 导出与视图偏好：明确导出数据范围/格式、宿主回调、列与查询状态保存/恢复及失效策略；不从页面 DOM 推导完整数据 | TABLE-02、TABLE-03 | 待完成 | 待关联 | 待记录 |

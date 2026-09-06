@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import {
   flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable,
-  type ColumnDef, type PaginationState, type RowSelectionState, type SortingState, type Updater,
+  type ColumnDef, type ColumnFiltersState, type FilterFn, type PaginationState, type RowSelectionState, type SortingState, type Updater,
 } from '@tanstack/react-table';
 import { Button } from '../primitives/button.js';
 import { Checkbox } from '../primitives/checkbox.js';
 import { Input } from '../primitives/input.js';
 import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { DataTableColumnFilterMenu, dataTableColumnFilterFn, isDataTableColumnFilterActive, type DataTableColumnFilterDefinition, type DataTableColumnFiltersState } from './data-table-filter.js';
 import { cx } from './shared.js';
+
+export { isDataTableColumnFilterActive, matchesDataTableColumnFilter, serializeDataTableColumnFilters } from './data-table-filter.js';
+export type { DataTableColumnFilterDefinition, DataTableColumnFilterOption, DataTableColumnFiltersState, DataTableColumnFilterValue, DataTableDateFilterValue, DataTableFilterQueryClause, DataTableNumberFilterValue, DataTableSelectFilterValue, DataTableTextFilterValue } from './data-table-filter.js';
 
 export interface DataTableProps<TData> {
   data: TData[];
@@ -24,6 +28,12 @@ export interface DataTableProps<TData> {
   globalFilter?: string;
   defaultGlobalFilter?: string;
   onGlobalFilterChange?: (filter: string) => void;
+  /** Typed per-column filters. Different columns are combined with AND. */
+  columnFilters?: DataTableColumnFiltersState;
+  defaultColumnFilters?: DataTableColumnFiltersState;
+  onColumnFiltersChange?: (filters: DataTableColumnFiltersState) => void;
+  /** Adds compact editors to matching leaf column headers. */
+  filterDefinitions?: DataTableColumnFilterDefinition[];
   pagination?: PaginationState;
   defaultPagination?: PaginationState;
   onPaginationChange?: (pagination: PaginationState) => void;
@@ -46,14 +56,17 @@ export interface DataTableProps<TData> {
 /** Client mode resolves a complete dataset locally; manual mode exposes the query state for a remote page. */
 export function DataTable<TData>({ data, columns, getRowId, caption = '工作区数据', searchPlaceholder = '筛选所有列…', pageSize = 5,
   sorting, defaultSorting = [], onSortingChange, globalFilter, defaultGlobalFilter = '', onGlobalFilterChange,
+  columnFilters, defaultColumnFilters = [], onColumnFiltersChange, filterDefinitions = [],
   pagination, defaultPagination, onPaginationChange, manual = false, rowCount: externalRowCount, pageCount: externalPageCount,
   selectable = true, rowSelection, onRowSelectionChange, loading = false, error, onRetry, emptyMessage = '没有符合条件的记录', className }: DataTableProps<TData>) {
   const [internalSorting, setInternalSorting] = useState<SortingState>(defaultSorting);
   const [internalFilter, setInternalFilter] = useState(defaultGlobalFilter);
+  const [internalColumnFilters, setInternalColumnFilters] = useState<DataTableColumnFiltersState>(defaultColumnFilters);
   const [internalPagination, setInternalPagination] = useState<PaginationState>(defaultPagination ?? { pageIndex: 0, pageSize: Math.max(1, pageSize) });
   const [internalSelection, setInternalSelection] = useState<RowSelectionState>({});
   const currentSorting = sorting ?? internalSorting;
   const query = globalFilter ?? internalFilter;
+  const currentColumnFilters = columnFilters ?? internalColumnFilters;
   const currentPagination = pagination ?? internalPagination;
   const selection = rowSelection ?? internalSelection;
   function updateSorting(update: Updater<SortingState>) {
@@ -67,6 +80,12 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
     if (globalFilter === undefined) setInternalFilter(next);
     onGlobalFilterChange?.(next);
   }
+  function updateColumnFilters(update: Updater<ColumnFiltersState>) {
+    const next = (typeof update === 'function' ? update(currentColumnFilters) : update) as DataTableColumnFiltersState;
+    if (columnFilters === undefined) setInternalColumnFilters(next);
+    onColumnFiltersChange?.(next);
+    if (currentPagination.pageIndex !== 0) updatePagination(current => ({ ...current, pageIndex: 0 }));
+  }
   function updatePagination(update: Updater<PaginationState>) {
     const next = typeof update === 'function' ? update(currentPagination) : update;
     if (pagination === undefined) setInternalPagination(next);
@@ -77,24 +96,35 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
     if (rowSelection === undefined) setInternalSelection(next);
     onRowSelectionChange?.(next);
   }
+  const definitionById = useMemo(() => new Map(filterDefinitions.map(definition => [definition.id, definition])), [filterDefinitions]);
+  const resolvedColumns = useMemo(() => {
+    const decorate = (definitions: ColumnDef<TData>[]): ColumnDef<TData>[] => definitions.map(definition => {
+      const id = definition.id ?? ('accessorKey' in definition && typeof definition.accessorKey === 'string' ? definition.accessorKey : undefined);
+      const children = 'columns' in definition && definition.columns ? decorate(definition.columns) : undefined;
+      const filterDefinition = id ? definitionById.get(id) : undefined;
+      return { ...definition, ...(children ? { columns: children } : {}), ...(filterDefinition ? { enableColumnFilter: true, filterFn: dataTableColumnFilterFn as FilterFn<TData> } : {}) } as ColumnDef<TData>;
+    });
+    return decorate(columns);
+  }, [columns, definitionById]);
   const table = useReactTable({
-    data, columns, getRowId,
-    state: { sorting: currentSorting, globalFilter: query, pagination: currentPagination, rowSelection: selection },
+    data, columns: resolvedColumns, getRowId,
+    state: { sorting: currentSorting, globalFilter: query, columnFilters: currentColumnFilters, pagination: currentPagination, rowSelection: selection },
     onSortingChange: updateSorting, onPaginationChange: updatePagination, onRowSelectionChange: updateSelection,
-    onGlobalFilterChange: updateFilter, enableRowSelection: selectable, globalFilterFn: 'includesString',
+    onGlobalFilterChange: updateFilter, onColumnFiltersChange: updateColumnFilters, enableRowSelection: selectable, globalFilterFn: 'includesString',
     manualSorting: manual, manualFiltering: manual, manualPagination: manual, rowCount: manual ? externalRowCount ?? data.length : undefined,
     pageCount: manual ? externalPageCount : undefined, autoResetPageIndex: manual ? false : undefined,
     getCoreRowModel: getCoreRowModel(), getFilteredRowModel: getFilteredRowModel(), getSortedRowModel: getSortedRowModel(), getPaginationRowModel: getPaginationRowModel(),
   });
   const resolvedRowCount = manual ? externalRowCount ?? data.length : table.getFilteredRowModel().rows.length;
   const selectedCount = Object.values(selection).filter(Boolean).length;
+  const activeColumnFilterCount = currentColumnFilters.filter(filter => isDataTableColumnFilterActive(filter.value)).length;
   const resolvedPageCount = table.getPageCount();
   const headerGroups = table.getHeaderGroups();
   const columnCount = table.getVisibleLeafColumns().length + Number(selectable);
   return <section data-slot="data-table" aria-label={caption} aria-busy={loading} className={cx('min-w-0 space-y-[var(--rui-content-gap)] font-sans text-sm text-foreground', className)}>
     <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)]">
       <div className="relative w-full max-w-xs"><Search aria-hidden="true" className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-2.5 size-4 text-muted-foreground" /><Input aria-label={`筛选${caption}`} placeholder={searchPlaceholder} className="pl-9" disabled={loading} value={query} onChange={event => { updateFilter(event.target.value); updatePagination(current => ({ ...current, pageIndex: 0 })); }} /></div>
-      <span className="text-xs text-muted-foreground">共 {resolvedRowCount} 条{selectable && ` · 已选 ${selectedCount} 条`}</span>
+      <div className="flex items-center gap-[var(--rui-content-gap)]"><span className="text-xs text-muted-foreground">共 {resolvedRowCount} 条{selectable && ` · 已选 ${selectedCount} 条`}{activeColumnFilterCount > 0 && ` · ${activeColumnFilterCount} 个列筛选`}</span>{activeColumnFilterCount > 0 && <Button variant="ghost" size="xs" disabled={loading} onClick={() => updateColumnFilters([])}>清除列筛选</Button>}</div>
     </div>
     {error && <div role="alert" className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] rounded-lg border border-destructive/30 bg-destructive/5 p-[var(--rui-content-padding)] text-destructive"><span>{error}</span>{onRetry && <Button variant="outline" size="sm" onClick={onRetry}>重试</Button>}</div>}
     <div className="overflow-auto rounded-lg border border-border">
@@ -103,7 +133,7 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
         <thead className="bg-muted/40 text-muted-foreground">{headerGroups.map((group, groupIndex) => <tr key={group.id}>
           {selectable && groupIndex === 0 && <th scope="col" rowSpan={headerGroups.length} className="w-9 px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)]"><Checkbox aria-label="选择当前页全部记录" checked={table.getIsAllPageRowsSelected()} indeterminate={table.getIsSomePageRowsSelected()} disabled={loading || !data.length} onCheckedChange={checked => table.toggleAllPageRowsSelected(checked)} /></th>}
           {group.headers.map(header => <th scope="col" key={header.id} colSpan={header.colSpan} aria-sort={header.column.getIsSorted() === 'asc' ? 'ascending' : header.column.getIsSorted() === 'desc' ? 'descending' : undefined} className="whitespace-nowrap px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)] font-medium">
-            {header.isPlaceholder ? null : header.column.getCanSort() ? <Button variant="ghost" size="sm" className="-ml-2" onClick={header.column.getToggleSortingHandler()} disabled={loading}>{flexRender(header.column.columnDef.header, header.getContext())}{header.column.getIsSorted() === 'asc' ? <ArrowUp aria-hidden="true" /> : header.column.getIsSorted() === 'desc' ? <ArrowDown aria-hidden="true" /> : <ArrowUpDown aria-hidden="true" className="text-muted-foreground" />}</Button> : flexRender(header.column.columnDef.header, header.getContext())}
+            {header.isPlaceholder ? null : <div className="flex items-center gap-0.5">{header.column.getCanSort() ? <Button variant="ghost" size="sm" className="-ml-2" onClick={header.column.getToggleSortingHandler()} disabled={loading}>{flexRender(header.column.columnDef.header, header.getContext())}{header.column.getIsSorted() === 'asc' ? <ArrowUp aria-hidden="true" /> : header.column.getIsSorted() === 'desc' ? <ArrowDown aria-hidden="true" /> : <ArrowUpDown aria-hidden="true" className="text-muted-foreground" />}</Button> : flexRender(header.column.columnDef.header, header.getContext())}{definitionById.get(header.column.id) && <DataTableColumnFilterMenu column={header.column} definition={definitionById.get(header.column.id)!} disabled={loading} />}</div>}
           </th>)}
         </tr>)}</thead>
         <tbody>{loading ? <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground"><span role="status">正在加载记录…</span></td></tr> : table.getRowModel().rows.length ? table.getRowModel().rows.map(row => <tr key={row.id} data-selected={row.getIsSelected() || undefined} className="border-t border-border hover:bg-muted/30 data-selected:bg-muted/60">
