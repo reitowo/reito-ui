@@ -2,6 +2,7 @@ import { tokenMetrics } from "@reito/tokens/metrics";
 import * as React from "react";
 import { ToastProvider, useToastManager } from './feedback.js';
 import { AsyncCombobox, type AsyncComboboxOption } from './async-combobox.js';
+import { AsyncMultiSelect } from './async-multi-select.js';
 import { InputTags } from './input-tags.js';
 import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
@@ -152,6 +153,11 @@ export function AsyncComboboxDemo() {
   const [value, setValue] = React.useState<string | null>(null);
   const [query, setQuery] = React.useState('');
   return <Stack><AsyncCombobox label="异步查找技术栈" query={query} onQueryChange={setQuery} value={value} onValueChange={setValue} debounceMs={120} loadOptions={async (term, { signal }) => { await new Promise<void>((resolve, reject) => { const timer = window.setTimeout(resolve, 180); signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once: true }); }); return asyncTechnologyOptions.filter(option => option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase())); }} description="查询由宿主回调提供；组件取消旧请求并忽略过期结果。" /><output>query={JSON.stringify(query)} · value={value ?? 'null'}</output></Stack>;
+}
+export function AsyncMultiSelectDemo() {
+  const [value, setValue] = React.useState(['react']);
+  const [query, setQuery] = React.useState('');
+  return <Stack><AsyncMultiSelect label="异步选择技术栈" query={query} onQueryChange={setQuery} value={value} onValueChange={setValue} selectedOptions={asyncTechnologyOptions.filter(option => value.includes(option.value))} debounceMs={120} loadOptions={async (term, { signal }) => { await new Promise<void>((resolve, reject) => { const timer = window.setTimeout(resolve, 180); signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once: true }); }); return asyncTechnologyOptions.filter(option => option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase())); }} description="当前查询结果变化时，已选标签继续保留。" /><output>query={JSON.stringify(query)} · value={JSON.stringify(value)}</output></Stack>;
 }
 export function TextareaDemo() {
   const [value, setValue] = React.useState("");
@@ -1407,6 +1413,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "AsyncCombobox",
     description: "宿主异步查询、取消过期请求、重试与选中项缓存。",
     component: AsyncComboboxDemo,
+  },
+  {
+    id: "async-multi-select",
+    name: "AsyncMultiSelect",
+    description: "宿主异步多选、过期请求保护与跨结果页标签缓存。",
+    component: AsyncMultiSelectDemo,
   },
   {
     id: "accordion",

@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 6 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 7 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -171,3 +171,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### AsyncCombobox · 2026-09-07
 
 能力范围核对 Nuxt UI 4 [SelectMenu](https://ui.nuxt.com/docs/components/select-menu) 的可搜索高级选择器、PrimeVue [AutoComplete](https://v3.primevue.org/autocomplete/) 的 suggestions / complete 查询边界，以及当前安装 Base UI 1.8 的 [Combobox](https://base-ui.com/react/components/combobox) 受控输入、筛选和键盘契约。Reito UI 把数据获取留给宿主 `loadOptions`，本地实现 AbortSignal 取消、请求序号保护、重试、状态呈现和标签缓存；未复制上游源码、CSS、模板或资源。
+
+### AsyncMultiSelect · 2026-09-07
+
+能力范围继续核对 Nuxt UI 4 [SelectMenu](https://ui.nuxt.com/docs/components/select-menu) 的 multiple / searchable 组合、PrimeVue 3 [AutoComplete Multiple](https://v3.primevue.org/autocomplete/) 的多值 chips 与查询建议，以及 Base UI [Combobox](https://base-ui.com/react/components/combobox) 的 multiple、Chips、Value 和原生表单契约。Reito UI 与 AsyncCombobox 共享原创请求状态机，另行实现受控多值、选择后查询清空、已选标签生命周期缓存和紧凑 Graphite chips；未复制上游源码、CSS、模板或资源。

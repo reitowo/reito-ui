@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 56,
+    "basic": 57,
     "complex": 22,
     "ai": 19
   },
-  "total": 97,
-  "stories": 712,
+  "total": 98,
+  "stories": 724,
   "entries": [
     {
       "layer": "basic",
@@ -186,6 +186,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "AsyncComboboxDemo",
       "stories": 11
+    },
+    {
+      "layer": "basic",
+      "id": "async-multi-select",
+      "name": "AsyncMultiSelect",
+      "description": "宿主异步多选、过期请求保护与跨结果页标签缓存。",
+      "storyId": "基础-asyncmultiselect--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AsyncMultiSelectDemo",
+      "stories": 12
     },
     {
       "layer": "basic",

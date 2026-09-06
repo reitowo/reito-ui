@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**19 项完成，1 项进行中，83 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01` 已完成，当前推进 `SELECT-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**20 项完成，1 项进行中，82 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`、`SELECT-01` 已完成，当前推进 `TAGS-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,12 +41,12 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-先推进 SELECT-01 的异步查询契约，再接入标签和其他选择器增强；基础输入可按依赖并行推进。
+SELECT-01 的异步查询契约已完成，当前接入 TAGS-02 标签高级输入，再推进其他选择器增强；基础输入可按依赖并行推进。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
 | TAGS-01 | InputTags：任意标签创建、分隔输入、去重策略/上限、编辑/删除、受控值；与仅选择 options 的 MultiSelect 分开 | FORM-01 | ✅ 完成 | 基础-inputtags--playground；另有创建/分隔/去重/上限/编辑/只读/禁用/错误/表单预设 | [InputTags 验收](validation-input-tags.md)：16 项交互、52 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/input-tags.md) |
-| TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | 进行中 | 待关联 | 待记录 |
 | COLOR-01 | ColorPicker / ColorInput：色板/区域/通道/文本输入、支持格式转换、透明度边界、无效输入、键盘和提交事件；组件 chrome 使用 token | FORM-01 | 待完成 | 待关联 | 待记录 |
 | DATE-01 | InputDate：日期分段或明确等效输入、locale/格式、合法性/范围、键盘、清除与日历联动；不重复建设 Calendar 已透传的多选/多月 | FORM-01 | 待完成 | 待关联 | 待记录 |
 | TIME-01 | InputTime：时间分段、小时制/精度/步进、上下限、空值与键盘；明确时间值不默认携带任意日期 | FORM-01 | 待完成 | 待关联 | 待记录 |
@@ -58,7 +58,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 | METERGROUP-01 | MeterGroup / ProgressGroup：多段占比、图例/标签、总量/越界/零值语义、可读文本；测量量与任务进度明确区分 | — | 待完成 | 待关联 | 待记录 |
 | RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | 待完成 | 待关联 | 待记录 |
 | KNOB-01 | Knob：圆形数字交互、min/max/step、读数、键盘、只读/禁用与受控值；明确相对 Slider/NumberField 的场景价值 | FORM-01 | 待完成 | 待关联 | 待记录 |
-| SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | 进行中 | 基础-asynccombobox--playground；单选状态与过期结果预设 | [AsyncCombobox 阶段验收](validation-async-combobox.md)：单选异步契约完成；下一提交补 AsyncMultiSelect 与选中标签跨结果缓存后完成本项 |
+| SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | ✅ 完成 | 基础-asynccombobox--playground、基础-asyncmultiselect--playground；两族合计 23 个 Story | [最终验收](validation-async-multi-select.md)：16 项多选交互、13 项单选回归、48 次多选 Story 组合；check/build 通过；[单选阶段](validation-async-combobox.md)、[多选用法](components/async-multi-select.md) |
 | SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | 待完成 | 待关联 | 待记录 |
 | SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | 待完成 | 待关联 | 待记录 |
 | DATERANGE-01 | DateRangePicker 预设与 locale：常用范围、可配置格式/locale、草稿/应用/取消、预设与上下限一致 | DATE-01 | 待完成 | 待关联 | 待记录 |

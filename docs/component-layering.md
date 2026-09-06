@@ -1,10 +1,10 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **56 个基础组件族、22 个复杂组件族、19 个 AI 组件族**，共 97 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **57 个基础组件族、22 个复杂组件族、19 个 AI 组件族**，共 98 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
-| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 56 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 6 个本地组合族；统一主题、尺寸和必要修复。 |
+| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 57 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 7 个本地组合族；统一主题、尺寸和必要修复。 |
 | 本地数据表、筛选、属性编辑、设置、分栏等通用工作流 | 复杂 22 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 19 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
@@ -12,9 +12,9 @@ Reito UI 0.4 工作区按应用场景提供 **56 个基础组件族、22 个复�
 
 所有层都消费同一份语义主题。颜色、字体和密度的主源是 [`packages/tokens/src/tokens.json`](../packages/tokens/src/tokens.json)，基础组件不再使用旧版 `components.tsx` API。常规控件保留实际 Base UI 的 `render`、受控值和组合结构；日历、命令搜索、分栏分别依赖 React DayPicker、cmdk、react-resizable-panels，静态展示组件使用普通语义元素。不能把全部基础组件都描述成 Base UI 包装器。
 
-## 基础层：56 个组件族
+## 基础层：57 个组件族
 
-基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 6 个本地组合族，不能将它们标为 CLI 生成源码。
+基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 7 个本地组合族，不能将它们标为 CLI 生成源码。
 
 | 用途 | 组件族 |
 | --- | --- |
@@ -32,6 +32,7 @@ Reito UI 0.4 工作区按应用场景提供 **56 个基础组件族、22 个复�
 | [`MultiSelect`](../packages/ui/src/basic/multi-select.tsx) | 必填 `label / options`，选项使用 `value / label / disabled`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。基于 Combobox 的多值选择、过滤和 chip 移除，支持 `loading / error / description / disabled`。 |
 | [`InputTags`](../packages/ui/src/basic/input-tags.tsx) | 必填 `label`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。输入任意字符串后按 Enter 或配置的分隔键创建，支持忽略/拒绝/允许重复、数量/长度上限、原位编辑、删除、只读、禁用和原生重复表单值。只允许选择既有 options 时使用 MultiSelect。 |
 | [`AsyncCombobox`](../packages/ui/src/basic/async-combobox.tsx) | 必填 `label / loadOptions`；`query / onQueryChange` 与 `value / onValueChange` 分别可受控。宿主 loader 接收 AbortSignal；组件防止过期结果覆盖、呈现 idle/loading/error/empty/retry，并缓存单选标签。它不内置网络端点或业务搜索。 |
+| [`AsyncMultiSelect`](../packages/ui/src/basic/async-multi-select.tsx) | 必填 `label / loadOptions`；查询和值分别受控或非受控。复用异步取消、过期保护和状态机，以 chips 呈现多值，并缓存已选标签，使远程结果翻页或过滤后仍能解析已有选择。原生表单使用重复同名值。 |
 | [`NumberField`](../packages/ui/src/basic/number-field.tsx) | 必填 `label`，其余值、范围、步进、格式与提交事件采用 Base UI NumberField Root 契约。支持 `description / error / incrementLabel / decrementLabel`；宿主应允许输入过程中的 `null`，不能把空输入强制解释成 0。 |
 | [`Meter`](../packages/ui/src/basic/meter.tsx) | 必填 `label`，数值与范围采用 Base UI Meter Root 契约；支持 `description / valueLabel`，`tone` 为 `default / success / warning / danger`。表示容量、配额或质量等有界测量；异步任务进度使用 Progress。 |
 

@@ -28,4 +28,4 @@ export function RepositoryPicker() {
 
 `query / onQueryChange` 与 `value / onValueChange` 可分别受控；`defaultQuery / defaultValue` 提供未受控初值。`minQueryLength` 以下显示 idle 提示，`debounceMs` 默认 200ms。`initialOptions` 可提供初始结果；`selectedOption` 让初始受控值在当前结果页不存在时仍有标签，运行期间选中过的选项会在组件内缓存。
 
-当前组件为单选。异步多选与跨结果页 chip 保留将在 SELECT-01 的下一提交通过 `AsyncMultiSelect` 提供。
+当前组件为单选。异步多选与跨结果页 chip 保留由 [`AsyncMultiSelect`](async-multi-select.md) 提供；两者共享请求状态机，但保持各自明确的值类型和选择界面。
