@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { defaultRangeExtractor, useVirtualizer, type Range } from '@tanstack/react-virtual';
+import { AlertCircle, Check, RotateCcw, Search, X } from 'lucide-react';
 import { cn } from '../lib/utils.js';
 import { Button } from '../primitives/button.js';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../primitives/field.js';
 import { Input } from '../primitives/input.js';
+import { Spinner } from '../primitives/spinner.js';
 
 export interface ListboxOption {
   value: string;
@@ -17,6 +19,7 @@ export interface ListboxOption {
 
 export type ListboxSelectionMode = 'single' | 'multiple';
 export type ListboxValue = string | string[] | null;
+export interface ListboxRange { startIndex: number; endIndex: number; visibleStartIndex: number; visibleEndIndex: number }
 
 export interface ListboxProps extends Omit<React.ComponentProps<'div'>, 'defaultValue' | 'onChange'> {
   label: string;
@@ -42,6 +45,13 @@ export interface ListboxProps extends Omit<React.ComponentProps<'div'>, 'default
   form?: string;
   placeholder?: string;
   emptyMessage?: React.ReactNode;
+  virtual?: boolean;
+  overscan?: number;
+  onRangeChange?: (range: ListboxRange) => void;
+  loading?: boolean;
+  loadingMessage?: React.ReactNode;
+  loadError?: React.ReactNode;
+  onRetry?: () => void;
   description?: React.ReactNode;
   error?: React.ReactNode;
   listClassName?: string;
@@ -81,6 +91,13 @@ export function Listbox({
   form,
   placeholder = '搜索选项…',
   emptyMessage = '没有可用选项',
+  virtual = false,
+  overscan = 4,
+  onRangeChange,
+  loading = false,
+  loadingMessage = '正在加载选项…',
+  loadError,
+  onRetry,
   description,
   error,
   className,
@@ -103,6 +120,9 @@ export function Listbox({
   const typeahead = React.useRef('');
   const typeaheadTimer = React.useRef<number | undefined>(undefined);
   const listRef = React.useRef<HTMLDivElement>(null);
+  const viewportRef = React.useRef<HTMLDivElement>(null);
+  const probeRef = React.useRef<HTMLDivElement>(null);
+  const [estimatedRowHeight, setEstimatedRowHeight] = React.useState(0);
 
   const visibleOptions = React.useMemo(() => {
     const term = searchQuery.trim().toLocaleLowerCase();
@@ -112,6 +132,19 @@ export function Listbox({
   const enabledOptions = React.useMemo(() => visibleOptions.filter(option => !option.disabled), [visibleOptions]);
   const optionIndex = React.useMemo(() => new Map(options.map((option, index) => [option.value, index])), [options]);
   const optionId = (option: ListboxOption) => `${id}-option-${optionIndex.get(option.value) ?? 0}`;
+  const activeIndex = visibleOptions.findIndex(option => option.value === currentActive);
+  const virtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>({
+    count: visibleOptions.length,
+    getScrollElement: () => viewportRef.current,
+    estimateSize: React.useCallback(() => estimatedRowHeight || 1, [estimatedRowHeight]),
+    getItemKey: React.useCallback((index: number) => visibleOptions[index]?.value ?? index, [visibleOptions]),
+    overscan: Math.max(0, Math.floor(Number.isFinite(overscan) ? overscan : 0)),
+    enabled: virtual && estimatedRowHeight > 0 && !loadError,
+    rangeExtractor: React.useCallback((range: Range) => {
+      const indexes = defaultRangeExtractor(range);
+      return activeIndex >= 0 && !indexes.includes(activeIndex) ? [...indexes, activeIndex].sort((a, b) => a - b) : indexes;
+    }, [activeIndex]),
+  });
 
   const setActive = React.useCallback((next: string | null) => {
     if (activeValue === undefined) setInternalActive(next);
@@ -133,8 +166,31 @@ export function Listbox({
   }, [currentActive, enabledOptions, selected, setActive]);
   React.useEffect(() => {
     if (!currentActive) return;
-    document.getElementById(optionId({ value: currentActive, label: '' }))?.scrollIntoView({ block: 'nearest' });
-  }, [currentActive, optionIndex]);
+    const frame = requestAnimationFrame(() => {
+      if (virtual && activeIndex >= 0) virtualizer.scrollToIndex(activeIndex, { align: 'auto' });
+      else document.getElementById(optionId({ value: currentActive, label: '' }))?.scrollIntoView({ block: 'nearest' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeIndex, currentActive, optionIndex, virtual, virtualizer]);
+  React.useLayoutEffect(() => {
+    const probe = probeRef.current;
+    if (!probe) return;
+    const update = () => setEstimatedRowHeight(probe.getBoundingClientRect().height);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(probe);
+    return () => observer.disconnect();
+  }, []);
+  const virtualItems = virtualizer.getVirtualItems();
+  const rangeCallback = React.useRef(onRangeChange);
+  rangeCallback.current = onRangeChange;
+  const rangeStart = virtualItems[0]?.index ?? -1;
+  const rangeEnd = virtualItems.at(-1)?.index ?? -1;
+  const visibleStart = virtualizer.range?.startIndex ?? -1;
+  const visibleEnd = virtualizer.range?.endIndex ?? -1;
+  React.useEffect(() => {
+    if (virtual) rangeCallback.current?.({ startIndex: rangeStart, endIndex: rangeEnd, visibleStartIndex: visibleStart, visibleEndIndex: visibleEnd });
+  }, [rangeEnd, rangeStart, virtual, visibleEnd, visibleStart]);
   React.useEffect(() => () => window.clearTimeout(typeaheadTimer.current), []);
 
   const choose = (option: ListboxOption, withRange = false) => {
@@ -217,6 +273,20 @@ export function Listbox({
   }, [visibleOptions]);
   const describedBy = [description && descriptionId, error && errorId].filter(Boolean).join(' ') || undefined;
   const selectedCount = selected.size;
+  const renderOption = (option: ListboxOption, virtualIndex?: number, style?: React.CSSProperties) => {
+    const isSelected = selected.has(option.value);
+    const isActive = currentActive === option.value;
+    return <div key={option.value} id={optionId(option)} role="option" aria-selected={isSelected} aria-disabled={option.disabled || undefined} aria-posinset={virtual ? virtualIndex! + 1 : undefined} aria-setsize={virtual ? visibleOptions.length : undefined} data-index={virtualIndex} data-slot="listbox-option" data-active={isActive || undefined} data-selected={isSelected || undefined} data-disabled={option.disabled || undefined} onPointerMove={() => { if (!option.disabled) setActive(option.value); }} onClick={event => {
+      listRef.current?.focus(); setActive(option.value); choose(option, event.shiftKey);
+    }} style={style} className={cn('flex min-h-[var(--rui-control-height)] min-w-0 cursor-default items-center gap-[var(--rui-space-2)] rounded-md px-[var(--rui-space-2)] py-[var(--rui-space-1)] leading-tight outline-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[selected=true]:font-medium', virtual && 'absolute left-0 top-0 w-full')}>
+      {option.icon && <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground [&_svg]:size-full" aria-hidden="true">{option.icon}</span>}
+      <span className="grid min-w-0 flex-1 gap-0.5">
+        <span className="block truncate leading-none">{option.label}</span>
+        {option.description && <span className="block truncate text-xs font-normal leading-none text-muted-foreground">{option.description}</span>}
+      </span>
+      <Check aria-hidden="true" className={cn('size-3.5 shrink-0 text-primary', !isSelected && 'invisible')} />
+    </div>;
+  };
 
   return <Field data-slot="listbox-field" data-disabled={disabled || undefined} data-invalid={Boolean(error) || undefined} className={className}>
     <div className="flex min-w-0 items-center justify-between gap-[var(--rui-space-2)]">
@@ -232,32 +302,27 @@ export function Listbox({
         if (event.key === 'ArrowDown') { event.preventDefault(); listRef.current?.focus(); setActive(enabledOptions[0]?.value ?? null); }
       }} disabled={disabled} readOnly={readOnly} aria-label={`搜索${label}`} placeholder={placeholder} className="pl-[calc(var(--rui-space-2)+var(--rui-space-4))]" />
     </div>}
-    <div data-slot="listbox-viewport" data-disabled={disabled || undefined} data-empty={!visibleOptions.length || undefined} className={cn('max-h-64 min-w-0 overflow-y-auto rounded-lg border border-border bg-background p-[var(--rui-space-1)] text-sm focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring', listClassName)}>
-    <div {...props} ref={listRef} id={id} role="listbox" tabIndex={0} aria-labelledby={`${id}-label`} aria-describedby={describedBy} aria-multiselectable={selectionMode === 'multiple' || undefined} aria-activedescendant={currentActive ? optionId({ value: currentActive, label: '' }) : undefined} aria-disabled={disabled || undefined} aria-readonly={readOnly || undefined} aria-required={required || undefined} aria-invalid={Boolean(error) || undefined} data-slot="listbox" data-empty={!visibleOptions.length || undefined} onFocus={() => {
+    <div ref={viewportRef} data-slot="listbox-viewport" data-disabled={disabled || undefined} data-empty={!visibleOptions.length || undefined} data-virtual={virtual || undefined} className={cn('relative max-h-64 min-w-0 overflow-y-auto rounded-lg border border-border bg-background p-[var(--rui-space-1)] text-sm focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring', virtual && 'h-64', listClassName)}>
+    <div ref={probeRef} aria-hidden="true" className="pointer-events-none invisible absolute flex min-h-[var(--rui-control-height)] items-center py-[var(--rui-space-1)]"><span className="grid gap-0.5"><span className="leading-none">项目</span><span className="text-xs leading-none">说明</span></span></div>
+    <div {...props} ref={listRef} id={id} role="listbox" tabIndex={0} aria-labelledby={`${id}-label`} aria-describedby={describedBy} aria-multiselectable={selectionMode === 'multiple' || undefined} aria-activedescendant={currentActive ? optionId({ value: currentActive, label: '' }) : undefined} aria-disabled={disabled || undefined} aria-readonly={readOnly || undefined} aria-required={required || undefined} aria-invalid={Boolean(error) || undefined} aria-busy={loading || undefined} data-slot="listbox" data-empty={!visibleOptions.length || undefined} onFocus={() => {
       if (!currentActive) setActive(enabledOptions.find(option => selected.has(option.value))?.value ?? enabledOptions[0]?.value ?? null);
     }} onKeyDown={keyDown} className="min-h-[var(--rui-border-width)] min-w-0 outline-none">
-      {visibleOptions.length ? grouped.map(({ group, options: groupOptions }, groupIndex) => {
+      {visibleOptions.length && virtual ? <div role="presentation" className="relative min-w-0" style={{ height: virtualizer.getTotalSize() }}>
+        {virtualItems.map(row => {
+          const option = visibleOptions[row.index];
+          return option ? renderOption(option, row.index, { height: row.size, transform: `translateY(${row.start}px)` }) : null;
+        })}
+      </div> : visibleOptions.length ? grouped.map(({ group, options: groupOptions }, groupIndex) => {
         const groupId = `${id}-group-${groupIndex}`;
         return <div key={group ?? 'ungrouped'} role={group ? 'group' : 'presentation'} aria-labelledby={group ? groupId : undefined} className="min-w-0">
           {group && <div id={groupId} role="presentation" className="px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-xs font-medium text-muted-foreground">{group}</div>}
-          {groupOptions.map(option => {
-            const isSelected = selected.has(option.value);
-            const isActive = currentActive === option.value;
-            return <div key={option.value} id={optionId(option)} role="option" aria-selected={isSelected} aria-disabled={option.disabled || undefined} data-slot="listbox-option" data-active={isActive || undefined} data-selected={isSelected || undefined} data-disabled={option.disabled || undefined} onPointerMove={() => { if (!option.disabled) setActive(option.value); }} onClick={event => {
-              listRef.current?.focus(); setActive(option.value); choose(option, event.shiftKey);
-            }} className="flex min-h-[var(--rui-control-height)] min-w-0 cursor-default items-center gap-[var(--rui-space-2)] rounded-md px-[var(--rui-space-2)] py-[var(--rui-space-1)] leading-tight outline-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[selected=true]:font-medium">
-              {option.icon && <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground [&_svg]:size-full" aria-hidden="true">{option.icon}</span>}
-              <span className="grid min-w-0 flex-1 gap-0.5">
-                <span className="block truncate leading-none">{option.label}</span>
-                {option.description && <span className="block truncate text-xs font-normal leading-none text-muted-foreground">{option.description}</span>}
-              </span>
-              <Check aria-hidden="true" className={cn('size-3.5 shrink-0 text-primary', !isSelected && 'invisible')} />
-            </div>;
-          })}
+          {groupOptions.map(option => renderOption(option))}
         </div>;
       }) : null}
     </div>
-    {!visibleOptions.length && <div role="status" className="px-[var(--rui-space-2)] py-[var(--rui-content-padding)] text-center text-sm text-muted-foreground">{emptyMessage}</div>}
+    {!visibleOptions.length && !loadError && <div role="status" className="px-[var(--rui-space-2)] py-[var(--rui-content-padding)] text-center text-sm text-muted-foreground">{loading ? loadingMessage : emptyMessage}</div>}
+    {loading && visibleOptions.length > 0 && <div role="status" className="sticky bottom-0 flex items-center justify-center gap-[var(--rui-space-2)] border-t border-border bg-background/95 px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-xs text-muted-foreground"><Spinner aria-hidden="true" />{loadingMessage}</div>}
+    {loadError && <div className="grid gap-[var(--rui-space-2)] p-[var(--rui-content-padding)]"><p role="alert" className="flex items-start gap-[var(--rui-space-2)] text-sm text-destructive"><AlertCircle aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />{loadError}</p>{onRetry && <Button type="button" variant="outline" size="xs" className="justify-self-start" onClick={onRetry}><RotateCcw aria-hidden="true" />重试</Button>}</div>}
     </div>
     {name && (selectionMode === 'multiple' ? [...selected].map(item => <input key={item} type="hidden" name={name} form={form} value={item} disabled={disabled} />) : <input type="hidden" name={name} form={form} value={Array.isArray(selectedValue) ? selectedValue[0] ?? '' : selectedValue ?? ''} disabled={disabled} />)}
     {description && <FieldDescription id={descriptionId}>{description}</FieldDescription>}

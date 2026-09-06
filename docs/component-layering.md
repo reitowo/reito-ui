@@ -39,7 +39,7 @@ Reito UI 0.4 工作区按应用场景提供 **64 个基础组件族、22 个复�
 | [`DateTimePicker`](../packages/ui/src/basic/date-time-picker.tsx) | 必填 `label`；组合 InputDate 与 InputTime 为无时区的本地日期时间。只提交完整合法值，支持跨日边界、locale、两种小时制、分钟/秒精度及 `YYYY-MM-DDTHH:mm[:ss]` 表单值；UTC / IANA 时区转换由宿主负责。 |
 | [`PasswordInput`](../packages/ui/src/basic/password-input.tsx) | 必填 `label`；在原生密码输入上增加可访问显隐、宿主规则与内联强度反馈。默认强度按规则结果计算，允许宿主替换算法或关闭反馈；转发 ref、autocomplete 与表单属性，业务错误由宿主传入。 |
 | [`InputMask`](../packages/ui/src/basic/input-mask.tsx) | 必填 `label / mask`；公开 raw 值并格式化 display 值。支持数字/字母/字母数字与自定义槽位、可选尾段、粘贴、字面量删除、IME、三种未完成策略和 raw FormData；日期与数字语义校验使用专门字段。 |
-| [`Listbox`](../packages/ui/src/basic/listbox.tsx) | 必填 `label / options`；常驻单选或多选列表，焦点留在列表并通过 `aria-activedescendant` 暴露活动项。支持受控选择/活动项/搜索、分组、图标与说明、禁用项、Shift 范围、批量选择、清除和重复同名 FormData；虚拟化与远程加载由 LISTBOX-02 补充。 |
+| [`Listbox`](../packages/ui/src/basic/listbox.tsx) | 必填 `label / options`；常驻单选或多选列表，焦点留在列表并通过 `aria-activedescendant` 暴露活动项。支持受控选择/活动项/搜索、分组、图标与说明、禁用项、Shift 范围、批量选择、清除和重复同名 FormData；`virtual` 提供大数据窗口、远端选择定位、活动项保留与范围回调，loading/error/retry 由宿主驱动。 |
 | [`NumberField`](../packages/ui/src/basic/number-field.tsx) | 必填 `label`，其余值、范围、步进、格式与提交事件采用 Base UI NumberField Root 契约。支持 `description / error / incrementLabel / decrementLabel`；宿主应允许输入过程中的 `null`，不能把空输入强制解释成 0。 |
 | [`Meter`](../packages/ui/src/basic/meter.tsx) | 必填 `label`，数值与范围采用 Base UI Meter Root 契约；支持 `description / valueLabel`，`tone` 为 `default / success / warning / danger`。表示容量、配额或质量等有界测量；异步任务进度使用 Progress。 |
 

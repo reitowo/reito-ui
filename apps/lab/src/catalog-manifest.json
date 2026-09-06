@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 105,
-  "stories": 843,
+  "stories": 851,
   "entries": [
     {
       "layer": "basic",
@@ -125,7 +125,7 @@
       "storyId": "基础-listbox--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ListboxDemo",
-      "stories": 17
+      "stories": 25
     },
     {
       "layer": "basic",

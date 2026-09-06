@@ -204,4 +204,4 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 
 ### Listbox · 2026-09-07
 
-能力范围核对 Nuxt UI 4 [Listbox](https://ui.nuxt.com/docs/components/listbox) 与 PrimeVue 5 [Listbox](https://primevue.org/listbox/) 的常驻单/多选、分组、搜索、禁用和模板化选项；键盘与焦点语义按 W3C WAI-ARIA APG [Listbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) 实现。Reito UI 使用独立 React 状态、`aria-activedescendant`、Shift 连选、批量选择、受控活动项、重复表单值与 Graphite 紧凑 tokens；富选项不允许嵌入交互控件，未复制上游源码、CSS、模板或资源。
+能力范围核对 Nuxt UI 4 [Listbox](https://ui.nuxt.com/docs/components/listbox) 与 PrimeVue 5 [Listbox](https://primevue.org/listbox/) 的常驻单/多选、分组、搜索、禁用、模板化选项和虚拟滚动；键盘与焦点语义按 W3C WAI-ARIA APG [Listbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) 实现。窗口化复用已安装 TanStack Virtual 的 [Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer)，保留活动索引并公开渲染/可见范围。Reito UI 使用独立 React 状态、`aria-activedescendant`、Shift 连选、批量选择、受控活动项、重复表单值、宿主加载边界与 Graphite 紧凑 tokens；富选项不允许嵌入交互控件，未复制上游源码、CSS、模板或资源。
