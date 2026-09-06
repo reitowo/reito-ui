@@ -1,0 +1,17 @@
+@reference "../../../packages/ui/src/styles.css";
+
+html, body, #root { width: 100%; min-width: 0; height: 100%; margin: 0; }
+body { overflow: hidden; }
+.workbench-shell { height: 100dvh; width: 100%; border: 0; border-radius: 0; }
+.workbench-nav { display: flex; flex-wrap: wrap; gap: var(--rui-space-1); }
+.workbench-nav button { justify-content: flex-start; }
+.workbench-agent { display: flex; min-width: 0; min-height: 0; height: 100%; }
+.workbench-thread { display: flex; flex: 1; min-width: 0; min-height: 0; flex-direction: column; }
+.workbench-composer { width: 100%; max-width: var(--rui-reading-width); margin-inline: auto; padding: var(--rui-content-padding); }
+.workbench-support { width: min(38%, var(--rui-support-width)); min-width: var(--rui-support-min-width); min-height: 0; overflow: auto; border-left: var(--rui-border-width) solid var(--rui-border); padding: var(--rui-content-padding); }
+.workbench-page { display: grid; gap: var(--rui-content-gap); padding: var(--rui-content-padding); margin-inline: auto; width: 100%; max-width: var(--rui-workspace-width); }
+.workbench-files { display: grid; align-items: start; gap: var(--rui-content-gap); }
+.workbench-settings { max-width: var(--rui-settings-width); }
+@container (min-width: 42rem) { .workbench-nav { flex-direction: column; } }
+@media (min-width: 1100px) { .workbench-files { grid-template-columns: minmax(var(--rui-inspector-width), .8fr) minmax(0, 1.6fr); } }
+

@@ -1,0 +1,107 @@
+[
+  {
+    "surface": "Lab",
+    "button": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "30px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    },
+    "icon": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "16px",
+      "strokeWidth": "1.65px",
+      "boxSizing": "border-box"
+    },
+    "input": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "30px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    },
+    "label": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "height": "19.5px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    }
+  },
+  {
+    "surface": "Storybook",
+    "button": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "30px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    },
+    "icon": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "16px",
+      "strokeWidth": "2px",
+      "boxSizing": "content-box"
+    },
+    "input": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "30px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    },
+    "label": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "13px",
+      "lineHeight": "normal",
+      "height": "17px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    }
+  },
+  {
+    "surface": "Tarball: imports + theme only",
+    "button": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "30px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    },
+    "icon": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "16px",
+      "strokeWidth": "2px",
+      "boxSizing": "content-box"
+    },
+    "input": {
+      "font": "Inter, \"Segoe UI\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "21px",
+      "height": "30px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    },
+    "label": {
+      "font": "\"Times New Roman\"",
+      "fontSize": "13px",
+      "lineHeight": "normal",
+      "height": "17px",
+      "strokeWidth": "1px",
+      "boxSizing": "border-box"
+    }
+  }
+]

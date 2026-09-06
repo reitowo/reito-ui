@@ -1,0 +1,5 @@
+.sb-theme-frame { min-height: calc(100vh - var(--rui-space-8)); background: var(--rui-bg); padding: var(--rui-space-5); }
+.sb-theme-frame.sb-docs-frame { min-height: 0; }
+.sb-isolated-preview { display: block; width: 100%; height: var(--rui-container-lg); border: 0; }
+.sb-show-main { background: var(--rui-bg); }
+@media (max-width: 640px) { .sb-theme-frame { padding: var(--rui-space-2); } }

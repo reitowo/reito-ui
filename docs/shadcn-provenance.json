@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-05T19:02:57.705Z",
+  "libraryVersion": "0.4.1",
+  "origin": {
+    "project": "shadcn/ui",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/shadcn-ui/ui/blob/main/LICENSE.md",
+    "licenseText": "MIT License\n\nCopyright (c) 2023 shadcn\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+    "registry": "https://ui.shadcn.com/r/styles/base-nova/{name}.json",
+    "registryIsMutable": true,
+    "sourceScope": "Generated using the official CLI. No Multica code or product assets were copied."
+  },
+  "cli": {
+    "package": "shadcn",
+    "version": "4.21.0",
+    "tarball": "https://registry.npmjs.org/shadcn/-/shadcn-4.21.0.tgz",
+    "integrity": "sha512-UU2mFNusW8C5rvadKdH69vERYZqUlOOlXBcf0MYhYLdTGP6DPti7X4qovCu+RTfCqsAgq/T+YfE0Vnttxh9aiw==",
+    "docs": "https://ui.shadcn.com/docs/cli"
+  },
+  "configuration": {
+    "$schema": "https://ui.shadcn.com/schema.json",
+    "style": "base-nova",
+    "rsc": false,
+    "tsx": true,
+    "tailwind": {
+      "config": "",
+      "css": "src/index.css",
+      "baseColor": "neutral",
+      "cssVariables": true,
+      "prefix": ""
+    },
+    "iconLibrary": "lucide",
+    "rtl": false,
+    "aliases": {
+      "components": "@/components",
+      "utils": "@/lib/utils",
+      "ui": "@/components/ui",
+      "lib": "@/lib",
+      "hooks": "@/hooks"
+    },
+    "menuColor": "default",
+    "menuAccent": "subtle",
+    "registries": {}
+  },
+  "generation": {
+    "directory": ".logs/shadcn-scaffold/scaffold",
+    "commands": [
+      {
+        "cwd": ".logs/shadcn-scaffold",
+        "command": "npx --yes shadcn@4.21.0 init --template vite --base base --preset nova --name scaffold --no-monorepo --no-rtl --no-pointer --yes"
+      },
+      {
+        "cwd": ".logs/shadcn-scaffold/scaffold",
+        "command": "npx --yes shadcn@4.21.0 add button-group badge input textarea label field input-group checkbox switch radio-group slider toggle toggle-group select combobox accordion collapsible tabs dialog alert-dialog dropdown-menu context-menu popover tooltip hover-card sheet card alert empty avatar skeleton spinner separator scroll-area progress table pagination breadcrumb command resizable calendar sidebar aspect-ratio input-otp item kbd native-select navigation-menu menubar --yes"
+      }
+    ],
+    "notes": [
+      "CLI help lists base-nova in its defaults text, but --preset accepts nova; --base base and --preset nova produce style base-nova.",
+      "CLI generated button at init; add generated the other 49 primitive files and use-mobile hook.",
+      "Registry contents are mutable even with a pinned CLI. Preserve this snapshot and hashes to reproduce these exact source files."
+    ]
+  },
+  "localAdaptations": [
+    {
+      "files": "packages/ui/src/primitives/*.tsx",
+      "change": "Rewrite project aliases to relative .js module specifiers; route cn imports through ../lib/utils.js."
+    },
+    {
+      "files": "packages/ui/src/primitives/button.tsx",
+      "change": "Add data-size={size} and data-variant={variant} for the shared density contract; preserve official composition and variants."
+    },
+    {
+      "files": "packages/ui/src/primitives/index.ts",
+      "change": "Add a local barrel exporting every generated primitive module. No public API names were changed."
+    },
+    {
+      "files": "packages/ui/src/primitives/combobox.tsx",
+      "change": "Give the icon-only clear button a default accessible name (Clear selection)."
+    },
+    {
+      "files": "packages/ui/src/primitives/slider.tsx",
+      "change": "Forward aria-label/aria-labelledby to actual thumb range inputs, suffix range labels with thumb order, and pass stable thumb indexes for SSR."
+    },
+    {
+      "files": "packages/ui/src/primitives/sidebar.tsx",
+      "change": "Use text-muted-foreground for group labels instead of opacity-composited sidebar foreground; light-theme contrast was 3.43 before this shared fix."
+    },
+    {
+      "files": "packages/ui/src/primitives/tabs.tsx",
+      "change": "Use text-muted-foreground for inactive tabs instead of opacity-composited foreground; initial light-theme contrast was 3.99."
+    },
+    {
+      "files": "packages/ui/src/primitives/calendar.tsx",
+      "change": "Bind the existing day-button ref to Button so the upstream modifiers.focused effect can actually move keyboard focus."
+    },
+    "Button adds data-rui-button as a stable identity across Base UI render composition. Shared density selectors use it because dialog/menu triggers replace data-slot. Verified in an independent tarball consumer.",
+    {
+      "files": "packages/ui/src/primitives/table.tsx",
+      "change": "Head height and padding, body cell padding, and caption spacing consume shared density tokens. Semantics and composition remain Base Nova."
+    }
+  ],
+  "runtimeDependencies": {
+    "@base-ui/react": {
+      "generatedRange": "^1.8.0",
+      "resolvedVersion": "1.8.0"
+    },
+    "class-variance-authority": {
+      "generatedRange": "^0.7.1",
+      "resolvedVersion": "0.7.1"
+    },
+    "cn": {
+      "generatedRange": "^0.2.5",
+      "resolvedVersion": "0.2.5"
+    },
+    "cmdk": {
+      "generatedRange": "^1.1.1",
+      "resolvedVersion": "1.1.1"
+    },
+    "date-fns": {
+      "generatedRange": "^4.4.0",
+      "resolvedVersion": "4.4.0"
+    },
+    "input-otp": {
+      "generatedRange": "^1.5.0",
+      "resolvedVersion": "1.5.0"
+    },
+    "lucide-react": {
+      "generatedRange": "^1.41.0",
+      "resolvedVersion": "1.41.0"
+    },
+    "react-day-picker": {
+      "generatedRange": "^10.0.1",
+      "resolvedVersion": "10.0.1"
+    },
+    "react-resizable-panels": {
+      "generatedRange": "^4.12.3",
+      "resolvedVersion": "4.12.3"
+    }
+  },
+  "cssBuildDependencies": {
+    "shadcn": {
+      "generatedRange": "^4.21.0",
+      "resolvedVersion": "4.21.0"
+    },
+    "tw-animate-css": {
+      "generatedRange": "^1.4.0",
+      "resolvedVersion": "1.4.0"
+    },
+    "tailwindcss": {
+      "generatedRange": "^4",
+      "resolvedVersion": "4.3.3"
+    },
+    "@tailwindcss/vite": {
+      "generatedRange": "^4",
+      "resolvedVersion": "4.3.3"
+    }
+  },
+  "styling": {
+    "requiredImports": [
+      "tailwindcss",
+      "tw-animate-css",
+      "shadcn/tailwind.css"
+    ],
+    "requiredTheme": "Map the standard shadcn semantic colors and radius values through Tailwind @theme inline; configure the app dark variant and shared fonts/density. The generated src/index.css is preserved in the scaffold as a reference.",
+    "sourceCss": ".logs/shadcn-scaffold/scaffold/src/index.css",
+    "fontImportOmitted": "@fontsource-variable/geist",
+    "reason": "The app uses its own shared typography; no generated product font is required by primitives.",
+    "novaAdditionalLocalCss": false,
+    "notes": [
+      "shadcn/tailwind.css provides the Nova data-state/custom variants used by the generated classes.",
+      "Calendar uses DayPicker classNames and does not import react-day-picker/style.css.",
+      "Tooltip consumers should share a TooltipProvider where an app-wide delay policy is required."
+    ]
+  },
+  "counts": {
+    "primitiveFamilies": 50,
+    "exportedSymbols": 285,
+    "hooks": 1,
+    "utilities": 1
+  },
+  "files": [
+    {
+      "name": "accordion",
+      "source": "src/components/ui/accordion.tsx",
+      "target": "packages/ui/src/primitives/accordion.tsx",
+      "sourceSha256": "1ec19686c56b2df3c1ab4f7cf8c3aae03dbbf959dce207c7c12a9dcd1e1d3bb2",
+      "targetSha256": "c53aec4b5c04a72cc6d03bba7fb5e09a19781aff70ad3cab24d603d9fd970192",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/accordion.json"
+    },
+    {
+      "name": "alert-dialog",
+      "source": "src/components/ui/alert-dialog.tsx",
+      "target": "packages/ui/src/primitives/alert-dialog.tsx",
+      "sourceSha256": "d39348ea094dea9b83ecf1baac1cd0ef98b73944bcca1e592da04fd30f452787",
+      "targetSha256": "7b26562e7319a21bc17c286966c419adb8bb4e34dbe65d758226b93d0feff299",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/alert-dialog.json"
+    },
+    {
+      "name": "alert",
+      "source": "src/components/ui/alert.tsx",
+      "target": "packages/ui/src/primitives/alert.tsx",
+      "sourceSha256": "f253568242c1c69b343f12474002fdbe229f603158171c59e21c491ab79f2e6e",
+      "targetSha256": "cba9aaba78ac6574186f29045884192a6789bd52631ad1c3ddbe2d6ce28caae8",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/alert.json"
+    },
+    {
+      "name": "aspect-ratio",
+      "source": "src/components/ui/aspect-ratio.tsx",
+      "target": "packages/ui/src/primitives/aspect-ratio.tsx",
+      "sourceSha256": "6df19df6b983c450361081b695dbf3541a6fe4a9d2ec148766991e4eb0bf6473",
+      "targetSha256": "9c4e2b97827f31111cbb1ce9825b853fe8dfeee04debb42f3847326b3b6174d8",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/aspect-ratio.json"
+    },
+    {
+      "name": "avatar",
+      "source": "src/components/ui/avatar.tsx",
+      "target": "packages/ui/src/primitives/avatar.tsx",
+      "sourceSha256": "bff76087ea9af25c6aa5a5306088dc66e62204a126752c38561736acff00717f",
+      "targetSha256": "4c4ed3e35fd44cd907e01116a4fd758b36e80d5b2e9f4be910670007f8bb2bfe",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/avatar.json"
+    },
+    {
+      "name": "badge",
+      "source": "src/components/ui/badge.tsx",
+      "target": "packages/ui/src/primitives/badge.tsx",
+      "sourceSha256": "d9fb280e266119c4b62a4c518e63152de27b094c68d3e5f8929d05bfb0c1bc6c",
+      "targetSha256": "e953db8a20765f662c6b494903797ef77e69a202bbc3f01bcb97778592ffa72d",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/badge.json"
+    },
+    {
+      "name": "breadcrumb",
+      "source": "src/components/ui/breadcrumb.tsx",
+      "target": "packages/ui/src/primitives/breadcrumb.tsx",
+      "sourceSha256": "cbd2b85e7a0097438855ff1bba8ac0cc3d1229e4c94bda3d52176fd22ea2ac62",
+      "targetSha256": "0ca5b0098a5dd0ad28f3a2451318352f5684635ecf50137366a33a9076c87268",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/breadcrumb.json"
+    },
+    {
+      "name": "button-group",
+      "source": "src/components/ui/button-group.tsx",
+      "target": "packages/ui/src/primitives/button-group.tsx",
+      "sourceSha256": "8c091198a9a4fe7fa3359834087727addfd5ac4c1259689632220389215b33c1",
+      "targetSha256": "3c61404b600c6484eb5648f9319d6deaeabf702549507b86d823c3c3b9fed4b3",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/button-group.json"
+    },
+    {
+      "name": "button",
+      "source": "src/components/ui/button.tsx",
+      "target": "packages/ui/src/primitives/button.tsx",
+      "sourceSha256": "313353436d0fcc8e44ab470adb614b9fd013d28626f624328ea0d66d41a6c81b",
+      "targetSha256": "3b1bad549393cd2c797dc1cb53197163c6c78ead88b67b2cae23b5941790a284",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/button.json"
+    },
+    {
+      "name": "calendar",
+      "source": "src/components/ui/calendar.tsx",
+      "target": "packages/ui/src/primitives/calendar.tsx",
+      "sourceSha256": "f27bdee7bff15b40047071310ff6b6ea6f77f2b7d0a35011f593708ca09e3934",
+      "targetSha256": "9a5bf4ca50b88522afc0cfccc3b0b80198f2d0759e574ea6b4fd5a24cf9d21ae",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/calendar.json"
+    },
+    {
+      "name": "card",
+      "source": "src/components/ui/card.tsx",
+      "target": "packages/ui/src/primitives/card.tsx",
+      "sourceSha256": "8ad3a18d36bda0598dc0e9aa96ea22854944d5443ee4946f1d173815e115375f",
+      "targetSha256": "cfa1711f9165c23e6b0fc459782357ca3927e1c4f3024583ac55e0e4a9595475",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/card.json"
+    },
+    {
+      "name": "checkbox",
+      "source": "src/components/ui/checkbox.tsx",
+      "target": "packages/ui/src/primitives/checkbox.tsx",
+      "sourceSha256": "d1b341a2b439da009e42388cde8a829adcf55ecb0d447449271aacad752e73ba",
+      "targetSha256": "d261af5f652228ee30ff43dce4d19b50ab3dded8334953458530e55b5975ad0f",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/checkbox.json"
+    },
+    {
+      "name": "collapsible",
+      "source": "src/components/ui/collapsible.tsx",
+      "target": "packages/ui/src/primitives/collapsible.tsx",
+      "sourceSha256": "3de60b605e64c835588cecc189fbcf907eb602b0158f970d614b067e868b491e",
+      "targetSha256": "3de60b605e64c835588cecc189fbcf907eb602b0158f970d614b067e868b491e",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/collapsible.json"
+    },
+    {
+      "name": "combobox",
+      "source": "src/components/ui/combobox.tsx",
+      "target": "packages/ui/src/primitives/combobox.tsx",
+      "sourceSha256": "7079bebc10f95b265af1d676bd2af201944374eff547ab84a86966be1dee6e0e",
+      "targetSha256": "b579f788c7784129e5f9d7bc9bc92ca15fbdd0f729421d32f18130e55c209b62",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/combobox.json"
+    },
+    {
+      "name": "command",
+      "source": "src/components/ui/command.tsx",
+      "target": "packages/ui/src/primitives/command.tsx",
+      "sourceSha256": "eaccda4b82a74406fc744a6ec084f56951a0a613e9c2a4f762b54fa548b376e9",
+      "targetSha256": "cc367d1d0bebf7978a430590650c07d0ece5b4307d6c0b33fa6277b1d3344f49",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/command.json"
+    },
+    {
+      "name": "context-menu",
+      "source": "src/components/ui/context-menu.tsx",
+      "target": "packages/ui/src/primitives/context-menu.tsx",
+      "sourceSha256": "e21f114b58310cb4d14e24932d228923ad2dfaea39587659236728d59a8fe548",
+      "targetSha256": "fd79978cf118e553a38db6b91c04e904bbf669809dd03b03f56ba516c2ca8e60",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/context-menu.json"
+    },
+    {
+      "name": "dialog",
+      "source": "src/components/ui/dialog.tsx",
+      "target": "packages/ui/src/primitives/dialog.tsx",
+      "sourceSha256": "8081cc14ab4d744b75925706523192f60cc75863e05cb986aaf6a08677c83304",
+      "targetSha256": "52b07106a4a6e6650de597eb3d2d5f3ceeb255778f23df00271bffc8ca6543a6",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/dialog.json"
+    },
+    {
+      "name": "dropdown-menu",
+      "source": "src/components/ui/dropdown-menu.tsx",
+      "target": "packages/ui/src/primitives/dropdown-menu.tsx",
+      "sourceSha256": "38eb2d79c390295e7038ed4c016543afdd5441611e9692f10c85f78434752a3f",
+      "targetSha256": "786b70ab009dd01ba9f66d3647670f2af7b082c94381dd607b25e24bc5a1875d",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/dropdown-menu.json"
+    },
+    {
+      "name": "empty",
+      "source": "src/components/ui/empty.tsx",
+      "target": "packages/ui/src/primitives/empty.tsx",
+      "sourceSha256": "1280f9207787f9e7c219f7181459387b5e103606b6d91872de33a7a9752ee7a7",
+      "targetSha256": "3273f8ea5ded19e83ff412eaab10304289c9a9b60f1db261e89b11727c062a84",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/empty.json"
+    },
+    {
+      "name": "field",
+      "source": "src/components/ui/field.tsx",
+      "target": "packages/ui/src/primitives/field.tsx",
+      "sourceSha256": "d7c372e8df76de0b4714c02497fefba29299e6baefb7c12fba289a2a374362bb",
+      "targetSha256": "44beac78012e0cad04272ec390d5484e4e5d3dcc0cbccd6abfa3215e4a3eec49",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/field.json"
+    },
+    {
+      "name": "hover-card",
+      "source": "src/components/ui/hover-card.tsx",
+      "target": "packages/ui/src/primitives/hover-card.tsx",
+      "sourceSha256": "ca6d242bebfe31dc067aa2e6c96c0e5898762c56fea6cc2bf17d1a1d100604d8",
+      "targetSha256": "e4c73a294923a5615903a611ee7a53cfef087fd898b6f4a15938a648264aeba1",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/hover-card.json"
+    },
+    {
+      "name": "input-group",
+      "source": "src/components/ui/input-group.tsx",
+      "target": "packages/ui/src/primitives/input-group.tsx",
+      "sourceSha256": "7e768d41f247b1a4a3b0d214453dbeb1c2150aba500f5c0037b0285dfbe6a899",
+      "targetSha256": "9bebcc97ddb878051111491da1c3e4a876904a87a3765154829b742525cebc81",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/input-group.json"
+    },
+    {
+      "name": "input-otp",
+      "source": "src/components/ui/input-otp.tsx",
+      "target": "packages/ui/src/primitives/input-otp.tsx",
+      "sourceSha256": "bde6c6132e01a75f3dcb890028304cd9929e85a5d6ec81150fa30d2206fb190d",
+      "targetSha256": "26c73b8935ea169e6f1a77129238eaf47aefa5c5ebc89a6b8a988344727ae05f",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/input-otp.json"
+    },
+    {
+      "name": "input",
+      "source": "src/components/ui/input.tsx",
+      "target": "packages/ui/src/primitives/input.tsx",
+      "sourceSha256": "dab990dfefa0ba78854ab6602ad074270dba9d7d1262184d9bfbb62bd990903b",
+      "targetSha256": "68f5dc6cfe66efccecf7616f10b6e39e4b67a7103797f8019b02e01571b4c216",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/input.json"
+    },
+    {
+      "name": "item",
+      "source": "src/components/ui/item.tsx",
+      "target": "packages/ui/src/primitives/item.tsx",
+      "sourceSha256": "08cc237a727e1b0d1de24ca60ca49fcf44ad3923620c71b6c70ab16ac2f575b6",
+      "targetSha256": "c5b99e098cc4541e5641b6ec1e22ccbd473681577cd1b93b638b4325bd97958e",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/item.json"
+    },
+    {
+      "name": "kbd",
+      "source": "src/components/ui/kbd.tsx",
+      "target": "packages/ui/src/primitives/kbd.tsx",
+      "sourceSha256": "d17724eb15923ea4f0432cd1cf22538addb14a386f4f9326661efcce7f97e33b",
+      "targetSha256": "4afe2df9f538340e3441419fd8e99b69e3e587d7c32b51bad1d1dd4281ac8ac1",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/kbd.json"
+    },
+    {
+      "name": "label",
+      "source": "src/components/ui/label.tsx",
+      "target": "packages/ui/src/primitives/label.tsx",
+      "sourceSha256": "86232709f634da7f357a8aaec0e815f3f562604bb67202c88997fae97659b450",
+      "targetSha256": "e68f3984bb10713ff4ec70d4734f21a73acd5727d00d127e6fd04d35c2a3ad94",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/label.json"
+    },
+    {
+      "name": "menubar",
+      "source": "src/components/ui/menubar.tsx",
+      "target": "packages/ui/src/primitives/menubar.tsx",
+      "sourceSha256": "e3f170bf9e9bc3dfce956f6f21213650779952fd7b9f586ce2068f6439654117",
+      "targetSha256": "6d61dec00e23d62a452418fb7a92f3136662d81db955fbe3644420d246a05f3d",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/menubar.json"
+    },
+    {
+      "name": "native-select",
+      "source": "src/components/ui/native-select.tsx",
+      "target": "packages/ui/src/primitives/native-select.tsx",
+      "sourceSha256": "93262e9e6c108df664725a0043f0c06ef844e173088b18c0f807e753e2f86d22",
+      "targetSha256": "c1ab5e5311f664367bd00fa43bde795ba7a3342332c4fb0668547fc01a51e3cd",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/native-select.json"
+    },
+    {
+      "name": "navigation-menu",
+      "source": "src/components/ui/navigation-menu.tsx",
+      "target": "packages/ui/src/primitives/navigation-menu.tsx",
+      "sourceSha256": "ff6d85222a27ffa54ce6a20ec3203e293b04e188ac05d28fc43f28dc1aaa175e",
+      "targetSha256": "47ddedcaa03722c21b3af40a5292592ffa8013bd917ce270da02fdca2ef86e14",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/navigation-menu.json"
+    },
+    {
+      "name": "pagination",
+      "source": "src/components/ui/pagination.tsx",
+      "target": "packages/ui/src/primitives/pagination.tsx",
+      "sourceSha256": "cc9f341b4c2599fe9b2b0a3dea86630b3fcfe3e1647185fd7d8d5a7a96da3c50",
+      "targetSha256": "3c04fc80e4c421687031b1d55af988c5d85260451c5f304be096fd00b9c54ccc",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/pagination.json"
+    },
+    {
+      "name": "popover",
+      "source": "src/components/ui/popover.tsx",
+      "target": "packages/ui/src/primitives/popover.tsx",
+      "sourceSha256": "5fecff622f4eecc06e8be32bface11c59d529be5c0a1484c78c9e40530b2b7d0",
+      "targetSha256": "f1faad57891bf00d337f4e5e2c8e3518de3c0cbe3cfdce81fb359045109d0801",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/popover.json"
+    },
+    {
+      "name": "progress",
+      "source": "src/components/ui/progress.tsx",
+      "target": "packages/ui/src/primitives/progress.tsx",
+      "sourceSha256": "bae4a2c7eded93a8da9e3237042011743572ac42b526b1be3054d95dc6626cc1",
+      "targetSha256": "b8fe0c0cf6a671f982a5f9528546dc09d8465a7225828269e6984da3aa28a903",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/progress.json"
+    },
+    {
+      "name": "radio-group",
+      "source": "src/components/ui/radio-group.tsx",
+      "target": "packages/ui/src/primitives/radio-group.tsx",
+      "sourceSha256": "f779542f2370b82fcbb91278fb94f7ad4af59d0f36512633492604b27da48e8d",
+      "targetSha256": "748bd1cd2fd64f4f5c3b2a38f08013dffcba5c01ba6a501bac523ad807e873b7",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/radio-group.json"
+    },
+    {
+      "name": "resizable",
+      "source": "src/components/ui/resizable.tsx",
+      "target": "packages/ui/src/primitives/resizable.tsx",
+      "sourceSha256": "565714189484affdabde40be5028fa7232c91a045ad7e955423703fd8ed8c73b",
+      "targetSha256": "67190505bf889f4d9b595394c88fd3cf1465a3187f2fd654b8be5f74b64a93da",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/resizable.json"
+    },
+    {
+      "name": "scroll-area",
+      "source": "src/components/ui/scroll-area.tsx",
+      "target": "packages/ui/src/primitives/scroll-area.tsx",
+      "sourceSha256": "829549f352f1e56dfe887446bcc3d1707c0ced739a9efcb75f0af364cd88c581",
+      "targetSha256": "a37497d335d2e6a91c593c312eadbae68bb88c1b579ed2743b2b649d4933f6d7",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/scroll-area.json"
+    },
+    {
+      "name": "select",
+      "source": "src/components/ui/select.tsx",
+      "target": "packages/ui/src/primitives/select.tsx",
+      "sourceSha256": "4ba225fb838887a2493a8908774f1294ffbc2030af1e372425c6de76f598f0eb",
+      "targetSha256": "28efe5820ee68cd4202715c0d2977c898198071fdfa5beb8eae6713233665039",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/select.json"
+    },
+    {
+      "name": "separator",
+      "source": "src/components/ui/separator.tsx",
+      "target": "packages/ui/src/primitives/separator.tsx",
+      "sourceSha256": "8a1d9397433ccf70631104f377b0e778754582a74c93a57cf13a2f2dcba778bf",
+      "targetSha256": "fe94009ef772d85ddb5535ad2cd8b88644c812a532dd09ad336ffa9748893bfe",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/separator.json"
+    },
+    {
+      "name": "sheet",
+      "source": "src/components/ui/sheet.tsx",
+      "target": "packages/ui/src/primitives/sheet.tsx",
+      "sourceSha256": "db422e2934b79774850defd2ea12bf2d469a77f7237bf93ce0416bde87d8a610",
+      "targetSha256": "454fdb0704fa0f3b1715342535521f958752a6c4c6571f6c41b0d89b1dbebe0c",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/sheet.json"
+    },
+    {
+      "name": "sidebar",
+      "source": "src/components/ui/sidebar.tsx",
+      "target": "packages/ui/src/primitives/sidebar.tsx",
+      "sourceSha256": "146860c1f88e07170830573bdb62e202de87d12942c3fabb751ebe606ce56344",
+      "targetSha256": "e799d3e0144c8ba12f61a49a79e7127b0c46401eacd6f15c9c946dd4f68133bb",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/sidebar.json"
+    },
+    {
+      "name": "skeleton",
+      "source": "src/components/ui/skeleton.tsx",
+      "target": "packages/ui/src/primitives/skeleton.tsx",
+      "sourceSha256": "4c2af7fa9c645358a0fb188779deab6f0b981733b62befc25e18aaebea1350dc",
+      "targetSha256": "a9699b71bd1406c4d348bde061d8e933d2414cb1b92aadb469754aa881c9bbef",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/skeleton.json"
+    },
+    {
+      "name": "slider",
+      "source": "src/components/ui/slider.tsx",
+      "target": "packages/ui/src/primitives/slider.tsx",
+      "sourceSha256": "1fd32ee03ddaa382aabccce0bd88669aa8f91e4fe487622a68745d2ed1d5f5b9",
+      "targetSha256": "95f7e65ffae2116f574548345aa6c0a1cb7dbdaa90ea3c4ab629dbad6b25fcee",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/slider.json"
+    },
+    {
+      "name": "spinner",
+      "source": "src/components/ui/spinner.tsx",
+      "target": "packages/ui/src/primitives/spinner.tsx",
+      "sourceSha256": "6916679a40ad1c7624520de5eaa7b337635e81f9a76413201267f8619844646f",
+      "targetSha256": "1c9b68cbc7b3c59319bba071c0ebc23e54a503d896305705f6a85f7967dfe700",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/spinner.json"
+    },
+    {
+      "name": "switch",
+      "source": "src/components/ui/switch.tsx",
+      "target": "packages/ui/src/primitives/switch.tsx",
+      "sourceSha256": "367ad27cfe2f4ce5648fd3941410d3c3504876ee23e4360a220f1e6cd05f5c2d",
+      "targetSha256": "9af5cc8af8aa208a2e7adfb0af5665471c050c693b643d1ba74148bcf6b17c7f",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/switch.json"
+    },
+    {
+      "name": "table",
+      "source": "src/components/ui/table.tsx",
+      "target": "packages/ui/src/primitives/table.tsx",
+      "sourceSha256": "749b0501e97591f8d7c9ef81366d636e4b47857a15a28e6cf3b87841232e74bf",
+      "targetSha256": "80a96ff5087311d251c9fd5fbafe4390794a669241813759b39ec60e5ef419f1",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/table.json"
+    },
+    {
+      "name": "tabs",
+      "source": "src/components/ui/tabs.tsx",
+      "target": "packages/ui/src/primitives/tabs.tsx",
+      "sourceSha256": "958b817b256cffae986d046168b70dd0153d542b4c521ee8bbdda349010011ef",
+      "targetSha256": "e9a2a4ff95e18cb7f9cbdf86df0e9f43c1710d5fbf147f43742a32bf6edcceab",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/tabs.json"
+    },
+    {
+      "name": "textarea",
+      "source": "src/components/ui/textarea.tsx",
+      "target": "packages/ui/src/primitives/textarea.tsx",
+      "sourceSha256": "82601c91ffc6c727d924162c78d7cb853114bcced4e2eb922a68ca12d4239c0f",
+      "targetSha256": "a5b420a8193012edf2a52ca8ad26ccf65d11261c3a024763b3694d99e2331dc4",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/textarea.json"
+    },
+    {
+      "name": "toggle-group",
+      "source": "src/components/ui/toggle-group.tsx",
+      "target": "packages/ui/src/primitives/toggle-group.tsx",
+      "sourceSha256": "3bfc0381e148d26807d68d74774d594403ea6fead2f0b7c11d4c928d9d1dc495",
+      "targetSha256": "4b9c9cc62f7d994b27529f270cdb78c03e12519e018caf6a5a30e04abcd8254c",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/toggle-group.json"
+    },
+    {
+      "name": "toggle",
+      "source": "src/components/ui/toggle.tsx",
+      "target": "packages/ui/src/primitives/toggle.tsx",
+      "sourceSha256": "039be815aed401e7e652271040fad53286ffa734743381a65f84ac61cb2ea4db",
+      "targetSha256": "9461c396325ad6a9e7fbbb815277e36b5ef96659afc6b39289a47b491990c012",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/toggle.json"
+    },
+    {
+      "name": "tooltip",
+      "source": "src/components/ui/tooltip.tsx",
+      "target": "packages/ui/src/primitives/tooltip.tsx",
+      "sourceSha256": "f83d5f511812573f4ac98b866d397a46fda0f27eeb0af0ea89af01969eefbc5a",
+      "targetSha256": "295b5d942c60f25892258eb11c1baebd51ad6ec50c83791c3d235c7d03282cca",
+      "registryUrl": "https://ui.shadcn.com/r/styles/base-nova/tooltip.json"
+    }
+  ],
+  "utilities": [
+    {
+      "source": "src/lib/utils.ts",
+      "target": "packages/ui/src/lib/utils.ts",
+      "content": "export { cn } from \"cn\""
+    },
+    {
+      "source": "src/hooks/use-mobile.ts",
+      "target": "packages/ui/src/hooks/use-mobile.ts"
+    }
+  ],
+  "validation": {
+    "generation": "CLI init and add exited 0; all 50 requested family modules generated.",
+    "staticAudit": "285 named exports with no duplicate names. No next/* imports or application aliases remain.",
+    "scope": "The settled-canvas automated audit does not prove product visual similarity or cover every open-portal state. Root performs the full app/build/package audit and reference comparison.",
+    "checkedAt": "2026-09-05T19:18:02.560Z",
+    "typecheck": {
+      "command": "npm run typecheck --workspace @reito/storybook",
+      "exitCode": 0
+    },
+    "basicStoryAudit": {
+      "report": ".logs/shadcn-scaffold/basic-audit.json",
+      "families": 50,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "densities": [
+        "compact",
+        "comfortable"
+      ],
+      "scenarios": 200,
+      "passed": 200,
+      "checks": [
+        "Storybook render and play finish",
+        "no page errors",
+        "axe WCAG 2A/2AA/2.1AA on settled canvas",
+        "no horizontal overflow"
+      ]
+    },
+    "calendarKeyboard": {
+      "report": ".logs/shadcn-scaffold/calendar-keyboard.json",
+      "passed": true,
+      "checks": [
+        "ArrowRight focus",
+        "Enter selection",
+        "ArrowDown focus"
+      ]
+    },
+    "finalLibraryAudit": {
+      "report": ".logs/storybook-audit-v041.json",
+      "stories": 214,
+      "componentFamilies": 88,
+      "combinations": 856,
+      "passed": 856,
+      "failed": 0,
+      "playStories": 44,
+      "pageErrors": 0,
+      "accessibilityViolations": 0,
+      "horizontalOverflow": 0,
+      "sourceChangedDuringAudit": false,
+      "completedAt": "2026-09-06T06:09:23.422Z",
+      "consoleErrors": 0,
+      "scope": "Settled story iframe body, including any open portals, automatic play functions, fonts and finite animations. WCAG 2A / 2AA / 2.1AA; no disabled rules."
+    },
+    "previousLibraryAuditV03": {
+      "report": ".logs/storybook-audit.json",
+      "stories": 152,
+      "componentFamilies": 76,
+      "combinations": 608,
+      "passed": 608,
+      "failed": 0,
+      "playStories": 24,
+      "pageErrors": 0,
+      "accessibilityViolations": 0,
+      "horizontalOverflow": 0,
+      "sourceChangedDuringAudit": false,
+      "completedAt": "2026-09-05T19:34:25.286Z",
+      "consoleErrors": 0
+    }
+  },
+  "localSnapshotCheckedAt": "2026-09-06T06:13:38.391Z"
+}

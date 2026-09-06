@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter/index.css";
+@import "../../tokens/dist/tailwind.css";
+@source "./";
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground font-sans; font-size: var(--rui-font-interface); line-height: var(--rui-line-height); }
+  button, input, select, textarea { font: inherit; }
+  button:not(:disabled), [role="button"]:not([aria-disabled="true"]) { cursor: pointer; }
+}
+
+/* Shared host contract. Portals inherit the same root tokens and real font. */
+.reito-root { font-family: var(--rui-font-sans); font-size: var(--rui-font-interface); line-height: var(--rui-line-height); color: var(--rui-text); }
+[data-slot] { font-family: var(--rui-font-sans); }
+
+/* Local syntax roles share the active theme; tokenization never sets layout. */
+[data-slot="code-content"] { font-family: var(--rui-font-mono); }
+[data-slot="code-content"] .token:is(.comment, .prolog, .doctype, .cdata) { color: var(--rui-syntax-comment); }
+[data-slot="code-content"] .token:is(.keyword, .boolean, .important, .atrule, .tag) { color: var(--rui-syntax-keyword); }
+[data-slot="code-content"] .token:is(.string, .char, .template-string, .attr-value, .regex, .url, .inserted) { color: var(--rui-syntax-string); }
+[data-slot="code-content"] .token:is(.number, .constant) { color: var(--rui-syntax-number); }
+[data-slot="code-content"] .token:is(.function, .function-variable) { color: var(--rui-syntax-function); }
+[data-slot="code-content"] .token:is(.class-name, .builtin, .namespace) { color: var(--rui-syntax-type); }
+[data-slot="code-content"] .token:is(.property, .literal-property, .attr-name, .selector, .symbol) { color: var(--rui-syntax-property); }
+[data-slot="code-content"] .token:is(.operator, .entity) { color: var(--rui-syntax-operator); }
+[data-slot="code-content"] .token.punctuation { color: var(--rui-syntax-punctuation); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

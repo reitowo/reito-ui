@@ -1,0 +1,36 @@
+{
+  "startedAt": "2026-09-05T16:16:31.304Z",
+  "completedAt": "2026-09-05T16:17:18.374Z",
+  "baseUrl": "http://127.0.0.1:6006/",
+  "browserChannel": "msedge",
+  "viewport": {
+    "width": 1100,
+    "height": 850
+  },
+  "scope": "Settled story canvases (#storybook-root), including automatic play functions. Separate opened Select/DropdownMenu diagnostics preserve every raw scanner finding and verify keyboard focus behavior.",
+  "wcagTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21aa"
+  ],
+  "disabledRules": [],
+  "fingerprintBefore": "ba69b40ba1b9c5da42f8855a429cf24bd3bab83fd1f0c3c5f0af381a9901c0d2",
+  "fingerprintAfter": "ba69b40ba1b9c5da42f8855a429cf24bd3bab83fd1f0c3c5f0af381a9901c0d2",
+  "sourceChangedDuringAudit": false,
+  "summary": {
+    "stories": 70,
+    "combinations": 280,
+    "passed": 280,
+    "failed": 0,
+    "playStories": 11,
+    "playCombinations": 44,
+    "playFailures": 0,
+    "pageErrors": 0,
+    "horizontalOverflow": 0,
+    "accessibilityViolations": 0,
+    "openPortalScenarios": 8,
+    "openPortalKeyboardPassed": 8,
+    "openPortalScannerFindings": 8,
+    "unexpectedPortalFailures": 0
+  }
+}

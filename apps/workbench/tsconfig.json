@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "@reito/ui/basic": ["../../packages/ui/src/basic.ts"],
+      "@reito/ui": ["../../packages/ui/src/index.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "playwright.config.ts"]
+}

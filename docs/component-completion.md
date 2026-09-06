@@ -1,0 +1,173 @@
+# 组件补齐进度账本
+
+基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
+
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**5 项完成，1 项进行中，97 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01` 已完成，当前推进 `VIRT-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+
+## 维护与完成规则
+
+- ID 创建后保留；调整顺序、阶段或名称时不重编号。合并/取消须保留原行并写明原因与承接 ID，避免遗失范围。
+- 表中 `Story` 的 `待关联`、`证据` 的 `待记录` 都是占位，不是完成证据。复用现有 Story 时填写实际 Story ID / 链接与覆盖的交互；实现证据填写公开导出、源码、测试和验证报告路径。
+- 每项只有在自己的验收边界和以下共同门槛均满足后才能标完成。一个组件有多个 ID 时，完成基础项不代表高级项完成；有界首版不能宣称已完整对齐参考库。
+- 每个交付组件/增强提供可调 props 的 Playground；适用的空、加载、错误、禁用、只读状态及受控使用示例必须可发现。覆盖深/浅主题 × 紧凑/舒适密度、窄工作面、键盘、焦点和适用的中文 IME。
+- 遵循 React + Base UI / shadcn + Graphite tokens；公共 API、导出与目录同步。实际记录 `npm run check`、`npm run build` 和相关交互检查；token 变化运行构建与审计，不以历史结果代替本次验证。
+- 视觉改动记录所检查的参考工作上下文、来源、主题与剩余差异；构建、交互或可访问性检查不替代视觉比较。宿主网络、存储、AI、PTY 等集成与本地演示分开标明。
+- 验收项不是采购清单。Vue API、PRO 和 roadmap 只提供能力参考；使用第三方实现前核实目标框架、版本、许可与可用性。
+
+## 阶段 1：共享状态、可访问行为与数据规模
+
+Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后按依赖并行推进。
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| FORM-01 | Form 管理与适配：schema / resolver、字段注册与值/dirty/touched/error 状态、提交/重置、Field 标签与错误关联；公开受控契约及非原生控件适配 | — | ✅ 完成 | [Playground](http://127.0.0.1:6006/?path=/story/复杂-form-表单管理--playground)；本族 10 个 Story | [验收](validation-form.md)：check/build、18 项交互、40 组 Story、10 项 Controls、16 组视口；[用法](components/form.md) |
+| FORM-02 | 跨字段与异步校验：触发时机、pending、提交期间行为、宿主错误回填、过期结果处理、失败后恢复；不能仅用 Promise 延迟冒充完整异步契约 | FORM-01 | ✅ 完成 | 复杂-asyncform-异步表单--playground / --manual-responses；另有禁用与失败预设 | [AsyncForm 验收](validation-async-form.md)：20 项新增测试、18 项 Form 回归、20 次 Story 组合通过；check/build 通过 |
+| FORM-03 | FieldArray / 嵌套字段：稳定项 ID、添加/删除/重排、路径错误与 touched/dirty 保持、数组重置；不能用 index 误关联字段状态 | FORM-01、FORM-02 | ✅ 完成 | 复杂-form-表单管理--array-playground；空/只读/禁用与移动预设 | [数组验收](validation-form-array.md)：28 项交互、20 次 Story 组合、同页 Controls、四主题密度窄屏；check/build 通过 |
+| FORM-04 | 动态表单配方：配置映射字段与条件显示、默认值与校验生命周期；明确是示例配方或公开引擎，不把参考库 Dynamic 示例称为内置 FormBuilder | FORM-03 | ✅ 完成 | 复杂-form-表单管理--dynamic-playground；团队/清除/禁用/失败预设 | [动态配方验收](validation-dynamic-form.md)：30 项测试、20 次 Story 组合、同页 Controls、四主题密度；check/build 通过 |
+| VIRT-01 | VirtualList：可见窗口、稳定 key、overscan、scrollTo、加载范围/总量边界、空/错误、列表语义；用大数据和 DOM 数量证据验证窗口化 | — | ✅ 完成 | 复杂-virtuallist-虚拟列表--playground；空/加载/错误/稀疏预设 | [虚拟列表验收](validation-virtual-list.md)：8 项交互、20 次 Story 组合、10 万项 DOM 有界；check/build 通过 |
+| VIRT-02 | 动态高度与更新：测量变化、插入/追加/删除的滚动锚点、焦点回收、密度变化、流式内容增高；禁止跳行或丢失活动项 | VIRT-01 | 进行中 | 待关联 | 下一步补动态测量、更新锚点和活动行保持 |
+| VIRT-03 | VirtualGrid：双轴或网格窗口、行列定位、尺寸变化、稳定单元格标识与范围加载契约；不可仅换成 CSS grid | VIRT-01 | 待完成 | 待关联 | 待记录 |
+| TREE-01 | TreeView 基础：ARIA tree/treeitem、受控展开/选择、上下左右/Home/End 导航、禁用节点、焦点恢复；保留原 DisclosureTree 的原生导航定位 | — | 待完成 | 待关联 | 待记录 |
+| TREE-02 | 树多选/复选：级联、半选、父子关系、禁用节点传播规则、批量与范围选择、受控值一致性 | TREE-01 | 待完成 | 待关联 | 待记录 |
+| TREE-03 | 异步树：按需子节点、节点级 loading/error/retry、空子节点、展开中刷新和过期响应处理；加载与选择语义明确 | TREE-01、TREE-02 | 待完成 | 待关联 | 待记录 |
+| TREE-04 | 树重排：树内/允许的跨树移动、受控顺序、禁止环与无效落点、键盘等价操作、移动后选择/焦点保持 | TREE-02 | 待完成 | 待关联 | 待记录 |
+| TABLE-01 | DataTable 受控与远程：sorting/filter/pagination 对外状态、manual 数据模式、total/count、稳定 ID 与跨页选择范围；保留已有客户端能力 | — | 待完成 | 待关联 | 待记录 |
+| TABLE-02 | 列筛选：文本/数字/日期等匹配、清空与组合规则、服务端序列化边界；不能仅增加无效筛选按钮 | TABLE-01、FORM-01 | 待完成 | 待关联 | 待记录 |
+| TABLE-03 | 列管理：显隐/顺序/宽度/固定列、受控状态、分组表头兼容、横滚与键盘操作；不把已支持的分组表头记为新增 | TABLE-01 | 待完成 | 待关联 | 待记录 |
+| TABLE-04 | 行展开与行分组：受控展开、组头/汇总插槽、分组筛选/排序/选择一致性；区分已有列分组表头与新增行分组 | TABLE-01 | 待完成 | 待关联 | 待记录 |
+| TABLE-05 | 单元格/行编辑：草稿、提交/取消、同步/异步错误、焦点和键盘流、失败保留/重试、宿主数据更新；自定义 cell 插槽不算完整编辑器 | TABLE-01、FORM-02 | 待完成 | 待关联 | 待记录 |
+| TABLE-06 | 导出与视图偏好：明确导出数据范围/格式、宿主回调、列与查询状态保存/恢复及失效策略；不从页面 DOM 推导完整数据 | TABLE-02、TABLE-03 | 待完成 | 待关联 | 待记录 |
+| TABLE-07 | 表格虚拟化：与分页/远程模式、固定列、选择、展开兼容；滚动定位与加载边界有大数据交互证据 | TABLE-01、TABLE-03、VIRT-01 | 待完成 | 待关联 | 待记录 |
+
+## 阶段 2：高频输入与选择
+
+先推进 SELECT-01 的异步查询契约，再接入标签和其他选择器增强；基础输入可按依赖并行推进。
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| TAGS-01 | InputTags：任意标签创建、分隔输入、去重策略/上限、编辑/删除、受控值；与仅选择 options 的 MultiSelect 分开 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| COLOR-01 | ColorPicker / ColorInput：色板/区域/通道/文本输入、支持格式转换、透明度边界、无效输入、键盘和提交事件；组件 chrome 使用 token | FORM-01 | 待完成 | 待关联 | 待记录 |
+| DATE-01 | InputDate：日期分段或明确等效输入、locale/格式、合法性/范围、键盘、清除与日历联动；不重复建设 Calendar 已透传的多选/多月 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| TIME-01 | InputTime：时间分段、小时制/精度/步进、上下限、空值与键盘；明确时间值不默认携带任意日期 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| DATETIME-01 | DateTimePicker：日期与时间一致提交、跨日边界、格式/locale；明确 date-only、local datetime 与带时区值的支持边界 | DATE-01、TIME-01 | 待完成 | 待关联 | 待记录 |
+| PASSWORD-01 | PasswordInput：显隐按钮与可访问名称、规则/强度反馈和宿主校验接点、错误关联；普通 Input password 能力继续保留 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| MASK-01 | InputMask：格式/占位、raw/display 值、可选段与不完整值策略、粘贴/删除/光标/IME；不能只拦截 keydown | FORM-01 | 待完成 | 待关联 | 待记录 |
+| LISTBOX-01 | 常驻 Listbox：单/多选、分组/搜索、富选项、禁用、范围选择与焦点语义；与弹出 Select 区分 | — | 待完成 | 待关联 | 待记录 |
+| LISTBOX-02 | Listbox 虚拟化：活动项导航、选中项定位、筛选后焦点、非可见选项与加载错误的契约 | LISTBOX-01、VIRT-01 | 待完成 | 待关联 | 待记录 |
+| METERGROUP-01 | MeterGroup / ProgressGroup：多段占比、图例/标签、总量/越界/零值语义、可读文本；测量量与任务进度明确区分 | — | 待完成 | 待关联 | 待记录 |
+| RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| KNOB-01 | Knob：圆形数字交互、min/max/step、读数、键盘、只读/禁用与受控值；明确相对 Slider/NumberField 的场景价值 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | 待完成 | 待关联 | 待记录 |
+| SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | 待完成 | 待关联 | 待记录 |
+| SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | 待完成 | 待关联 | 待记录 |
+| DATERANGE-01 | DateRangePicker 预设与 locale：常用范围、可配置格式/locale、草稿/应用/取消、预设与上下限一致 | DATE-01 | 待完成 | 待关联 | 待记录 |
+| DATERANGE-02 | 日期范围时间组合：起止时刻精度、时区支持边界、跨日/倒置/上下限验证、序列化与提交 | DATERANGE-01、DATETIME-01 | 待完成 | 待关联 | 待记录 |
+
+## 阶段 3：树形数据、集合、上传与媒体
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| TREESELECT-01 | TreeSelect：弹层树搜索、单/多/复选/半选、清除、受控值、lazy 节点、焦点开关恢复；复用 Tree 模型 | TREE-02、TREE-03、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| CASCADER-01 | Cascader：任意支持层级的逐级选择、路径值/叶选择边界、disabled/loading/error、清除与键盘；不将平面分组称为级联 | FORM-01、TREE-01 | 待完成 | 待关联 | 待记录 |
+| TREETABLE-01 | TreeTable 基础：层级与列模型、展开、树行键盘、复选/半选、稳定行 ID；树表语义与普通表格一致整合 | TREE-02、TABLE-01 | 待完成 | 待关联 | 待记录 |
+| TREETABLE-02 | TreeTable 高级：列筛选/管理、父子筛选规则、根分页/子节点 lazy、错误重试、选择与更新一致性 | TREETABLE-01、TREE-03、TABLE-02、TABLE-03 | 待完成 | 待关联 | 待记录 |
+| TRANSFER-01 | PickList / Transfer：source/target 受控转移、双侧搜索、批量/全部范围、禁用项、键盘和空态；保持项唯一与顺序 | LISTBOX-01 | 待完成 | 待关联 | 待记录 |
+| SORTABLE-01 | OrderList / SortableList：手动受控顺序、拖拽及键盘上移/下移/置顶/置底、批量/禁用、焦点与重排反馈 | LISTBOX-01 | 待完成 | 待关联 | 待记录 |
+| RESOURCE-01 | ResourceList 数据规模：虚拟化、增量加载、总量/加载边界、查询变化和跨窗口选择保持 | VIRT-01、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| RESOURCE-02 | DataView / ResourceGrid：同集合列表/网格切换，共享搜索/选择/分页/动作及受控视图偏好，网格不能另存一份业务状态 | RESOURCE-01、VIRT-03 | 待完成 | 待关联 | 待记录 |
+| LOG-01 | LogViewer 大数据：虚拟化、增量追加/加载、等级查询、暂停/恢复跟随、可配置视图偏好；动态长行与追加不跳动 | VIRT-02 | 待完成 | 待关联 | 待记录 |
+| UPLOAD-01 | FileUpload 生命周期：queued/uploading/success/error、受控进度、开始/取消/重试、单文件错误、transport 回调；保留本地校验并由宿主执行网络 | — | 待完成 | 待关联 | 待记录 |
+| UPLOAD-02 | 文件预览：图片缩略图/失败回退、移除与取消一致、对象 URL 等资源释放、非图片文件表示；预览不暗示上传完成 | UPLOAD-01 | 待完成 | 待关联 | 待记录 |
+| PROPERTIES-01 | PropertyList / KeyValueEditor 丰富字段：字段类型适配、嵌套数据、只读/禁用、路径与草稿更新；继续复用 Field 控件 | FORM-03、DATE-01、LISTBOX-01 | 待完成 | 待关联 | 待记录 |
+| PROPERTIES-02 | 属性/键值提交：跨字段校验、批量提交、取消/重置、异步错误定位和失败恢复；不把各行临时保存当事务提交 | PROPERTIES-01、FORM-02 | 待完成 | 待关联 | 待记录 |
+| GALLERY-01 | ImagePreview / Gallery 基础：缩略图、放大、前后切换、加载/失败/重试、键盘与焦点恢复；不是 AttachmentList 或 AspectRatio 的别名 | — | 待完成 | 待关联 | 待记录 |
+| GALLERY-02 | 图像查看操作：缩放/定位、旋转/翻转、全屏、下载回调的支持边界，换图/退出后状态与资源复位 | GALLERY-01 | 待完成 | 待关联 | 待记录 |
+| CAROUSEL-01 | Carousel：按钮/指示器、活动页状态、键盘/触摸拖动、尺寸变化和可访问内容；自动播放若提供须可暂停 | — | 待完成 | 待关联 | 待记录 |
+| COMPARE-01 | ImageCompare：前后图重叠滑块、受控比例、横/纵方向、键盘范围、图像尺寸/错误处理；与文本 DiffViewer 分开 | GALLERY-01 | 待完成 | 待关联 | 待记录 |
+| ORGCHART-01 | OrganizationChart：层级关系布局、节点模板、折叠/选择、长内容与键盘；明确仅层级图，非任意图编辑器 | TREE-01 | 待完成 | 待关联 | 待记录 |
+| TERMINAL-01 | TerminalPrompt：命令输入、历史、宿主响应/错误列表、提交/取消和 IME；执行、进程与 PTY 适配留给宿主，演示不伪装真实命令执行 | — | 待完成 | 待关联 | 待记录 |
+
+## 阶段 4：文档与内容编辑
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| EDIT-01 | RichTextEditor 内容模型：Markdown/HTML/JSON 的支持格式、解析/输出与往返限制、受控值、空/只读/禁用；不以 contentEditable 外壳充数 | — | 待完成 | 待关联 | 待记录 |
+| EDIT-02 | 编辑基本操作：工具栏、链接、列表、格式状态、撤销/重做、快捷键、选择保留与中文 IME；操作必须改变真实文档模型 | EDIT-01 | 待完成 | 待关联 | 待记录 |
+| EDIT-03 | 编辑扩展：任务列表、对齐、emoji 的安装/组合边界、序列化与键盘交互；按扩展声明实际支持范围 | EDIT-02 | 待完成 | 待关联 | 待记录 |
+| EDIT-04 | Suggestion / Mention 菜单：`/` 命令与 `@` 提及、筛选、异步结果、键盘选择/退出、插入结构与触发范围 | EDIT-02、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| EDIT-05 | 块操作：受控块拖拽/键盘移动、转换与删除、历史恢复、选择/焦点和序列化保持 | EDIT-02 | 待完成 | 待关联 | 待记录 |
+| EDIT-06 | 编辑器媒体与宿主扩展配方：图片插入/上传状态、AI 补全等回调接点、取消/失败恢复；模拟结果与真实后端明确区分 | EDIT-02、UPLOAD-01 | 待完成 | 待关联 | 待记录 |
+| MARKDOWN-01 | MarkdownContent / RichMessage：标题、列表、表格、链接、fenced code、自定义节点入口与内容处理策略；语法高亮不等于文档渲染 | — | 待完成 | 待关联 | 待记录 |
+| MARKDOWN-02 | 流式 Markdown：未闭合语法、增量文本、代码/表格变形、复制保持原文、节点替换和布局稳定 | MARKDOWN-01 | 待完成 | 待关联 | 待记录 |
+
+## 阶段 5：可复用组合与应用外壳配方
+
+原语已存在的项以组合 API 和 Playground 验收；不要求添加同名底层原语。
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| COMBO-SPLIT-01 | SplitButton：主操作与菜单动作、各自 loading/disabled、标签、快捷键/焦点与共享边缘 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-CONFIRM-01 | ConfirmPopover：锚点确认、危险/取消动作、异步 pending/error、关闭及焦点回到触发器 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-USER-01 | User 信息行：Avatar/文字/辅助状态/操作组合、长名称、缺头像与禁用动作；示例数据明确为本地 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-BANNER-01 | Banner：信息/动作/关闭、长内容和窄布局、live region 使用边界；复用 Alert，不增加装饰性统计条 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-TOOLBAR-01 | Toolbar：操作分组、状态控件、溢出策略和适用的键盘导航，窄工作面不隐藏不可达操作 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-INLINE-01 | 通用 InlineEdit：显示/编辑插槽、草稿/提交/取消、异步错误、焦点与只读；由 PropertyList 文本/数字场景抽取 | FORM-02 | 待完成 | 待关联 | 待记录 |
+| COMBO-OVERLAY-01 | 命令式 Overlay 配方：Dialog/Sheet/AlertDialog 的打开/结果/关闭服务、并发/嵌套与卸载边界，保留声明式控制 | — | 待完成 | 待关联 | 待记录 |
+| SHELL-STATE-01 | Workspace / Sidebar 持久化：尺寸/展开状态受控、保存恢复、不可用尺寸/旧配置回退、键盘分栏不退化 | — | 待完成 | 待关联 | 待记录 |
+| SHELL-SEARCH-01 | 统一应用搜索：CommandSearch 组合、跨资源结果/动作、异步状态、快捷键/IME与当前工作上下文；搜索源为宿主注入 | SELECT-01 | 待完成 | 待关联 | 待记录 |
+| SHELL-PRESET-01 | 布局预设：Workspace 槽位、独立滚动、窄屏/面板隐藏、状态切换与持久化；不得覆盖基础分栏的公共契约 | SHELL-STATE-01 | 待完成 | 待关联 | 待记录 |
+| CONTENT-NAV-01 | 文档导航联动：DisclosureTree/目录组合、当前位置、滚动/路由同步、长标题、键盘与空章节 | MARKDOWN-01 | 待完成 | 待关联 | 待记录 |
+| DASHBOARD-RECIPE-01 | Dashboard 工作面配方：AppShell/Workspace/Sidebar/Table/Form/Search 的真实本地交互、偏好与窄布局；不作为单一原子组件计数 | SHELL-PRESET-01、SHELL-SEARCH-01、TABLE-01、FORM-01 | 待完成 | 待关联 | 待记录 |
+| CONTENT-RECIPE-01 | Content 工作面配方：文档列表/导航/阅读/相关操作统一组合、空/加载/失败与视图状态；专用阅读器另行验收 | CONTENT-NAV-01、RESOURCE-02 | 待完成 | 待关联 | 待记录 |
+
+## 阶段 6：AI 内容与工作流组合
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| AI-PARTS-01 | 结构化消息适配：文本/工具/引用/附件/产物 parts 映射，稳定 part ID、流式/错误/未知类型、宿主状态控制；不绑定某一真实请求服务 | MARKDOWN-02 | 待完成 | 待关联 | 待记录 |
+| AI-COMPOSER-01 | 富 Composer：结构化草稿、`/` 命令、`@` 文件/人员、ContextPill 与提及值、键盘/IME/提交约定；保留字符串输入兼容边界 | EDIT-04、AI-PARTS-01 | 待完成 | 待关联 | 待记录 |
+| AI-COMPOSER-02 | Composer 粘贴附件：clipboard/拖入、上下文引用、数量/大小/格式反馈、宿主上传状态、移除/取消/重试与草稿一致 | AI-COMPOSER-01、UPLOAD-01 | 待完成 | 待关联 | 待记录 |
+| AI-OVERLAY-01 | ChatOverlay 组合：Dialog/Conversation/Composer 复用、开关与焦点恢复、停止/错误/重试/空态演示；请求仍由宿主控制 | AI-PARTS-01 | 待完成 | 待关联 | 待记录 |
+| AI-PALETTE-01 | ChatPalette 组合：紧凑弹层、命令/会话切换、快捷键边界、焦点、停止与错误恢复；不重造消息组件 | AI-OVERLAY-01、SHELL-SEARCH-01 | 待完成 | 待关联 | 待记录 |
+| AI-VIRTUAL-01 | Conversation 长列表：动态高度、流式 part 更新、历史向前加载、回到底部、用户暂停跟随、焦点/选择保持；用真实增长的示例验收 | VIRT-02、AI-PARTS-01 | 待完成 | 待关联 | 待记录 |
+
+## 阶段 7：按实际应用立项的专业工作面
+
+以下是候选能力的验收范围，不表示参考库全部核心内置，也不表示已经选定 PRO。实施前在证据栏先补使用场景、行为引擎/许可、数据协议与首版边界。
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| APP-CHART-01 | Chart：明确首批图形、数据/轴/图例/tooltip、空/加载/错误、主题与键盘/替代数据表；数据计算与图形渲染职责分开 | VIRT-01、METERGROUP-01 | 待完成 | 待关联 | 待记录 |
+| APP-SCHEDULER-01 | Scheduler：日/周/月视图、事件选择/编辑、时间/重叠/全天语义、移动/调整与键盘等价、宿主保存失败恢复 | DATETIME-01、FORM-02 | 待完成 | 待关联 | 待记录 |
+| APP-KANBAN-01 | TaskBoard / Kanban：列/卡片模型、受控移动/排序、键盘、过滤/加载、宿主提交/失败回滚；与 TaskQueue 列表区分 | SORTABLE-01、FORM-02 | 待完成 | 待关联 | 待记录 |
+| APP-CODEEDITOR-01 | 完整代码编辑器：模型/语言服务支持边界、编辑历史、搜索、选择/光标、文件切换、主题/IME；CodeBlock 仅展示能力不算完成 | SHELL-PRESET-01 | 待完成 | 待关联 | 待记录 |
+| APP-PDF-01 | PDF 阅读器：文档加载/错误、分页/缩放/搜索/选择、键盘、长文档资源策略及宿主文件入口；ArtifactPanel 插槽不是阅读引擎 | VIRT-01、SHELL-PRESET-01 | 待完成 | 待关联 | 待记录 |
+| APP-DIAGRAM-01 | 任意流程/图编辑器：节点/边模型、连接/选择/移动/缩放、历史、校验、序列化与键盘；OrganizationChart 不能代替 | FORM-02、SHELL-PRESET-01 | 待完成 | 待关联 | 待记录 |
+
+## 阶段 8：后续评估，不是已交付对标
+
+这些项保持待完成，验收首先是书面采用/延期/不采用结论；有明确场景才转入建设阶段。PRO roadmap 行用于追踪可用性，不能以名称、宣传、计划日期或其他框架实现作为已发布证据。与阶段 7 的能力重叠不另计一次组件交付。
+
+| ID | 评估项 / 决策边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| EVAL-FLOATLABEL-01 | FloatLabel：核实紧凑桌面表单的标签可读性/占位冲突与真实需求，再决定是否组合 | FORM-01 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-IFTALABEL-01 | IftaLabel：评估内嵌顶部标签对密度、错误提示、长中文与控件一致性的收益 | FORM-01 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-SPEEDDIAL-01 | SpeedDial：仅针对集中快捷操作场景评估键盘、触摸与低发现性；不是通用桌面默认布局 | — | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-DOCK-01 | Dock：明确应用导航价值及与 Sidebar/Toolbar 重叠，评估触摸/键盘和空间占用 | SHELL-PRESET-01 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-MARQUEE-01 | Marquee：确认需要持续滚动内容的场景、暂停/reduced-motion 与阅读可达性，否则延期 | — | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-SCROLLTOP-01 | ScrollTop：评估长内容定位需求与现有滚动容器/返回底部区别，明确触发阈值与焦点行为 | CONTENT-RECIPE-01 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-BLOG-01 | Blog 营销组合：有发布内容场景后定义列表/文章/作者组合，明确与 Content 配方复用 | CONTENT-RECIPE-01 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-PRICING-01 | Pricing 营销组合：真实定价展示需求、套餐比较/周期交互与数据边界；不把营销模板计核心组件 | — | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-HERO-01 | PageHero 营销组合：评估落地页用途、内容/动作/媒体插槽；不泛化为桌面页面眉头 | — | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-FOOTER-01 | Footer 营销组合：按站点信息架构评估导航/法律信息/响应式，不影响桌面工作面默认结构 | — | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-PRO-DATAGRID-01 | PRO DataGrid roadmap：核实目标框架已发布版本/API/许可与实际场景，说明相对 TABLE-* 的新增需求 | TABLE-07 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-PRO-SHEET-01 | PRO Sheet roadmap：核实发布与公式/单元格/选区/复制等能力范围；不把 DataTable 包装成电子表格 | TABLE-05 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-PRO-GANTT-01 | PRO Gantt Chart roadmap：核实发布、任务依赖/时间轴/资源等需求与成本，不能用 Scheduler 代替验收 | APP-SCHEDULER-01 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-PRO-DIAGRAM-01 | PRO Diagram roadmap：核实可用性/许可/交互后作为 APP-DIAGRAM-01 的选型证据；不重复记交付 | APP-DIAGRAM-01 范围确定 | 待完成 | 待关联（若采用） | 待记录 |
+| EVAL-PRO-PDF-01 | PRO PDF Viewer roadmap：核实可用性/许可/文档能力后作为 APP-PDF-01 的选型证据；不以 roadmap 页面视为成熟产品 | APP-PDF-01 范围确定 | 待完成 | 待关联（若采用） | 待记录 |
+
+## 证据记录模板
+
+完成一项时，在该行证据链接指向的记录中填写：`公开 API / 源码`、`Story IDs`、`验收交互与状态`、`check / build / 相关测试实际结果`、`四种主题密度与窄工作面`、`视觉参考及差异`、`宿主集成边界 / 未覆盖内容`。暂未覆盖的高级能力保持对应 ID 待完成，不以基础项验收结果预勾。
+

@@ -1,0 +1,921 @@
+{
+  "counts": {
+    "basic": 54,
+    "complex": 18,
+    "ai": 19
+  },
+  "total": 91,
+  "stories": 643,
+  "entries": [
+    {
+      "layer": "basic",
+      "id": "button",
+      "name": "Button",
+      "description": "六种操作层级、尺寸、禁用与加载状态。",
+      "storyId": "基础-button--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ButtonDemo",
+      "stories": 18
+    },
+    {
+      "layer": "basic",
+      "id": "button-group",
+      "name": "Button Group",
+      "description": "相邻操作、分隔与共享边缘。",
+      "storyId": "基础-button-group--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ButtonGroupDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "badge",
+      "name": "Badge",
+      "description": "轻量标签、状态与图标组合。",
+      "storyId": "基础-badge--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "BadgeDemo",
+      "stories": 9
+    },
+    {
+      "layer": "basic",
+      "id": "input",
+      "name": "Input",
+      "description": "文本输入、中文、只读、错误与禁用。",
+      "storyId": "基础-input--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "InputDemo",
+      "stories": 8
+    },
+    {
+      "layer": "basic",
+      "id": "textarea",
+      "name": "Textarea",
+      "description": "多行编辑与字数反馈。",
+      "storyId": "基础-textarea--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "TextareaDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "label",
+      "name": "Label",
+      "description": "与控件显式关联的表单标签。",
+      "storyId": "基础-label--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "LabelDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "field",
+      "name": "Field",
+      "description": "标签、说明、错误与字段分组。",
+      "storyId": "基础-field--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "FieldDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "input-group",
+      "name": "Input Group",
+      "description": "前后缀、快捷键与输入操作。",
+      "storyId": "基础-input-group--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "InputGroupDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "checkbox",
+      "name": "Checkbox",
+      "description": "选中、部分选中、错误与禁用。",
+      "storyId": "基础-checkbox--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CheckboxDemo",
+      "stories": 8
+    },
+    {
+      "layer": "basic",
+      "id": "switch",
+      "name": "Switch",
+      "description": "即时布尔设置与紧凑变体。",
+      "storyId": "基础-switch--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SwitchDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "radio-group",
+      "name": "Radio Group",
+      "description": "互斥选项与键盘移动。",
+      "storyId": "基础-radio-group--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "RadioGroupDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "slider",
+      "name": "Slider",
+      "description": "连续数值、范围与禁用状态。",
+      "storyId": "基础-slider--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SliderDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "toggle",
+      "name": "Toggle",
+      "description": "独立可切换操作。",
+      "storyId": "基础-toggle--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ToggleDemo",
+      "stories": 8
+    },
+    {
+      "layer": "basic",
+      "id": "toggle-group",
+      "name": "Toggle Group",
+      "description": "可多选的工具栏按钮组。",
+      "storyId": "基础-toggle-group--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ToggleGroupDemo",
+      "stories": 9
+    },
+    {
+      "layer": "basic",
+      "id": "select",
+      "name": "Select",
+      "description": "可控单选、分组与禁用选项。",
+      "storyId": "基础-select--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SelectDemo",
+      "stories": 8
+    },
+    {
+      "layer": "basic",
+      "id": "combobox",
+      "name": "Combobox",
+      "description": "可搜索选项、清除与空结果。",
+      "storyId": "基础-combobox--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ComboboxDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "accordion",
+      "name": "Accordion",
+      "description": "分组折叠内容与禁用章节。",
+      "storyId": "基础-accordion--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AccordionDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "collapsible",
+      "name": "Collapsible",
+      "description": "按需展开的辅助内容。",
+      "storyId": "基础-collapsible--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CollapsibleDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "tabs",
+      "name": "Tabs",
+      "description": "预览/代码切换与禁用标签。",
+      "storyId": "基础-tabs--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "TabsDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "dialog",
+      "name": "Dialog",
+      "description": "可控模态、表单、保存与焦点恢复。",
+      "storyId": "基础-dialog--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "DialogDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "alert-dialog",
+      "name": "Alert Dialog",
+      "description": "确认操作与可恢复的本地反馈。",
+      "storyId": "基础-alert-dialog--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AlertDialogDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "dropdown-menu",
+      "name": "Dropdown Menu",
+      "description": "操作、快捷键、复选与禁用条目。",
+      "storyId": "基础-dropdown-menu--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "DropdownMenuDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "context-menu",
+      "name": "Context Menu",
+      "description": "右键打开的上下文操作。",
+      "storyId": "基础-context-menu--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ContextMenuDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "popover",
+      "name": "Popover",
+      "description": "与触发器关联的辅助设置。",
+      "storyId": "基础-popover--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "PopoverDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "tooltip",
+      "name": "Tooltip",
+      "description": "悬停与键盘焦点说明。",
+      "storyId": "基础-tooltip--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "TooltipDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "hover-card",
+      "name": "Hover Card",
+      "description": "链接预览卡片。",
+      "storyId": "基础-hover-card--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "HoverCardDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "sheet",
+      "name": "Sheet",
+      "description": "按需打开的任务详情抽屉。",
+      "storyId": "基础-sheet--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SheetDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "card",
+      "name": "Card",
+      "description": "标题、内容、动作与页脚组合。",
+      "storyId": "基础-card--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CardDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "alert",
+      "name": "Alert",
+      "description": "信息与错误提示。",
+      "storyId": "基础-alert--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AlertDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "empty",
+      "name": "Empty",
+      "description": "可执行下一步的空状态。",
+      "storyId": "基础-empty--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "EmptyDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "avatar",
+      "name": "Avatar",
+      "description": "回退文字、尺寸与头像组。",
+      "storyId": "基础-avatar--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AvatarDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "skeleton",
+      "name": "Skeleton",
+      "description": "结构稳定的加载占位。",
+      "storyId": "基础-skeleton--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SkeletonDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "spinner",
+      "name": "Spinner",
+      "description": "加载指示与按钮组合。",
+      "storyId": "基础-spinner--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SpinnerDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "separator",
+      "name": "Separator",
+      "description": "水平与垂直分隔。",
+      "storyId": "基础-separator--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SeparatorDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "scroll-area",
+      "name": "Scroll Area",
+      "description": "可滚动文件列表与细滚动条。",
+      "storyId": "基础-scroll-area--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ScrollAreaDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "progress",
+      "name": "Progress",
+      "description": "数值进度、标签与重置操作。",
+      "storyId": "基础-progress--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ProgressDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "table",
+      "name": "Table",
+      "description": "表格标题、列头、行与状态。",
+      "storyId": "基础-table--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "TableDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "pagination",
+      "name": "Pagination",
+      "description": "页码选择与相邻页导航。",
+      "storyId": "基础-pagination--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "PaginationDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "breadcrumb",
+      "name": "Breadcrumb",
+      "description": "层级导航与当前页标识。",
+      "storyId": "基础-breadcrumb--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "BreadcrumbDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "command",
+      "name": "Command",
+      "description": "可过滤命令列表与选择反馈。",
+      "storyId": "基础-command--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CommandDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "resizable",
+      "name": "Resizable",
+      "description": "鼠标与键盘可调整的双面板。",
+      "storyId": "基础-resizable--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ResizableDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "calendar",
+      "name": "Calendar",
+      "description": "固定月份的可控单日选择与禁用日期。",
+      "storyId": "基础-calendar--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CalendarDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "sidebar",
+      "name": "Sidebar",
+      "description": "搜索、分组、活动行与页脚。",
+      "storyId": "基础-sidebar--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SidebarDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "aspect-ratio",
+      "name": "Aspect Ratio",
+      "description": "保持固定比例的内容容器。",
+      "storyId": "基础-aspect-ratio--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AspectRatioDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "input-otp",
+      "name": "Input OTP",
+      "description": "分组验证码输入与完成反馈。",
+      "storyId": "基础-input-otp--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "InputOTPDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "item",
+      "name": "Item",
+      "description": "媒体、描述、内容与行内操作。",
+      "storyId": "基础-item--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ItemDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "kbd",
+      "name": "Kbd",
+      "description": "单键与组合快捷键提示。",
+      "storyId": "基础-kbd--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "KbdDemo",
+      "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "native-select",
+      "name": "Native Select",
+      "description": "使用平台原生选择行为。",
+      "storyId": "基础-native-select--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "NativeSelectDemo",
+      "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "navigation-menu",
+      "name": "Navigation Menu",
+      "description": "产品导航与文档入口。",
+      "storyId": "基础-navigation-menu--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "NavigationMenuDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "menubar",
+      "name": "Menubar",
+      "description": "桌面菜单栏与分组命令。",
+      "storyId": "基础-menubar--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "MenubarDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "toast",
+      "name": "Toast",
+      "description": "Base UI 管理的通知、撤销动作与异步反馈。",
+      "storyId": "基础-toast--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ToastDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "multi-select",
+      "name": "MultiSelect",
+      "description": "可搜索多选、标签移除与空/加载/禁用状态。",
+      "storyId": "基础-multiselect--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "MultiSelectDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "number-field",
+      "name": "NumberField",
+      "description": "本地化数值输入、步进、边界与空值。",
+      "storyId": "基础-numberfield--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "NumberFieldDemo",
+      "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "meter",
+      "name": "Meter",
+      "description": "容量、预算与质量的有界测量值。",
+      "storyId": "基础-meter--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "MeterDemo",
+      "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "form",
+      "name": "Form 表单管理",
+      "description": "Schema、跨字段与异步校验、提交重置、嵌套字段和数组。",
+      "storyId": "复杂-form-表单管理--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "FormDemo",
+      "stories": 19
+    },
+    {
+      "layer": "complex",
+      "id": "async-form",
+      "name": "AsyncForm 异步表单",
+      "description": "可取消的异步校验、过期响应隔离、记录切换和提交恢复。",
+      "storyId": "复杂-asyncform-异步表单--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "AsyncFormDemo",
+      "stories": 5
+    },
+    {
+      "layer": "complex",
+      "id": "virtual-list",
+      "name": "VirtualList 虚拟列表",
+      "description": "窗口化行、稳定 key、滚动定位、可见范围和按需加载。",
+      "storyId": "复杂-virtuallist-虚拟列表--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "VirtualListDemo",
+      "stories": 5
+    },
+    {
+      "layer": "complex",
+      "id": "data-table",
+      "name": "DataTable 数据表格",
+      "description": "真实排序、跨页选中、筛选与分页，使用稳定行 ID。",
+      "storyId": "复杂-datatable-数据表格--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "DataTableDemo",
+      "stories": 7
+    },
+    {
+      "layer": "complex",
+      "id": "disclosure-tree",
+      "name": "DisclosureTree 目录导航",
+      "description": "原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。",
+      "storyId": "复杂-disclosuretree-目录导航--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "DisclosureTreeDemo",
+      "stories": 8
+    },
+    {
+      "layer": "complex",
+      "id": "search-filter-bar",
+      "name": "SearchFilterBar 搜索筛选",
+      "description": "受控搜索与多选条件，直接筛选本地数据。",
+      "storyId": "复杂-searchfilterbar-搜索筛选--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "SearchFilterBarDemo",
+      "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "date-range-picker",
+      "name": "DateRangePicker 日期范围",
+      "description": "日历、日期输入、上下界校验、应用与取消。",
+      "storyId": "复杂-daterangepicker-日期范围--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "DateRangePickerDemo",
+      "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "file-upload",
+      "name": "FileUpload 文件队列",
+      "description": "文件类型、大小、重复与数量校验；仅本地队列。",
+      "storyId": "复杂-fileupload-本地文件队列--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "FileUploadDemo",
+      "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "property-list",
+      "name": "PropertyList 属性编辑",
+      "description": "逐项编辑、数字验证、取消与只读字段。",
+      "storyId": "复杂-propertylist-属性编辑--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "PropertyListDemo",
+      "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "timeline",
+      "name": "Timeline 时间线",
+      "description": "按时间呈现完成、进行、失败和等待状态。",
+      "storyId": "复杂-timeline-时间线--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "TimelineDemo",
+      "stories": 7
+    },
+    {
+      "layer": "complex",
+      "id": "stepper",
+      "name": "Stepper 分步流程",
+      "description": "可导航步骤、必填门槛与本地确认流程。",
+      "storyId": "复杂-stepper-分步流程--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "StepperDemo",
+      "stories": 7
+    },
+    {
+      "layer": "complex",
+      "id": "settings-section",
+      "name": "SettingsSection 设置分组",
+      "description": "标题、说明、行布局与真实受控表单。",
+      "storyId": "复杂-settingssection-设置分组--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "SettingsSectionDemo",
+      "stories": 5
+    },
+    {
+      "layer": "complex",
+      "id": "workspace",
+      "name": "Workspace 工作区布局",
+      "description": "应用外壳、独立滚动面板、指针与键盘分栏。",
+      "storyId": "复杂-workspace-工作区布局--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "WorkspaceDemo",
+      "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "command-search",
+      "name": "CommandSearch 命令搜索",
+      "description": "分组、关键词筛选、空态与中文输入法保护。",
+      "storyId": "复杂-commandsearch-命令搜索--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "CommandSearchDemo",
+      "stories": 7
+    },
+    {
+      "layer": "complex",
+      "id": "diff-viewer",
+      "name": "DiffViewer 差异查看",
+      "description": "显式结构化行与宿主配对，统一/并排切换与长行处理。",
+      "storyId": "复杂-diffviewer-差异查看--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "DiffViewerDemo",
+      "stories": 9
+    },
+    {
+      "layer": "complex",
+      "id": "log-viewer",
+      "name": "LogViewer 日志查看",
+      "description": "搜索、级别筛选、滚动暂停与跟随，以及宿主清除回调。",
+      "storyId": "复杂-logviewer-日志查看--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "LogViewerDemo",
+      "stories": 8
+    },
+    {
+      "layer": "complex",
+      "id": "key-value-editor",
+      "name": "KeyValueEditor 键值编辑",
+      "description": "增删键值、重复和必填验证、可选敏感值遮罩。",
+      "storyId": "复杂-keyvalueeditor-键值编辑--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "KeyValueEditorDemo",
+      "stories": 10
+    },
+    {
+      "layer": "complex",
+      "id": "resource-list",
+      "name": "ResourceList 资源列表",
+      "description": "本地搜索排序、单选/批量选择与宿主行操作。",
+      "storyId": "复杂-resourcelist-资源列表--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ResourceListDemo",
+      "stories": 9
+    },
+    {
+      "layer": "ai",
+      "id": "composer",
+      "name": "Composer",
+      "description": "受控草稿、多行输入、异步提交和停止动作",
+      "storyId": "ai-composer--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ComposerDemo",
+      "stories": 12
+    },
+    {
+      "layer": "ai",
+      "id": "conversation",
+      "name": "Conversation / Message",
+      "description": "可读消息流、角色和滚动跟随",
+      "storyId": "ai-conversation--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ConversationDemo",
+      "stories": 10
+    },
+    {
+      "layer": "ai",
+      "id": "reasoning",
+      "name": "Reasoning",
+      "description": "折叠过程说明与计时状态",
+      "storyId": "ai-reasoning--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ReasoningDemo",
+      "stories": 6
+    },
+    {
+      "layer": "ai",
+      "id": "tool-call",
+      "name": "ToolCall",
+      "description": "行内与卡片式工具状态",
+      "storyId": "ai-toolcall--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ToolCallDemo",
+      "stories": 9
+    },
+    {
+      "layer": "ai",
+      "id": "plan-steps",
+      "name": "PlanSteps",
+      "description": "带状态的步骤与选择回调",
+      "storyId": "ai-plansteps--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "PlanStepsDemo",
+      "stories": 8
+    },
+    {
+      "layer": "ai",
+      "id": "attachments",
+      "name": "AttachmentList",
+      "description": "附件列表、错误、重试与移除",
+      "storyId": "ai-attachmentlist--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "AttachmentListDemo",
+      "stories": 8
+    },
+    {
+      "layer": "ai",
+      "id": "context-pill",
+      "name": "ContextPill",
+      "description": "紧凑上下文与移除动作",
+      "storyId": "ai-contextpill--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ContextPillDemo",
+      "stories": 7
+    },
+    {
+      "layer": "ai",
+      "id": "model-selector",
+      "name": "ModelSelector",
+      "description": "受控模型选项和禁用状态",
+      "storyId": "ai-modelselector--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ModelSelectorDemo",
+      "stories": 7
+    },
+    {
+      "layer": "ai",
+      "id": "suggestions",
+      "name": "PromptSuggestions",
+      "description": "用建议填入可编辑草稿",
+      "storyId": "ai-promptsuggestions--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "PromptSuggestionsDemo",
+      "stories": 5
+    },
+    {
+      "layer": "ai",
+      "id": "sources",
+      "name": "Citation / Sources",
+      "description": "行内引用与可追溯来源列表",
+      "storyId": "ai-sources--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "SourcesDemo",
+      "stories": 7
+    },
+    {
+      "layer": "ai",
+      "id": "permission",
+      "name": "PermissionRequest",
+      "description": "权限请求：由宿主持有允许与拒绝状态",
+      "storyId": "ai-permissionrequest--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "PermissionRequestDemo",
+      "stories": 6
+    },
+    {
+      "layer": "ai",
+      "id": "artifact",
+      "name": "ArtifactPanel",
+      "description": "代码、交互预览与版本切换",
+      "storyId": "ai-artifactpanel--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ArtifactPanelDemo",
+      "stories": 8
+    },
+    {
+      "layer": "ai",
+      "id": "code-block",
+      "name": "CodeBlock",
+      "description": "语法高亮、滚动代码与原文复制",
+      "storyId": "ai-codeblock--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "CodeBlockDemo",
+      "stories": 30
+    },
+    {
+      "layer": "ai",
+      "id": "token-usage",
+      "name": "TokenUsage",
+      "description": "展示调用方提供的用量与来源",
+      "storyId": "ai-tokenusage--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "TokenUsageDemo",
+      "stories": 5
+    },
+    {
+      "layer": "ai",
+      "id": "agent-task",
+      "name": "AgentTaskCard",
+      "description": "任务状态、需处理状态与操作",
+      "storyId": "ai-agenttaskcard--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "AgentTaskCardDemo",
+      "stories": 7
+    },
+    {
+      "layer": "ai",
+      "id": "message-actions",
+      "name": "MessageActions",
+      "description": "消息复制、重试、编辑与反馈操作",
+      "storyId": "ai-messageactions--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "MessageActionsDemo",
+      "stories": 11
+    },
+    {
+      "layer": "ai",
+      "id": "message-branch",
+      "name": "MessageBranch",
+      "description": "受控消息分支与键盘切换",
+      "storyId": "ai-messagebranch--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "MessageBranchDemo",
+      "stories": 8
+    },
+    {
+      "layer": "ai",
+      "id": "task-queue",
+      "name": "TaskQueue",
+      "description": "任务队列、计数、筛选与暂停取消操作",
+      "storyId": "ai-taskqueue--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "TaskQueueDemo",
+      "stories": 12
+    },
+    {
+      "layer": "ai",
+      "id": "checkpoint",
+      "name": "Checkpoint",
+      "description": "恢复点摘要、文件变更与确认恢复",
+      "storyId": "ai-checkpoint--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "CheckpointDemo",
+      "stories": 10
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@reito/storybook",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006 --host 127.0.0.1 --ci --no-open --disable-telemetry",
+    "build": "storybook build --disable-telemetry",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reito/ui": "0.4.1",
+    "@reito/tokens": "0.4.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "lucide-react": "1.41.0"
+  },
+  "devDependencies": {
+    "storybook": "10.6.0",
+    "@storybook/react-vite": "10.6.0",
+    "@storybook/addon-docs": "10.6.0",
+    "@storybook/addon-a11y": "10.6.0"
+  }
+}
