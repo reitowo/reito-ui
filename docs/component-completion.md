@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**17 项完成，1 项进行中，85 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-06` 已完成，当前推进 `TABLE-07`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**18 项完成，1 项进行中，84 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07` 已完成，当前推进 `TAGS-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -37,7 +37,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 | TABLE-04 | 行展开与行分组：受控展开、组头/汇总插槽、分组筛选/排序/选择一致性；区分已有列分组表头与新增行分组 | TABLE-01 | ✅ 完成 | 复杂-datatable-数据表格--row-expansion / --row-grouping / --playground | [行展开与分组验收](validation-data-table-row-groups.md)：14 项交互、52 次 Story 组合、四主题密度窄屏；TABLE-01～03 回归与 check/build 通过；[用法](components/data-table.md#行展开与行分组) |
 | TABLE-05 | 单元格/行编辑：草稿、提交/取消、同步/异步错误、焦点和键盘流、失败保留/重试、宿主数据更新；自定义 cell 插槽不算完整编辑器 | TABLE-01、FORM-02 | ✅ 完成 | 复杂-datatable-数据表格--row-editing / --cell-editing / --editing-failure / --controlled-editing / --playground | [编辑验收](validation-data-table-editing.md)：15 项交互、68 次 Story 组合、TABLE-01～04 的 46 项回归、四主题密度窄屏；check/build 通过；[用法](components/data-table.md#单元格与行编辑) |
 | TABLE-06 | 导出与视图偏好：明确导出数据范围/格式、宿主回调、列与查询状态保存/恢复及失效策略；不从页面 DOM 推导完整数据 | TABLE-02、TABLE-03 | ✅ 完成 | 复杂-datatable-数据表格--export-scopes / --remote-export / --saved-views / --playground | [导出与视图验收](validation-data-table-preferences.md)：12 项交互、80 次 Story 组合、TABLE-01～05 的 61 项回归、四主题密度窄屏；check/build 通过；[用法](components/data-table.md#导出与视图偏好) |
-| TABLE-07 | 表格虚拟化：与分页/远程模式、固定列、选择、展开兼容；滚动定位与加载边界有大数据交互证据 | TABLE-01、TABLE-03、VIRT-01 | 进行中 | 待关联 | 下一步实现表格行虚拟化及大数据加载边界 |
+| TABLE-07 | 表格虚拟化：与分页/远程模式、固定列、选择、展开兼容；滚动定位与加载边界有大数据交互证据 | TABLE-01、TABLE-03、VIRT-01 | ✅ 完成 | 复杂-datatable-数据表格--virtual-rows / --virtual-remote-page / --virtual-pinned-expansion / --playground | [虚拟表格验收](validation-data-table-virtual.md)：11 项交互、92 次 Story 组合、5 万行 DOM 有界、TABLE-01～06 回归、四主题密度窄屏；check/build 通过；[用法](components/data-table.md#表格行虚拟化) |
 
 ## 阶段 2：高频输入与选择
 
@@ -45,7 +45,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
-| TAGS-01 | InputTags：任意标签创建、分隔输入、去重策略/上限、编辑/删除、受控值；与仅选择 options 的 MultiSelect 分开 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| TAGS-01 | InputTags：任意标签创建、分隔输入、去重策略/上限、编辑/删除、受控值；与仅选择 options 的 MultiSelect 分开 | FORM-01 | 进行中 | 待关联 | 下一步实现 InputTags 基础契约与 Storybook Playground |
 | TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | 待完成 | 待关联 | 待记录 |
 | COLOR-01 | ColorPicker / ColorInput：色板/区域/通道/文本输入、支持格式转换、透明度边界、无效输入、键盘和提交事件；组件 chrome 使用 token | FORM-01 | 待完成 | 待关联 | 待记录 |
 | DATE-01 | InputDate：日期分段或明确等效输入、locale/格式、合法性/范围、键盘、清除与日历联动；不重复建设 Calendar 已透传的多选/多月 | FORM-01 | 待完成 | 待关联 | 待记录 |

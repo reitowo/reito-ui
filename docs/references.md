@@ -159,3 +159,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### DataTable 导出与视图偏好 · 2026-09-07
 
 状态边界核对 TanStack Table v8 [Fully Controlled](https://tanstack.com/table/v8/docs/framework/react/examples/fully-controlled) 示例：table state 可由宿主统一接管，再从该状态派生行为。导出能力范围核对 PrimeVue 5 [DataTable](https://primevue.dev/datatable/) 的 CSV 导出与表格状态能力。Reito UI 不复制实现，而是公开带范围、格式、可见列、稳定 ID、查询和远程数据标记的宿主请求，并定义带 schema 版本和列兼容校验的原创视图快照；组件不访问 DOM、localStorage 或网络。
+
+### DataTable 行虚拟化 · 2026-09-07
+
+实现核对 TanStack Virtual [Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer)：总量、滚动元素、估算尺寸、稳定 item key、overscan、动态 `measureElement`、可见范围与 `scrollToIndex` 构成虚拟窗口契约；安装版本 3.13.23 的类型和运行时也已核对。PrimeVue 5 [DataTable Virtual Scroll](https://primevue.dev/datatable/) 作为表格大数据、lazy 页边界与固定列组合的能力范围参考。Reito UI 复用自己的 Table 行模型、Graphite tokens 与固定列规则，公开稳定行 ID 定位和范围回调，并把详情/汇总作为独立测量项；未复制上游示例源码、CSS、模板或资源。
