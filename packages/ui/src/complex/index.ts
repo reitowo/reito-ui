@@ -16,3 +16,4 @@ export * from './resource-list.js';
 export * from './form.js';
 export * from './async-form.js';
 export * from './virtual-list.js';
+export * from './virtual-grid.js';

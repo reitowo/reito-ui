@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 54,
-    "complex": 18,
+    "complex": 19,
     "ai": 19
   },
-  "total": 91,
-  "stories": 644,
+  "total": 92,
+  "stories": 649,
   "entries": [
     {
       "layer": "basic",
@@ -576,6 +576,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "VirtualListDemo",
       "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "virtual-grid",
+      "name": "VirtualGrid 虚拟网格",
+      "description": "双轴窗口、稳定单元格、行列定位和二维可见范围。",
+      "storyId": "复杂-virtualgrid-虚拟网格--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "VirtualGridDemo",
+      "stories": 5
     },
     {
       "layer": "complex",

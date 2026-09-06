@@ -13,6 +13,7 @@ import { ResourceList, type ResourceItem } from './resource-list.js';
 import { FormDemo } from './form-demo.js';
 import { AsyncFormDemo } from './async-form-demo.js';
 import { VirtualListDemo } from './virtual-list-demo.js';
+import { VirtualGridDemo } from './virtual-grid-demo.js';
 export { FormDemo } from './form-demo.js';
 import {
   AppShell, CommandSearch, DataTable, DateRangePicker, DisclosureTree, FileUpload, PropertyList,
@@ -200,6 +201,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'form', name: 'Form 表单管理', description: 'Schema、跨字段与异步校验、提交重置、嵌套字段和数组。', component: FormDemo },
   { id: 'async-form', name: 'AsyncForm 异步表单', description: '可取消的异步校验、过期响应隔离、记录切换和提交恢复。', component: AsyncFormDemo },
   { id: 'virtual-list', name: 'VirtualList 虚拟列表', description: '窗口化行、稳定 key、滚动定位、可见范围和按需加载。', component: VirtualListDemo },
+  { id: 'virtual-grid', name: 'VirtualGrid 虚拟网格', description: '双轴窗口、稳定单元格、行列定位和二维可见范围。', component: VirtualGridDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },

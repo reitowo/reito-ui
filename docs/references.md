@@ -115,3 +115,7 @@ Storybook 用来逐个确认组件和状态；例工程必须直接消费同一�
 ### VirtualList · 2026-09-06
 
 Uses @tanstack/react-virtual 3.14.10 with virtual-core 3.17.8 (MIT); versions and license read from installed packages. API reference: https://tanstack.com/virtual/latest/docs/framework/react/react-virtual and https://tanstack.com/virtual/latest/docs/api/virtualizer. The installed TypeScript APIs are authoritative where latest documentation differs. Neutral rows use this library's original tokens; no upstream CSS copied.
+
+### VirtualGrid · 2026-09-07
+
+Uses the same fixed TanStack Virtual packages for independent horizontal and vertical windows. Capability and visual comparison uses the grid direction example on https://primevue.dev/virtualscroller/ and the installed TanStack `horizontal` API. Reito UI adds original Graphite tokens, ARIA grid structure and keyboard activity; no upstream CSS or example source copied.
