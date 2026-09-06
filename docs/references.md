@@ -122,4 +122,4 @@ Uses the same fixed TanStack Virtual packages for independent horizontal and ver
 
 ### TreeView · 2026-09-07
 
-Behavior follows the W3C WAI-ARIA APG Tree View Pattern at https://www.w3.org/WAI/ARIA/apg/patterns/treeview/. Capability and light documentation-surface comparison uses PrimeVue 5 Tree at https://primevue.dev/tree/, including Basic, Controlled and Accessibility sections. Reito UI keeps its own compact Graphite rows and implements the React state/keyboard model locally; no PrimeVue source, CSS or assets copied.
+Behavior follows the W3C WAI-ARIA APG Tree View Pattern at https://www.w3.org/WAI/ARIA/apg/patterns/treeview/. Capability and light documentation-surface comparison uses PrimeVue 5 Tree at https://primevue.dev/tree/, including Basic, Controlled, Checkbox and Accessibility sections. TREE-02 adds an original tri-state normalization model, disabled cascade barriers, range selection and batch selection. Reito UI keeps its own compact Graphite rows and implements the React state/keyboard model locally; no PrimeVue source, CSS or assets copied.

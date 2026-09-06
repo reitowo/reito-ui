@@ -43,7 +43,7 @@ test('Playground Controls update selection and expansion without changing tabs',
   await page.getByRole('tab', { name: /^Controls/ }).click(); const path = new URL(page.url()).searchParams.get('path');
   await page.locator('[id="control-value"]').selectOption({ label: 'readme' });
   await expect(frame.getByRole('treeitem', { name: /README.md/ })).toHaveAttribute('aria-selected', 'true');
-  await page.getByLabel('src', { exact: true }).uncheck();
+  await page.getByRole('group', { name: 'expanded' }).getByLabel('src', { exact: true }).uncheck();
   await expect(frame.getByRole('treeitem', { name: 'button.tsx' })).toHaveCount(0);
   expect(new URL(page.url()).searchParams.get('path')).toBe(path);
 });
