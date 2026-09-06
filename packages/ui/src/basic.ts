@@ -6,6 +6,7 @@ export * from './basic/async-multi-select.js';
 export * from './basic/multi-select.js';
 export * from './basic/number-field.js';
 export * from './basic/meter.js';
+export * from './basic/meter-group.js';
 export * from './basic/color-picker.js';
 export * from './basic/input-date.js';
 export * from './basic/input-time.js';

@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 64,
+    "basic": 65,
     "complex": 22,
     "ai": 19
   },
-  "total": 105,
-  "stories": 851,
+  "total": 106,
+  "stories": 866,
   "entries": [
     {
       "layer": "basic",
@@ -646,6 +646,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "MeterDemo",
       "stories": 6
+    },
+    {
+      "layer": "basic",
+      "id": "meter-group",
+      "name": "MeterGroup / ProgressGroup",
+      "description": "多段容量构成与任务进度。",
+      "storyId": "基础-metergroup--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "MeterGroupDemo",
+      "stories": 15
     },
     {
       "layer": "complex",

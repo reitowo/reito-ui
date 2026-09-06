@@ -7,6 +7,7 @@ import { InputTags } from './input-tags.js';
 import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
+import { MeterGroup } from './meter-group.js';
 import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
@@ -1738,6 +1739,7 @@ export const basicCatalog: BasicCatalogEntry[] = [
   { id: 'multi-select', name: 'MultiSelect', description: '可搜索多选、标签移除与空/加载/禁用状态。', component: MultiSelectDemo },
   { id: 'number-field', name: 'NumberField', description: '本地化数值输入、步进、边界与空值。', component: NumberFieldDemo },
   { id: 'meter', name: 'Meter', description: '容量、预算与质量的有界测量值。', component: MeterDemo },
+  { id: 'meter-group', name: 'MeterGroup / ProgressGroup', description: '多段容量构成与任务进度。', component: MeterGroupDemo },
 ];
 
 export function ToastDemo({ mode = 'default' }: { mode?: 'default' | 'undo' | 'async' | 'error' } = {}) {
@@ -1788,4 +1790,13 @@ export function MeterDemo({ state = 'default' }: { state?: 'default' | 'warning'
   const quality = state === 'quality';
   const max = quality ? 100 : 128;
   return <Stack><Meter label={quality ? '数据完整度' : '工作区存储'} min={0} max={max} value={value} valueLabel={quality ? `${value}%` : `${value} / 128 GB`} tone={state === 'warning' ? 'warning' : quality ? 'success' : 'default'} description={state === 'warning' ? '容量接近上限，请整理已有文件。' : quality ? '这是当前数据质量测量，不表示后台任务进度。' : '展示当前已用容量；不表示任务完成百分比。'} /><Row><P.Button variant="outline" size="sm" onClick={() => setValue(Math.min(max, value + 8))}>增加示例值</P.Button><P.Button variant="ghost" size="sm" onClick={() => setValue(0)}>归零</P.Button></Row></Stack>;
+}
+
+export function MeterGroupDemo({ state = 'default' }: { state?: 'default' | 'zero' | 'overflow' } = {}) {
+  const items = state === 'zero' ? [] : [
+    { id: 'projects', label: '项目文件', value: state === 'overflow' ? 72 : 42, tone: 'default' as const },
+    { id: 'indexes', label: '本地索引', value: 18, tone: 'accent' as const },
+    { id: 'cache', label: '缓存', value: 12, tone: 'muted' as const },
+  ];
+  return <Stack><MeterGroup label="工作区存储构成" items={items} max={state === 'overflow' ? 96 : 128} formatValue={value => `${value} GB`} description="分段显示容量构成；任务执行状态应使用 ProgressGroup。" /></Stack>;
 }

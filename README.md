@@ -2,7 +2,7 @@
 
 基于 **shadcn/ui + Base UI + Tailwind CSS 4** 的个人 React 组件库。以 Cursor 的紧凑工作界面为主要方向，按 **基础 → 复杂 → AI** 分层。提供中性深浅主题、两档密度、真实字体、Storybook 与可操作的组件例工程。
 
-0.3 建立了 shadcn / Base UI 重建基础；0.4 持续补充高频与富功能组件，并将表格、内容区和 AI 组件的密度统一到共享 tokens。基础层包含 50 个固定版本官方 CLI 生成族和 14 个本地组合族，复杂与 AI 层在其上组合。这里的外观与 API 是本库实现，不能称作 Cursor / Claude 的官方组件。
+0.3 建立了 shadcn / Base UI 重建基础；0.4 持续补充高频与富功能组件，并将表格、内容区和 AI 组件的密度统一到共享 tokens。基础层包含 50 个固定版本官方 CLI 生成族和 15 个本地组合族，复杂与 AI 层在其上组合。这里的外观与 API 是本库实现，不能称作 Cursor / Claude 的官方组件。
 
 本轮重点是 [表格与 AI 内容密度](docs/density-v04.md)：紧凑表格上下 6px、左右 10px，AI 内容内距 12px，代码产物不重复叠加留白。最终验证和 MultiSelect 打开状态的扫描限制见 [验证记录](docs/validation.md)。
 
@@ -15,13 +15,13 @@ npm run dev
 npm run storybook
 ```
 
-- [组件 Lab](http://127.0.0.1:5173/)：105 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
-- [Storybook](http://127.0.0.1:6006/)：105 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
+- [组件 Lab](http://127.0.0.1:5173/)：106 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
+- [Storybook](http://127.0.0.1:6006/)：106 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
 - [Workbench](http://127.0.0.1:5175/)：另开终端运行 `npm run dev:workbench`，查看 Agent、文件与差异、设置三个组合工作面。消息、文件与任务均为本地示例，主题和密度保存在当前浏览器。
 
 | 层 | 组件族 | 代表内容 | 公共入口 |
 | --- | ---: | --- | --- |
-| 基础 | 64 | Button、表单、InputTags、AsyncCombobox、ColorPicker、InputDate、InputTime、DateTimePicker、PasswordInput、InputMask、Listbox、选择、菜单、弹层、日历、布局 | `@reito/ui/basic` |
+| 基础 | 65 | Button、表单、InputTags、AsyncCombobox、ColorPicker、InputDate、InputTime、DateTimePicker、PasswordInput、InputMask、Listbox、MeterGroup、选择、菜单、弹层、日历、布局 | `@reito/ui/basic` |
 | 复杂 | 22 | Form、AsyncForm、数据表格、虚拟列表/网格、树、筛选、设置、工作区与数据工具 | `@reito/ui/complex` |
 | AI | 19 | Composer、消息、工具、上下文、权限、产物；新增 MessageActions、MessageBranch、TaskQueue、Checkpoint | `@reito/ui/ai` |
 
@@ -55,7 +55,7 @@ import { Composer } from '@reito/ui/ai';
 | --- | --- |
 | `packages/tokens/src/tokens.json` | 唯一 token 数值来源；生成 `tokens.css` 与 Tailwind `@theme` 桥接 |
 | `packages/ui/src/primitives` | 固定官方 shadcn / Base UI 基础组件及有记录的修正 |
-| `packages/ui/src/basic` | 基础层 catalog 与 14 个本地组合族 |
+| `packages/ui/src/basic` | 基础层 catalog 与 15 个本地组合族 |
 | `packages/ui/src/complex`、`ai` | 组合组件、公开类型与独立示例 catalog |
 | `packages/ui/src/styles.css` | 唯一共享样式入口、字体、密度、暗色变体 |
 | `apps/lab`、`apps/storybook` | 消费相同实现的组件确认界面与故事 |

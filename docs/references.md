@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 14 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 15 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -205,3 +205,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### Listbox · 2026-09-07
 
 能力范围核对 Nuxt UI 4 [Listbox](https://ui.nuxt.com/docs/components/listbox) 与 PrimeVue 5 [Listbox](https://primevue.org/listbox/) 的常驻单/多选、分组、搜索、禁用、模板化选项和虚拟滚动；键盘与焦点语义按 W3C WAI-ARIA APG [Listbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) 实现。窗口化复用已安装 TanStack Virtual 的 [Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer)，保留活动索引并公开渲染/可见范围。Reito UI 使用独立 React 状态、`aria-activedescendant`、Shift 连选、批量选择、受控活动项、重复表单值、宿主加载边界与 Graphite 紧凑 tokens；富选项不允许嵌入交互控件，未复制上游源码、CSS、模板或资源。
+
+### MeterGroup / ProgressGroup · 2026-09-07
+
+能力范围核对 PrimeVue 5 [MeterGroup](https://primevue.org/metergroup/) 的多段测量、标签模板与 meter 语义，以及 Nuxt UI [ProgressGroup](https://ui.nuxt.com/docs/components/progress-group) 的多段任务进度定位。范围属性按 W3C WAI-ARIA APG [Range-Related Properties](https://www.w3.org/WAI/ARIA/apg/practices/range-related-properties/) 和 [Meter Example](https://www.w3.org/WAI/ARIA/apg/patterns/meter/examples/meter/) 处理：测量量始终提供当前值，不确定任务进度可以省略当前值。Reito UI 使用独立 React 结构、Graphite tokens、可读图例、零值与超额反馈；没有复制上游源码、CSS、模板或资源。
