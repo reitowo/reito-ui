@@ -131,3 +131,9 @@ Capability comparison uses PrimeVue 5 Tree Lazy at https://primevue.dev/tree/ an
 ### ReorderableTreeView · 2026-09-07
 
 Capability comparison uses the DragDrop and Multiple sections of PrimeVue 5 Tree at https://primevue.dev/tree/. Reito UI adds original controlled move helpers, scope matching, cycle and disabled-target guards, native pointer drop zones, Alt+Arrow equivalents and focus restoration; no upstream source, CSS or assets copied.
+
+### DataTable 受控远程状态 · 2026-09-07
+
+行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。
+
+Reito UI 用单一 `manual` 边界统一这三项远程处理，并新增本地/受控双模式、筛选与排序回到第 1 页、跨页选择计数和当前页全选范围。Graphite 的紧凑表格布局、状态文案、Story 和宿主契约均为本项目实现；未复制 TanStack、PrimeReact 或 PrimeVue 的 CSS、示例源码或资源。
