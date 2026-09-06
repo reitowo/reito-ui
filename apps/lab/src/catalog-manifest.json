@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 54,
+    "basic": 55,
     "complex": 22,
     "ai": 19
   },
-  "total": 95,
-  "stories": 688,
+  "total": 96,
+  "stories": 701,
   "entries": [
     {
       "layer": "basic",
@@ -46,6 +46,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputDemo",
       "stories": 8
+    },
+    {
+      "layer": "basic",
+      "id": "input-tags",
+      "name": "InputTags",
+      "description": "任意标签创建、去重、上限、编辑与删除。",
+      "storyId": "基础-inputtags--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "InputTagsDemo",
+      "stories": 13
     },
     {
       "layer": "basic",

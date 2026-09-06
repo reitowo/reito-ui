@@ -1,6 +1,7 @@
 import { tokenMetrics } from "@reito/tokens/metrics";
 import * as React from "react";
 import { ToastProvider, useToastManager } from './feedback.js';
+import { InputTags } from './input-tags.js';
 import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
@@ -132,6 +133,13 @@ export function InputDemo() {
       <output>当前：{value || "尚未输入"}</output>
     </Stack>
   );
+}
+export function InputTagsDemo() {
+  const [value, setValue] = React.useState(['React', 'TypeScript']);
+  return <Stack>
+    <InputTags label="项目标签" value={value} onValueChange={setValue} maxTags={5} description="输入任意内容后按 Enter 或逗号创建；点击标签文字可编辑。" />
+    <output>当前标签：{value.join(', ') || '无'}</output>
+  </Stack>;
 }
 export function TextareaDemo() {
   const [value, setValue] = React.useState("");
@@ -1303,6 +1311,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "Input",
     description: "文本输入、中文、只读、错误与禁用。",
     component: InputDemo,
+  },
+  {
+    id: "input-tags",
+    name: "InputTags",
+    description: "任意标签创建、去重、上限、编辑与删除。",
+    component: InputTagsDemo,
   },
   {
     id: "textarea",

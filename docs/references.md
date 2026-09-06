@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 4 个本地 Base UI 组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 5 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -163,3 +163,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### DataTable 行虚拟化 · 2026-09-07
 
 实现核对 TanStack Virtual [Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer)：总量、滚动元素、估算尺寸、稳定 item key、overscan、动态 `measureElement`、可见范围与 `scrollToIndex` 构成虚拟窗口契约；安装版本 3.13.23 的类型和运行时也已核对。PrimeVue 5 [DataTable Virtual Scroll](https://primevue.dev/datatable/) 作为表格大数据、lazy 页边界与固定列组合的能力范围参考。Reito UI 复用自己的 Table 行模型、Graphite tokens 与固定列规则，公开稳定行 ID 定位和范围回调，并把详情/汇总作为独立测量项；未复制上游示例源码、CSS、模板或资源。
+
+### InputTags · 2026-09-07
+
+能力范围核对 Nuxt UI 4 [InputTags](https://ui.nuxt.com/docs/components/input-tags) 的任意标签、分隔符、重复值和数量上限，以及 PrimeVue 3 [Chips](https://v3.primevue.org/chips/) 的受控数组、分隔输入、模板与键盘说明。Reito UI 实现独立的 React 受控/非受控契约、三种去重策略、原位编辑、删除焦点恢复、原生重复表单值和 Graphite 紧凑 tokens；未复制上游源码、CSS、模板或资源。粘贴拆分、动态建议和完整标签键盘导航留在 TAGS-02。
