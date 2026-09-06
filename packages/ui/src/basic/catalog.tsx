@@ -7,6 +7,7 @@ import { InputTags } from './input-tags.js';
 import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
+import { ColorPicker } from './color-picker.js';
 import {
   ArrowUp,
   Bold,
@@ -141,6 +142,13 @@ export function InputTagsDemo() {
   return <Stack>
     <InputTags label="项目标签" value={value} onValueChange={setValue} maxTags={5} description="输入任意内容后按 Enter 或逗号创建；点击标签文字可编辑。" />
     <output>当前标签：{value.join(', ') || '无'}</output>
+  </Stack>;
+}
+export function ColorPickerDemo() {
+  const [value, setValue] = React.useState('#4F7DFFFF');
+  return <Stack>
+    <ColorPicker label="界面强调色" value={value} onValueChange={setValue} allowAlpha presets={['#4F7DFF', '#29A36A', '#C58A21', '#B64655', '#8A63D2']} description="可直接输入 HEX、RGB 或 HSL；打开色板后调整区域、色相、透明度与通道。" />
+    <output className="font-mono text-xs text-muted-foreground">当前颜色：{value}</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1335,6 +1343,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "InputTags",
     description: "任意标签创建、去重、上限、编辑与删除。",
     component: InputTagsDemo,
+  },
+  {
+    id: "color-picker",
+    name: "ColorPicker / ColorInput",
+    description: "颜色文本、色板、通道、格式与透明度。",
+    component: ColorPickerDemo,
   },
   {
     id: "textarea",

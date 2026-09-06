@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 57,
+    "basic": 58,
     "complex": 22,
     "ai": 19
   },
-  "total": 98,
-  "stories": 734,
+  "total": 99,
+  "stories": 749,
   "entries": [
     {
       "layer": "basic",
@@ -56,6 +56,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputTagsDemo",
       "stories": 23
+    },
+    {
+      "layer": "basic",
+      "id": "color-picker",
+      "name": "ColorPicker / ColorInput",
+      "description": "颜色文本、色板、通道、格式与透明度。",
+      "storyId": "基础-colorpicker--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ColorPickerDemo",
+      "stories": 15
     },
     {
       "layer": "basic",
