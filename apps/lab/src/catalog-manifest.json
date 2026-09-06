@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 95,
-  "stories": 675,
+  "stories": 676,
   "entries": [
     {
       "layer": "basic",
@@ -625,7 +625,7 @@
       "storyId": "复杂-datatable-数据表格--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "DataTableDemo",
-      "stories": 10
+      "stories": 11
     },
     {
       "layer": "complex",

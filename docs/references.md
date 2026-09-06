@@ -143,3 +143,7 @@ Reito UI 用单一 `manual` 边界统一这三项远程处理，并新增本地/
 TanStack Table v8 的 [Column Filtering Guide](https://tanstack.com/table/v8/docs/guide/column-filtering) 定义了多列筛选状态、受控回调、manual server-side filtering 和列级 filter functions；安装版本 8.21.3 的类型与 API 已同时核对。PrimeVue 5 [DataTable Filter](https://primevue.dev/datatable/) 用 filter model 和自定义 editor 支持行内/菜单两种表现、匹配方式、清除/应用与远程 lazy 数据，作为能力范围和轻色表面视觉参考。
 
 Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number` / `date` 判别联合与稳定 JSON 子句。不同列是 AND，同列枚举值是 OR，区间包含端点；网络、数据库表达式和时区解释留给宿主。没有复制参考实现的源码、CSS、模板或资源。
+
+### DataTable 列管理 · 2026-09-07
+
+实现核对 TanStack Table v8 的 [Visibility](https://tanstack.com/table/v8/docs/guide/column-visibility)、[Ordering](https://tanstack.com/table/v8/docs/guide/column-ordering)、[Sizing](https://tanstack.com/table/v8/docs/guide/column-sizing) 与 [Pinning](https://tanstack.com/table/v8/docs/guide/column-pinning) 状态/API。Reito UI 用原有 Graphite tokens 实现管理菜单、sticky 单表布局、指针 separator 和键盘操作；未复制上游示例代码或 CSS。
