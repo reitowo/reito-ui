@@ -13,6 +13,7 @@ import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
 import { DateTimePicker, formatLocalDateTime, type LocalDateTimeValue } from './date-time-picker.js';
 import { PasswordInput, type PasswordRule } from './password-input.js';
 import { InputMask, formatMaskValue } from './input-mask.js';
+import { Listbox, type ListboxOption } from './listbox.js';
 import {
   ArrowUp,
   Bold,
@@ -195,6 +196,19 @@ export function InputMaskDemo() {
   return <Stack>
     <InputMask label="联系电话" mask="999-9999-9999? x99999" value={value} onValueChange={setValue} inputMode="numeric" placeholder="021-5555-1234" description="公开值不含格式符；问号后的分机段可选。" />
     <output className="font-mono text-xs text-muted-foreground">raw={value || 'empty'} · display={formatMaskValue(value, '999-9999-9999? x99999') || 'empty'}</output>
+  </Stack>;
+}
+const listboxOptions: ListboxOption[] = [
+  { value: 'react', label: 'React', description: '界面组件', group: '应用', icon: <FileText /> },
+  { value: 'typescript', label: 'TypeScript', description: '类型系统', group: '应用', icon: <Terminal /> },
+  { value: 'storybook', label: 'Storybook', description: '组件工作台', group: '工具', icon: <Settings /> },
+  { value: 'legacy', label: '旧版构建器', description: '等待迁移', group: '工具', icon: <Folder />, disabled: true },
+];
+export function ListboxDemo() {
+  const [value, setValue] = React.useState<string[]>(['react']);
+  return <Stack>
+    <Listbox label="项目技术栈" options={listboxOptions} selectionMode="multiple" value={value} onValueChange={next => setValue(Array.isArray(next) ? next : [])} searchable clearable description="方向键移动活动项；Space 切换，Shift 连选。" />
+    <output className="font-mono text-xs text-muted-foreground">value={JSON.stringify(value)}</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1425,6 +1439,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "InputMask",
     description: "raw/display 双值、可选段、粘贴、光标与 IME。",
     component: InputMaskDemo,
+  },
+  {
+    id: "listbox",
+    name: "Listbox",
+    description: "常驻单选或多选列表、分组、搜索、富选项与范围选择。",
+    component: ListboxDemo,
   },
   {
     id: "textarea",

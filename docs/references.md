@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 8 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 14 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -201,3 +201,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### InputMask · 2026-09-07
 
 能力范围核对 PrimeVue 3 [InputMask](https://v3.primevue.org/inputmask/) 的 `9 / a / *` 槽位、格式字面量、`?` 可选尾段、slot placeholder、未完成值策略与原生输入可访问名称。Reito UI 公开独立 raw/display 值与三个格式工具，实现 React 受控/非受控状态、格式化粘贴、格式符删除、光标恢复、Unicode composition 和 raw FormData；未复制上游源码、CSS、模板或资源。
+
+### Listbox · 2026-09-07
+
+能力范围核对 Nuxt UI 4 [Listbox](https://ui.nuxt.com/docs/components/listbox) 与 PrimeVue 5 [Listbox](https://primevue.org/listbox/) 的常驻单/多选、分组、搜索、禁用和模板化选项；键盘与焦点语义按 W3C WAI-ARIA APG [Listbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) 实现。Reito UI 使用独立 React 状态、`aria-activedescendant`、Shift 连选、批量选择、受控活动项、重复表单值与 Graphite 紧凑 tokens；富选项不允许嵌入交互控件，未复制上游源码、CSS、模板或资源。

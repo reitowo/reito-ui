@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 63,
+    "basic": 64,
     "complex": 22,
     "ai": 19
   },
-  "total": 104,
-  "stories": 826,
+  "total": 105,
+  "stories": 843,
   "entries": [
     {
       "layer": "basic",
@@ -115,6 +115,16 @@
       "storyId": "基础-inputmask--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputMaskDemo",
+      "stories": 17
+    },
+    {
+      "layer": "basic",
+      "id": "listbox",
+      "name": "Listbox",
+      "description": "常驻单选或多选列表、分组、搜索、富选项与范围选择。",
+      "storyId": "基础-listbox--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ListboxDemo",
       "stories": 17
     },
     {
