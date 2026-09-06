@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 55,
+    "basic": 56,
     "complex": 22,
     "ai": 19
   },
-  "total": 96,
-  "stories": 701,
+  "total": 97,
+  "stories": 712,
   "entries": [
     {
       "layer": "basic",
@@ -176,6 +176,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ComboboxDemo",
       "stories": 7
+    },
+    {
+      "layer": "basic",
+      "id": "async-combobox",
+      "name": "AsyncCombobox",
+      "description": "宿主异步查询、取消过期请求、重试与选中项缓存。",
+      "storyId": "基础-asynccombobox--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "AsyncComboboxDemo",
+      "stories": 11
     },
     {
       "layer": "basic",

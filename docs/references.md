@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 5 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 6 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -167,3 +167,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### InputTags · 2026-09-07
 
 能力范围核对 Nuxt UI 4 [InputTags](https://ui.nuxt.com/docs/components/input-tags) 的任意标签、分隔符、重复值和数量上限，以及 PrimeVue 3 [Chips](https://v3.primevue.org/chips/) 的受控数组、分隔输入、模板与键盘说明。Reito UI 实现独立的 React 受控/非受控契约、三种去重策略、原位编辑、删除焦点恢复、原生重复表单值和 Graphite 紧凑 tokens；未复制上游源码、CSS、模板或资源。粘贴拆分、动态建议和完整标签键盘导航留在 TAGS-02。
+
+### AsyncCombobox · 2026-09-07
+
+能力范围核对 Nuxt UI 4 [SelectMenu](https://ui.nuxt.com/docs/components/select-menu) 的可搜索高级选择器、PrimeVue [AutoComplete](https://v3.primevue.org/autocomplete/) 的 suggestions / complete 查询边界，以及当前安装 Base UI 1.8 的 [Combobox](https://base-ui.com/react/components/combobox) 受控输入、筛选和键盘契约。Reito UI 把数据获取留给宿主 `loadOptions`，本地实现 AbortSignal 取消、请求序号保护、重试、状态呈现和标签缓存；未复制上游源码、CSS、模板或资源。

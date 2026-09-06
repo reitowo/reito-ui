@@ -58,7 +58,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 | METERGROUP-01 | MeterGroup / ProgressGroup：多段占比、图例/标签、总量/越界/零值语义、可读文本；测量量与任务进度明确区分 | — | 待完成 | 待关联 | 待记录 |
 | RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | 待完成 | 待关联 | 待记录 |
 | KNOB-01 | Knob：圆形数字交互、min/max/step、读数、键盘、只读/禁用与受控值；明确相对 Slider/NumberField 的场景价值 | FORM-01 | 待完成 | 待关联 | 待记录 |
-| SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | 进行中 | 待关联 | 下一步定义异步查询、过期结果与已选项缓存契约 |
+| SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | 进行中 | 基础-asynccombobox--playground；单选状态与过期结果预设 | [AsyncCombobox 阶段验收](validation-async-combobox.md)：单选异步契约完成；下一提交补 AsyncMultiSelect 与选中标签跨结果缓存后完成本项 |
 | SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | 待完成 | 待关联 | 待记录 |
 | SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | 待完成 | 待关联 | 待记录 |
 | DATERANGE-01 | DateRangePicker 预设与 locale：常用范围、可配置格式/locale、草稿/应用/取消、预设与上下限一致 | DATE-01 | 待完成 | 待关联 | 待记录 |

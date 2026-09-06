@@ -1,6 +1,7 @@
 import { tokenMetrics } from "@reito/tokens/metrics";
 import * as React from "react";
 import { ToastProvider, useToastManager } from './feedback.js';
+import { AsyncCombobox, type AsyncComboboxOption } from './async-combobox.js';
 import { InputTags } from './input-tags.js';
 import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
@@ -140,6 +141,17 @@ export function InputTagsDemo() {
     <InputTags label="项目标签" value={value} onValueChange={setValue} maxTags={5} description="输入任意内容后按 Enter 或逗号创建；点击标签文字可编辑。" />
     <output>当前标签：{value.join(', ') || '无'}</output>
   </Stack>;
+}
+const asyncTechnologyOptions: AsyncComboboxOption[] = [
+  { value: 'react', label: 'React', description: '界面组件' },
+  { value: 'typescript', label: 'TypeScript', description: '类型系统' },
+  { value: 'tailwind', label: 'Tailwind CSS', description: '样式工具' },
+  { value: 'storybook', label: 'Storybook', description: '组件工作台' },
+];
+export function AsyncComboboxDemo() {
+  const [value, setValue] = React.useState<string | null>(null);
+  const [query, setQuery] = React.useState('');
+  return <Stack><AsyncCombobox label="异步查找技术栈" query={query} onQueryChange={setQuery} value={value} onValueChange={setValue} debounceMs={120} loadOptions={async (term, { signal }) => { await new Promise<void>((resolve, reject) => { const timer = window.setTimeout(resolve, 180); signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once: true }); }); return asyncTechnologyOptions.filter(option => option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase())); }} description="查询由宿主回调提供；组件取消旧请求并忽略过期结果。" /><output>query={JSON.stringify(query)} · value={value ?? 'null'}</output></Stack>;
 }
 export function TextareaDemo() {
   const [value, setValue] = React.useState("");
@@ -1389,6 +1401,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "Combobox",
     description: "可搜索选项、清除与空结果。",
     component: ComboboxDemo,
+  },
+  {
+    id: "async-combobox",
+    name: "AsyncCombobox",
+    description: "宿主异步查询、取消过期请求、重试与选中项缓存。",
+    component: AsyncComboboxDemo,
   },
   {
     id: "accordion",
