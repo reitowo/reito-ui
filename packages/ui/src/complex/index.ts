@@ -18,3 +18,4 @@ export * from './async-form.js';
 export * from './virtual-list.js';
 export * from './virtual-grid.js';
 export * from './tree-view.js';
+export * from './async-tree-view.js';

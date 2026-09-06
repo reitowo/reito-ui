@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 54,
-    "complex": 20,
+    "complex": 21,
     "ai": 19
   },
-  "total": 93,
-  "stories": 659,
+  "total": 94,
+  "stories": 666,
   "entries": [
     {
       "layer": "basic",
@@ -596,6 +596,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "TreeViewDemo",
       "stories": 10
+    },
+    {
+      "layer": "complex",
+      "id": "async-tree-view",
+      "name": "AsyncTreeView 异步树",
+      "description": "按需子节点、加载错误重试、刷新和过期响应隔离。",
+      "storyId": "复杂-asynctreeview-异步树--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "AsyncTreeViewDemo",
+      "stories": 7
     },
     {
       "layer": "complex",

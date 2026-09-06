@@ -1,8 +1,8 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { Check, ChevronRight, File, Folder, Minus } from 'lucide-react';
 import { cx } from './shared.js';
 
-export interface TreeViewNode { id: string; label: string; description?: string; disabled?: boolean; children?: TreeViewNode[] }
+export interface TreeViewNode { id: string; label: string; description?: string; disabled?: boolean; busy?: boolean; emptyMessage?: string | null; children?: TreeViewNode[] }
 export type TreeViewSelectionMode = 'single' | 'checkbox';
 export type TreeViewCheckPropagation = 'cascade' | 'independent';
 export interface TreeViewProps {
@@ -20,6 +20,7 @@ export interface TreeViewProps {
   checkPropagation?: TreeViewCheckPropagation;
   rangeSelection?: boolean;
   bulkSelection?: boolean;
+  renderTrailing?: (node: TreeViewNode) => ReactNode;
   label?: string;
   emptyMessage?: string;
   className?: string;
@@ -31,7 +32,7 @@ type CheckState = boolean | 'mixed';
 /** ARIA tree with single selection or tri-state checkbox selection and a roving keyboard focus. */
 export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
   selectionMode = 'single', checked, defaultChecked = [], onCheckedChange, checkPropagation = 'cascade', rangeSelection = true,
-  bulkSelection = true, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
+  bulkSelection = true, renderTrailing, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [internalExpanded, setInternalExpanded] = useState(() => new Set(defaultExpanded));
   const [internalChecked, setInternalChecked] = useState(() => new Set(defaultChecked));
@@ -164,7 +165,7 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
     return <li key={node.id} ref={element => { if (element) itemRefs.current.set(node.id, element); else itemRefs.current.delete(node.id); }}
       role="treeitem" aria-level={level} aria-posinset={index + 1} aria-setsize={items.length} aria-expanded={branch ? isOpen : undefined}
       aria-selected={selectionMode === 'single' && !node.disabled ? selected === node.id : undefined}
-      aria-checked={selectionMode === 'checkbox' && !node.disabled ? state : undefined} aria-disabled={node.disabled || undefined} tabIndex={activeId === node.id ? 0 : -1}
+      aria-checked={selectionMode === 'checkbox' && !node.disabled ? state : undefined} aria-disabled={node.disabled || undefined} aria-busy={node.busy || undefined} tabIndex={activeId === node.id ? 0 : -1}
       className="group/treeitem min-w-0 outline-none" onFocus={event => { if (event.target !== event.currentTarget) return; focusOwned.current = true; setActiveId(node.id); }} onKeyDown={event => keyDown(event, item)}>
       <div data-slot="tree-item-row" data-selected={selectionMode === 'single' && selected === node.id || undefined}
         data-checked={selectionMode === 'checkbox' ? state : undefined} data-disabled={node.disabled || undefined}
@@ -178,8 +179,10 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
         </span>}
         {branch ? <Folder className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" /> : <File className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
         <span className="min-w-0 truncate">{node.label}</span>{node.description && <span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground">{node.description}</span>}
+        {renderTrailing?.(node)}
       </div>
-      {branch && isOpen && <ul role="group" className="ml-3 min-w-0 border-l border-border pl-1">{node.children?.length ? render(node.children, level + 1, node.id) : <li role="none" className="px-1 py-1 text-xs text-muted-foreground">{emptyMessage}</li>}</ul>}
+      {branch && isOpen && (node.children?.length ? <ul role="group" className="ml-3 min-w-0 border-l border-border pl-1">{render(node.children, level + 1, node.id)}</ul>
+        : node.emptyMessage !== null && <ul role="group" className="ml-3 min-w-0 border-l border-border pl-1"><li role="none" className="px-1 py-1 text-xs text-muted-foreground">{node.emptyMessage ?? emptyMessage}</li></ul>)}
     </li>;
   })}</>;
   return nodes.length ? <ul role="tree" aria-label={label} aria-multiselectable={selectionMode === 'checkbox' ? true : false} data-slot="tree-view"
