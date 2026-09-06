@@ -197,3 +197,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### PasswordInput · 2026-09-07
 
 能力范围核对 PrimeVue 3 [Password](https://v3.primevue.org/password/) 的强度、显隐、可替换反馈和 `aria-live` 说明，以及 Base UI [Input](https://base-ui.com/react/components/input) 与 [Forms](https://base-ui.com/react/handbook/forms) 的可访问名称、描述、错误和 ref 要求。Reito UI 使用宿主传入的规则与强度算法，保留原生 password、autocomplete 和 FormData 语义；未复制上游源码、CSS、模板或资源。
+
+### InputMask · 2026-09-07
+
+能力范围核对 PrimeVue 3 [InputMask](https://v3.primevue.org/inputmask/) 的 `9 / a / *` 槽位、格式字面量、`?` 可选尾段、slot placeholder、未完成值策略与原生输入可访问名称。Reito UI 公开独立 raw/display 值与三个格式工具，实现 React 受控/非受控状态、格式化粘贴、格式符删除、光标恢复、Unicode composition 和 raw FormData；未复制上游源码、CSS、模板或资源。

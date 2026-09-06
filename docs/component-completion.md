@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**26 项完成，1 项进行中，76 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`PASSWORD-01` 已完成，当前推进 `MASK-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**27 项完成，1 项进行中，75 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`PASSWORD-01`、`MASK-01` 已完成，当前推进 `LISTBOX-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01 与 PASSWORD-01 已完成，当前推进 MASK-01；其后按依赖补齐范围时间组合与其他选择器增强。
+SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、PASSWORD-01 与 MASK-01 已完成，当前推进 LISTBOX-01；其后按依赖补齐范围时间组合与其他选择器增强。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -52,8 +52,8 @@ SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01 与 PASSWORD-01
 | TIME-01 | InputTime：时间分段、小时制/精度/步进、上下限、空值与键盘；明确时间值不默认携带任意日期 | FORM-01 | ✅ 完成 | 基础-inputtime--playground；另有 12/24 小时/秒/步进/范围/错误/键盘/空值/清除/只读/禁用/表单预设 | [InputTime 验收](validation-input-time.md)：15 项交互、60 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/input-time.md) |
 | DATETIME-01 | DateTimePicker：日期与时间一致提交、跨日边界、格式/locale；明确 date-only、local datetime 与带时区值的支持边界 | DATE-01、TIME-01 | ✅ 完成 | 基础-datetimepicker--playground；本族 15 个 Story | [DateTimePicker 验收](validation-date-time-picker.md)：15 项测试、60 次 Story 组合、跨日边界与稳定 FormData；check/build 通过；[用法](components/date-time-picker.md) |
 | PASSWORD-01 | PasswordInput：显隐按钮与可访问名称、规则/强度反馈和宿主校验接点、错误关联；普通 Input password 能力继续保留 | FORM-01 | ✅ 完成 | 基础-passwordinput--playground；本族 15 个 Story | [PasswordInput 验收](validation-password-input.md)：14 项测试、60 次 Story 组合、规则/强度与稳定原生表单；check/build 通过；[用法](components/password-input.md) |
-| MASK-01 | InputMask：格式/占位、raw/display 值、可选段与不完整值策略、粘贴/删除/光标/IME；不能只拦截 keydown | FORM-01 | 进行中 | 待关联 | 待记录 |
-| LISTBOX-01 | 常驻 Listbox：单/多选、分组/搜索、富选项、禁用、范围选择与焦点语义；与弹出 Select 区分 | — | 待完成 | 待关联 | 待记录 |
+| MASK-01 | InputMask：格式/占位、raw/display 值、可选段与不完整值策略、粘贴/删除/光标/IME；不能只拦截 keydown | FORM-01 | ✅ 完成 | 基础-inputmask--playground；本族 17 个 Story | [InputMask 验收](validation-input-mask.md)：16 项测试、68 次 Story 组合、粘贴/删除/IME 与 raw FormData；check/build 通过；[用法](components/input-mask.md) |
+| LISTBOX-01 | 常驻 Listbox：单/多选、分组/搜索、富选项、禁用、范围选择与焦点语义；与弹出 Select 区分 | — | 进行中 | 待关联 | 待记录 |
 | LISTBOX-02 | Listbox 虚拟化：活动项导航、选中项定位、筛选后焦点、非可见选项与加载错误的契约 | LISTBOX-01、VIRT-01 | 待完成 | 待关联 | 待记录 |
 | METERGROUP-01 | MeterGroup / ProgressGroup：多段占比、图例/标签、总量/越界/零值语义、可读文本；测量量与任务进度明确区分 | — | 待完成 | 待关联 | 待记录 |
 | RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | 待完成 | 待关联 | 待记录 |

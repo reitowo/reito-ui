@@ -12,6 +12,7 @@ import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
 import { DateTimePicker, formatLocalDateTime, type LocalDateTimeValue } from './date-time-picker.js';
 import { PasswordInput, type PasswordRule } from './password-input.js';
+import { InputMask, formatMaskValue } from './input-mask.js';
 import {
   ArrowUp,
   Bold,
@@ -187,6 +188,13 @@ export function PasswordInputDemo() {
   return <Stack>
     <PasswordInput label="访问密码" value={value} onValueChange={setValue} rules={passwordRules} autoComplete="new-password" description="规则由宿主传入；强度随当前规则结果更新。" />
     <output className="text-xs text-muted-foreground">已输入 {value.length} 个字符</output>
+  </Stack>;
+}
+export function InputMaskDemo() {
+  const [value, setValue] = React.useState('02155551234');
+  return <Stack>
+    <InputMask label="联系电话" mask="999-9999-9999? x99999" value={value} onValueChange={setValue} inputMode="numeric" placeholder="021-5555-1234" description="公开值不含格式符；问号后的分机段可选。" />
+    <output className="font-mono text-xs text-muted-foreground">raw={value || 'empty'} · display={formatMaskValue(value, '999-9999-9999? x99999') || 'empty'}</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1411,6 +1419,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "PasswordInput",
     description: "显隐、规则、强度反馈与宿主校验接点。",
     component: PasswordInputDemo,
+  },
+  {
+    id: "input-mask",
+    name: "InputMask",
+    description: "raw/display 双值、可选段、粘贴、光标与 IME。",
+    component: InputMaskDemo,
   },
   {
     id: "textarea",
