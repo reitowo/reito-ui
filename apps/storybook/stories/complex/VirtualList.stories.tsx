@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { VirtualListDemo } from '../../../../packages/ui/src/complex/virtual-list-demo.js';
+import { DynamicVirtualListDemo } from '../../../../packages/ui/src/complex/virtual-list-dynamic-demo.js';
 import { booleanControl, choiceControl } from '../feature-controls.js';
 const meta = { title: '复杂/VirtualList 虚拟列表', component: VirtualListDemo } satisfies Meta<typeof VirtualListDemo>;
 export default meta;
@@ -13,3 +14,4 @@ export const Empty: Story = { args: { scenario: 'empty' } };
 export const Loading: Story = { args: { scenario: 'loading' } };
 export const Error: Story = { args: { scenario: 'error' } };
 export const Sparse: Story = { args: { sparse: true } };
+export const DynamicRows: StoryObj = { name: '动态高度、锚点与焦点', render: () => <DynamicVirtualListDemo /> };

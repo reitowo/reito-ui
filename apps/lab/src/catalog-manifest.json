@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 91,
-  "stories": 643,
+  "stories": 644,
   "entries": [
     {
       "layer": "basic",
@@ -575,7 +575,7 @@
       "storyId": "复杂-virtuallist-虚拟列表--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "VirtualListDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "complex",
