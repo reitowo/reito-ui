@@ -1,5 +1,5 @@
-import { Fragment, useMemo, useState, type ReactNode } from 'react';
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Fragment, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Check, ChevronDown, ChevronLeft, ChevronRight, LoaderCircle, Pencil, RotateCcw, Search, X } from 'lucide-react';
 import {
   flexRender, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getGroupedRowModel, getPaginationRowModel, getSortedRowModel, useReactTable,
   type Column, type ColumnDef, type ColumnFiltersState, type ColumnOrderState, type ColumnPinningState, type ColumnSizingState, type ExpandedState, type FilterFn, type GroupingState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater, type VisibilityState,
@@ -11,11 +11,13 @@ import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js
 import { DataTableColumnFilterMenu, dataTableColumnFilterFn, isDataTableColumnFilterActive, type DataTableColumnFilterDefinition, type DataTableColumnFiltersState } from './data-table-filter.js';
 import { DataTableColumnManager } from './data-table-columns.js';
 import { DataTableGroupingMenu, type DataTableGroupingDefinition } from './data-table-grouping.js';
+import { DataTableCellEditor, type DataTableEditableColumn, type DataTableEditCommit, type DataTableEditingState, type DataTableEditMode, type DataTableEditValue } from './data-table-editing.js';
 import { cx } from './shared.js';
 
 export { isDataTableColumnFilterActive, matchesDataTableColumnFilter, serializeDataTableColumnFilters } from './data-table-filter.js';
 export type { DataTableColumnFilterDefinition, DataTableColumnFilterOption, DataTableColumnFiltersState, DataTableColumnFilterValue, DataTableDateFilterValue, DataTableFilterQueryClause, DataTableNumberFilterValue, DataTableSelectFilterValue, DataTableTextFilterValue } from './data-table-filter.js';
 export type { DataTableGroupingDefinition } from './data-table-grouping.js';
+export type { DataTableEditableColumn, DataTableEditCommit, DataTableEditingState, DataTableEditMode, DataTableEditOption, DataTableEditorRenderProps, DataTableEditValue } from './data-table-editing.js';
 
 export interface DataTableProps<TData> {
   data: TData[];
@@ -68,6 +70,13 @@ export interface DataTableProps<TData> {
   manualGrouping?: boolean;
   filterFromLeafRows?: boolean;
   paginateExpandedRows?: boolean;
+  editMode?: DataTableEditMode;
+  editableColumns?: DataTableEditableColumn<TData>[];
+  editingState?: DataTableEditingState | null;
+  defaultEditingState?: DataTableEditingState | null;
+  onEditingStateChange?: (state: DataTableEditingState | null) => void;
+  onEditCommit?: (change: DataTableEditCommit<TData>) => void | Promise<void>;
+  isRowEditable?: (row: Row<TData>) => boolean;
   pagination?: PaginationState;
   defaultPagination?: PaginationState;
   onPaginationChange?: (pagination: PaginationState) => void;
@@ -97,6 +106,7 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   expanded, defaultExpanded = {}, onExpandedChange, getSubRows, getRowCanExpand, renderExpandedRow,
   grouping, defaultGrouping = [], onGroupingChange, groupingDefinitions = [], renderGroupHeader, renderGroupSummary,
   manualExpanding = false, manualGrouping = false, filterFromLeafRows = true, paginateExpandedRows = false,
+  editMode = 'row', editableColumns = [], editingState, defaultEditingState = null, onEditingStateChange, onEditCommit, isRowEditable,
   pagination, defaultPagination, onPaginationChange, manual = false, rowCount: externalRowCount, pageCount: externalPageCount,
   selectable = true, rowSelection, onRowSelectionChange, loading = false, error, onRetry, emptyMessage = '没有符合条件的记录', className }: DataTableProps<TData>) {
   const [internalSorting, setInternalSorting] = useState<SortingState>(defaultSorting);
@@ -110,6 +120,11 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   const [internalGrouping, setInternalGrouping] = useState<GroupingState>(defaultGrouping);
   const [internalPagination, setInternalPagination] = useState<PaginationState>(defaultPagination ?? { pageIndex: 0, pageSize: Math.max(1, pageSize) });
   const [internalSelection, setInternalSelection] = useState<RowSelectionState>({});
+  const [internalEditing, setInternalEditing] = useState<DataTableEditingState | null>(defaultEditingState);
+  const [editErrors, setEditErrors] = useState<Record<string, string>>({});
+  const [editSubmissionError, setEditSubmissionError] = useState<string>();
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const editOrigins = useRef(new Map<string, HTMLElement>());
   const currentSorting = sorting ?? internalSorting;
   const query = globalFilter ?? internalFilter;
   const currentColumnFilters = columnFilters ?? internalColumnFilters;
@@ -121,6 +136,7 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   const currentGrouping = grouping ?? internalGrouping;
   const currentPagination = pagination ?? internalPagination;
   const selection = rowSelection ?? internalSelection;
+  const currentEditing = editingState === undefined ? internalEditing : editingState;
   function updateSorting(update: Updater<SortingState>) {
     const next = typeof update === 'function' ? update(currentSorting) : update;
     if (sorting === undefined) setInternalSorting(next);
@@ -164,6 +180,70 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
       return next;
     });
   }
+  function updateEditing(next: DataTableEditingState | null) {
+    if (editingState === undefined) setInternalEditing(next);
+    onEditingStateChange?.(next);
+  }
+  function editKey(rowId: string, columnId?: string) { return `${rowId}:${columnId ?? 'row'}`; }
+  function editableValue(row: Row<TData>, id: string): DataTableEditValue {
+    const value = row.getValue(id);
+    return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null ? value : value === undefined ? '' : String(value);
+  }
+  function startEditing(row: Row<TData>, columnId: string | undefined, origin: HTMLElement) {
+    if (editSubmitting || currentEditing || row.getIsGrouped() || isRowEditable?.(row) === false) return;
+    editOrigins.current.set(editKey(row.id, columnId), origin);
+    updateEditing({ rowId: row.id, columnId, values: Object.fromEntries(editableColumns.map(definition => [definition.id, editableValue(row, definition.id)])) });
+    setEditErrors({});
+    setEditSubmissionError(undefined);
+  }
+  function restoreEditOrigin(state: DataTableEditingState) {
+    requestAnimationFrame(() => {
+      const origin = editOrigins.current.get(editKey(state.rowId, state.columnId));
+      if (origin?.isConnected) { origin.focus(); return; }
+      document.querySelector<HTMLElement>(`tr[data-row-id="${CSS.escape(state.rowId)}"] button[aria-label^="编辑记录 "]`)?.focus();
+    });
+  }
+  function cancelEditing() {
+    const state = currentEditing;
+    updateEditing(null);
+    setEditErrors({});
+    setEditSubmissionError(undefined);
+    if (state) restoreEditOrigin(state);
+  }
+  function changeDraft(columnId: string, value: DataTableEditValue) {
+    if (!currentEditing) return;
+    updateEditing({ ...currentEditing, values: { ...currentEditing.values, [columnId]: value } });
+    setEditErrors(current => { const next = { ...current }; delete next[columnId]; return next; });
+    setEditSubmissionError(undefined);
+  }
+  async function commitEditing() {
+    if (!currentEditing || editSubmitting) return;
+    const row = table.getRow(currentEditing.rowId);
+    if (!row) { setEditSubmissionError('记录已不在当前数据中，草稿尚未保存。'); return; }
+    const activeDefinitions = editMode === 'cell' ? editableColumns.filter(definition => definition.id === currentEditing.columnId) : editableColumns;
+    const errors: Record<string, string> = {};
+    for (const definition of activeDefinitions) {
+      const value = currentEditing.values[definition.id];
+      if (definition.required && (value === '' || value === null)) errors[definition.id] = `${definition.label}不能为空`;
+      else {
+        const problem = definition.validate?.(value, row.original, currentEditing.values);
+        if (problem) errors[definition.id] = problem;
+      }
+    }
+    if (Object.keys(errors).length) { setEditErrors(errors); requestAnimationFrame(() => document.querySelector<HTMLElement>(`[aria-describedby="data-table-edit-${CSS.escape(row.id)}-${CSS.escape(Object.keys(errors)[0])}-error"]`)?.focus()); return; }
+    if (!onEditCommit) { setEditSubmissionError('未配置 onEditCommit，草稿尚未保存。'); return; }
+    const changedValues = Object.fromEntries(activeDefinitions.filter(definition => !Object.is(currentEditing.values[definition.id], editableValue(row, definition.id))).map(definition => [definition.id, currentEditing.values[definition.id]]));
+    setEditSubmitting(true);
+    setEditSubmissionError(undefined);
+    try {
+      await onEditCommit({ mode: editMode, rowId: row.id, row: row.original, values: { ...currentEditing.values }, changedValues });
+      const state = currentEditing;
+      updateEditing(null);
+      restoreEditOrigin(state);
+    } catch (reason) {
+      setEditSubmissionError(reason instanceof Error && reason.message ? reason.message : '保存失败，草稿已保留。');
+    } finally { setEditSubmitting(false); }
+  }
   const definitionById = useMemo(() => new Map(filterDefinitions.map(definition => [definition.id, definition])), [filterDefinitions]);
   const resolvedColumns = useMemo(() => {
     const decorate = (definitions: ColumnDef<TData>[]): ColumnDef<TData>[] => definitions.map(definition => {
@@ -194,7 +274,8 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   const resolvedPageCount = table.getPageCount();
   const headerGroups = table.getHeaderGroups();
   const visibleRows = table.getRowModel().rows;
-  const columnCount = table.getVisibleLeafColumns().length + Number(selectable);
+  const editingEnabled = editableColumns.length > 0;
+  const columnCount = table.getVisibleLeafColumns().length + Number(selectable) + Number(editingEnabled && editMode === 'row');
   const hasLeftPinned = table.getLeftVisibleLeafColumns().length > 0;
   function pinnedStyle(column: Column<TData, unknown>) {
     const pinned = column.getIsPinned();
@@ -224,6 +305,7 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
             {header.isPlaceholder ? null : <div className="flex items-center gap-0.5">{header.column.getCanSort() ? <Button variant="ghost" size="sm" className="-ml-2" onClick={header.column.getToggleSortingHandler()} disabled={loading}>{flexRender(header.column.columnDef.header, header.getContext())}{header.column.getIsSorted() === 'asc' ? <ArrowUp aria-hidden="true" /> : header.column.getIsSorted() === 'desc' ? <ArrowDown aria-hidden="true" /> : <ArrowUpDown aria-hidden="true" className="text-muted-foreground" />}</Button> : flexRender(header.column.columnDef.header, header.getContext())}{definitionById.get(header.column.id) && <DataTableColumnFilterMenu column={header.column} definition={definitionById.get(header.column.id)!} disabled={loading} />}</div>}
             {header.column.getCanResize() && !header.isPlaceholder && <div role="separator" aria-label={`调整${columnLabels[header.column.id] ?? header.column.id}列宽`} aria-orientation="vertical" aria-valuemin={header.column.columnDef.minSize ?? 20} aria-valuemax={header.column.columnDef.maxSize ?? 1000} aria-valuenow={Math.round(header.column.getSize())} tabIndex={0} onMouseDown={header.getResizeHandler()} onTouchStart={header.getResizeHandler()} onDoubleClick={() => header.column.resetSize()} onKeyDown={event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); resizeColumn(header.column, event.key === 'ArrowLeft' ? -16 : 16); } }} className="absolute inset-y-0 right-0 w-1 cursor-col-resize touch-none outline-none hover:bg-ring focus-visible:bg-ring" />}
           </th>)}
+          {editingEnabled && editMode === 'row' && groupIndex === 0 && <th scope="col" rowSpan={headerGroups.length} className="w-[var(--rui-control-height-lg)] px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)] text-right font-medium">编辑</th>}
         </tr>)}</thead>
         <tbody>{loading ? <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground"><span role="status">正在加载记录…</span></td></tr> : visibleRows.length ? visibleRows.map((row, rowIndex) => {
           const grouped = row.getIsGrouped();
@@ -231,11 +313,15 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
           const closingGroups = renderGroupSummary ? [...row.getParentRows(), ...(grouped ? [row] : [])].reverse().filter(group => group.getIsGrouped() && nextDepth <= group.depth) : [];
           return <Fragment key={row.id}><tr data-row-id={row.id} data-grouped={grouped || undefined} data-selected={row.getIsSelected() || undefined} className={cx('group border-t border-border hover:bg-muted/30 data-selected:bg-muted/60', grouped && 'bg-muted/20 font-medium')}>
             {selectable && <td className={cx('w-[var(--rui-control-height-lg)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]', hasLeftPinned && 'sticky left-0 z-[var(--rui-z-navigation)] border-r border-border bg-background group-hover:bg-muted')}><Checkbox aria-label={`${grouped ? '选择分组' : '选择记录'} ${row.id}`} checked={grouped ? row.getIsAllSubRowsSelected() : row.getIsSelected()} indeterminate={row.getIsSomeSelected()} onCheckedChange={checked => grouped ? updateGroupSelection(row, checked) : row.toggleSelected(checked)} /></td>}
-            {row.getVisibleCells().map((cell, cellIndex) => { const expanderCell = grouped ? cell.getIsGrouped() : cellIndex === 0; return <td key={cell.id} style={pinnedStyle(cell.column)} className={cx('max-w-sm px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] align-middle', pinnedClass(cell.column, 'body'))}><div className={cx('flex min-w-0 items-center gap-1.5', expanderCell && 'whitespace-nowrap')} style={expanderCell && row.depth > 0 ? { paddingInlineStart: `calc(var(--rui-space-3) * ${row.depth})` } : undefined}>{expanderCell && row.getCanExpand() && <Button variant="ghost" size="icon-xs" className="size-[var(--rui-table-expander-size)]" aria-label={`${row.getIsExpanded() ? '折叠' : '展开'}${grouped ? '分组' : '记录'} ${row.id}`} aria-expanded={row.getIsExpanded()} onClick={row.getToggleExpandedHandler()}><ChevronDown aria-hidden="true" className={cx('transition-transform', !row.getIsExpanded() && '-rotate-90')} /></Button>}{cell.getIsGrouped() ? renderGroupHeader?.(row) ?? <span>{String(cell.getValue())} <span className="font-normal text-muted-foreground">({row.subRows.length})</span></span> : cell.getIsAggregated() ? flexRender(cell.column.columnDef.aggregatedCell ?? cell.column.columnDef.cell, cell.getContext()) : cell.getIsPlaceholder() ? null : flexRender(cell.column.columnDef.cell, cell.getContext())}</div></td>; })}
+            {row.getVisibleCells().map((cell, cellIndex) => { const expanderCell = grouped ? cell.getIsGrouped() : cellIndex === 0; const editor = editableColumns.find(definition => definition.id === cell.column.id); const editingCell = !grouped && editor && currentEditing?.rowId === row.id && (editMode === 'row' || currentEditing.columnId === cell.column.id); const errorId = `data-table-edit-${row.id}-${cell.column.id}-error`; const cellCanStart = editMode === 'cell' && editor && !grouped && !currentEditing && isRowEditable?.(row) !== false; return <td key={cell.id} data-editable={editor && !grouped || undefined} tabIndex={cellCanStart ? 0 : undefined} aria-label={cellCanStart ? `编辑${editor.label}，${String(cell.getValue() ?? '')}` : undefined} onDoubleClick={event => { if (cellCanStart) startEditing(row, cell.column.id, event.currentTarget); }} onKeyDown={event => { if (event.key === 'Enter' && cellCanStart) { event.preventDefault(); startEditing(row, cell.column.id, event.currentTarget); } }} style={pinnedStyle(cell.column)} className={cx('max-w-sm px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] align-middle', pinnedClass(cell.column, 'body'), cellCanStart && 'cursor-text outline-none focus-visible:ring-inset focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-ring/50')}>
+              {editingCell ? <div className="grid min-w-[var(--rui-control-height-lg)] gap-[var(--rui-space-1)]"><DataTableCellEditor definition={editor} row={row} value={currentEditing.values[editor.id] ?? ''} onChange={value => changeDraft(editor.id, value)} onCommit={() => { void commitEditing(); }} onCancel={cancelEditing} disabled={editSubmitting} error={editErrors[editor.id]} errorId={errorId} autoFocus={editMode === 'cell' || editableColumns[0]?.id === editor.id} mode={editMode} />{editErrors[editor.id] && <span id={errorId} role="alert" className="text-xs font-normal text-destructive">{editErrors[editor.id]}</span>}{editMode === 'cell' && <div className="flex justify-end gap-[var(--rui-space-1)]"><Button variant="ghost" size="icon-xs" aria-label={`取消编辑${editor.label}`} disabled={editSubmitting} onClick={cancelEditing}><X aria-hidden="true" /></Button><Button variant="ghost" size="icon-xs" aria-label={`保存${editor.label}`} disabled={editSubmitting} onClick={() => { void commitEditing(); }}>{editSubmitting ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" /> : <Check aria-hidden="true" />}</Button></div>}</div> : <div className={cx('flex min-w-0 items-center gap-1.5', expanderCell && 'whitespace-nowrap')} style={expanderCell && row.depth > 0 ? { paddingInlineStart: `calc(var(--rui-space-3) * ${row.depth})` } : undefined}>{expanderCell && row.getCanExpand() && <Button variant="ghost" size="icon-xs" className="size-[var(--rui-table-expander-size)]" aria-label={`${row.getIsExpanded() ? '折叠' : '展开'}${grouped ? '分组' : '记录'} ${row.id}`} aria-expanded={row.getIsExpanded()} onClick={row.getToggleExpandedHandler()}><ChevronDown aria-hidden="true" className={cx('transition-transform', !row.getIsExpanded() && '-rotate-90')} /></Button>}{cell.getIsGrouped() ? renderGroupHeader?.(row) ?? <span>{String(cell.getValue())} <span className="font-normal text-muted-foreground">({row.subRows.length})</span></span> : cell.getIsAggregated() ? flexRender(cell.column.columnDef.aggregatedCell ?? cell.column.columnDef.cell, cell.getContext()) : cell.getIsPlaceholder() ? null : flexRender(cell.column.columnDef.cell, cell.getContext())}</div>}
+            </td>; })}
+            {editingEnabled && editMode === 'row' && <td className="px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-right">{!grouped && (currentEditing?.rowId === row.id ? <div className="flex justify-end gap-[var(--rui-space-1)]"><Button variant="ghost" size="icon-xs" aria-label={`取消编辑记录 ${row.id}`} disabled={editSubmitting} onClick={cancelEditing}><X aria-hidden="true" /></Button><Button variant="ghost" size="icon-xs" aria-label={`保存记录 ${row.id}`} disabled={editSubmitting} onClick={() => { void commitEditing(); }}>{editSubmitting ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" /> : <Check aria-hidden="true" />}</Button></div> : <Button variant="ghost" size="icon-xs" aria-label={`编辑记录 ${row.id}`} disabled={editSubmitting || Boolean(currentEditing) || isRowEditable?.(row) === false} onClick={event => startEditing(row, undefined, event.currentTarget)}><Pencil aria-hidden="true" /></Button>)}</td>}
           </tr>{!grouped && row.getIsExpanded() && renderExpandedRow && <tr data-expanded-row={row.id} className="border-t border-border bg-muted/10"><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">{renderExpandedRow(row)}</td></tr>}{closingGroups.map(group => <tr key={`summary-${group.id}`} data-group-summary={group.id} className="border-t border-border bg-muted/10"><td colSpan={columnCount} className="px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground">{renderGroupSummary?.(group)}</td></tr>)}</Fragment>;
         }) : <tr><td colSpan={columnCount} className="px-[var(--rui-content-padding)] py-[var(--rui-empty-padding)] text-center text-muted-foreground">{emptyMessage}{query && <div className="mt-3"><Button variant="outline" size="sm" onClick={() => { updateFilter(''); updatePagination(current => ({ ...current, pageIndex: 0 })); }}>清除筛选</Button></div>}</td></tr>}</tbody>
       </table>
     </div>
+    {editSubmissionError && <div role="alert" className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)] rounded-md border border-destructive/30 bg-destructive/5 px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)] text-sm text-destructive"><span>{editSubmissionError}</span><Button variant="outline" size="sm" disabled={editSubmitting} onClick={() => { void commitEditing(); }}><RotateCcw aria-hidden="true" />重试保存</Button></div>}
     <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] text-xs text-muted-foreground">
       <div className="flex items-center gap-2"><span>每页</span><NativeSelect size="sm" aria-label="每页记录数" value={currentPagination.pageSize} disabled={loading} onChange={event => table.setPageSize(Number(event.target.value))}>{Array.from(new Set([Math.max(1, pageSize), currentPagination.pageSize, 5, 10, 20])).sort((a, b) => a - b).map(size => <NativeSelectOption key={size} value={size}>{size} 条</NativeSelectOption>)}</NativeSelect></div>
       <div className="flex items-center gap-[var(--rui-content-gap)]"><span aria-live="polite">第 {currentPagination.pageIndex + 1} / {resolvedPageCount < 0 ? '?' : Math.max(1, resolvedPageCount)} 页</span><Button variant="outline" size="icon-sm" aria-label="上一页" disabled={!table.getCanPreviousPage() || loading} onClick={() => table.previousPage()}><ChevronLeft aria-hidden="true" /></Button><Button variant="outline" size="icon-sm" aria-label="下一页" disabled={!table.getCanNextPage() || loading} onClick={() => table.nextPage()}><ChevronRight aria-hidden="true" /></Button></div>

@@ -151,3 +151,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### DataTable 行展开与分组 · 2026-09-07
 
 实现核对 TanStack Table v8 的 [Expanding Guide](https://tanstack.com/table/v8/docs/guide/expanding) 与 [Grouping Guide](https://tanstack.com/table/v8/docs/guide/grouping)：展开状态是 `true | Record<rowId, boolean>`，层级数据由 `getSubRows` 提供，自定义详情可通过 `getRowCanExpand` 开放；行分组由有序字段数组、grouped/aggregated/placeholder 单元格状态与列聚合函数组成。Reito UI 在此行为引擎上实现自己的紧凑菜单、组头/汇总插槽、稳定叶行选择和 Graphite 样式；未复制上游示例代码、CSS 或资源。
+
+### DataTable 单元格与行编辑 · 2026-09-07
+
+能力范围核对 PrimeVue 5 [DataTable Editing](https://primevue.dev/datatable/) 的 cell / row 两种模式、editor 插槽、完成/保存事件、稳定 dataKey 与行编辑按钮可访问名称。Reito UI 实现独立的 React 草稿事务：同步列校验、异步宿主提交、失败保留与重试、受控草稿、IME 保护和焦点归还；数据成功写回仍由宿主负责。编辑器复用本库 Input / NativeSelect 与 Graphite tokens，没有复制上游源码、CSS、模板或资源。

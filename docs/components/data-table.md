@@ -44,6 +44,10 @@ const [selection, setSelection] = useState<RowSelectionState>({})
 | `renderGroupHeader` / `renderGroupSummary` | 自定义组头和全宽汇总行。聚合数据单元格继续使用 TanStack `ColumnDef.aggregatedCell` / `aggregationFn`。 |
 | `manualExpanding` / `manualGrouping` | 分别把展开或分组交给宿主，独立于远程筛选/排序/分页的 `manual`。 |
 | `filterFromLeafRows` / `paginateExpandedRows` | 默认由叶行向上保留匹配父组，并让展开子行跟随父行所在页；可显式改写。 |
+| `editMode` / `editableColumns` | 开启 `cell` 单元格编辑或 `row` 行事务。列定义支持文本、数字、日期、枚举、必填、同步校验和自定义编辑器；`id` 必须对应叶列。仅提供 `editableColumns` 不会修改宿主数据。 |
+| `editingState` / `defaultEditingState` / `onEditingStateChange` | 受控或非受控草稿，包含稳定 `rowId`、单元格模式下的 `columnId` 和整行 `values`。受控宿主必须同步回写每次变更。 |
+| `onEditCommit` | 保存边界。回调接收原行、完整草稿和 `changedValues`；成功 resolve 后退出编辑，抛错或 reject 时保留草稿并显示可重试错误。启用编辑时必须提供。 |
+| `isRowEditable` | 按行禁用编辑。分组生成的临时行始终不可编辑。 |
 | `pagination` / `defaultPagination` / `onPaginationChange` | 受控或非受控 `{ pageIndex, pageSize }`。`pageIndex` 从 0 开始。只传 `pageSize` 时，它作为非受控初值。 |
 | `manual` | 同时关闭客户端筛选、排序和分页。宿主必须用最新状态请求并传回已经处理好的一页数据。 |
 | `rowCount` / `pageCount` | manual 模式的远程总量或页数。优先传 `rowCount`，组件按当前 `pageSize` 推导页数；后端不知道终页时可传 `pageCount={-1}`。两者都不传时只能把当前页行数当作总量回退。 |
@@ -91,4 +95,43 @@ manual 模式不会在当前页再次执行列筛选。宿主可直接使用受�
 
 本地筛选默认 `filterFromLeafRows`，命中的叶行会保留祖先分组；排序、固定列、可见列和分组共用 TanStack 行/列模型。`manualGrouping` 和 `manualExpanding` 用于服务端已经产出相应结构的场景，宿主负责返回结构、聚合值和对应状态；组件不发送网络请求。
 
-[Storybook 类型化列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--column-filters) 展示四种编辑器；[远程列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-column-filters) 展示受控条件、远程结果和序列化查询；[受控远程分页](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-controlled) 展示远程排序、分页和跨页选择；[层级与详情展开](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-expansion) 和[数据行分组](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-grouping) 分开展示两种结构。[参数调试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--playground) 在同一 Canvas 用 Controls 切换查询、列、分组、展开和状态参数。
+## 单元格与行编辑
+
+```tsx
+const editableColumns: DataTableEditableColumn<Task>[] = [
+  {
+    id: 'name',
+    label: '任务',
+    required: true,
+    validate: (value) => String(value).length < 3
+      ? '任务名称至少需要 3 个字符'
+      : undefined,
+  },
+  {
+    id: 'status',
+    label: '状态',
+    kind: 'select',
+    options: statuses,
+  },
+]
+
+<DataTable
+  data={rows}
+  columns={columns}
+  getRowId={(row) => row.id}
+  editMode="row"
+  editableColumns={editableColumns}
+  onEditCommit={async ({ rowId, changedValues }) => {
+    const saved = await api.tasks.patch(rowId, changedValues)
+    setRows((current) => current.map((row) => row.id === rowId ? saved : row))
+  }}
+/>
+```
+
+行模式把同一行的字段作为一次事务提交；单元格模式只校验和提交活动字段。组件保存草稿、同步校验错误、提交 pending 和失败信息，宿主在 `onEditCommit` 中执行请求并用服务端结果替换 `data`。回调 reject 时编辑器保持打开，用户可以修改后再保存，或直接“重试保存”。组件不会乐观改写 `data`，也不会把草稿当成持久数据。
+
+键盘流为：单元格聚焦后 Enter 开始编辑；单元格模式 Enter 提交；行模式 Ctrl/⌘+Enter 提交；Escape 取消并把焦点还给原单元格或该行的新编辑按钮。中文 IME 组合期间的 Enter 不提交。行事务进行时会禁用其他行的编辑入口，提交期间所有编辑器和保存动作禁用。
+
+`renderEditor` 可接入复合控件。自定义编辑器必须把 `value`、`onChange`、`disabled`、`invalid`、`describedBy` 和 `autoFocus` 传给实际控件，并实现等价的 `onCommit` / `onCancel` 键盘入口；组件仍负责草稿、校验与提交事务。远程排序、筛选或刷新可能移除正在编辑的 ID，宿主应在替换数据前决定保留、取消或迁移受控 `editingState`；若提交时记录已经不存在，组件会保留草稿并报告错误。
+
+[Storybook 类型化列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--column-filters) 展示四种筛选器；[远程列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-column-filters) 展示受控条件、远程结果和序列化查询；[受控远程分页](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-controlled) 展示远程排序、分页和跨页选择；[层级与详情展开](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-expansion) 和[数据行分组](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-grouping) 分开展示两种结构；[行编辑](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-editing)、[单元格编辑](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--cell-editing)、[失败重试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--editing-failure) 和[受控草稿](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--controlled-editing) 分开保留可发现的编辑状态。[参数调试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--playground) 在同一 Canvas 用 Controls 切换查询、列、分组、展开、编辑和保存结果。
