@@ -9,3 +9,4 @@ export * from './basic/meter.js';
 export * from './basic/color-picker.js';
 export * from './basic/input-date.js';
 export * from './basic/input-time.js';
+export * from './basic/date-time-picker.js';

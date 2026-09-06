@@ -10,6 +10,7 @@ import { Meter } from './meter.js';
 import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
+import { DateTimePicker, formatLocalDateTime, type LocalDateTimeValue } from './date-time-picker.js';
 import {
   ArrowUp,
   Bold,
@@ -165,6 +166,13 @@ export function InputTimeDemo() {
   return <Stack>
     <InputTime label="提醒时间" value={value} onValueChange={setValue} minuteStep={5} description="纯时间值，不附带任意日期；方向键按分段与步进调整。" />
     <output className="font-mono text-xs text-muted-foreground">当前时间：{formatTimeValue(value) || '未选择'}</output>
+  </Stack>;
+}
+export function DateTimePickerDemo() {
+  const [value, setValue] = React.useState<LocalDateTimeValue | null>({ date: new Date(2026, 8, 7), time: { hour: 9, minute: 30 } });
+  return <Stack>
+    <DateTimePicker label="计划执行时间" value={value} onValueChange={setValue} minuteStep={5} description="本地日期时间；不隐式附加浏览器时区或 UTC 标记。" />
+    <output className="font-mono text-xs text-muted-foreground">当前：{formatLocalDateTime(value) || '未选择'}</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1377,6 +1385,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "InputTime",
     description: "时间分段、小时制、精度、步进、范围与表单值。",
     component: InputTimeDemo,
+  },
+  {
+    id: "date-time-picker",
+    name: "DateTimePicker",
+    description: "本地日期时间、跨日范围、一致提交与序列化。",
+    component: DateTimePickerDemo,
   },
   {
     id: "textarea",

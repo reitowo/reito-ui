@@ -1,10 +1,10 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **60 个基础组件族、22 个复杂组件族、19 个 AI 组件族**，共 101 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **61 个基础组件族、22 个复杂组件族、19 个 AI 组件族**，共 102 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
-| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 60 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 10 个本地组合族；统一主题、尺寸和必要修复。 |
+| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 61 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 11 个本地组合族；统一主题、尺寸和必要修复。 |
 | 本地数据表、筛选、属性编辑、设置、分栏等通用工作流 | 复杂 22 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 19 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
@@ -12,9 +12,9 @@ Reito UI 0.4 工作区按应用场景提供 **60 个基础组件族、22 个复�
 
 所有层都消费同一份语义主题。颜色、字体和密度的主源是 [`packages/tokens/src/tokens.json`](../packages/tokens/src/tokens.json)，基础组件不再使用旧版 `components.tsx` API。常规控件保留实际 Base UI 的 `render`、受控值和组合结构；日历、命令搜索、分栏分别依赖 React DayPicker、cmdk、react-resizable-panels，静态展示组件使用普通语义元素。不能把全部基础组件都描述成 Base UI 包装器。
 
-## 基础层：60 个组件族
+## 基础层：61 个组件族
 
-基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 10 个本地组合族，不能将它们标为 CLI 生成源码。
+基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 11 个本地组合族，不能将它们标为 CLI 生成源码。
 
 | 用途 | 组件族 |
 | --- | --- |
@@ -36,6 +36,7 @@ Reito UI 0.4 工作区按应用场景提供 **60 个基础组件族、22 个复�
 | [`ColorPicker / ColorInput`](../packages/ui/src/basic/color-picker.tsx) | 必填 `label`；文本接受 HEX/RGB/HSL 并按 `format` 规范化，支持透明度、无效草稿恢复和提交事件。ColorPicker 增加弹出/内联色板、区域、色相/透明度、RGB(A) 通道、预设和键盘路径；颜色值由宿主管理，chrome 消费共享 tokens。 |
 | [`InputDate`](../packages/ui/src/basic/input-date.tsx) | 必填 `label`；值是不携带时区的本地日历日。按 locale 或显式顺序显示年月日分段，支持合法性/范围/禁用日、键盘调整、清除、Calendar 联动、提交事件与 `YYYY-MM-DD` 表单值；多选、多月和范围继续由 Calendar / DateRangePicker 负责。 |
 | [`InputTime`](../packages/ui/src/basic/input-time.tsx) | 必填 `label`；使用独立 `{ hour, minute, second? }` 时间值。支持 12/24 小时显示、分钟/秒精度和步进、范围、键盘调整、清除、提交恢复及 `HH:mm[:ss]` 表单值；不创建任意日期或解释时区。 |
+| [`DateTimePicker`](../packages/ui/src/basic/date-time-picker.tsx) | 必填 `label`；组合 InputDate 与 InputTime 为无时区的本地日期时间。只提交完整合法值，支持跨日边界、locale、两种小时制、分钟/秒精度及 `YYYY-MM-DDTHH:mm[:ss]` 表单值；UTC / IANA 时区转换由宿主负责。 |
 | [`NumberField`](../packages/ui/src/basic/number-field.tsx) | 必填 `label`，其余值、范围、步进、格式与提交事件采用 Base UI NumberField Root 契约。支持 `description / error / incrementLabel / decrementLabel`；宿主应允许输入过程中的 `null`，不能把空输入强制解释成 0。 |
 | [`Meter`](../packages/ui/src/basic/meter.tsx) | 必填 `label`，数值与范围采用 Base UI Meter Root 契约；支持 `description / valueLabel`，`tone` 为 `default / success / warning / danger`。表示容量、配额或质量等有界测量；异步任务进度使用 Progress。 |
 

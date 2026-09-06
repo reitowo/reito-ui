@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 60,
+    "basic": 61,
     "complex": 22,
     "ai": 19
   },
-  "total": 101,
-  "stories": 779,
+  "total": 102,
+  "stories": 794,
   "entries": [
     {
       "layer": "basic",
@@ -85,6 +85,16 @@
       "storyId": "基础-inputtime--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputTimeDemo",
+      "stories": 15
+    },
+    {
+      "layer": "basic",
+      "id": "date-time-picker",
+      "name": "DateTimePicker",
+      "description": "本地日期时间、跨日范围、一致提交与序列化。",
+      "storyId": "基础-datetimepicker--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "DateTimePickerDemo",
       "stories": 15
     },
     {

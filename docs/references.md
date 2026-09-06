@@ -189,3 +189,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### InputTime · 2026-09-07
 
 能力范围核对 Nuxt UI [InputTime](https://ui.nuxt.com/docs/components/input-time) 的专用时间输入定位，以及 PrimeVue 5 [DatePicker Time](https://primevue.dev/datepicker/#time) 的 timeOnly、12/24 小时格式和时间微调按钮可访问名称。Reito UI 使用独立的纯时间对象、分段输入、步进/范围状态机、AM/PM 映射和稳定表单值；没有复制上游源码、CSS、模板或资源。
+
+### DateTimePicker · 2026-09-07
+
+能力范围核对 Nuxt UI [InputDate](https://ui.nuxt.com/docs/components/input-date) 与 [InputTime](https://ui.nuxt.com/docs/components/input-time) 的专用分段字段，以及 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) 的 `showTime`、`hourFormat`、日期上下限和输入可访问性。Reito UI 直接组合自己的 InputDate / InputTime 状态机，公开无时区的本地日期时间对象、跨日边界、完整值提交和稳定表单文本；未复制上游源码、CSS、模板或资源。
