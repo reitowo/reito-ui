@@ -11,6 +11,7 @@ import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
 import { DateTimePicker, formatLocalDateTime, type LocalDateTimeValue } from './date-time-picker.js';
+import { PasswordInput, type PasswordRule } from './password-input.js';
 import {
   ArrowUp,
   Bold,
@@ -173,6 +174,19 @@ export function DateTimePickerDemo() {
   return <Stack>
     <DateTimePicker label="计划执行时间" value={value} onValueChange={setValue} minuteStep={5} description="本地日期时间；不隐式附加浏览器时区或 UTC 标记。" />
     <output className="font-mono text-xs text-muted-foreground">当前：{formatLocalDateTime(value) || '未选择'}</output>
+  </Stack>;
+}
+const passwordRules: PasswordRule[] = [
+  { id: 'length', label: '至少 10 个字符', test: value => value.length >= 10 },
+  { id: 'mixed-case', label: '同时包含大小写字母', test: /(?=.*[a-z])(?=.*[A-Z])/ },
+  { id: 'number', label: '包含数字', test: /\d/ },
+  { id: 'symbol', label: '包含符号', test: /[^\p{L}\p{N}]/u },
+];
+export function PasswordInputDemo() {
+  const [value, setValue] = React.useState('Graphite9!');
+  return <Stack>
+    <PasswordInput label="访问密码" value={value} onValueChange={setValue} rules={passwordRules} autoComplete="new-password" description="规则由宿主传入；强度随当前规则结果更新。" />
+    <output className="text-xs text-muted-foreground">已输入 {value.length} 个字符</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1391,6 +1405,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "DateTimePicker",
     description: "本地日期时间、跨日范围、一致提交与序列化。",
     component: DateTimePickerDemo,
+  },
+  {
+    id: "password-input",
+    name: "PasswordInput",
+    description: "显隐、规则、强度反馈与宿主校验接点。",
+    component: PasswordInputDemo,
   },
   {
     id: "textarea",

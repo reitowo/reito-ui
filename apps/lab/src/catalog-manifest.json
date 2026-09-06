@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 61,
+    "basic": 62,
     "complex": 22,
     "ai": 19
   },
-  "total": 102,
-  "stories": 794,
+  "total": 103,
+  "stories": 809,
   "entries": [
     {
       "layer": "basic",
@@ -95,6 +95,16 @@
       "storyId": "基础-datetimepicker--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "DateTimePickerDemo",
+      "stories": 15
+    },
+    {
+      "layer": "basic",
+      "id": "password-input",
+      "name": "PasswordInput",
+      "description": "显隐、规则、强度反馈与宿主校验接点。",
+      "storyId": "基础-passwordinput--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "PasswordInputDemo",
       "stories": 15
     },
     {

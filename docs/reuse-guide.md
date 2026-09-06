@@ -50,7 +50,7 @@ import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
 
 ## 0.3 → 0.4：内容密度与组件扩展
 
-0.4 当前提供基础 61、复杂 22、AI 19 个组件族。基础层中的 50 族来自固定 CLI 生成，Toast、MultiSelect、NumberField、Meter、InputTags、AsyncCombobox、AsyncMultiSelect、ColorPicker / ColorInput、InputDate、InputTime 与 DateTimePicker 是本库实现的 11 族；具体契约见 [组件分层](component-layering.md)。
+0.4 当前提供基础 62、复杂 22、AI 19 个组件族。基础层中的 50 族来自固定 CLI 生成，Toast、MultiSelect、NumberField、Meter、InputTags、AsyncCombobox、AsyncMultiSelect、ColorPicker / ColorInput、InputDate、InputTime、DateTimePicker 与 PasswordInput 是本库实现的 12 族；具体契约见 [组件分层](component-layering.md)。
 
 这次升级保留原有控件高度，将内容内距、表格单元格和 AI 内容间距改为共享密度角色。compact / comfortable 的内容内距为 12 / 20px、普通内容间距 12 / 16px、小间距 8 / 12px、表格单元格横向内距 10 / 16px、纵向内距 6 / 10px。完整 token 表见 [设计语言](design-language.md#字体密度与尺度)。这些默认值会改变已有页面的排布，升级时应重新检查表格、嵌套面板和消息流；不要在消费页面补回旧固定 padding。
 
