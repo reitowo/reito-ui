@@ -155,3 +155,7 @@ Reito UI 选择紧凑表头菜单，公开自己的 `text` / `select` / `number`
 ### DataTable 单元格与行编辑 · 2026-09-07
 
 能力范围核对 PrimeVue 5 [DataTable Editing](https://primevue.dev/datatable/) 的 cell / row 两种模式、editor 插槽、完成/保存事件、稳定 dataKey 与行编辑按钮可访问名称。Reito UI 实现独立的 React 草稿事务：同步列校验、异步宿主提交、失败保留与重试、受控草稿、IME 保护和焦点归还；数据成功写回仍由宿主负责。编辑器复用本库 Input / NativeSelect 与 Graphite tokens，没有复制上游源码、CSS、模板或资源。
+
+### DataTable 导出与视图偏好 · 2026-09-07
+
+状态边界核对 TanStack Table v8 [Fully Controlled](https://tanstack.com/table/v8/docs/framework/react/examples/fully-controlled) 示例：table state 可由宿主统一接管，再从该状态派生行为。导出能力范围核对 PrimeVue 5 [DataTable](https://primevue.dev/datatable/) 的 CSV 导出与表格状态能力。Reito UI 不复制实现，而是公开带范围、格式、可见列、稳定 ID、查询和远程数据标记的宿主请求，并定义带 schema 版本和列兼容校验的原创视图快照；组件不访问 DOM、localStorage 或网络。

@@ -48,6 +48,9 @@ const [selection, setSelection] = useState<RowSelectionState>({})
 | `editingState` / `defaultEditingState` / `onEditingStateChange` | 受控或非受控草稿，包含稳定 `rowId`、单元格模式下的 `columnId` 和整行 `values`。受控宿主必须同步回写每次变更。 |
 | `onEditCommit` | 保存边界。回调接收原行、完整草稿和 `changedValues`；成功 resolve 后退出编辑，抛错或 reject 时保留草稿并显示可重试错误。启用编辑时必须提供。 |
 | `isRowEditable` | 按行禁用编辑。分组生成的临时行始终不可编辑。 |
+| `exportScopes` / `onExport` | 显示导出动作。宿主收到明确的范围、格式、可见列、已加载原始行、稳定 ID、查询/分页/选择状态和 `requiresHostData`，负责生成文件与下载。 |
+| `viewVersion` / `savedViews` / `activeViewId` | 带 schema 版本的视图偏好。快照保存查询、排序、列筛选/显隐/顺序/宽度/固定、分组和每页数量；版本或列结构不兼容时禁止应用。 |
+| `onActiveViewChange` / `onSaveView` / `onDeleteView` | 视图应用、命名保存和删除的宿主边界。组件不写 localStorage、数据库或账号同步。 |
 | `pagination` / `defaultPagination` / `onPaginationChange` | 受控或非受控 `{ pageIndex, pageSize }`。`pageIndex` 从 0 开始。只传 `pageSize` 时，它作为非受控初值。 |
 | `manual` | 同时关闭客户端筛选、排序和分页。宿主必须用最新状态请求并传回已经处理好的一页数据。 |
 | `rowCount` / `pageCount` | manual 模式的远程总量或页数。优先传 `rowCount`，组件按当前 `pageSize` 推导页数；后端不知道终页时可传 `pageCount={-1}`。两者都不传时只能把当前页行数当作总量回退。 |
@@ -134,4 +137,31 @@ const editableColumns: DataTableEditableColumn<Task>[] = [
 
 `renderEditor` 可接入复合控件。自定义编辑器必须把 `value`、`onChange`、`disabled`、`invalid`、`describedBy` 和 `autoFocus` 传给实际控件，并实现等价的 `onCommit` / `onCancel` 键盘入口；组件仍负责草稿、校验与提交事务。远程排序、筛选或刷新可能移除正在编辑的 ID，宿主应在替换数据前决定保留、取消或迁移受控 `editingState`；若提交时记录已经不存在，组件会保留草稿并报告错误。
 
-[Storybook 类型化列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--column-filters) 展示四种筛选器；[远程列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-column-filters) 展示受控条件、远程结果和序列化查询；[受控远程分页](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-controlled) 展示远程排序、分页和跨页选择；[层级与详情展开](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-expansion) 和[数据行分组](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-grouping) 分开展示两种结构；[行编辑](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-editing)、[单元格编辑](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--cell-editing)、[失败重试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--editing-failure) 和[受控草稿](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--controlled-editing) 分开保留可发现的编辑状态。[参数调试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--playground) 在同一 Canvas 用 Controls 切换查询、列、分组、展开、编辑和保存结果。
+## 导出与视图偏好
+
+```tsx
+<DataTable
+  data={page}
+  columns={columns}
+  getRowId={(row) => row.id}
+  manual
+  rowCount={total}
+  onExport={async (request) => {
+    // request.requiresHostData=true 时，用 request.query / pagination / rowIds
+    // 向服务端取完整范围，再按 request.format 生成文件。
+    await exportTasks(request)
+  }}
+  viewVersion="tasks-v3"
+  savedViews={views}
+  activeViewId={activeViewId}
+  onActiveViewChange={setActiveViewId}
+  onSaveView={({ label, snapshot }) => saveView({ label, snapshot })}
+  onDeleteView={deleteView}
+/>
+```
+
+导出范围是明确契约：`current-page` 传当前行模型，`filtered` 传完整本地筛选模型，`selected` 传全部已选稳定 ID 和其中已经加载的原始行，`all` 传完整本地数据模型。manual 模式下，筛选结果、全部数据以及含未加载 ID 的已选范围会设置 `requiresHostData=true`。宿主必须根据请求中的查询状态取得完整数据；组件不会扫描 DOM，也不会把当前页冒充完整结果。`columns` 只包含当前可见叶列，顺序与当前视图一致。
+
+视图快照由 `createDataTableViewSnapshot` 创建，`validateDataTableViewSnapshot` 可在从本地存储、数据库或账号同步读回时先做同样的运行时检查。`viewVersion` 是宿主维护的 schema 版本：列重命名、筛选语义变化或不兼容迁移时必须递增。版本不匹配、字段缺失或引用已删除列的视图会显示“已失效”并禁止应用；组件不静默丢弃条件。应用视图会恢复所有已保存状态并回到第 1 页，只保留快照中的 `pageSize`。
+
+[Storybook 类型化列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--column-filters) 展示四种筛选器；[远程列筛选](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-column-filters) 展示受控条件、远程结果和序列化查询；[受控远程分页](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-controlled) 展示远程排序、分页和跨页选择；[层级与详情展开](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-expansion) 和[数据行分组](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-grouping) 分开展示两种结构；[行编辑](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--row-editing)、[单元格编辑](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--cell-editing)、[失败重试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--editing-failure) 和[受控草稿](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--controlled-editing) 分开保留可发现的编辑状态；[导出范围](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--export-scopes)、[远程导出](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--remote-export) 与[视图偏好](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--saved-views) 展示宿主边界和失效状态。[参数调试](http://127.0.0.1:6006/?path=/story/复杂-datatable-数据表格--playground) 在同一 Canvas 用 Controls 切换查询、列、分组、展开、编辑和工具栏参数。

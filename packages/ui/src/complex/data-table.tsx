@@ -12,12 +12,15 @@ import { DataTableColumnFilterMenu, dataTableColumnFilterFn, isDataTableColumnFi
 import { DataTableColumnManager } from './data-table-columns.js';
 import { DataTableGroupingMenu, type DataTableGroupingDefinition } from './data-table-grouping.js';
 import { DataTableCellEditor, type DataTableEditableColumn, type DataTableEditCommit, type DataTableEditingState, type DataTableEditMode, type DataTableEditValue } from './data-table-editing.js';
+import { createDataTableViewSnapshot, DataTablePreferences, validateDataTableViewSnapshot, type DataTableExportRequest, type DataTableExportScope, type DataTableSavedView } from './data-table-preferences.js';
 import { cx } from './shared.js';
 
 export { isDataTableColumnFilterActive, matchesDataTableColumnFilter, serializeDataTableColumnFilters } from './data-table-filter.js';
 export type { DataTableColumnFilterDefinition, DataTableColumnFilterOption, DataTableColumnFiltersState, DataTableColumnFilterValue, DataTableDateFilterValue, DataTableFilterQueryClause, DataTableNumberFilterValue, DataTableSelectFilterValue, DataTableTextFilterValue } from './data-table-filter.js';
 export type { DataTableGroupingDefinition } from './data-table-grouping.js';
 export type { DataTableEditableColumn, DataTableEditCommit, DataTableEditingState, DataTableEditMode, DataTableEditOption, DataTableEditorRenderProps, DataTableEditValue } from './data-table-editing.js';
+export { createDataTableViewSnapshot, validateDataTableViewSnapshot } from './data-table-preferences.js';
+export type { DataTableExportColumn, DataTableExportFormat, DataTableExportRequest, DataTableExportScope, DataTableSavedView, DataTableViewSnapshot, DataTableViewState, DataTableViewValidation } from './data-table-preferences.js';
 
 export interface DataTableProps<TData> {
   data: TData[];
@@ -77,6 +80,14 @@ export interface DataTableProps<TData> {
   onEditingStateChange?: (state: DataTableEditingState | null) => void;
   onEditCommit?: (change: DataTableEditCommit<TData>) => void | Promise<void>;
   isRowEditable?: (row: Row<TData>) => boolean;
+  exportScopes?: DataTableExportScope[];
+  onExport?: (request: DataTableExportRequest<TData>) => void | Promise<void>;
+  viewVersion?: string;
+  savedViews?: DataTableSavedView[];
+  activeViewId?: string;
+  onActiveViewChange?: (viewId: string) => void;
+  onSaveView?: (request: { label: string; snapshot: DataTableSavedView['snapshot'] }) => void | Promise<void>;
+  onDeleteView?: (view: DataTableSavedView) => void;
   pagination?: PaginationState;
   defaultPagination?: PaginationState;
   onPaginationChange?: (pagination: PaginationState) => void;
@@ -107,6 +118,7 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
   grouping, defaultGrouping = [], onGroupingChange, groupingDefinitions = [], renderGroupHeader, renderGroupSummary,
   manualExpanding = false, manualGrouping = false, filterFromLeafRows = true, paginateExpandedRows = false,
   editMode = 'row', editableColumns = [], editingState, defaultEditingState = null, onEditingStateChange, onEditCommit, isRowEditable,
+  exportScopes = ['current-page', 'filtered', 'selected', 'all'], onExport, viewVersion = '1', savedViews = [], activeViewId, onActiveViewChange, onSaveView, onDeleteView,
   pagination, defaultPagination, onPaginationChange, manual = false, rowCount: externalRowCount, pageCount: externalPageCount,
   selectable = true, rowSelection, onRowSelectionChange, loading = false, error, onRetry, emptyMessage = '没有符合条件的记录', className }: DataTableProps<TData>) {
   const [internalSorting, setInternalSorting] = useState<SortingState>(defaultSorting);
@@ -290,10 +302,25 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
     const max = column.columnDef.maxSize ?? Number.MAX_SAFE_INTEGER;
     updateColumnSizing(current => ({ ...current, [column.id]: Math.min(max, Math.max(min, column.getSize() + delta)) }));
   }
+  const viewSnapshot = createDataTableViewSnapshot(viewVersion, { sorting: currentSorting, globalFilter: query, columnFilters: currentColumnFilters, columnVisibility: currentColumnVisibility, columnOrder: currentColumnOrder, columnSizing: currentColumnSizing, columnPinning: currentColumnPinning, grouping: currentGrouping, pageSize: currentPagination.pageSize });
+  function applyView(view: DataTableSavedView) {
+    if (!validateDataTableViewSnapshot(view.snapshot, viewVersion, table.getAllLeafColumns().map(column => column.id)).valid) return;
+    const state = view.snapshot.state;
+    updateSorting(state.sorting); updateFilter(state.globalFilter); updateColumnFilters(state.columnFilters); updateColumnVisibility(state.columnVisibility); updateColumnOrder(state.columnOrder); updateColumnSizing(state.columnSizing); updateColumnPinning(state.columnPinning); updateGrouping(state.grouping); updatePagination({ pageIndex: 0, pageSize: state.pageSize });
+    onActiveViewChange?.(view.id);
+  }
+  function createExportRequest(scope: DataTableExportScope, format: 'csv' | 'json'): DataTableExportRequest<TData> {
+    const loaded = table.getCoreRowModel().flatRows.filter(row => !row.getIsGrouped());
+    const loadedIds = new Set(loaded.map(row => row.id));
+    const rows = scope === 'current-page' ? visibleRows.filter(row => !row.getIsGrouped()) : scope === 'filtered' ? table.getFilteredRowModel().flatRows.filter(row => !row.getIsGrouped()) : scope === 'selected' ? loaded.filter(row => selection[row.id]) : loaded;
+    const unique = [...new Map(rows.map(row => [row.id, row])).values()];
+    const rowIds = scope === 'selected' ? Object.keys(selection).filter(id => selection[id]) : unique.map(row => row.id);
+    return { scope, format, columns: table.getVisibleLeafColumns().map(column => ({ id: column.id, label: columnLabels[column.id] ?? (typeof column.columnDef.header === 'string' ? column.columnDef.header : column.id) })), loadedRows: unique.map(row => row.original), rowIds, requiresHostData: scope === 'selected' && rowIds.some(id => !loadedIds.has(id)) || manual && (scope === 'filtered' || scope === 'all'), query: viewSnapshot.state, pagination: { ...currentPagination }, selection: { ...selection } };
+  }
   return <section data-slot="data-table" aria-label={caption} aria-busy={loading} className={cx('min-w-0 space-y-[var(--rui-content-gap)] font-sans text-sm text-foreground', className)}>
     <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)]">
       <div className="relative w-full max-w-xs"><Search aria-hidden="true" className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-2.5 size-4 text-muted-foreground" /><Input aria-label={`筛选${caption}`} placeholder={searchPlaceholder} className="pl-9" disabled={loading} value={query} onChange={event => { updateFilter(event.target.value); updatePagination(current => ({ ...current, pageIndex: 0 })); }} /></div>
-      <div className="flex items-center gap-[var(--rui-content-gap)]"><span className="text-xs text-muted-foreground">共 {resolvedRowCount} 条{selectable && ` · 已选 ${selectedCount} 条`}{activeColumnFilterCount > 0 && ` · ${activeColumnFilterCount} 个列筛选`}{currentGrouping.length > 0 && ` · ${currentGrouping.length} 层分组`}</span>{activeColumnFilterCount > 0 && <Button variant="ghost" size="xs" disabled={loading} onClick={() => updateColumnFilters([])}>清除列筛选</Button>}{groupingDefinitions.length > 0 && <DataTableGroupingMenu table={table} definitions={groupingDefinitions} disabled={loading} />}{manageColumns && <DataTableColumnManager table={table} labels={columnLabels} disabled={loading} />}</div>
+      <div className="flex flex-wrap items-center justify-end gap-[var(--rui-content-gap)]"><span className="text-xs text-muted-foreground">共 {resolvedRowCount} 条{selectable && ` · 已选 ${selectedCount} 条`}{activeColumnFilterCount > 0 && ` · ${activeColumnFilterCount} 个列筛选`}{currentGrouping.length > 0 && ` · ${currentGrouping.length} 层分组`}</span>{activeColumnFilterCount > 0 && <Button variant="ghost" size="xs" disabled={loading} onClick={() => updateColumnFilters([])}>清除列筛选</Button>}{groupingDefinitions.length > 0 && <DataTableGroupingMenu table={table} definitions={groupingDefinitions} disabled={loading} />}{manageColumns && <DataTableColumnManager table={table} labels={columnLabels} disabled={loading} />}{(onExport || savedViews.length > 0 || onSaveView) && <DataTablePreferences snapshot={viewSnapshot} columnIds={table.getAllLeafColumns().map(column => column.id)} savedViews={savedViews} activeViewId={activeViewId} exportScopes={exportScopes} onApplyView={applyView} onSaveView={onSaveView} onDeleteView={onDeleteView} createExportRequest={createExportRequest} onExport={onExport} disabled={loading} />}</div>
     </div>
     {error && <div role="alert" className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] rounded-lg border border-destructive/30 bg-destructive/5 p-[var(--rui-content-padding)] text-destructive"><span>{error}</span>{onRetry && <Button variant="outline" size="sm" onClick={onRetry}>重试</Button>}</div>}
     <div className="overflow-auto rounded-lg border border-border">
