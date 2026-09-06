@@ -181,3 +181,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### ColorPicker / ColorInput · 2026-09-07
 
 能力范围核对 Nuxt UI [ColorPicker](https://ui.nuxt.com/docs/components/color-picker) 的表单选择器定位，以及 PrimeVue [ColorPicker](https://v3.primevue.org/colorpicker/) 的受控值、弹出/内联模式和 HEX/RGB/HSB 格式。Reito UI 实现独立 React 契约，选择 HEX/RGB/HSL 文本输出，并增加无效草稿恢复、透明度边界、可见 RGB(A) 通道、预设、原生表单值和提交事件。颜色空间端点与色相渐变进入本库 token 源；未复制上游源码、CSS、模板或资源。
+
+### InputDate · 2026-09-07
+
+能力范围核对 Nuxt UI [InputDate](https://ui.nuxt.com/docs/components/input-date) 的分段日期输入定位、PrimeVue 3 [Calendar](https://v3.primevue.org/calendar/) 的受控值、格式、locale、手工输入与日期上下限，以及 Base UI [Input](https://base-ui.com/react/components/input) 的可访问名称要求。Reito UI 实现独立的本地日历日 React 契约、locale 顺序推导、提交值恢复、范围/禁用日校验、分段键盘操作、Calendar 联动和 `YYYY-MM-DD` 表单序列化；未复制上游源码、CSS、模板或资源。

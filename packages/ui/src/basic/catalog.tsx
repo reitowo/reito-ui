@@ -8,6 +8,7 @@ import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
 import { ColorPicker } from './color-picker.js';
+import { InputDate } from './input-date.js';
 import {
   ArrowUp,
   Bold,
@@ -149,6 +150,13 @@ export function ColorPickerDemo() {
   return <Stack>
     <ColorPicker label="界面强调色" value={value} onValueChange={setValue} allowAlpha presets={['#4F7DFF', '#29A36A', '#C58A21', '#B64655', '#8A63D2']} description="可直接输入 HEX、RGB 或 HSL；打开色板后调整区域、色相、透明度与通道。" />
     <output className="font-mono text-xs text-muted-foreground">当前颜色：{value}</output>
+  </Stack>;
+}
+export function InputDateDemo() {
+  const [value, setValue] = React.useState<Date | null>(new Date(2026, 8, 7));
+  return <Stack>
+    <InputDate label="交付日期" value={value} onValueChange={setValue} min={new Date(2026, 0, 1)} max={new Date(2027, 11, 31)} description="分段输入本地日历日；方向键调整，日历与文本保持同步。" />
+    <output className="font-mono text-xs text-muted-foreground">当前日期：{value ? `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}` : '未选择'}</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1349,6 +1357,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "ColorPicker / ColorInput",
     description: "颜色文本、色板、通道、格式与透明度。",
     component: ColorPickerDemo,
+  },
+  {
+    id: "input-date",
+    name: "InputDate",
+    description: "日期分段、locale 顺序、范围、日历与表单值。",
+    component: InputDateDemo,
   },
   {
     id: "textarea",

@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**22 项完成，1 项进行中，80 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01` 已完成，当前推进 `DATE-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**23 项完成，1 项进行中，79 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01`、`DATE-01` 已完成，当前推进 `TIME-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,15 +41,15 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01、TAGS-02 与 COLOR-01 已完成，当前推进 DATE-01；其后按依赖补齐时间与其他选择器增强。
+SELECT-01、TAGS-02、COLOR-01 与 DATE-01 已完成，当前推进 TIME-01；其后按依赖补齐日期时间组合与其他选择器增强。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
 | TAGS-01 | InputTags：任意标签创建、分隔输入、去重策略/上限、编辑/删除、受控值；与仅选择 options 的 MultiSelect 分开 | FORM-01 | ✅ 完成 | 基础-inputtags--playground；另有创建/分隔/去重/上限/编辑/只读/禁用/错误/表单预设 | [InputTags 验收](validation-input-tags.md)：16 项交互、52 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/input-tags.md) |
 | TAGS-02 | 标签高级输入：粘贴拆分、中文 IME、动态建议/创建状态、错误与禁用标签、键盘标签导航 | TAGS-01、SELECT-01 | ✅ 完成 | 基础-inputtags--playground；批量粘贴/IME/建议/异步创建/标签状态/键盘预设，本族共 23 个 Story | [高级验收](validation-input-tags-advanced.md)：16 项新增、16 项回归、92 次 Story 组合；check/build 通过；[用法](components/input-tags.md) |
 | COLOR-01 | ColorPicker / ColorInput：色板/区域/通道/文本输入、支持格式转换、透明度边界、无效输入、键盘和提交事件；组件 chrome 使用 token | FORM-01 | ✅ 完成 | 基础-colorpicker--playground；另有弹出/内联/文本/格式/透明度/预设/错误/键盘/表单预设 | [ColorPicker 验收](validation-color-picker.md)：13 项交互、60 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/color-picker.md) |
-| DATE-01 | InputDate：日期分段或明确等效输入、locale/格式、合法性/范围、键盘、清除与日历联动；不重复建设 Calendar 已透传的多选/多月 | FORM-01 | 进行中 | 待关联 | 待记录 |
-| TIME-01 | InputTime：时间分段、小时制/精度/步进、上下限、空值与键盘；明确时间值不默认携带任意日期 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| DATE-01 | InputDate：日期分段或明确等效输入、locale/格式、合法性/范围、键盘、清除与日历联动；不重复建设 Calendar 已透传的多选/多月 | FORM-01 | ✅ 完成 | 基础-inputdate--playground；另有 locale/空值/范围/禁用日/错误/键盘/日历/清除/只读/禁用/表单预设 | [InputDate 验收](validation-input-date.md)：15 项交互、60 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/input-date.md) |
+| TIME-01 | InputTime：时间分段、小时制/精度/步进、上下限、空值与键盘；明确时间值不默认携带任意日期 | FORM-01 | 进行中 | 待关联 | 待记录 |
 | DATETIME-01 | DateTimePicker：日期与时间一致提交、跨日边界、格式/locale；明确 date-only、local datetime 与带时区值的支持边界 | DATE-01、TIME-01 | 待完成 | 待关联 | 待记录 |
 | PASSWORD-01 | PasswordInput：显隐按钮与可访问名称、规则/强度反馈和宿主校验接点、错误关联；普通 Input password 能力继续保留 | FORM-01 | 待完成 | 待关联 | 待记录 |
 | MASK-01 | InputMask：格式/占位、raw/display 值、可选段与不完整值策略、粘贴/删除/光标/IME；不能只拦截 keydown | FORM-01 | 待完成 | 待关联 | 待记录 |

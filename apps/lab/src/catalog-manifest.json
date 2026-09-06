@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 58,
+    "basic": 59,
     "complex": 22,
     "ai": 19
   },
-  "total": 99,
-  "stories": 749,
+  "total": 100,
+  "stories": 764,
   "entries": [
     {
       "layer": "basic",
@@ -65,6 +65,16 @@
       "storyId": "基础-colorpicker--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ColorPickerDemo",
+      "stories": 15
+    },
+    {
+      "layer": "basic",
+      "id": "input-date",
+      "name": "InputDate",
+      "description": "日期分段、locale 顺序、范围、日历与表单值。",
+      "storyId": "基础-inputdate--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "InputDateDemo",
       "stories": 15
     },
     {
