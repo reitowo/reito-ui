@@ -185,3 +185,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### InputDate · 2026-09-07
 
 能力范围核对 Nuxt UI [InputDate](https://ui.nuxt.com/docs/components/input-date) 的分段日期输入定位、PrimeVue 3 [Calendar](https://v3.primevue.org/calendar/) 的受控值、格式、locale、手工输入与日期上下限，以及 Base UI [Input](https://base-ui.com/react/components/input) 的可访问名称要求。Reito UI 实现独立的本地日历日 React 契约、locale 顺序推导、提交值恢复、范围/禁用日校验、分段键盘操作、Calendar 联动和 `YYYY-MM-DD` 表单序列化；未复制上游源码、CSS、模板或资源。
+
+### InputTime · 2026-09-07
+
+能力范围核对 Nuxt UI [InputTime](https://ui.nuxt.com/docs/components/input-time) 的专用时间输入定位，以及 PrimeVue 5 [DatePicker Time](https://primevue.dev/datepicker/#time) 的 timeOnly、12/24 小时格式和时间微调按钮可访问名称。Reito UI 使用独立的纯时间对象、分段输入、步进/范围状态机、AM/PM 映射和稳定表单值；没有复制上游源码、CSS、模板或资源。

@@ -9,6 +9,7 @@ import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
 import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
+import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
 import {
   ArrowUp,
   Bold,
@@ -157,6 +158,13 @@ export function InputDateDemo() {
   return <Stack>
     <InputDate label="交付日期" value={value} onValueChange={setValue} min={new Date(2026, 0, 1)} max={new Date(2027, 11, 31)} description="分段输入本地日历日；方向键调整，日历与文本保持同步。" />
     <output className="font-mono text-xs text-muted-foreground">当前日期：{value ? `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}` : '未选择'}</output>
+  </Stack>;
+}
+export function InputTimeDemo() {
+  const [value, setValue] = React.useState<TimeValue | null>({ hour: 9, minute: 30, second: 0 });
+  return <Stack>
+    <InputTime label="提醒时间" value={value} onValueChange={setValue} minuteStep={5} description="纯时间值，不附带任意日期；方向键按分段与步进调整。" />
+    <output className="font-mono text-xs text-muted-foreground">当前时间：{formatTimeValue(value) || '未选择'}</output>
   </Stack>;
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
@@ -1363,6 +1371,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "InputDate",
     description: "日期分段、locale 顺序、范围、日历与表单值。",
     component: InputDateDemo,
+  },
+  {
+    id: "input-time",
+    name: "InputTime",
+    description: "时间分段、小时制、精度、步进、范围与表单值。",
+    component: InputTimeDemo,
   },
   {
     id: "textarea",

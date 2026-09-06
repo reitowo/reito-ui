@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 59,
+    "basic": 60,
     "complex": 22,
     "ai": 19
   },
-  "total": 100,
-  "stories": 764,
+  "total": 101,
+  "stories": 779,
   "entries": [
     {
       "layer": "basic",
@@ -75,6 +75,16 @@
       "storyId": "基础-inputdate--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputDateDemo",
+      "stories": 15
+    },
+    {
+      "layer": "basic",
+      "id": "input-time",
+      "name": "InputTime",
+      "description": "时间分段、小时制、精度、步进、范围与表单值。",
+      "storyId": "基础-inputtime--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "InputTimeDemo",
       "stories": 15
     },
     {
