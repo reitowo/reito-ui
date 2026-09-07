@@ -18,6 +18,7 @@ import { PasswordInput, type PasswordRule } from './password-input.js';
 import { InputMask, formatMaskValue } from './input-mask.js';
 import { Listbox, type ListboxOption } from './listbox.js';
 import { ImageGallery, type ImageGalleryItem } from './image-gallery.js';
+import { Carousel } from './carousel.js';
 import {
   ArrowUp,
   Bold,
@@ -1216,6 +1217,15 @@ export function ImageGalleryDemo() {
   const [activeId, setActiveId] = React.useState(galleryDemoItems[0]?.id);
   return <div className="w-full max-w-xl"><ImageGallery items={galleryDemoItems} activeId={activeId} onActiveChange={setActiveId} onRetry={() => {}} /></div>;
 }
+export const carouselDemoItems = [
+  { id: 'review', eyebrow: '01', title: '检查变更', description: '查看文件差异与自动检查结果。' },
+  { id: 'run', eyebrow: '02', title: '运行任务', description: '在本地工作区执行已确认的步骤。' },
+  { id: 'artifact', eyebrow: '03', title: '预览产物', description: '确认组件在实际工作面中的层级。' },
+  { id: 'share', eyebrow: '04', title: '交付结果', description: '整理验证证据并交给使用方。' },
+];
+export function CarouselDemo() {
+  return <div className="w-full max-w-xl"><Carousel items={carouselDemoItems} getItemId={item => item.id} renderItem={item => <article className="min-h-36 rounded-lg border border-border bg-card p-[var(--rui-content-padding)]"><p className="text-xs text-muted-foreground">步骤 {item.eyebrow}</p><h3 className="mt-[var(--rui-space-2)] text-sm font-medium">{item.title}</h3><p className="mt-[var(--rui-space-1)] text-xs leading-relaxed text-muted-foreground">{item.description}</p></article>} label="本地任务流程" /></div>;
+}
 export function InputOTPDemo() {
   const [value, setValue] = React.useState("");
   return (
@@ -1717,6 +1727,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "ImageGallery",
     description: "缩略图、放大预览、图像状态与键盘导航。",
     component: ImageGalleryDemo,
+  },
+  {
+    id: "carousel",
+    name: "Carousel",
+    description: "受控分页、指示器、手势与可暂停自动播放。",
+    component: CarouselDemo,
   },
   {
     id: "input-otp",

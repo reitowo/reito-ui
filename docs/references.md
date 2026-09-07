@@ -180,6 +180,10 @@ Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) an
 
 基础集合能力核对 PrimeVue [Galleria](https://primevue.org/galleria/) 的活动项、缩略图、前后导航与无障碍结构，以及 PrimeVue [Image](https://primevue.org/image/) 的预览按钮、模态层、缩放、旋转和关闭键盘语义。Reito UI 以 React、Base UI Dialog 和 Graphite tokens 独立实现受控图片集合、加载/失败/重试、焦点恢复、有界变换与切图/关闭复位；全屏使用浏览器 Fullscreen API 的实际状态，下载只提供当前条目的宿主回调。示例图是仓库内生成的抽象 SVG data URI，不复制上游图片、模板、CSS、源码或品牌资产。
 
+### Carousel 能力边界（2026-09-07）
+
+能力范围核对 PrimeVue [Carousel](https://primevue.org/carousel/) 的活动页、可见/移动项、响应式、循环、自动播放与无障碍结构，以及 Nuxt UI [Carousel](https://ui.nuxt.com/docs/components/carousel) 的滑动与内容插槽定位。Reito UI 以独立 React 状态、Pointer Events、ResizeObserver 和 Graphite tokens 实现；自动播放具有显式暂停按钮，并在悬停或焦点进入时暂缓。没有复制上游源码、Vue 模板、CSS、示例内容或品牌资产，也未将未安装的 Embla 声称为实现依赖。
+
 ### PropertyList 字段适配 · 2026-09-07
 
 能力范围核对 Nuxt UI 当前组件目录中的 Input、InputNumber、Switch、Select、InputDate 与 FormField，并核对 Base UI [Input](https://base-ui.com/react/components/input)、[Switch](https://base-ui.com/react/components/switch) 和 [Select](https://base-ui.com/react/components/select) 对可访问名称与受控值的约束。Reito UI PropertyList 将自己的 Field、Input、NativeSelect 与 Switch 组合成同步保存行，增加嵌套路径、草稿通知、逐项禁用/只读和焦点恢复；没有复制上游源码、CSS、模板或资源，也不把这个同步属性列表称为完整 Form 引擎。

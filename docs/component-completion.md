@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**51 项完成，0 项进行中，52 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02` 与 `GALLERY-01`–`GALLERY-02` 已完成，下一项为 `CAROUSEL-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**52 项完成，0 项进行中，51 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02` 与 `CAROUSEL-01` 已完成，下一项为 `COMPARE-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02 与 GALLERY-01～02 已完成，下一项为 CAROUSEL-01。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02 与 CAROUSEL-01 已完成，下一项为 COMPARE-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -83,7 +83,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | PROPERTIES-02 | 属性/键值提交：跨字段校验、批量提交、取消/重置、异步错误定位和失败恢复；不把各行临时保存当事务提交 | PROPERTIES-01、FORM-02 | ✅ 完成 | 复杂-propertylist-属性编辑--transactional / --submit-failure / --playground；复杂-keyvalueeditor-键值编辑--transactional / --submit-failure / --playground | [PropertyList 事务验收](validation-property-list-transactions.md)：23 项交互、56 次 Story 组合；[KeyValueEditor 事务验收](validation-key-value-editor-transactions.md)：21 项交互、64 次 Story 组合；四主题密度窄屏、check/build 通过 |
 | GALLERY-01 | ImagePreview / Gallery 基础：缩略图、放大、前后切换、加载/失败/重试、键盘与焦点恢复；不是 AttachmentList 或 AspectRatio 的别名 | — | ✅ 完成 | 基础-imagegallery-图片画廊--playground；打开导航、单图、空、加载、失败重试、隐藏缩略图、循环、禁用、窄屏共 10 个 Story | [验收](validation-image-gallery.md)：13 项交互、40 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/image-gallery.md) |
 | GALLERY-02 | 图像查看操作：缩放/定位、旋转/翻转、全屏、下载回调的支持边界，换图/退出后状态与资源复位 | GALLERY-01 | ✅ 完成 | 基础-imagegallery-图片画廊--viewer-tools / --download-action / --tools-hidden / --playground；本族共 13 个 Story | [高级查看器验收](validation-image-gallery-viewer.md)：13 项新增、13 项基础回归、52 次 Story 组合、四主题密度；check/build 通过；[用法](components/image-gallery.md) |
-| CAROUSEL-01 | Carousel：按钮/指示器、活动页状态、键盘/触摸拖动、尺寸变化和可访问内容；自动播放若提供须可暂停 | — | 待完成 | 待关联 | 待记录 |
+| CAROUSEL-01 | Carousel：按钮/指示器、活动页状态、键盘/触摸拖动、尺寸变化和可访问内容；自动播放若提供须可暂停 | — | ✅ 完成 | 基础-carousel-轮播--playground；默认、受控、多项、循环、自动播放、交互内容、单项、空态、禁用、窄屏等共 15 个 Story | [验收](validation-carousel.md)：16 项交互、60 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/carousel.md) |
 | COMPARE-01 | ImageCompare：前后图重叠滑块、受控比例、横/纵方向、键盘范围、图像尺寸/错误处理；与文本 DiffViewer 分开 | GALLERY-01 | 待完成 | 待关联 | 待记录 |
 | ORGCHART-01 | OrganizationChart：层级关系布局、节点模板、折叠/选择、长内容与键盘；明确仅层级图，非任意图编辑器 | TREE-01 | 待完成 | 待关联 | 待记录 |
 | TERMINAL-01 | TerminalPrompt：命令输入、历史、宿主响应/错误列表、提交/取消和 IME；执行、进程与 PTY 适配留给宿主，演示不伪装真实命令执行 | — | 待完成 | 待关联 | 待记录 |

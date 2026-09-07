@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 68,
+    "basic": 69,
     "complex": 29,
     "ai": 19
   },
-  "total": 116,
-  "stories": 1090,
+  "total": 117,
+  "stories": 1105,
   "entries": [
     {
       "layer": "basic",
@@ -556,6 +556,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ImageGalleryDemo",
       "stories": 13
+    },
+    {
+      "layer": "basic",
+      "id": "carousel",
+      "name": "Carousel",
+      "description": "受控分页、指示器、手势与可暂停自动播放。",
+      "storyId": "基础-carousel-轮播--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CarouselDemo",
+      "stories": 15
     },
     {
       "layer": "basic",
