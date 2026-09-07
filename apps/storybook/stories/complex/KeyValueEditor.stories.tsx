@@ -1,14 +1,14 @@
 import type { ComponentProps } from 'react';
-import { textControl, booleanControl, rangeControl } from '../feature-controls.js';
-import { useState } from 'react';
+import { booleanControl, choiceControl, rangeControl, recipeControl, textControl } from '../feature-controls.js';
+import { useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
-import { KeyValueEditor, type KeyValueEntry } from '../../../../packages/ui/src/complex/key-value-editor.js';
+import { KeyValueEditor, type KeyValueEntry, type KeyValueKind } from '../../../../packages/ui/src/complex/key-value-editor.js';
 import { KeyValueEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 
 const meta = {
   title: '复杂/KeyValueEditor 键值编辑', component: KeyValueEditorDemo,
-  parameters: { docs: { description: { component: '受控数组保留稳定行 ID 和无效草稿。键去掉前后空白后按大小写区分校验重复，值是否必填可配置。密码输入只提供视觉遮罩；应用回调可以返回 Promise。' } } },
+  parameters: { docs: { description: { component: '受控数组保留稳定行 ID 和无效草稿。支持文本、数字、布尔、选项和日期值，嵌套路径、逐项禁用/只读、草稿通知、重复键校验与异步提交。密码输入只提供视觉遮罩。' } } },
 } satisfies Meta<typeof KeyValueEditorDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -57,10 +57,25 @@ export const ReadOnly: Story = { name: '只读条目', render: () => <EntryExamp
 export const RequiredValue: Story = { name: '必填值错误', render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE', value: '' }]} requireValues /> };
 export const DuplicateKeys: Story = { name: '重复键错误', render: () => <EntryExample initial={[{ id: 'first', key: 'MODE', value: 'local' }, { id: 'second', key: 'MODE', value: 'preview' }]} /> };
 
-type PlaygroundArgs = Pick<ComponentProps<typeof KeyValueEditor>, 'label' | 'requireValues' | 'maxRows' | 'disabled' | 'submitLabel'>;
-function KeyValuePlayground(args: PlaygroundArgs) { const [value, setValue] = useState<KeyValueEntry[]>([{ id: 'example', key: 'WORKSPACE_NAME', value: 'Graphite' }]); return <KeyValueEditor {...args} value={value} onValueChange={setValue} onSubmit={() => {}} />; }
+const typedEntries: KeyValueEntry[] = [
+  { id: 'port', key: 'PORT', value: '5173', kind: 'number', min: 1, max: 65535 },
+  { id: 'autosave', key: 'AUTOSAVE', value: 'true', kind: 'boolean' },
+  { id: 'density', key: 'DENSITY', value: 'compact', kind: 'select', options: [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] },
+  { id: 'archive', key: 'ARCHIVE_DATE', value: '2026-09-30', kind: 'date', min: '2026-09-01', max: '2026-12-31' },
+];
+export const TypedValues: Story = { name: '富类型值编辑', render: () => <EntryExample initial={typedEntries} requireValues /> };
+export const NestedPaths: Story = { name: '嵌套路径与草稿', render: function NestedPathEditor() { const [value, setValue] = useState<KeyValueEntry[]>([{ id: 'font', key: 'FONT_SIZE', value: '14', kind: 'number', path: ['editor', 'appearance', 'fontSize'] }]); const [draft, setDraft] = useState('尚未修改'); return <div className="space-y-[var(--rui-content-gap)]"><KeyValueEditor value={value} onValueChange={setValue} onDraftValueChange={(_id, patch, path) => setDraft(`${path.join('.')} = ${patch.value ?? patch.key}`)} /><p role="status" className="text-xs text-muted-foreground">{draft}</p></div>; } };
+export const PerEntryDisabled: Story = { name: '逐项禁用与只读', render: () => <EntryExample initial={[{ id: 'open', key: 'EDITABLE', value: 'local' }, { id: 'disabled', key: 'POLICY', value: 'managed', disabled: true }, { id: 'readonly', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} /> };
+export const Narrow: Story = { name: '窄宽度', render: () => <div className="max-w-80"><EntryExample initial={typedEntries} requireValues /></div> };
+
+type PlaygroundArgs = Pick<ComponentProps<typeof KeyValueEditor>, 'label' | 'requireValues' | 'maxRows' | 'disabled' | 'submitLabel'> & { kind: KeyValueKind; entryDisabled: boolean; secret: boolean; nestedPath: boolean; fieldKey: string; fieldValue: string };
+function KeyValuePlayground(args: PlaygroundArgs) {
+ const [value, setValue] = useState<KeyValueEntry[]>([]);
+ useEffect(() => setValue([{ id: 'example', key: args.fieldKey, value: args.fieldValue, kind: args.kind, disabled: args.entryDisabled, secret: args.secret, path: args.nestedPath ? ['workspace', args.fieldKey.toLowerCase()] : undefined, options: args.kind === 'select' ? [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] : undefined }]), [args.entryDisabled, args.fieldKey, args.fieldValue, args.kind, args.nestedPath, args.secret]);
+ return <KeyValueEditor label={args.label} requireValues={args.requireValues} maxRows={args.maxRows} disabled={args.disabled} submitLabel={args.submitLabel} value={value} onValueChange={setValue} onSubmit={() => {}} />;
+}
 export const Playground: StoryObj<PlaygroundArgs> = {
- name: '参数调试', args: { label: '键值配置', requireValues: false, maxRows: 5, disabled: false, submitLabel: '应用配置' },
- argTypes: { label: textControl, requireValues: booleanControl, maxRows: rangeControl(1, 10), disabled: booleanControl, submitLabel: textControl },
- parameters: { controls: { include: ['requireValues', 'maxRows', 'disabled', 'label', 'submitLabel'] } }, render: args => <KeyValuePlayground {...args} />,
+ name: '参数调试', args: { label: '键值配置', requireValues: false, maxRows: 5, disabled: false, submitLabel: '应用配置', kind: 'text', entryDisabled: false, secret: false, nestedPath: false, fieldKey: 'WORKSPACE_NAME', fieldValue: 'Graphite' },
+ argTypes: { label: textControl, requireValues: booleanControl, maxRows: rangeControl(1, 10), disabled: booleanControl, submitLabel: textControl, kind: recipeControl(choiceControl(['text', 'number', 'boolean', 'select', 'date']), 'value[0].kind'), entryDisabled: recipeControl(booleanControl, 'value[0].disabled'), secret: recipeControl(booleanControl, 'value[0].secret'), nestedPath: recipeControl(booleanControl, 'value[0].path'), fieldKey: recipeControl(textControl, 'value[0].key'), fieldValue: recipeControl(textControl, 'value[0].value') },
+ parameters: { controls: { include: ['kind', 'entryDisabled', 'secret', 'nestedPath', 'fieldKey', 'fieldValue', 'requireValues', 'maxRows', 'disabled', 'label', 'submitLabel'] } }, render: args => <KeyValuePlayground {...args} />,
 };

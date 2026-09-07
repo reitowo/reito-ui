@@ -71,7 +71,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、26 个复�
 | [`CommandSearch`](../packages/ui/src/complex/command-search.tsx) | 必填分组 `groups` 与 `onSelect(command)`；命令具备稳定 ID、标签、说明、关键词、禁用项及可选快捷键提示。`query` / `onQueryChange` 可受控。cmdk 负责过滤、分组、空态和键盘选择，组件保护中文 IME Enter；`shortcut` 只显示提示，不注册全局快捷键。 |
 | [`DiffViewer`](../packages/ui/src/complex/diff-viewer.tsx) | 必填 `hunks: DiffHunk[]`，每行由宿主明确提供 `kind`、修改前后文本及行号；`view / onViewChange` 可控制 `unified / split`。提供换行切换、局部滚动、文本增删语义和 `binary / error / emptyMessage` 状态。**组件不计算 diff，也不推断修改前后行的配对。** |
 | [`LogViewer`](../packages/ui/src/complex/log-viewer.tsx) | `entries: LogEntry[]` 来自宿主，级别为 `debug / info / warning / error`。`query / levels / follow` 分别可受控；本地搜索与级别筛选，上滚暂停、明确操作恢复跟随。`onClear` 请求宿主清除数据，支持 `loading / error / disabled`。它不连接日志服务，也不执行终端命令。 |
-| [`KeyValueEditor`](../packages/ui/src/complex/key-value-editor.tsx) | `value: KeyValueEntry[] / onValueChange` 必填，数组与稳定 ID 保留重复键和无效草稿，允许增删键和值。键去除首尾空格后必填且区分大小写判重；`requireValues` 可要求非空值，`onSubmit` 支持 Promise，失败保留草稿。`secret` 仅控制界面遮罩，`readOnly / maxRows / disabled` 控制编辑。与 PropertyList 的固定属性编辑用途不同，不负责安全存储。 |
+| [`KeyValueEditor`](../packages/ui/src/complex/key-value-editor.tsx) | `value: KeyValueEntry[] / onValueChange` 必填，数组与稳定 ID 保留重复键和无效草稿。值支持 `text / number / boolean / select / date`，可带嵌套 `path`、逐项禁用/只读和验证；`onDraftValueChange` 报告键或值草稿的路径。`secret` 只遮罩文本显示，`onSubmit` 支持 Promise；组件不负责安全存储或嵌套对象写回。 |
 | [`ResourceList`](../packages/ui/src/complex/resource-list.tsx) | 必填 `items: ResourceItem[]`；`query / sort / selectedIds` 分别可受控。`selectionMode` 为 `none / single / multiple`，筛选不丢失已有选择，批量全选只影响当前可选结果。支持名称或更新时间排序、行操作、`loading / error / onRetry / emptyMessage`。当前提供列表布局，行操作调用宿主，不读取或修改文件。 |
 
 公共布局组件适合编辑器、设置页和数据页共同复用。文件目录选择哪个文件、检查器何时打开、页面路由、数据请求与保存失败后的恢复，属于产品逻辑。将这些状态留在宿主，避免把一个聊天页的布局固定成整个组件库的默认结构。

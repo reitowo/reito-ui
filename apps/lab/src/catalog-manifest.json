@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1069,
+  "stories": 1073,
   "entries": [
     {
       "layer": "basic",
@@ -941,11 +941,11 @@
       "layer": "complex",
       "id": "key-value-editor",
       "name": "KeyValueEditor 键值编辑",
-      "description": "增删键值、重复和必填验证、可选敏感值遮罩。",
+      "description": "稳定 ID 的受控草稿，支持富类型值、嵌套路径、逐项状态、校验、遮罩与提交。",
       "storyId": "复杂-keyvalueeditor-键值编辑--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "KeyValueEditorDemo",
-      "stories": 10
+      "stories": 14
     },
     {
       "layer": "complex",

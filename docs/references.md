@@ -180,6 +180,10 @@ Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) an
 
 能力范围核对 Nuxt UI 当前组件目录中的 Input、InputNumber、Switch、Select、InputDate 与 FormField，并核对 Base UI [Input](https://base-ui.com/react/components/input)、[Switch](https://base-ui.com/react/components/switch) 和 [Select](https://base-ui.com/react/components/select) 对可访问名称与受控值的约束。Reito UI PropertyList 将自己的 Field、Input、NativeSelect 与 Switch 组合成同步保存行，增加嵌套路径、草稿通知、逐项禁用/只读和焦点恢复；没有复制上游源码、CSS、模板或资源，也不把这个同步属性列表称为完整 Form 引擎。
 
+### KeyValueEditor 字段适配 · 2026-09-07
+
+沿用 PropertyList 的 Nuxt UI 表单字段目录与 Base UI Input/Switch/Select 可访问契约，KeyValueEditor 继续保留字符串草稿，以便无效数字和不完整值不会在输入中丢失；布尔、选项与日期只改变编辑控件，宿主仍获得稳定的字符串配置值。Reito UI 增加显式嵌套路径、草稿通知、逐项禁用/只读和 Field 错误结构；没有复制上游源码、CSS、模板或资源，也不把文本遮罩称为安全存储。
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。
