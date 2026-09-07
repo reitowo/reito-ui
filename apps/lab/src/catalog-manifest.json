@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 67,
-    "complex": 24,
+    "complex": 25,
     "ai": 19
   },
-  "total": 110,
-  "stories": 950,
+  "total": 111,
+  "stories": 965,
   "entries": [
     {
       "layer": "basic",
@@ -755,6 +755,16 @@
       "storyId": "复杂-treeselect-树选择--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "TreeSelectDemo",
+      "stories": 15
+    },
+    {
+      "layer": "complex",
+      "id": "cascader",
+      "name": "Cascader 级联选择",
+      "description": "任意层级的路径选择、叶节点边界、懒加载和方向键导航。",
+      "storyId": "复杂-cascader-级联选择--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "CascaderDemo",
       "stories": 15
     },
     {

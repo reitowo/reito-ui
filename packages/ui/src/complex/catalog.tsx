@@ -20,7 +20,7 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, TreeSelect,
+  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, TreeSelect,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
 } from './index.js';
@@ -84,6 +84,22 @@ export function ReorderableTreeViewDemo() {
 export function TreeSelectDemo() {
   const [value, setValue] = useState<string | undefined>('button');
   return <div className="space-y-[var(--rui-content-gap)]"><TreeSelect nodes={demoNodes} value={value} onValueChange={setValue} defaultExpanded={['src', 'components']} label="入口文件" description="从当前项目树中选择一个节点。" /><p role="status" className="text-xs text-muted-foreground">当前节点：{value || '未选择'}</p></div>;
+}
+
+export const cascaderOptions = [
+  { id: 'frontend', label: '前端', description: '浏览器与桌面界面', children: [
+    { id: 'react', label: 'React', children: [{ id: 'component-library', label: '组件库' }, { id: 'desktop-app', label: '桌面应用' }] },
+    { id: 'vue', label: 'Vue', children: [{ id: 'admin-console', label: '管理后台' }, { id: 'documentation', label: '文档站' }] },
+  ] },
+  { id: 'backend', label: '后端', children: [
+    { id: 'node', label: 'Node.js', children: [{ id: 'api-service', label: 'API 服务' }] },
+    { id: 'rust', label: 'Rust', disabled: true, children: [{ id: 'native-service', label: '原生服务' }] },
+  ] },
+];
+
+export function CascaderDemo() {
+  const [value, setValue] = useState<string[] | undefined>(['frontend', 'react', 'component-library']);
+  return <div className="space-y-[var(--rui-content-gap)]"><Cascader options={cascaderOptions} value={value} onValueChange={setValue} label="工程类型" description="按技术栈逐级选择目标工程。" /><p role="status" className="text-xs text-muted-foreground">当前路径：{value?.join(' / ') || '未选择'}</p></div>;
 }
 
 export function SearchFilterBarDemo() {
@@ -243,6 +259,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'async-tree-view', name: 'AsyncTreeView 异步树', description: '按需子节点、加载错误重试、刷新和过期响应隔离。', component: AsyncTreeViewDemo },
   { id: 'reorderable-tree-view', name: 'ReorderableTreeView 树重排', description: '受控树内与跨树移动、合法落点和键盘等价操作。', component: ReorderableTreeViewDemo },
   { id: 'tree-select', name: 'TreeSelect 树选择', description: '弹层树搜索、单选/复选、级联半选、懒加载与焦点恢复。', component: TreeSelectDemo },
+  { id: 'cascader', name: 'Cascader 级联选择', description: '任意层级的路径选择、叶节点边界、懒加载和方向键导航。', component: CascaderDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },

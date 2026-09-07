@@ -1,11 +1,11 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、24 个复杂组件族、19 个 AI 组件族**，共 110 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、25 个复杂组件族、19 个 AI 组件族**，共 111 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
 | 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 67 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 17 个本地组合族；统一主题、尺寸和必要修复。 |
-| 本地数据表、筛选、树选择、属性编辑、设置、分栏等通用工作流 | 复杂 24 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
+| 本地数据表、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 25 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 19 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
 `@reito/ui` 根入口同时导出三层。新页面可以按上表选择子入口，让依赖用途清晰。`basic/catalog.tsx`、`complex/catalog.tsx` 和 `ai/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
@@ -48,7 +48,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、24 个复�
 
 需要按钮尺寸、输入焦点、菜单键盘行为或主题修复时，先改共享 token 或对应基础组件。新增产品页面应组合已有 API；选择器的 `onValueChange`、复选框的 `onCheckedChange` 等必须按实际类型使用，不能沿用旧 API 名称。
 
-## 复杂层：24 个组件族
+## 复杂层：25 个组件族
 
 公共导出见 [`complex/index.ts`](../packages/ui/src/complex/index.ts)，可交互演示见 [`complex/catalog.tsx`](../packages/ui/src/complex/catalog.tsx)。
 
@@ -60,6 +60,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、24 个复�
 | [`DateRangePicker`](../packages/ui/src/complex/date-range-picker.tsx) | `value: DateRange \| undefined` 与 `onValueChange` 必填。日历与日期输入编辑本地草稿；“应用范围”提交，“取消”或关闭丢弃草稿，“清除”提交 `undefined`。`minDate` / `maxDate` 和开始、结束顺序参与校验。使用本地日历日期，不内置时区转换。 |
 | [`DateTimeRangePicker`](../packages/ui/src/complex/date-time-range-picker.tsx) | 组合两个 `DateTimePicker`，保留可修正的起止草稿并校验完整性、顺序和全局上下限。分钟/秒精度与 12/24 小时显示共享；IANA `timeZone` 只作为显式元数据进入稳定 JSON，不在组件内换算 UTC 瞬时值。 |
 | [`TreeSelect`](../packages/ui/src/complex/tree-select.tsx) | 在 Popover 中复用 TreeView / AsyncTreeView 的完整节点模型。支持可搜索的单选与三态复选、受控值/展开/查询/弹层、清除、懒加载和原生表单值；筛选只改变可见投影，不丢失隐藏选择或半选计算。 |
+| [`Cascader`](../packages/ui/src/complex/cascader.tsx) | 以并列层级面板浏览任意深度的选项树，值为完整稳定 ID 路径。默认只提交叶节点，可显式允许选择分支；支持受控路径、末级/完整路径显示、lazy 子项、错误重试、清除、方向键导航和 JSON 表单值。 |
 | [`FileUpload`](../packages/ui/src/complex/file-upload.tsx) | `value?: QueuedFile[]` / `onValueChange` 可接管队列，每项为 `{ id, file: File }`。支持 `accept`、`maxSize`（字节）、`maxFiles`、重复校验、拖放与移除；默认 10 MB、5 个。**组件只保留本地文件引用，不读取内容，也不向外部发送文件。** |
 | [`PropertyList`](../packages/ui/src/complex/property-list.tsx) | `items` 提供 `key`、`label`、`value: string \| number`；宿主在 `onValueChange(key, value)` 中更新数据。字段可设 `kind: 'number'`、`readOnly`、`validate`。验证返回错误字符串时保留编辑；Escape 取消并恢复编辑入口焦点。回调为同步更新契约，远程保存及冲突处理由宿主提供。 |
 | [`Timeline`](../packages/ui/src/complex/timeline.tsx) | `events` 包含稳定 ID、标题、说明、可选时间与内容；`status` 为 `complete / current / error / pending`。按传入顺序呈现，不自动按日期重排，也不执行事件。 |
