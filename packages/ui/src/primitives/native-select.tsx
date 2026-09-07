@@ -6,6 +6,10 @@ type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
   size?: "sm" | "default"
 }
 
+/**
+ * HTML select with a themed closed state. Its expanded popup is rendered by the browser/OS.
+ * Use Select when the expanded menu must follow the Graphite visual language.
+ */
 function NativeSelect({
   className,
   size = "default",
