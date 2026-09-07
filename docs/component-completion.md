@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**62 项完成，0 项进行中，41 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06` 与 `MARKDOWN-01` 已完成，下一项为 `MARKDOWN-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**63 项完成，0 项进行中，40 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06` 与 `MARKDOWN-01`–`MARKDOWN-02` 已完成，下一项为 `COMBO-SPLIT-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06 与 MARKDOWN-01 已完成，下一项为 MARKDOWN-02。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06 与 MARKDOWN-01～02 已完成，下一项为 COMBO-SPLIT-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | EDIT-05 | 块操作：受控块拖拽/键盘移动、转换与删除、历史恢复、选择/焦点和序列化保持 | EDIT-02 | ✅ 完成 | 复杂-richtexteditor-富文本编辑--block-actions-controlled / --block-single / --block-actions-empty / --block-controls-off / --block-read-only / --block-narrow / --playground；本族共 41 个 Story | [块操作验收](validation-rich-text-editor-blocks.md)：63 项交互/回归、164 次静态 Story 组合、17 项 Controls、四主题密度窄屏；check/build 通过；[用法](components/rich-text-editor.md#块操作) |
 | EDIT-06 | 编辑器媒体与宿主扩展配方：图片插入/上传状态、AI 补全等回调接点、取消/失败恢复；模拟结果与真实后端明确区分 | EDIT-02、UPLOAD-01 | ✅ 完成 | 复杂-richtexteditor-富文本编辑--image-serialization / --image-upload-cancel / --image-upload-recovery / --image-invalid / --image-read-only / --completion-review / --completion-literal-text / --completion-cancel / --completion-recovery / --completion-stale / --media-narrow / --playground；本族共 52 个 Story | [媒体与补全验收](validation-rich-text-editor-media.md)：86 项交互/回归、208 次静态 Story 组合、19 项 Controls、四主题密度窄屏；check/build 通过；[用法](components/rich-text-editor.md#图片与宿主补全) |
 | MARKDOWN-01 | MarkdownContent / RichMessage：标题、列表、表格、链接、fenced code、自定义节点入口与内容处理策略；语法高亮不等于文档渲染 | — | ✅ 完成 | ai-markdowncontent-richmessage--playground / --default / --rich-assistant-message / --table / --task-list / --fenced-code / --custom-renderers / --html-escaped / --unsafe-url / --narrow；本族共 17 个 Story | [验收](validation-markdown-content.md)：24 项组件回归、14 项 Workbench 回归、68 次静态 Story 组合、8 项 Controls、四主题密度窄屏；check/build 通过；[用法](components/markdown-content.md) |
-| MARKDOWN-02 | 流式 Markdown：未闭合语法、增量文本、代码/表格变形、复制保持原文、节点替换和布局稳定 | MARKDOWN-01 | 待完成 | 待关联 | 待记录 |
+| MARKDOWN-02 | 流式 Markdown：未闭合语法、增量文本、代码/表格变形、复制保持原文、节点替换和布局稳定 | MARKDOWN-01 | ✅ 完成 | ai-markdowncontent-richmessage--streaming-playground / --incomplete-inline / --incomplete-link / --incomplete-fence / --completion-disabled / --streaming-table / --stream-replacement-key / --streaming-rich-message；本族共 25 个 Story | [验收](validation-streaming-markdown.md)：13 项流式能力/视觉、24 项 MARKDOWN-01 回归、14 项 Workbench 回归、100 次静态 Story 组合、两组可调 Controls；check/build 通过；[用法](components/markdown-content.md#流式-markdown) |
 
 ## 阶段 5：可复用组合与应用外壳配方
 

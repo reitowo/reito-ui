@@ -167,7 +167,7 @@ test('Playground declares explicit controls for every adjustable example prop', 
     const include = current.parameters.controls.include as string[];
     return { include, controls: include.map(name => current.argTypes[name]?.control) };
   });
-  expect(contract.include).toEqual(['value', 'htmlPolicy', 'externalLinkTarget', 'codeCopyable', 'asMessage', 'from', 'streaming', 'emptyText']);
+  expect(contract.include).toEqual(['value', 'htmlPolicy', 'externalLinkTarget', 'codeCopyable', 'streaming', 'completeIncompleteMarkdown', 'asMessage', 'from', 'emptyText']);
   expect(contract.controls.every(Boolean)).toBe(true);
 });
 
@@ -177,6 +177,95 @@ test('long paths and tables remain inside a narrow work surface', async ({ page 
   await expect(content).toContainText('workspace/packages/ui/src/ai/markdown-content.tsx');
   await expect(content.locator('[data-slot="markdown-table-scroll"]')).toBeVisible();
   await expectNoPageOverflow(page);
+});
+
+test('streaming mode completes unclosed inline syntax without changing the source prop', async ({ page }) => {
+  const content = await open(page, 'incomplete-inline');
+  await expect(content).toHaveAttribute('data-streaming', 'true');
+  await expect(content).toHaveAttribute('data-stream-completed-syntax', 'true');
+  await expect(content).toHaveAttribute('aria-busy', 'true');
+  await expect(content.locator('strong')).toHaveText('尚未闭合的强调');
+  await expect(content).not.toContainText('**');
+});
+
+test('incomplete streaming links stay readable and non-interactive until their URL is complete', async ({ page }) => {
+  const content = await open(page, 'incomplete-link');
+  await expect(content).toContainText('打开 设计规范');
+  await expect(content.getByRole('link')).toHaveCount(0);
+  await expect(content).not.toContainText('https://example.com/des');
+});
+
+test('unclosed fenced code renders incrementally and copies only the exact streamed source', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value: string) => { (window as any).copiedStreamingCode = value; } } });
+  });
+  const content = await open(page, 'incomplete-fence');
+  const code = content.getByLabel('typescript代码');
+  await expect(code.locator('code')).toHaveAttribute('data-highlighted', 'true');
+  await expect(code).toHaveText('export const chunk = "保持原文";');
+  await content.getByRole('button', { name: '复制代码' }).click();
+  expect(await page.evaluate(() => (window as any).copiedStreamingCode)).toBe('export const chunk = "保持原文";');
+});
+
+test('hosts can disable incomplete syntax completion and keep literal markers', async ({ page }) => {
+  const content = await open(page, 'completion-disabled');
+  await expect(content.locator('strong')).toHaveCount(0);
+  await expect(content).toContainText('**保持原始标记');
+  await expect(content).not.toHaveAttribute('data-stream-completed-syntax', 'true');
+});
+
+test('table syntax can change shape while settled siblings keep their DOM identity', async ({ page }) => {
+  const content = await open(page, 'streaming-table');
+  await expect(content.getByRole('heading', { name: '已稳定标题' })).toBeVisible();
+  await expect(content.getByRole('table')).toHaveCount(0);
+  await content.getByRole('heading').evaluate(element => { (window as any).settledMarkdownHeading = element; });
+  await page.getByRole('button', { name: '下一表格阶段' }).click();
+  await expect(content.getByRole('table')).toBeVisible();
+  expect(await page.evaluate(() => (window as any).settledMarkdownHeading === document.querySelector('[data-slot="markdown-content"] h2'))).toBe(true);
+  await page.getByRole('button', { name: '下一表格阶段' }).click();
+  await expect(content.getByRole('row')).toHaveCount(2);
+  await expect(content).not.toHaveAttribute('data-streaming', 'true');
+});
+
+test('streaming playground appends in place and exposes a deterministic completion action', async ({ page }) => {
+  const content = await open(page, 'streaming-playground');
+  await expect(content).toHaveAttribute('data-streaming', 'true');
+  await content.getByRole('heading').evaluate(element => { (window as any).streamingHeading = element; });
+  await page.getByRole('button', { name: '追加一块' }).click();
+  expect(await page.evaluate(() => (window as any).streamingHeading === document.querySelector('[data-slot="markdown-content"] h2'))).toBe(true);
+  await page.getByRole('button', { name: '完成流式示例' }).click();
+  await expect(content).not.toHaveAttribute('data-streaming', 'true');
+  await expect(content.getByRole('table')).toBeVisible();
+  await expect(content.getByLabel('ts代码')).toHaveText(/appendOnly: true/);
+});
+
+test('changing streamKey remounts document nodes for a replacement generation', async ({ page }) => {
+  const content = await open(page, 'stream-replacement-key');
+  await content.getByRole('heading', { name: '第一段流' }).evaluate(element => { (window as any).previousStreamHeading = element; });
+  await page.getByRole('button', { name: '替换流标识' }).click();
+  await expect(content.getByRole('heading', { name: '第二段流' })).toBeVisible();
+  expect(await page.evaluate(() => (window as any).previousStreamHeading.isConnected)).toBe(false);
+});
+
+test('RichMessage forwards its streaming state into MarkdownContent', async ({ page }) => {
+  const content = await open(page, 'streaming-rich-message');
+  await expect(content).toHaveAttribute('data-streaming', 'true');
+  await expect(content).toHaveAttribute('aria-busy', 'true');
+  await expect(content.locator('xpath=ancestor::article')).toContainText('正在输出');
+  await expect(content.getByLabel('ts代码')).toHaveText('const stable = true;');
+});
+
+test('streaming playground declares controls for timing, chunking and rendering policy', async ({ page }) => {
+  const story = `${prefix}--streaming-playground`;
+  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${story}&viewMode=story`);
+  await page.waitForFunction(id => (window as any).__STORYBOOK_PREVIEW__?.currentRender?.id === id && (window as any).__STORYBOOK_PREVIEW__.currentRender.phase === 'finished', story);
+  const contract = await page.evaluate(() => {
+    const current = (window as any).__STORYBOOK_PREVIEW__.currentRender.story;
+    const include = current.parameters.controls.include as string[];
+    return { include, controls: include.map(name => current.argTypes[name]?.control) };
+  });
+  expect(contract.include).toEqual(['source', 'chunkSize', 'intervalMs', 'autoStart', 'asMessage', 'completeIncompleteMarkdown']);
+  expect(contract.controls.every(Boolean)).toBe(true);
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: Markdown document remains compact and accessible`, async ({ page }) => {
@@ -196,4 +285,14 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await expectNoPageOverflow(page);
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ path: `.logs/markdown-content/message-${theme}-${density}.png`, fullPage: true });
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: streaming Markdown keeps one compact live region`, async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 760 });
+  const content = await open(page, 'streaming-rich-message', `theme:${theme};density:${density}`);
+  await expect(content).toHaveAttribute('aria-busy', 'true');
+  await expect(content.getByLabel('ts代码')).toBeVisible();
+  await expectNoPageOverflow(page);
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ path: `.logs/markdown-content/streaming-${theme}-${density}.png`, fullPage: true });
 });

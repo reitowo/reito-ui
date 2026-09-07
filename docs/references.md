@@ -85,6 +85,8 @@ MARKDOWN-01 使用固定版本 [`react-markdown@10.1.0`](https://github.com/rema
 
 Reito UI 使用自己的 React API、Graphite tokens、紧凑排版、表格滚动、CodeBlock 组合与 Story。默认原始 HTML 只显示为文本或显式移除，危险 URL 由 react-markdown 默认转换过滤；宿主一旦提供自定义 `urlTransform`、rehype 插件或节点渲染器，就同时接管相应的安全与可访问性责任。没有安装原始 HTML 执行插件，没有复制 Nuxt UI 的 Vue 源码、样式、模板、品牌资源或外部产品消息布局。
 
+MARKDOWN-02 增加固定版本 [`remend@1.3.1`](https://github.com/vercel/streamdown/tree/main/packages/remend)，安装包标注 Apache-2.0。能力边界核对 Streamdown 官方 [流式/静态模式与 Remend 说明](https://github.com/vercel/streamdown/blob/main/skills/streamdown/references/features.md) 以及 remend README：流式渲染会临时闭合未完成的强调、行内代码、删除线和链接；块级渲染仍由 Markdown 解析器负责。Reito UI 只引入小型预处理包，没有引入 Streamdown 的样式、代码高亮、数学、图表或交互控件，并使用 `linkMode="text-only"` 防止半成品 URL 变成可点击链接。表格阶段、fenced code 当前源码、React 节点身份与新流重置由本库自己的组件契约和测试定义。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

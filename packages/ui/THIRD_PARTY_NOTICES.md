@@ -250,6 +250,7 @@ The JavaScript build keeps bare package imports external. These dependencies are
 | react-markdown | 10.1.0 | MIT | node_modules/react-markdown/license |
 | react-resizable-panels | 4.12.3 | MIT | node_modules/react-resizable-panels/LICENSE.md |
 | refractor (workspace syntax-highlighting addition, 2026-09-06) | 5.0.0 | MIT; includes Prism attribution to Lea Verou | node_modules/refractor/license |
+| remend | 1.3.1 | Apache-2.0 | node_modules/remend/LICENSE |
 | remark-gfm | 4.0.1 | MIT | node_modules/remark-gfm/license |
 | tw-animate-css | 1.4.0 | MIT | node_modules/tw-animate-css/LICENSE |
 | react | 19.2.8 | MIT | node_modules/react/LICENSE |

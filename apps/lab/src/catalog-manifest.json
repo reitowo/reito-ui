@@ -5,7 +5,7 @@
     "ai": 20
   },
   "total": 122,
-  "stories": 1219,
+  "stories": 1227,
   "entries": [
     {
       "layer": "basic",
@@ -1165,7 +1165,7 @@
       "storyId": "ai-markdowncontent-richmessage--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "MarkdownContentDemo",
-      "stories": 17
+      "stories": 25
     },
     {
       "layer": "ai",

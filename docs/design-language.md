@@ -125,6 +125,8 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 `MarkdownContent` 延续同一 14px / 24px 消息尺度，标题只提高一到两级，段落、列表、引用和任务项使用共享 space/content tokens。表格和代码块各自在局部容器滚动，不能扩大消息或页面；fenced code 直接复用单层 `CodeBlock` 外框，不能再叠加 Markdown `pre` 的边界和内距。Markdown 正文保持自然文档流，不为每个段落、列表或引用创建卡片。`RichMessage` 只把该文档流放入共享 `Message` 角色、流式状态和操作结构，工具与产物继续作为相邻组合节点。
 
+流式 Markdown 继续渲染完整文档树，只对文本尾部未闭合的强调、行内代码、删除线、链接等做临时补全。已稳定的前置节点依靠追加式 source 和相同 `streamKey` 保持身份；开始新的生成或用非追加内容替换当前流时，宿主更换 `streamKey`。表格分隔行完成时允许尾部从段落变成 table，未闭合 fenced code 直接使用当前源码的 CodeBlock；这些局部变化不能引入第二层边界、页面横向溢出或复制合成的闭合标记。流式状态使用 `aria-busy` 和 Message 的“正在输出”文本，不用逐 token 的 live region 朗读。
+
 组件组合表达结构：WorkspacePane 提供 title / actions / children；Dialog 使用 DialogContent / DialogTitle / DialogDescription 等子组件。先查实际类型；不要假设每个组件都有通用 `header`、`size` 或 `tone` 属性。
 
 ## 状态与可操作性

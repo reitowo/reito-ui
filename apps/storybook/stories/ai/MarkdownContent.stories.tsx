@@ -1,8 +1,9 @@
-import type { ComponentProps } from 'react';
+import { useEffect, useState, type ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MarkdownContent, RichMessage, type MarkdownContentProps } from '../../../../packages/ui/src/ai/markdown-content.js';
 import { Conversation } from '../../../../packages/ui/src/ai/conversation.js';
-import { booleanControl, choiceControl, recipeControl, textControl } from '../feature-controls.js';
+import { Button } from '../../../../packages/ui/src/primitives/button.js';
+import { booleanControl, choiceControl, rangeControl, recipeControl, textControl } from '../feature-controls.js';
 import { StoryFrame } from './story-frame.js';
 
 const fullDocument = [
@@ -32,6 +33,62 @@ const fullDocument = [
   '```',
 ].join('\n');
 
+const streamDocument = [
+  '## 流式检查',
+  '',
+  '正在生成 **紧凑工作面**，链接在地址完整前保持为文字：[设计规范](https://example.com/design)。',
+  '',
+  '| 阶段 | 状态 |',
+  '| --- | --- |',
+  '| 解析 | 完成 |',
+  '| 视觉 | 检查中 |',
+  '',
+  '```ts',
+  'export const stream = {',
+  '  appendOnly: true,',
+  '};',
+  '```',
+].join('\n');
+
+interface StreamingHarnessProps {
+  source: string;
+  chunkSize: number;
+  intervalMs: number;
+  autoStart: boolean;
+  asMessage: boolean;
+  completeIncompleteMarkdown: boolean;
+}
+
+function StreamingHarness({ source, chunkSize, intervalMs, autoStart, asMessage, completeIncompleteMarkdown }: StreamingHarnessProps) {
+  const firstChunk = Math.min(source.length, Math.max(1, chunkSize));
+  const [length, setLength] = useState(firstChunk);
+  const [playing, setPlaying] = useState(autoStart);
+  const partial = source.slice(0, length);
+  const active = length < source.length;
+
+  useEffect(() => { setLength(firstChunk); setPlaying(autoStart); }, [autoStart, firstChunk, source]);
+  useEffect(() => {
+    if (!playing || !active) return;
+    const timer = window.setTimeout(() => setLength(current => Math.min(source.length, current + Math.max(1, chunkSize))), intervalMs);
+    return () => window.clearTimeout(timer);
+  }, [active, chunkSize, intervalMs, length, playing, source.length]);
+  useEffect(() => { if (!active) setPlaying(false); }, [active]);
+
+  const markdownProps = { completeIncompleteMarkdown, streamKey: 'storybook-stream' } as const;
+  return <div className="grid min-w-0 gap-[var(--rui-content-gap)]" data-testid="streaming-harness">
+    <div className="flex flex-wrap items-center gap-[var(--rui-content-gap-sm)]">
+      <Button type="button" size="sm" variant="outline" onClick={() => setPlaying(value => !value)} disabled={!active}>{playing ? '暂停流式示例' : '播放流式示例'}</Button>
+      <Button type="button" size="sm" variant="outline" onClick={() => setLength(current => Math.min(source.length, current + Math.max(1, chunkSize)))} disabled={!active}>追加一块</Button>
+      <Button type="button" size="sm" variant="outline" onClick={() => { setLength(source.length); setPlaying(false); }}>完成流式示例</Button>
+      <Button type="button" size="sm" variant="ghost" onClick={() => { setLength(firstChunk); setPlaying(false); }}>重新开始流式示例</Button>
+      <span role="status" className="text-xs text-muted-foreground">{length} / {source.length} 字符 · {active ? '追加中' : '已完成'}</span>
+    </div>
+    {asMessage
+      ? <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={partial || ' '} streaming={active} local markdownProps={markdownProps} /></Conversation>
+      : <MarkdownContent value={partial || ' '} streaming={active} {...markdownProps} />}
+  </div>;
+}
+
 const meta = {
   title: 'AI/MarkdownContent / RichMessage',
   component: MarkdownContent,
@@ -46,12 +103,13 @@ type PlaygroundArgs = Pick<MarkdownContentProps, 'value' | 'htmlPolicy' | 'exter
   asMessage: boolean;
   from: ComponentProps<typeof RichMessage>['from'];
   streaming: boolean;
+  completeIncompleteMarkdown: boolean;
   emptyText: string;
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: '参数调试',
-  args: { value: fullDocument, htmlPolicy: 'escape', externalLinkTarget: '_blank', codeCopyable: true, asMessage: false, from: 'assistant', streaming: false, emptyText: '没有可显示的 Markdown 内容' },
+  args: { value: fullDocument, htmlPolicy: 'escape', externalLinkTarget: '_blank', codeCopyable: true, asMessage: false, from: 'assistant', streaming: false, completeIncompleteMarkdown: true, emptyText: '没有可显示的 Markdown 内容' },
   argTypes: {
     value: textControl,
     htmlPolicy: choiceControl(['escape', 'remove']),
@@ -59,14 +117,59 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     codeCopyable: booleanControl,
     asMessage: recipeControl(booleanControl, '在同一 Canvas 中切换 MarkdownContent 与 RichMessage 组合。'),
     from: recipeControl(choiceControl(['user', 'assistant', 'system']), '仅在 RichMessage 组合中使用。'),
-    streaming: recipeControl(booleanControl, '仅在 RichMessage 组合中使用。'),
+    streaming: booleanControl,
+    completeIncompleteMarkdown: booleanControl,
     emptyText: recipeControl(textControl, '转换为 empty ReactNode 的本地示例文案。'),
   },
-  parameters: { controls: { include: ['value', 'htmlPolicy', 'externalLinkTarget', 'codeCopyable', 'asMessage', 'from', 'streaming', 'emptyText'] } },
+  parameters: { controls: { include: ['value', 'htmlPolicy', 'externalLinkTarget', 'codeCopyable', 'streaming', 'completeIncompleteMarkdown', 'asMessage', 'from', 'emptyText'] } },
   render: args => args.asMessage
-    ? <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from={args.from} content={args.value} streaming={args.streaming} local markdownProps={{ htmlPolicy: args.htmlPolicy, externalLinkTarget: args.externalLinkTarget, codeCopyable: args.codeCopyable, empty: <p className="text-muted-foreground">{args.emptyText}</p> }} /></Conversation>
-    : <MarkdownContent value={args.value} htmlPolicy={args.htmlPolicy} externalLinkTarget={args.externalLinkTarget} codeCopyable={args.codeCopyable} empty={<p className="text-muted-foreground">{args.emptyText}</p>} />,
+    ? <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from={args.from} content={args.value} streaming={args.streaming} local markdownProps={{ htmlPolicy: args.htmlPolicy, externalLinkTarget: args.externalLinkTarget, codeCopyable: args.codeCopyable, completeIncompleteMarkdown: args.completeIncompleteMarkdown, empty: <p className="text-muted-foreground">{args.emptyText}</p> }} /></Conversation>
+    : <MarkdownContent value={args.value} streaming={args.streaming} completeIncompleteMarkdown={args.completeIncompleteMarkdown} htmlPolicy={args.htmlPolicy} externalLinkTarget={args.externalLinkTarget} codeCopyable={args.codeCopyable} empty={<p className="text-muted-foreground">{args.emptyText}</p>} />,
 };
+
+type StreamingPlaygroundArgs = StreamingHarnessProps;
+export const StreamingPlayground: StoryObj<StreamingPlaygroundArgs> = {
+  name: '流式参数调试',
+  args: { source: streamDocument, chunkSize: 24, intervalMs: 80, autoStart: false, asMessage: true, completeIncompleteMarkdown: true },
+  argTypes: {
+    source: textControl,
+    chunkSize: rangeControl(1, 64),
+    intervalMs: rangeControl(20, 500, 20),
+    autoStart: booleanControl,
+    asMessage: booleanControl,
+    completeIncompleteMarkdown: booleanControl,
+  },
+  parameters: { controls: { include: ['source', 'chunkSize', 'intervalMs', 'autoStart', 'asMessage', 'completeIncompleteMarkdown'] } },
+  render: args => <StreamingHarness {...args} />,
+};
+
+export const IncompleteInline: Story = { name: '未闭合行内语法', args: { value: '正在生成 **尚未闭合的强调', streaming: true } };
+export const IncompleteLink: Story = { name: '未闭合链接', args: { value: '打开 [设计规范](https://example.com/des', streaming: true } };
+export const IncompleteFence: Story = { name: '未闭合 fenced code', args: { value: '```typescript\nexport const chunk = "保持原文";', streaming: true } };
+export const CompletionDisabled: Story = { name: '关闭未闭合语法补全', args: { value: '正在生成 **保持原始标记', streaming: true, completeIncompleteMarkdown: false } };
+
+const tableStages = [
+  '## 已稳定标题\n\n| 阶段 | 状态 |',
+  '## 已稳定标题\n\n| 阶段 | 状态 |\n| --- | --- |',
+  '## 已稳定标题\n\n| 阶段 | 状态 |\n| --- | --- |\n| 解析 | 完成 |',
+];
+function StreamingTableStages() {
+  const [stage, setStage] = useState(0);
+  return <div className="grid gap-[var(--rui-content-gap)]">
+    <div className="flex items-center gap-[var(--rui-content-gap-sm)]"><Button size="sm" variant="outline" disabled={stage === tableStages.length - 1} onClick={() => setStage(value => Math.min(tableStages.length - 1, value + 1))}>下一表格阶段</Button><Button size="sm" variant="ghost" onClick={() => setStage(0)}>重置表格阶段</Button><span role="status" className="text-xs text-muted-foreground">阶段 {stage + 1} / {tableStages.length}</span></div>
+    <MarkdownContent value={tableStages[stage]} streaming={stage < tableStages.length - 1} streamKey="table-stream" />
+  </div>;
+}
+export const StreamingTable: Story = { name: '表格增量变形', render: () => <StreamingTableStages /> };
+
+function StreamReplacement() {
+  const [generation, setGeneration] = useState<'first' | 'second'>('first');
+  const value = generation === 'first' ? '## 第一段流\n\n正在生成 **旧内容' : '## 第二段流\n\n正在生成 `新内容';
+  return <div className="grid gap-[var(--rui-content-gap)]"><Button size="sm" variant="outline" className="justify-self-start" onClick={() => setGeneration(current => current === 'first' ? 'second' : 'first')}>替换流标识</Button><MarkdownContent value={value} streaming streamKey={generation} /></div>;
+}
+export const StreamReplacementKey: Story = { name: '新流节点替换', render: () => <StreamReplacement /> };
+
+export const StreamingRichMessage: Story = { name: '流式富文本消息', render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={'正在整理 **消息正文与代码**\n\n```ts\nconst stable = true;'} streaming local /></Conversation> };
 
 export const Default: Story = { name: '完整 GFM 文档', args: { value: fullDocument } };
 export const RichAssistantMessage: Story = { name: '富文本助手消息', render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={fullDocument} local /></Conversation> };
