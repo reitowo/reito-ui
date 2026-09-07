@@ -509,7 +509,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'timeline', name: 'Timeline 时间线', description: '按时间呈现完成、进行、失败和等待状态。', component: TimelineDemo },
   { id: 'stepper', name: 'Stepper 分步流程', description: '可导航步骤、必填门槛与本地确认流程。', component: StepperDemo },
   { id: 'settings-section', name: 'SettingsSection 设置分组', description: '标题、说明、行布局与真实受控表单。', component: SettingsSectionDemo },
-  { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、受控分栏、版本化侧栏与尺寸持久化。', component: WorkspaceDemo },
+  { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、基础分栏、响应式三槽预设与版本化视图持久化。', component: WorkspaceDemo },
   { id: 'command-search', name: 'CommandSearch 命令搜索', description: '跨资源分组、应用 Dialog、异步状态、快捷键与上下文。', component: CommandSearchDemo },
   { id: 'diff-viewer', name: 'DiffViewer 差异查看', description: '显式结构化行与宿主配对，统一/并排切换与长行处理。', component: DiffViewerDemo },
   { id: 'log-viewer', name: 'LogViewer 日志查看', description: '动态虚拟日志、查询、稳定增量加载、暂停跟随与受控视图偏好。', component: LogViewerDemo },

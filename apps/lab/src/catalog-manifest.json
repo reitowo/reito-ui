@@ -5,7 +5,7 @@
     "ai": 20
   },
   "total": 129,
-  "stories": 1313,
+  "stories": 1321,
   "entries": [
     {
       "layer": "basic",
@@ -1031,11 +1031,11 @@
       "layer": "complex",
       "id": "workspace",
       "name": "Workspace 工作区布局",
-      "description": "应用外壳、受控分栏、版本化侧栏与尺寸持久化。",
+      "description": "应用外壳、基础分栏、响应式三槽预设与版本化视图持久化。",
       "storyId": "复杂-workspace-工作区布局--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "WorkspaceDemo",
-      "stories": 10
+      "stories": 18
     },
     {
       "layer": "complex",

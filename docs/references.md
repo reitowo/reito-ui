@@ -127,6 +127,12 @@ SHELL-STATE-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardPanel](https://ui.nu
 
 Reito UI 使用自己的版本化 React 状态记录、Graphite tokens 与现有 Base UI / shadcn Sidebar，统一保存侧栏和分栏并显式处理旧配置、非法尺寸与不可用存储。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源。服务端首屏读取和账号偏好同步仍由宿主负责。
 
+## Workspace 布局预设（2026-09-08 工作区增量）
+
+SHELL-PRESET-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardGroup](https://ui.nuxt.com/docs/components/dashboard-group)、[DashboardPanel](https://ui.nuxt.com/docs/components/dashboard-panel)、[DashboardSidebar](https://ui.nuxt.com/docs/components/dashboard-sidebar) 与 [DashboardSidebarToggle](https://ui.nuxt.com/docs/components/dashboard-sidebar-toggle)。DashboardGroup 文档明确把固定溢出容器、Sidebar/Panel 组合、响应式界面和尺寸持久化放在同一 dashboard 上下文中。截图为 `.logs/references/nuxt-ui-dashboard-group-4.11.1-2026-09-08.png`，本地宽布局与窄布局截图为 `.logs/workspace-preset/wide-dark-compact.png`、`.logs/workspace-preset/dark-compact.png` 和 `.logs/workspace-preset/light-comfortable.png`。
+
+Reito UI 使用自己的 React 三槽数据契约、Graphite tokens、Base UI Button 与现有 WorkspacePane，按组件容器切换宽/窄结构，并把视图状态和基础分栏状态分开保存。没有复制 Nuxt UI 的 Vue context、源码、CSS、品牌色、字体、图标或资源；路由、业务内容、账号同步和任意 docking 仍由宿主负责。
+
 ## 应用搜索（2026-09-08 工作区增量）
 
 SHELL-SEARCH-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardSearch](https://ui.nuxt.com/docs/components/dashboard-search) 与 [CommandPalette](https://ui.nuxt.com/docs/components/command-palette) 深色桌面文档。截图为 `.logs/references/nuxt-ui-dashboard-search-4.11.1-2026-09-08.png`、`.logs/references/nuxt-ui-command-palette-4.11.1-2026-09-08.png` 和 `.logs/references/nuxt-ui-dashboard-search-open-4.11.1-2026-09-08.png`。参考只用于核对顶部搜索入口、全局快捷键、分组结果、行尾快捷键、异步状态与受控打开方式。

@@ -98,6 +98,8 @@ test('Playground Controls keep the controlled percentage in the same story', asy
   await expect(frame.getByRole('region', { name: '文件目录' })).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
   const path = new URL(page.url()).searchParams.get('path');
+  await page.getByRole('switch', { name: 'preset' }).press('Space');
+  await expect(frame.locator('[data-slot="resizable-panel-group"]')).toBeVisible();
   await page.locator('[id="control-primaryPercent"]').fill('44');
   await page.locator('[id="control-primaryPercent"]').press('Enter');
   const primary = frame.getByRole('region', { name: '文件目录' });
