@@ -10,6 +10,18 @@ async function open(page: Page, story: string, globals = 'theme:dark;density:com
   return upload;
 }
 
+async function trackObjectUrls(page: Page) {
+  await page.addInitScript(() => {
+    const created: string[] = [];
+    const revoked: string[] = [];
+    const createObjectURL = URL.createObjectURL.bind(URL);
+    const revokeObjectURL = URL.revokeObjectURL.bind(URL);
+    URL.createObjectURL = blob => { const url = createObjectURL(blob); created.push(url); return url; };
+    URL.revokeObjectURL = url => { revoked.push(url); revokeObjectURL(url); };
+    Object.assign(window, { __fileUploadObjectUrls: { created, revoked } });
+  });
+}
+
 test('adds a validated file to the local queue', async ({ page }) => {
   const upload = await open(page, 'empty');
   const file = { name: 'notes.md', mimeType: 'text/markdown', buffer: Buffer.from('local example') };
@@ -52,6 +64,54 @@ test('controlled progress and per-file error stay explicit', async ({ page }) =>
   await expect(upload.getByRole('button', { name: '重试' })).toBeEnabled();
 });
 
+test('image files render thumbnails while other files keep a file representation', async ({ page }) => {
+  const upload = await open(page, 'image-preview');
+  await expect(upload.getByRole('img', { name: 'workspace-preview.svg 缩略图' })).toBeVisible();
+  await expect(upload.getByRole('img', { name: 'workspace-notes.md 文件' })).toBeVisible();
+  await expect(upload.locator('[data-preview-state="image"]')).toHaveCount(1);
+  await expect(upload.locator('[data-preview-state="file"]')).toHaveCount(1);
+});
+
+test('invalid image content falls back without changing upload status', async ({ page }) => {
+  const upload = await open(page, 'preview-fallback');
+  await expect(upload.getByRole('img', { name: 'broken-preview.svg 无法生成缩略图' })).toBeVisible();
+  await expect(upload.locator('[data-preview-state="fallback"]')).toHaveCount(1);
+  await expect(upload.locator('[data-status="queued"]')).toContainText('等待上传');
+});
+
+test('cancel keeps the image preview and removal releases its object URL', async ({ page }) => {
+  await trackObjectUrls(page);
+  const upload = await open(page, 'cancel-action');
+  await expect(upload.locator('[data-preview-state="image"]')).toBeVisible();
+  await upload.getByRole('button', { name: '取消' }).click();
+  await expect(upload.locator('[data-status="canceled"] [data-preview-state="image"]')).toBeVisible();
+  expect(await page.evaluate(() => (window as any).__fileUploadObjectUrls.revoked.length)).toBe(0);
+  await upload.getByRole('button', { name: '移除 workspace-preview.svg' }).click();
+  await expect(upload.getByText('workspace-preview.svg', { exact: true })).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => {
+    const urls = (window as any).__fileUploadObjectUrls;
+    return urls.created.length > 0 && urls.created.every((url: string) => urls.revoked.includes(url));
+  })).toBe(true);
+});
+
+test('replacing an image file revokes the previous preview URL', async ({ page }) => {
+  await trackObjectUrls(page);
+  await open(page, 'preview-lifecycle');
+  await expect(page.getByRole('img', { name: 'workspace-preview.svg 缩略图' })).toBeVisible();
+  const first = await page.evaluate(() => (window as any).__fileUploadObjectUrls.created[0] as string);
+  await page.getByRole('button', { name: '替换预览文件' }).click();
+  await expect(page.getByRole('img', { name: 'alternate-preview.svg 缩略图' })).toBeVisible();
+  await expect.poll(() => page.evaluate(url => (window as any).__fileUploadObjectUrls.revoked.includes(url), first)).toBe(true);
+});
+
+test('preview false avoids object URLs and uses the non-image representation', async ({ page }) => {
+  await trackObjectUrls(page);
+  const upload = await open(page, 'preview-disabled');
+  await expect(upload.locator('[data-preview-state="file"]')).toBeVisible();
+  await expect(upload.getByRole('img', { name: 'workspace-preview.svg 文件' })).toBeVisible();
+  expect(await page.evaluate(() => (window as any).__fileUploadObjectUrls.created)).toEqual([]);
+});
+
 test('validation story covers duplicate, type, size, count and removal', async ({ page }) => {
   const upload = await open(page, 'validation');
   await expect(upload.getByRole('alert')).toContainText('最多添加 2 个文件');
@@ -76,6 +136,11 @@ test('Playground controls change lifecycle props without leaving the Story', asy
   await page.locator('[id="control-status"]').selectOption('error');
   await page.locator('[id="control-fileError"]').fill('宿主拒绝上传');
   await expect(frame.getByText('宿主拒绝上传')).toBeVisible();
+  await page.locator('[id="control-fileKind"]').selectOption('image');
+  await expect(frame.getByRole('img', { name: 'workspace-preview.svg 缩略图' })).toBeVisible();
+  await page.locator('[id="control-preview"]').focus();
+  await page.keyboard.press('Space');
+  await expect(frame.getByRole('img', { name: 'workspace-preview.svg 文件' })).toBeVisible();
   expect(new URL(page.url()).searchParams.get('path')).toBe(`/story/${prefix}--playground`);
 });
 

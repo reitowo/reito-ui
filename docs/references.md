@@ -172,6 +172,10 @@ Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) an
 
 能力范围核对 PrimeVue 5 [FileUpload](https://primevue.dev/fileupload/) 的 drag/drop、multi、progress、validation、cancel 与 custom upload，以及 MDN [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) 的 AbortSignal 和异步取消语义。Reito UI 保留原有本地校验，定义自己的受控队列项、逐文件状态/错误、宿主 transport 与迟到结果隔离；不内置上传地址、鉴权、分片或存储协议。图片预览属于后续 UPLOAD-02，本项没有复制上游源码、CSS、模板或资源。
 
+### FileUpload 本地预览 · 2026-09-07
+
+能力存在性核对 Nuxt UI 当前组件目录中的 FileUpload，以及 PrimeVue 5 [FileUpload Image Preview](https://primevue.dev/fileupload/#image-preview) 的缩略图队列。资源语义依据 MDN [URL.createObjectURL](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static) 与 [URL.revokeObjectURL](https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL_static)：临时 Blob URL 在文件移除、替换和组件卸载时释放。Reito UI 使用自己的紧凑行、状态独立预览、解码失败回退和非图片表示；不复制上游网格模板、源码、CSS、图像或品牌资源，也不在 FileUpload 内实现全屏 Gallery。
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。

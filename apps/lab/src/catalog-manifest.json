@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1058,
+  "stories": 1063,
   "entries": [
     {
       "layer": "basic",
@@ -851,11 +851,11 @@
       "layer": "complex",
       "id": "file-upload",
       "name": "FileUpload 文件上传",
-      "description": "本地校验、受控生命周期、进度，以及宿主 transport 的开始、取消与重试。",
+      "description": "本地校验、受控上传生命周期，以及会释放资源的图片缩略图和文件回退。",
       "storyId": "复杂-fileupload-文件上传--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "FileUploadDemo",
-      "stories": 13
+      "stories": 18
     },
     {
       "layer": "complex",

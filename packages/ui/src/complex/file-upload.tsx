@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { Check, File as FileIcon, RotateCcw, Upload, X } from 'lucide-react';
+import { Check, File as FileIcon, ImageOff, RotateCcw, Upload, X } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Progress } from '../primitives/progress.js';
 import { cx, formatBytes } from './shared.js';
@@ -15,6 +15,7 @@ export interface FileUploadProps {
   accept?: string;
   maxSize?: number;
   maxFiles?: number;
+  preview?: boolean;
   disabled?: boolean;
   label?: string;
   className?: string;
@@ -29,8 +30,30 @@ function progressValue(value?: number) { return Math.min(100, Math.max(0, Number
 function statusOf(item: QueuedFile): FileUploadStatus { return item.status ?? 'queued'; }
 const statusLabel: Record<FileUploadStatus, string> = { queued: '等待上传', uploading: '上传中', success: '上传完成', error: '上传失败', canceled: '已取消' };
 
+function FileThumbnail({ file, enabled }: { file: File; enabled: boolean }) {
+  const image = file.type.toLowerCase().startsWith('image/');
+  const [source, setSource] = useState<string>();
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+    setSource(undefined);
+    if (!enabled || !image || typeof URL.createObjectURL !== 'function') return;
+    const objectUrl = URL.createObjectURL(file);
+    setSource(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [enabled, file, image]);
+
+  const state = !enabled || !image ? 'file' : failed ? 'fallback' : source ? 'image' : 'loading';
+  return <span data-slot="file-upload-preview" data-preview-state={state} className="flex size-[var(--rui-control-height-sm)] shrink-0 items-center justify-center overflow-hidden rounded-sm border border-border bg-muted/40 text-muted-foreground">
+    {state === 'image' && <img src={source} alt={`${file.name} 缩略图`} className="size-full object-cover" onError={() => setFailed(true)} />}
+    {state === 'fallback' && <ImageOff role="img" aria-label={`${file.name} 无法生成缩略图`} className="size-4" />}
+    {(state === 'file' || state === 'loading') && <FileIcon role="img" aria-label={`${file.name} 文件`} className="size-4" />}
+  </span>;
+}
+
 /** A validated queue whose optional transport callback is implemented by the host. */
-export function FileUpload({ value, onValueChange, transport, accept, maxSize = 10 * 1024 * 1024, maxFiles = 5, disabled = false, label = '添加文件', className }: FileUploadProps) {
+export function FileUpload({ value, onValueChange, transport, accept, maxSize = 10 * 1024 * 1024, maxFiles = 5, preview = true, disabled = false, label = '添加文件', className }: FileUploadProps) {
   const [internalFiles, setInternalFiles] = useState<QueuedFile[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [dragging, setDragging] = useState(false);
@@ -113,7 +136,7 @@ export function FileUpload({ value, onValueChange, transport, accept, maxSize = 
     <ul className="divide-y divide-border rounded-md border border-border">{files.map(item => {
       const status = statusOf(item); const progress = progressValue(item.progress);
       return <li key={item.id} data-file-id={item.id} data-status={status} className="flex min-w-0 items-center gap-[var(--rui-content-gap-sm)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]">
-        <FileIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <FileThumbnail file={item.file} enabled={preview} />
         <span className="min-w-0 flex-1"><span className="block truncate" title={item.file.name}>{item.file.name}</span><span className={cx('text-xs', status === 'error' ? 'text-destructive' : 'text-muted-foreground')}>{formatBytes(item.file.size)} · {item.error || statusLabel[status]}{status === 'uploading' && ` ${Math.round(progress)}%`}</span>
           {status === 'uploading' && <Progress aria-label={`${item.file.name}上传进度`} value={progress} className="mt-1" />}
         </span>

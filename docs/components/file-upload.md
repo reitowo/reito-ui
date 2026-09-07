@@ -24,9 +24,12 @@
 | `transport` | 宿主上传回调。组件传入当前项、`AbortSignal` 和归一化为 0–100 的进度回调；成功 resolve，失败 reject。组件不推断 HTTP、云存储或分片协议。 |
 | 开始 / 取消 / 重试 | 等待和已取消项可以开始；上传中可取消并触发 AbortSignal；失败项保留文件、错误与重试入口。上传中不显示移除，避免队列与 transport 生命周期分离。 |
 | `progress` | `uploading` 项显示逐文件 Progress。宿主也可直接传入受控进度；无效值会归一化到 0–100。 |
+| `preview` | 默认 `true`。图片文件使用临时对象 URL 显示紧凑缩略图；设为 `false` 时所有文件使用通用文件表示，也不会创建对象 URL。 |
 | `accept / maxSize / maxFiles` | 添加前校验 MIME/后缀、单文件大小、数量和同名同尺寸同修改时间的重复项。浏览器 `accept` 只辅助选择，组件仍执行自己的校验。 |
 | `disabled` | 禁用隐藏 input、选择按钮和已有文件操作；当前 transport 不会因为 disabled 变化自动取消，宿主可保留或主动更新队列。 |
 
-组件卸载、移除上传项或点击取消时会 abort 自己创建的控制器；迟到的进度、成功或错误不会覆盖取消后的状态。未提供 `transport` 时仍可作为本地受控文件队列使用。
+图片缩略图只表示本地文件可预览，与 queued、uploading、success 等上传状态彼此独立。图片解码失败时回退到明确的不可预览图标；非图片文件一直使用通用文件图标。文件移除、替换或组件卸载会释放对应对象 URL；取消上传保留队列项和缩略图，之后仍可重新开始或移除。
 
-[Storybook 参数调试](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--playground) 在同一 Story 调整状态、进度、错误、校验和 transport；[上传完成](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--interactive)、[取消](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--cancel-action) 与[失败重试](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--retry-action)演示本地模拟生命周期。[Lab](http://127.0.0.1:5173/?layer=complex&component=file-upload) 不连接外部服务。
+组件卸载、移除上传项或点击取消时会 abort 自己创建的控制器；迟到的进度、成功或错误不会覆盖取消后的状态。未提供 `transport` 时仍可作为本地受控文件队列使用。FileUpload 只提供队列内缩略图，全屏查看、缩放和图库导航由后续独立 Gallery 组件负责。
+
+[Storybook 参数调试](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--playground) 在同一 Story 调整状态、进度、错误、预览、文件类型、校验和 transport；[图片与文件预览](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--image-preview)、[失败回退](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--preview-fallback)、[上传完成](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--interactive)、[取消](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--cancel-action) 与[失败重试](http://127.0.0.1:6006/?path=/story/复杂-fileupload-文件上传--retry-action)均为本地示例。[Lab](http://127.0.0.1:5173/?layer=complex&component=file-upload) 不连接外部服务。

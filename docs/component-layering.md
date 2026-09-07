@@ -62,7 +62,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、26 个复�
 | [`TreeSelect`](../packages/ui/src/complex/tree-select.tsx) | 在 Popover 中复用 TreeView / AsyncTreeView 的完整节点模型。支持可搜索的单选与三态复选、受控值/展开/查询/弹层、清除、懒加载和原生表单值；筛选只改变可见投影，不丢失隐藏选择或半选计算。 |
 | [`Cascader`](../packages/ui/src/complex/cascader.tsx) | 以并列层级面板浏览任意深度的选项树，值为完整稳定 ID 路径。默认只提交叶节点，可显式允许选择分支；支持受控路径、末级/完整路径显示、lazy 子项、错误重试、清除、方向键导航和 JSON 表单值。 |
 | [`TreeTable`](../packages/ui/src/complex/tree-table.tsx) | 原生 table 上的 row-focused ARIA treegrid。泛型节点用全树唯一 ID 与列渲染器；支持受控展开、单选或级联/独立三态复选、禁用分支、全选、方向键导航和折叠后的焦点回退。高级筛选、根分页与 lazy 子节点属于 TREETABLE-02。 |
-| [`FileUpload`](../packages/ui/src/complex/file-upload.tsx) | `value?: QueuedFile[]` / `onValueChange` 可接管队列，每项为 `{ id, file: File }`。支持 `accept`、`maxSize`（字节）、`maxFiles`、重复校验、拖放与移除；默认 10 MB、5 个。**组件只保留本地文件引用，不读取内容，也不向外部发送文件。** |
+| [`FileUpload`](../packages/ui/src/complex/file-upload.tsx) | `value?: QueuedFile[]` / `onValueChange` 可接管文件与 queued/uploading/success/error/canceled 状态；可选宿主 `transport` 接收 AbortSignal 与进度回调。支持本地校验、开始/取消/重试，以及默认开启的图片缩略图；失败与非图片有明确回退，移除、替换和卸载释放对象 URL。**组件不内置网络、存储或全屏图库。** |
 | [`PropertyList`](../packages/ui/src/complex/property-list.tsx) | `items` 提供 `key`、`label`、`value: string \| number`；宿主在 `onValueChange(key, value)` 中更新数据。字段可设 `kind: 'number'`、`readOnly`、`validate`。验证返回错误字符串时保留编辑；Escape 取消并恢复编辑入口焦点。回调为同步更新契约，远程保存及冲突处理由宿主提供。 |
 | [`Timeline`](../packages/ui/src/complex/timeline.tsx) | `events` 包含稳定 ID、标题、说明、可选时间与内容；`status` 为 `complete / current / error / pending`。按传入顺序呈现，不自动按日期重排，也不执行事件。 |
 | [`Stepper`](../packages/ui/src/complex/stepper.tsx) | 必填 `steps`、`value`；可选 `onValueChange` 控制导航。每步可设 `disabled`、`error` 和说明。允许跳步及业务验证由宿主决定；它不负责保存整个流程。 |

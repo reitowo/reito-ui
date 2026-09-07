@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**46 项完成，1 项进行中，56 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01` 与 `UPLOAD-01` 已完成，当前推进 `UPLOAD-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**47 项完成，1 项进行中，55 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01` 与 `UPLOAD-01`–`UPLOAD-02` 已完成，当前推进 `PROPERTIES-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01 与 UPLOAD-01 已完成，下一项推进 UPLOAD-02。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01 与 UPLOAD-01～02 已完成，下一项推进 PROPERTIES-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -78,8 +78,8 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | RESOURCE-02 | DataView / ResourceGrid：同集合列表/网格切换，共享搜索/选择/分页/动作及受控视图偏好，网格不能另存一份业务状态 | RESOURCE-01、VIRT-03 | ✅ 完成 | 复杂-resourceview-资源视图--playground；状态连续性、本地/远程分页、单/多选、自定义网格、共享动作、窄宽度等 16 个 Story | [验收](validation-resource-view.md)：15 项交互、四主题密度与窄屏；check/build 通过；[用法](components/resource-view.md) |
 | LOG-01 | LogViewer 大数据：虚拟化、增量追加/加载、等级查询、暂停/恢复跟随、可配置视图偏好；动态长行与追加不跳动 | VIRT-02 | ✅ 完成 | 复杂-logviewer-日志查看--playground；1 万条/跟随追加/暂停追加/前插历史/长行/偏好/状态预设，本族 19 个 Story | [验收](validation-log-viewer.md)：14 项交互与 15 项 VirtualList 回归、76 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/log-viewer.md) |
 | UPLOAD-01 | FileUpload 生命周期：queued/uploading/success/error、受控进度、开始/取消/重试、单文件错误、transport 回调；保留本地校验并由宿主执行网络 | — | ✅ 完成 | 复杂-fileupload-文件上传--playground；上传/进度/成功/错误/取消/重试/校验/禁用/窄屏预设，本族 13 个 Story | [验收](validation-file-upload.md)：12 项交互、52 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/file-upload.md) |
-| UPLOAD-02 | 文件预览：图片缩略图/失败回退、移除与取消一致、对象 URL 等资源释放、非图片文件表示；预览不暗示上传完成 | UPLOAD-01 | 进行中 | 待关联 | 待记录 |
-| PROPERTIES-01 | PropertyList / KeyValueEditor 丰富字段：字段类型适配、嵌套数据、只读/禁用、路径与草稿更新；继续复用 Field 控件 | FORM-03、DATE-01、LISTBOX-01 | 待完成 | 待关联 | 待记录 |
+| UPLOAD-02 | 文件预览：图片缩略图/失败回退、移除与取消一致、对象 URL 等资源释放、非图片文件表示；预览不暗示上传完成 | UPLOAD-01 | ✅ 完成 | 复杂-fileupload-文件上传--playground；缩略图/混合文件/失败回退/关闭预览/替换释放/窄屏预设，本族 18 个 Story | [验收](validation-file-upload-preview.md)：17 项交互、72 次 Story 组合、对象 URL 生命周期、四主题密度窄屏；check/build 通过；[用法](components/file-upload.md) |
+| PROPERTIES-01 | PropertyList / KeyValueEditor 丰富字段：字段类型适配、嵌套数据、只读/禁用、路径与草稿更新；继续复用 Field 控件 | FORM-03、DATE-01、LISTBOX-01 | 进行中 | 待关联 | 待记录 |
 | PROPERTIES-02 | 属性/键值提交：跨字段校验、批量提交、取消/重置、异步错误定位和失败恢复；不把各行临时保存当事务提交 | PROPERTIES-01、FORM-02 | 待完成 | 待关联 | 待记录 |
 | GALLERY-01 | ImagePreview / Gallery 基础：缩略图、放大、前后切换、加载/失败/重试、键盘与焦点恢复；不是 AttachmentList 或 AspectRatio 的别名 | — | 待完成 | 待关联 | 待记录 |
 | GALLERY-02 | 图像查看操作：缩放/定位、旋转/翻转、全屏、下载回调的支持边界，换图/退出后状态与资源复位 | GALLERY-01 | 待完成 | 待关联 | 待记录 |
