@@ -29,3 +29,4 @@ export * from './transfer.js';
 export * from './sortable-list.js';
 export * from './organization-chart.js';
 export * from './terminal-prompt.js';
+export * from './rich-text-editor.js';

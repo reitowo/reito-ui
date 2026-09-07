@@ -20,6 +20,7 @@ import { AsyncTreeView, type AsyncTreeViewNode } from './async-tree-view.js';
 import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import { OrganizationChart, type OrganizationChartNode } from './organization-chart.js';
 import { TerminalPrompt, type TerminalPromptEntry } from './terminal-prompt.js';
+import { RichTextEditor } from './rich-text-editor.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -100,6 +101,12 @@ const terminalDemoEntries: TerminalPromptEntry[] = [{ id: 'welcome', command: 'h
 export function TerminalPromptDemo() {
   const [entries, setEntries] = useState(terminalDemoEntries);
   return <TerminalPrompt entries={entries} onSubmit={command => setEntries(current => [...current, { id: `${Date.now()}`, command, output: `本地示例已记录“${command}”；没有调用 shell、进程或 PTY。`, status: 'success', time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) }])} onClear={() => setEntries([])} label="本地示例命令" outputLabel="本地命令记录" />;
+}
+
+const richTextDemoValue = '# 组件说明\n\n这是一份由 **Tiptap 文档模型**驱动的本地 Markdown 草稿。\n\n- 内容可编辑\n- 输出由宿主持有';
+export function RichTextEditorDemo() {
+  const [value, setValue] = useState(richTextDemoValue);
+  return <div className="space-y-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="组件说明" description="本地受控 Markdown；输入会先进入 schema 文档，再序列化回宿主。" /><p role="status" className="text-xs text-muted-foreground">宿主值：{value.length} 个字符</p></div>;
 }
 
 export function TreeSelectDemo() {
@@ -362,6 +369,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'sortable-list', name: 'SortableList 排序列表', description: '受控顺序、批量移动、键盘等价操作与拖放边界。', component: SortableListDemo },
   { id: 'organization-chart', name: 'OrganizationChart 组织结构图', description: '层级关系布局、受控折叠选择、模板与树键盘导航。', component: OrganizationChartDemo },
   { id: 'terminal-prompt', name: 'TerminalPrompt 命令交互', description: '宿主响应列表、历史浏览、提交取消与中文输入法保护。', component: TerminalPromptDemo },
+  { id: 'rich-text-editor', name: 'RichTextEditor 富文本编辑', description: 'Tiptap schema 文档模型，支持受控 JSON、HTML 与 Markdown 输入输出。', component: RichTextEditorDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },

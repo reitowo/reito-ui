@@ -99,6 +99,8 @@ OrganizationChart 使用 160px 紧凑节点、共享行高与内容间距，连�
 
 TerminalPrompt 默认输出区高度为 `--rui-terminal-height`（256px），标题栏使用 SM、输入使用 XS 控件高度，命令与响应行使用 cell padding。命令、输出和提示符使用统一等宽字体；状态、错误、边界和焦点仍使用语义 token。长输出只在输出区滚动，底部提示符保持可见；消费应用需要更高面板时通过 `viewportClassName` 组合已有尺寸 token。
 
+RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--rui-editor-min-height`（224px）。正文使用界面小号字与宽松行高，标题只提高一到两级，段落/列表/引用/代码间距全部来自 content/space tokens；不套用面向博客的超大标题或固定像素 prose 规则。JSON、HTML、Markdown 共用同一 schema 文档树，格式标签只说明宿主序列化契约。编辑区使用弱边界，焦点和错误分别使用 ring/destructive 语义角色。
+
 主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间

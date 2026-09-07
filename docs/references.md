@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 17 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 20 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -64,6 +64,10 @@
 使用固定版本 `refractor@5.0.0` 的 core 与选定语言注册。Refractor 基于 Prism，输出 HAST 节点，可用于 React 等虚拟 DOM；本库仅把文本和 token span 转为 React 节点，不使用 HTML 注入。API、exports 与许可同时检查了官方 README 和安装包。源码与文档：[Refractor](https://github.com/wooorm/refractor)、[MIT 许可](https://github.com/wooorm/refractor/blob/main/license)。安装包的 license 保留 Titus Wormer 和 Lea Verou 的声明，随运行依赖分发；记录也见 `packages/ui/THIRD_PARTY_NOTICES.md`。
 
 语法主题是本库在 `tokens.json` 定义的原创深浅色角色，没有复制 Prism、Cursor 或 Claude 的主题 CSS，也不属于这些产品的官方设计参数。
+
+## RichTextEditor 内容引擎（2026-09-07 工作区增量）
+
+使用固定版本 `@tiptap/react@3.31.3`、`@tiptap/starter-kit@3.31.3` 与 `@tiptap/markdown@3.31.3`，安装包均标注 MIT，并保留各自 `LICENSE.md`。能力与内容边界核对 [Nuxt UI Editor](https://ui.nuxt.com/docs/components/editor)、[Tiptap 内容模型](https://tiptap.dev/docs/editor/core-concepts/introduction)、[持久化](https://tiptap.dev/docs/editor/core-concepts/persistence)与 [Markdown](https://tiptap.dev/docs/editor/markdown)。Reito UI 使用自己的 React 受控适配、Graphite tokens、状态、错误和 Story；没有复制 Nuxt UI 的 Vue 源码、样式、模板或资源。JSON 是严格 schema 文档，HTML/Markdown 会按已安装扩展规范化；Markdown 扩展当前仍是 Beta，不能承诺任意方言逐字往返。
 
 ## Tokens：格式与架构分开
 

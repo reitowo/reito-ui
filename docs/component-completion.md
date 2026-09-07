@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**55 项完成，0 项进行中，48 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01` 与 `TERMINAL-01` 已完成，下一项为 `EDIT-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**56 项完成，0 项进行中，47 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01` 与 `EDIT-01` 已完成，下一项为 `EDIT-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -92,7 +92,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
-| EDIT-01 | RichTextEditor 内容模型：Markdown/HTML/JSON 的支持格式、解析/输出与往返限制、受控值、空/只读/禁用；不以 contentEditable 外壳充数 | — | 待完成 | 待关联 | 待记录 |
+| EDIT-01 | RichTextEditor 内容模型：Markdown/HTML/JSON 的支持格式、解析/输出与往返限制、受控值、空/只读/禁用；不以 contentEditable 外壳充数 | — | ✅ 完成 | 复杂-richtexteditor-富文本编辑--playground；Markdown/HTML/JSON、snapshot、受控替换、往返、过滤、空/只读/禁用/错误、长文与窄屏等共 17 个 Story | [验收](validation-rich-text-editor.md)：19 项交互、68 次 Story 组合、四主题密度窄屏、八项 Controls；check/build 通过；[用法](components/rich-text-editor.md) |
 | EDIT-02 | 编辑基本操作：工具栏、链接、列表、格式状态、撤销/重做、快捷键、选择保留与中文 IME；操作必须改变真实文档模型 | EDIT-01 | 待完成 | 待关联 | 待记录 |
 | EDIT-03 | 编辑扩展：任务列表、对齐、emoji 的安装/组合边界、序列化与键盘交互；按扩展声明实际支持范围 | EDIT-02 | 待完成 | 待关联 | 待记录 |
 | EDIT-04 | Suggestion / Mention 菜单：`/` 命令与 `@` 提及、筛选、异步结果、键盘选择/退出、插入结构与触发范围 | EDIT-02、SELECT-01 | 待完成 | 待关联 | 待记录 |

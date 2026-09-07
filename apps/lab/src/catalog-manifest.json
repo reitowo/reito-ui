@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 31,
+    "complex": 32,
     "ai": 19
   },
-  "total": 120,
-  "stories": 1150,
+  "total": 121,
+  "stories": 1167,
   "entries": [
     {
       "layer": "basic",
@@ -846,6 +846,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "TerminalPromptDemo",
       "stories": 18
+    },
+    {
+      "layer": "complex",
+      "id": "rich-text-editor",
+      "name": "RichTextEditor 富文本编辑",
+      "description": "Tiptap schema 文档模型，支持受控 JSON、HTML 与 Markdown 输入输出。",
+      "storyId": "复杂-richtexteditor-富文本编辑--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "RichTextEditorDemo",
+      "stories": 17
     },
     {
       "layer": "complex",
