@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 33,
+    "complex": 34,
     "ai": 20
   },
-  "total": 123,
-  "stories": 1236,
+  "total": 124,
+  "stories": 1246,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "confirm-popover",
+      "name": "ConfirmPopover 锚点确认",
+      "description": "贴近触发器的确认、取消、异步进度、错误与焦点恢复。",
+      "storyId": "复杂-confirmpopover-锚点确认--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ConfirmPopoverDemo",
+      "stories": 10
     },
     {
       "layer": "complex",

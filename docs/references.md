@@ -93,6 +93,12 @@ COMBO-SPLIT-01 实际查看 PrimeVue 当前 [SplitButton](https://primevue.org/s
 
 Reito UI 只采用共享外轮廓和两个独立焦点按钮的通用结构。实现复用自己的 ButtonGroup、Graphite tokens 和 Base UI Menu，增加主操作/菜单/单条目的独立 loading 与 disabled、受控弹层、空状态、复合标签 typeahead 文字和宿主快捷键声明。没有复制 PrimeVue 的 Vue 源码、MenuModel、CSS、品牌色、字体、模板或资源。
 
+## ConfirmPopover 组合（2026-09-07 工作区增量）
+
+COMBO-CONFIRM-01 实际查看 PrimeVue 当前 [ConfirmPopup](https://primevue.org/confirmpopup/) 浅色桌面文档示例：确认面相对触发器定位，使用短说明和取消/确认两项操作；截图保存在 `.logs/references/primevue-confirm-popup-2026-09-07.png`。焦点与弹层契约同时核对当前安装 Base UI 1.8 的 [Popover](https://base-ui.com/react/components/popover) 文档：modal 弹层包含 Close、默认聚焦首个可操作项，并在关闭时恢复触发器焦点。
+
+Reito UI 使用自己的声明式异步状态、无箭头 Graphite 浮层和原创 tokens，增加外部 pending/error、Promise 成功关闭、失败 alert 与重试、重复提交保护。没有复制 PrimeVue 服务 API、Vue 源码、CSS、品牌颜色、图标、字体、模板或资源。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。
