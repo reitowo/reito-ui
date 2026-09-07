@@ -367,6 +367,115 @@ test('toolbar is configurable and disabled states do not expose writable actions
   expect(await buttons.count()).toBeGreaterThan(8);
 });
 
+test('slash suggestions filter commands and insert a real block node', async ({ page }) => {
+  const surface = await open(page, 'slash-commands');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.pressSequentially('/h2');
+  const menu = page.getByRole('listbox', { name: '斜杠命令' });
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole('option')).toHaveCount(1);
+  await expect(menu.getByRole('option', { name: /二级标题/ })).toHaveAttribute('aria-selected', 'true');
+  await editor.press('Enter');
+  await expect(menu).toHaveCount(0);
+  await editor.pressSequentially('交互规范');
+  await expect(editor.locator('h2')).toHaveText('交互规范');
+  await expect(editor).not.toContainText('/h2');
+});
+
+test('slash trigger stays at a top-level line start and Escape preserves typed text', async ({ page }) => {
+  const surface = await open(page, 'slash-commands');
+  const editor = await editorOf(surface);
+  await editor.fill('正文 /');
+  await expect(page.getByRole('listbox', { name: '斜杠命令' })).toHaveCount(0);
+  await editor.fill('/quo');
+  await expect(page.getByRole('option', { name: /引用/ })).toBeVisible();
+  await editor.press('Escape');
+  await expect(page.getByRole('listbox', { name: '斜杠命令' })).toHaveCount(0);
+  await expect(editor).toHaveText('/quo');
+  await editor.pressSequentially('te');
+  await expect(editor).toHaveText('/quote');
+});
+
+test('local mention selection skips disabled items and serializes the mention node', async ({ page }) => {
+  const surface = await open(page, 'mention-local');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await editor.pressSequentially('@');
+  const menu = page.getByRole('listbox', { name: '提及建议' });
+  await expect(menu).toBeVisible();
+  await expect(editor).toHaveAttribute('data-suggestions-open', 'true');
+  await expect(editor).toHaveAttribute('aria-controls', /mention-suggestions/);
+  await editor.press('End');
+  await expect(menu.getByRole('option', { name: /Graphite Bot/ })).toHaveAttribute('aria-selected', 'true');
+  await editor.press('ArrowDown');
+  await expect(menu.getByRole('option', { name: /Reito/ })).toHaveAttribute('aria-selected', 'true');
+  await editor.pressSequentially('lin');
+  await expect(menu.getByRole('option', { name: /Lin/ })).toHaveAttribute('aria-selected', 'true');
+  await editor.press('Tab');
+  const mention = editor.locator('span[data-type="mention"][data-id="lin"]');
+  await expect(mention).toHaveText('@Lin');
+  await expect(editor).toBeFocused();
+  await expect(editor).not.toHaveAttribute('data-suggestions-open', 'true');
+  await expect(page.getByTestId('mention-json')).toContainText('"type":"mention"');
+  await expect(page.getByTestId('mention-html')).toContainText('data-type="mention"');
+  await expect(page.getByTestId('mention-markdown')).toContainText('id="lin"');
+});
+
+test('disabled mention results remain visible but cannot be inserted', async ({ page }) => {
+  const surface = await open(page, 'mention-local');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await editor.pressSequentially('@arch');
+  const option = page.getByRole('option', { name: /Archived User/ });
+  await expect(option).toBeDisabled();
+  await editor.press('Enter');
+  await expect(editor.locator('span[data-type="mention"]')).toHaveCount(0);
+  await expect(editor).toContainText('@arch');
+});
+
+test('async mention suggestions expose loading and resolve the latest query', async ({ page }) => {
+  const surface = await open(page, 'mention-async');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.pressSequentially('@l');
+  await expect(page.getByRole('status')).toHaveText('加载建议…');
+  await editor.pressSequentially('in');
+  const menu = page.getByRole('listbox', { name: '提及建议' });
+  await expect(menu.getByRole('option', { name: /Lin/ })).toBeVisible();
+  await expect(menu.getByRole('option')).toHaveCount(1);
+  await editor.press('Enter');
+  await expect(editor.locator('span[data-id="lin"]')).toHaveText('@Lin');
+});
+
+test('mention trigger excludes email-like text and reports empty and disabled configurations', async ({ page }) => {
+  let surface = await open(page, 'mention-empty');
+  let editor = await editorOf(surface);
+  await editor.fill('mail@');
+  await expect(page.getByRole('listbox', { name: '提及建议' })).toHaveCount(0);
+  await editor.fill('mail @nobody');
+  await expect(page.getByRole('listbox', { name: '提及建议' })).toContainText('没有匹配项');
+  surface = await open(page, 'suggestions-off');
+  editor = await editorOf(surface);
+  await editor.fill('@reito');
+  await expect(page.getByRole('listbox')).toHaveCount(0);
+  await editor.fill('/h1');
+  await expect(page.getByRole('listbox')).toHaveCount(0);
+});
+
+test('suggestions do not act on IME composition key events', async ({ page }) => {
+  const surface = await open(page, 'mention-local');
+  const editor = await editorOf(surface);
+  await editor.dispatchEvent('compositionstart');
+  await editor.pressSequentially('@');
+  await editor.dispatchEvent('keydown', { key: 'Enter', keyCode: 229, isComposing: true });
+  await expect(page.getByRole('listbox', { name: '提及建议' })).toHaveCount(0);
+  await editor.dispatchEvent('compositionend', { data: '@' });
+  await expect(editor.locator('span[data-type="mention"]')).toHaveCount(0);
+});
+
 test('Playground Controls change props in the current Story', async ({ page }) => {
   const story = `${prefix}--playground`;
   await page.goto(`http://127.0.0.1:6007/?path=/story/${encodeURIComponent(story)}`);
@@ -395,7 +504,7 @@ test('Playground declares an explicit control for every adjustable example prop'
     const include = current.parameters.controls.include as string[];
     return { include, controls: include.map(name => current.argTypes[name]?.control) };
   });
-  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'linkPlaceholder', 'showOutput']);
+  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'linkPlaceholder', 'showOutput']);
   expect(contract.controls.every(Boolean)).toBe(true);
 });
 
@@ -423,4 +532,17 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ path: `.logs/rich-text-editor/extensions-${theme}-${density}.png`, fullPage: true });
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: suggestion menu remains tokenized and accessible`, async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
+  const surface = await open(page, 'mention-local', `theme:${theme};density:${density}`);
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await editor.pressSequentially('@');
+  await expect(page.getByRole('listbox', { name: '提及建议' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ path: `.logs/rich-text-editor/suggestions-${theme}-${density}.png`, fullPage: true });
 });

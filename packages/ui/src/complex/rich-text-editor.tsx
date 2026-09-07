@@ -11,6 +11,18 @@ import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '../primitives/popover.js';
 import { Separator } from '../primitives/separator.js';
+import {
+  createRichTextEditorSuggestionExtensions,
+  richTextEditorDefaultSlashCommands,
+  richTextEditorSlashCommands,
+  type RichTextEditorMentionItem,
+  type RichTextEditorMentionLoader,
+  type RichTextEditorSlashCommandName,
+  type RichTextEditorSuggestionError,
+} from './rich-text-editor-suggestions.js';
+
+export { richTextEditorDefaultSlashCommands, richTextEditorSlashCommands } from './rich-text-editor-suggestions.js';
+export type { RichTextEditorMentionItem, RichTextEditorMentionLoader, RichTextEditorSlashCommandName, RichTextEditorSuggestionError } from './rich-text-editor-suggestions.js';
 
 export type RichTextEditorFormat = 'json' | 'html' | 'markdown';
 export type RichTextEditorValue = string | JSONContent;
@@ -54,6 +66,11 @@ export interface RichTextEditorProps {
   toolbar?: boolean;
   toolbarItems?: readonly RichTextEditorToolbarItem[];
   emojiItems?: readonly RichTextEditorEmojiName[];
+  suggestions?: boolean;
+  mentionItems?: readonly RichTextEditorMentionItem[];
+  loadMentionItems?: RichTextEditorMentionLoader;
+  slashCommands?: readonly RichTextEditorSlashCommandName[];
+  onSuggestionError?: (error: RichTextEditorSuggestionError) => void;
   linkPlaceholder?: string;
   editorClassName?: string;
   className?: string;
@@ -368,12 +385,18 @@ export function RichTextEditor({
   toolbar = true,
   toolbarItems = richTextEditorDefaultToolbarItems,
   emojiItems = richTextEditorDefaultEmojiItems,
+  suggestions = true,
+  mentionItems = [],
+  loadMentionItems,
+  slashCommands = richTextEditorDefaultSlashCommands,
+  onSuggestionError,
   linkPlaceholder = 'https://example.com',
   editorClassName,
   className,
 }: RichTextEditorProps) {
   const descriptionId = useId();
   const errorId = useId();
+  const suggestionId = useId().replaceAll(':', '');
   const initialized = useRef(false);
   const controlled = value !== undefined;
   const initialValue = useRef(defaultValue ?? value ?? emptyValue(format));
@@ -387,6 +410,26 @@ export function RichTextEditor({
   const formatRef = useRef(format);
   const onValueChangeRef = useRef(onValueChange);
   const onContentErrorRef = useRef(onContentError);
+  const suggestionEnabledRef = useRef(suggestions && !disabled && !readOnly);
+  const mentionItemsRef = useRef(mentionItems);
+  const mentionLoaderRef = useRef(loadMentionItems);
+  const slashCommandsRef = useRef(slashCommands);
+  const onSuggestionErrorRef = useRef(onSuggestionError);
+  const suggestionExtensionsRef = useRef<ReturnType<typeof createRichTextEditorSuggestionExtensions> | null>(null);
+  if (!suggestionExtensionsRef.current) {
+    suggestionExtensionsRef.current = createRichTextEditorSuggestionExtensions({
+      idPrefix: `rich-text-editor-${suggestionId}`,
+      isEnabled: () => suggestionEnabledRef.current,
+      getMentions: (query, signal) => {
+        const loader = mentionLoaderRef.current;
+        if (loader) return loader(query, { signal });
+        const normalized = query.trim().toLocaleLowerCase();
+        return mentionItemsRef.current.filter(item => !normalized || [item.id, item.label, item.description ?? '', ...(item.keywords ?? [])].some(value => value.toLocaleLowerCase().includes(normalized)));
+      },
+      getSlashCommands: () => slashCommandsRef.current,
+      onError: suggestionError => onSuggestionErrorRef.current?.(suggestionError),
+    });
+  }
   const [isEmpty, setIsEmpty] = useState(true);
   const [parseError, setParseError] = useState<string>();
   const [linkOpen, setLinkOpen] = useState(false);
@@ -401,6 +444,11 @@ export function RichTextEditor({
   currentInput.current = controlled ? value! : initialValue.current;
   onValueChangeRef.current = onValueChange;
   onContentErrorRef.current = onContentError;
+  suggestionEnabledRef.current = suggestions && !disabled && !readOnly;
+  mentionItemsRef.current = mentionItems;
+  mentionLoaderRef.current = loadMentionItems;
+  slashCommandsRef.current = slashCommands;
+  onSuggestionErrorRef.current = onSuggestionError;
   interactionRef.current = { toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji') };
 
   function openLinkEditor() {
@@ -503,7 +551,7 @@ export function RichTextEditor({
   }
 
   const editor = useEditor({
-    extensions: editorExtensions,
+    extensions: [...editorExtensions, ...suggestionExtensionsRef.current.extensions],
     content: emptyDocument,
     editable: false,
     immediatelyRender: false,
@@ -566,6 +614,7 @@ export function RichTextEditor({
       'aria-multiline': 'true',
       'aria-readonly': String(readOnly || disabled),
       'aria-disabled': String(disabled),
+      'aria-autocomplete': suggestions && !readOnly && !disabled ? 'list' : 'none',
       ...(describedBy ? { 'aria-describedby': describedBy } : {}),
       'data-slot': 'rich-text-editor-content',
       class: cn(
@@ -586,16 +635,22 @@ export function RichTextEditor({
         '[&_pre]:my-[var(--rui-space-3)] [&_pre]:overflow-auto [&_pre]:rounded-md [&_pre]:border [&_pre]:border-border [&_pre]:bg-muted [&_pre]:p-[var(--rui-content-padding)] [&_pre]:font-mono [&_pre]:text-xs',
         '[&_code]:rounded-sm [&_code]:bg-muted [&_code]:px-[var(--rui-space-1)] [&_code]:font-mono [&_code]:text-xs [&_pre_code]:bg-transparent [&_pre_code]:p-0',
         '[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4',
+        '[&_span[data-type=mention]]:rounded-sm [&_span[data-type=mention]]:bg-muted [&_span[data-type=mention]]:px-[var(--rui-space-1)] [&_span[data-type=mention]]:font-medium',
+        '[&_.rich-text-editor-suggestion]:rounded-sm [&_.rich-text-editor-suggestion]:bg-accent',
         '[&_hr]:my-[var(--rui-space-4)] [&_hr]:border-border',
         editorClassName,
       ),
     } } });
-  }, [describedBy, disabled, editor, editorClassName, label, readOnly]);
+  }, [describedBy, disabled, editor, editorClassName, label, readOnly, suggestions]);
 
   useEffect(() => {
     if (disabled || readOnly || !toolbar || !toolbarItems.includes('link')) setLinkOpen(false);
     if (disabled || readOnly || !toolbar || !toolbarItems.includes('emoji')) setEmojiOpen(false);
   }, [disabled, readOnly, toolbar, toolbarItems]);
+
+  useEffect(() => {
+    if (editor && (!suggestions || disabled || readOnly)) suggestionExtensionsRef.current?.exit(editor);
+  }, [disabled, editor, readOnly, suggestions]);
 
   return <div
     data-slot="rich-text-editor"

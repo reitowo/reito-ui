@@ -3,7 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
-import { RichTextEditor, richTextEditorDefaultEmojiItems, richTextEditorDefaultToolbarItems, type RichTextEditorEmojiName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
+import { RichTextEditor, richTextEditorDefaultEmojiItems, richTextEditorDefaultSlashCommands, richTextEditorDefaultToolbarItems, type RichTextEditorEmojiName, type RichTextEditorMentionItem, type RichTextEditorSlashCommandName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
 import { RichTextEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, choiceControl, textControl } from '../feature-controls.js';
 
@@ -16,11 +16,17 @@ const jsonValue = {
     { type: 'paragraph', content: [{ type: 'text', text: '这是规范文档树。' }] },
   ],
 };
+const teamMentions: readonly RichTextEditorMentionItem[] = [
+  { id: 'reito', label: 'Reito', description: '设计系统维护者', keywords: ['owner', 'design'] },
+  { id: 'lin', label: 'Lin', description: '组件工程', keywords: ['frontend', 'react'] },
+  { id: 'graphite-bot', label: 'Graphite Bot', description: '自动检查', keywords: ['bot', 'audit'] },
+  { id: 'archived', label: 'Archived User', description: '已停用', disabled: true },
+];
 
 const meta = {
   title: '复杂/RichTextEditor 富文本编辑',
   component: RichTextEditor,
-  parameters: { docs: { description: { component: 'Tiptap schema 驱动的内容面，公开 JSON、HTML、Markdown 受控输入输出，并提供改变真实文档模型的紧凑工具栏、任务列表、段落对齐、Emoji、链接编辑、格式状态和历史操作。' } } },
+  parameters: { docs: { description: { component: 'Tiptap schema 驱动的内容面，公开 JSON、HTML、Markdown 受控输入输出，并提供紧凑工具栏、任务列表、段落对齐、Emoji、斜杠命令、提及、链接编辑、格式状态和历史操作。' } } },
 } satisfies Meta<typeof RichTextEditor>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -37,6 +43,9 @@ type PlaygroundArgs = {
   showToolbar: boolean;
   toolbarPreset: 'full' | 'marks' | 'structure' | 'extensions' | 'history';
   emojiPreset: 'all' | 'status' | 'none';
+  suggestions: boolean;
+  mentionPreset: 'team' | 'empty';
+  slashPreset: 'full' | 'writing' | 'none';
   linkPlaceholder: string;
 };
 
@@ -54,6 +63,17 @@ const emojiPresets: Record<PlaygroundArgs['emojiPreset'], readonly RichTextEdito
   none: [],
 };
 
+const mentionPresets: Record<PlaygroundArgs['mentionPreset'], readonly RichTextEditorMentionItem[]> = {
+  team: teamMentions,
+  empty: [],
+};
+
+const slashPresets: Record<PlaygroundArgs['slashPreset'], readonly RichTextEditorSlashCommandName[]> = {
+  full: richTextEditorDefaultSlashCommands,
+  writing: ['paragraph', 'heading-1', 'heading-2', 'bullet-list', 'blockquote'],
+  none: [],
+};
+
 function parsePlaygroundValue(format: PlaygroundArgs['format'], value: string): RichTextEditorValue {
   if (format !== 'json') return value;
   try { return JSON.parse(value) as RichTextEditorValue; }
@@ -66,7 +86,7 @@ function printable(value: RichTextEditorValue) {
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: '参数调试',
-  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、扩展内容和交互状态。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', linkPlaceholder: 'https://example.com' },
+  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、扩展内容和交互状态。输入 / 或 @ 查看建议。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', suggestions: true, mentionPreset: 'team', slashPreset: 'full', linkPlaceholder: 'https://example.com' },
   argTypes: {
     format: choiceControl(['markdown', 'html', 'json']),
     value: textControl,
@@ -79,12 +99,15 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     showToolbar: booleanControl,
     toolbarPreset: choiceControl(['full', 'marks', 'structure', 'extensions', 'history']),
     emojiPreset: choiceControl(['all', 'status', 'none']),
+    suggestions: booleanControl,
+    mentionPreset: choiceControl(['team', 'empty']),
+    slashPreset: choiceControl(['full', 'writing', 'none']),
     linkPlaceholder: textControl,
   },
-  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'linkPlaceholder', 'showOutput'] } },
+  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'linkPlaceholder', 'showOutput'] } },
   render: function Render(args) {
     const [, updateArgs] = useArgs<PlaygroundArgs>();
-    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
+    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} suggestions={args.suggestions} mentionItems={mentionPresets[args.mentionPreset]} slashCommands={slashPresets[args.slashPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
   },
 };
 
@@ -105,6 +128,32 @@ export const MarksToolbar: Story = { name: '仅文本格式工具', args: { form
 export const StructureToolbar: Story = { name: '仅结构工具', args: { format: 'markdown', defaultValue: '把当前段落转换为标题、列表或引用。', label: '段落结构', toolbarItems: toolbarPresets.structure } };
 export const ExtensionToolbar: Story = { name: '仅扩展工具', args: { format: 'markdown', defaultValue: '任务、对齐与 Emoji 共用同一文档模型。', label: '编辑扩展', toolbarItems: toolbarPresets.extensions } };
 export const ToolbarHidden: Story = { name: '隐藏工具栏', args: { format: 'markdown', defaultValue: markdownValue, label: '沉浸编辑', toolbar: false } };
+
+export const SlashCommands: Story = {
+  name: '斜杠命令',
+  args: { format: 'markdown', defaultValue: '', label: '命令编辑', description: '在空段落行首输入 /，筛选后使用方向键与 Enter 插入结构。', mentionItems: teamMentions },
+};
+
+function MentionSerializationExample() {
+  const [value, setValue] = useState<RichTextEditorValue>({ type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: '分配给 ' }] }] });
+  const [state, setState] = useState<RichTextEditorSnapshot>();
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="json" value={value} onValueChange={(next, snapshot) => { setValue(next); setState(snapshot); }} label="本地提及" description="输入 @ 后选择本地成员；禁用成员不会被选中。" mentionItems={teamMentions} /><section aria-label="提及序列化结果"><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">JSON</dt><dd data-testid="mention-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '插入后显示 mention 节点'}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="mention-html" className="truncate font-mono">{state?.html ?? '插入后显示 data-type=mention'}</dd><dt className="text-muted-foreground">Markdown</dt><dd data-testid="mention-markdown" className="truncate font-mono">{state?.markdown ?? '插入后显示提及扩展语法'}</dd></dl></section></div>;
+}
+export const MentionLocal: Story = { name: '本地提及与序列化', render: () => <MentionSerializationExample /> };
+
+function loadTeamMentions(query: string, { signal }: { signal: AbortSignal }) {
+  return new Promise<readonly RichTextEditorMentionItem[]>((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      const normalized = query.toLocaleLowerCase();
+      resolve(teamMentions.filter(item => [item.id, item.label, ...(item.keywords ?? [])].some(value => value.toLocaleLowerCase().includes(normalized))));
+    }, 180);
+    signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('请求已取消', 'AbortError')); }, { once: true });
+  });
+}
+export const MentionAsync: Story = { name: '异步提及与加载态', args: { format: 'markdown', defaultValue: '', label: '异步成员', description: '输入 @ 后由本地延时 Provider 返回结果；新查询会取消旧请求。', loadMentionItems: loadTeamMentions } };
+export const MentionEmpty: Story = { name: '提及空结果', args: { format: 'markdown', defaultValue: '', label: '空成员集合', mentionItems: [] } };
+export const SuggestionsOff: Story = { name: '关闭建议能力', args: { format: 'markdown', defaultValue: '', label: '普通编辑', suggestions: false, mentionItems: teamMentions } };
+export const SuggestionNarrow: Story = { name: '窄面板建议菜单', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue="" label="窄面板命令" mentionItems={teamMentions} /></div> };
 
 function TaskListExample() {
   const [value, setValue] = useState('- [ ] 检查紧凑间距\n  - [x] 确认嵌套任务\n- [x] 记录验收结果');

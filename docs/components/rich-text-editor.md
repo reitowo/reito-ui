@@ -63,10 +63,33 @@ EDIT-03 安装固定版本的 Tiptap TaskList、TaskItem、TextAlign 与 Emoji �
 />
 ```
 
+## 斜杠命令与提及
+
+`suggestions` 默认为 `true`。顶层空段落的行首输入 `/` 会打开结构命令，空格后输入 `@` 会打开提及菜单；电子邮箱式的行内 `@`、已有正文后的 `/` 以及列表内的 `/` 不触发菜单。两个菜单都保留编辑器焦点，使用方向键、Home/End、Enter 或 Tab 选择，Escape 只关闭菜单并保留已经输入的查询。
+
+```tsx
+<RichTextEditor
+  format="json"
+  value={document}
+  onValueChange={setDocument}
+  mentionItems={[
+    { id: 'reito', label: 'Reito', description: '设计系统维护者' },
+    { id: 'lin', label: 'Lin', description: '组件工程' },
+  ]}
+  slashCommands={['paragraph', 'heading-1', 'heading-2', 'task-list', 'blockquote']}
+/>
+```
+
+- `slashCommands` 从内置命令 ID 中选择可见能力。当前内置正文、一级/二级标题、无序/有序/任务列表、引用、代码块和分隔线；执行后删除 `/查询` 并写入真实 schema 节点。
+- `mentionItems` 提供本地数据并按 `id / label / description / keywords` 筛选。`disabled` 项可见但不会成为键盘活动项，也不能插入。
+- `loadMentionItems(query, { signal })` 用于异步 Provider；存在时取代本地筛选。新查询会中止旧请求，加载和空结果有明确状态。未中止的失败调用 `onSuggestionError` 并把本次结果置空，宿主负责日志或重试入口。
+- 提及插入 inline `mention` 节点和一个尾随空格。JSON 保存 `id / label / mentionSuggestionChar`，HTML 输出 `data-type="mention"` 与数据属性，Markdown 使用 Tiptap Mention 的可解析内联扩展语法。外部 Provider 返回的 ID、标签和关键词仍应由宿主按自己的身份与授权边界校验。
+- `suggestions={false}` 会关闭两个触发器；切换为只读或禁用也会立即退出已打开菜单。组合输入期间不会打开菜单，也不会让 Enter 选择建议。
+
 ## 状态与布局
 
 `readOnly` 保留阅读和选择能力，`disabled` 暴露禁用语义；两者都停止文档编辑。空文档的 `placeholder` 是界面提示，不进入序列化内容。编辑区使用 `--rui-editor-min-height`、内容 padding、语义边界和 Graphite 排版 token；`editorClassName` 可用已有 token 类组合具体容器高度。
 
-当前 StarterKit 支持段落、标题、加粗/斜体/删除线/下划线、链接、列表、引用、代码块和分隔线；EDIT-03 额外组合任务列表、对齐与 Emoji。`EDIT-01` 验收基础模型和格式边界，`EDIT-02` 验收固定工具栏、格式状态、链接和历史，`EDIT-03` 验收扩展节点、键盘操作和三格式边界；提及、块重排、图片上传和 AI 回调由后续 `EDIT-04`–`EDIT-06` 提供。
+当前 StarterKit 支持段落、标题、加粗/斜体/删除线/下划线、链接、列表、引用、代码块和分隔线；EDIT-03 额外组合任务列表、对齐与 Emoji，EDIT-04 组合斜杠命令与提及。`EDIT-01` 验收基础模型和格式边界，`EDIT-02` 验收固定工具栏、格式状态、链接和历史，`EDIT-03` 验收扩展节点、键盘操作和三格式边界，`EDIT-04` 验收触发范围、同步/异步筛选、键盘退出和插入序列化；块重排、图片上传和 AI 回调由后续 `EDIT-05`–`EDIT-06` 提供。
 
 默认 HTML schema 会移除示例中的脚本和事件属性，但这不能替代消费应用对自定义扩展、URL 协议和服务端输出的安全策略。添加新节点或属性时，应同时定义解析、序列化、展示和输入校验边界。

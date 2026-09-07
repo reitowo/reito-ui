@@ -233,6 +233,10 @@ The JavaScript build keeps bare package imports external. These dependencies are
 | @tiptap/extension-list | 3.31.3 | MIT | node_modules/@tiptap/extension-list/LICENSE.md |
 | @tiptap/extension-text-align | 3.31.3 | MIT | node_modules/@tiptap/extension-text-align/LICENSE.md |
 | @tiptap/extension-emoji | 3.31.3 | MIT | node_modules/@tiptap/extension-emoji/LICENSE.md |
+| @tiptap/core | 3.31.3 | MIT | node_modules/@tiptap/core/LICENSE.md |
+| @tiptap/pm | 3.31.3 | MIT | node_modules/@tiptap/pm/LICENSE.md |
+| @tiptap/extension-mention | 3.31.3 | MIT | node_modules/@tiptap/extension-mention/LICENSE.md |
+| @tiptap/suggestion | 3.31.3 | MIT | node_modules/@tiptap/suggestion/LICENSE.md |
 | class-variance-authority | 0.7.1 | Apache-2.0 | node_modules/class-variance-authority/LICENSE |
 | cmdk | 1.1.1 | MIT | node_modules/cmdk/LICENSE.md |
 | cn | 0.2.5 | MIT | node_modules/cn/LICENSE |

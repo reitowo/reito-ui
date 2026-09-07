@@ -73,6 +73,8 @@ EDIT-02 继续核对 Nuxt UI 4.11.0 当前 Editor/EditorToolbar 文档、[Tiptap
 
 EDIT-03 增加固定版本 `@tiptap/extension-list@3.31.3`、`@tiptap/extension-text-align@3.31.3` 与 `@tiptap/extension-emoji@3.31.3`，均由安装包确认为 MIT。实现边界逐项核对 [TaskList](https://tiptap.dev/docs/editor/extensions/nodes/task-list)、[TaskItem](https://tiptap.dev/docs/editor/extensions/nodes/task-item)、[TextAlign](https://tiptap.dev/docs/editor/extensions/functionality/textalign) 与 [Emoji](https://tiptap.dev/docs/editor/extensions/nodes/emoji) 的当前官方声明和安装源码：任务列表声明 Markdown parse/render 与嵌套快捷键；TextAlign 只添加 paragraph/heading 属性；Emoji 声明 shortcode 输出与输入规则，但没有 Markdown parse hook。Reito UI 只使用公开扩展 API，并用自己的紧凑工具栏、token 样式、选择器和 Story 说明这些差异。
 
+EDIT-04 增加固定版本 `@tiptap/core@3.31.3`、`@tiptap/pm@3.31.3`、`@tiptap/extension-mention@3.31.3` 与 `@tiptap/suggestion@3.31.3`，安装包均标注 MIT。实现核对 [Mention](https://tiptap.dev/docs/editor/extensions/nodes/mention)、[Suggestion](https://tiptap.dev/docs/editor/api/utilities/suggestion) 与安装源码：Suggestion 负责触发匹配、异步 items、AbortSignal、装载定位和退出事务；Mention 提供 inline 节点及 HTML/Markdown parse/render。Reito UI 自行实现 Graphite 菜单、ARIA 关联、本地/异步数据契约、命令集合和 React 受控适配，没有复制 Nuxt UI 的 Vue 菜单、样式或资产。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。
