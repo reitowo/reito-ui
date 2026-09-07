@@ -2,7 +2,7 @@
 
 Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧凑控件、可读内容和安静的窗口结构。Cursor 提供任务、会话与审查工作区的主参考，Claude Desktop 提供输入区与阅读空间的参考，Multica 提供任务信息结构参考。这里的颜色、尺寸、字体栈和 API 由本项目定义，**不是三款产品的官方 tokens，也不是像素复刻**。已实际查看的官方图像、官网演示及各自的证据边界见 [references.md](references.md)。
 
-0.4 的 Lab 是基础、复杂、AI 三层组件目录，当前提供 70 / 35 / 20 个组件族；Workbench 则将共享组件组合成 Agent、文件与差异、设置工作面。基础包含 50 个官方 shadcn / Base UI base-nova 生成族及 20 个本地组合族，复杂与 AI 在其上组合。组件库仍服务于设置、表格、表单、导航、弹层和其他桌面场景；例工程的结构不要求每个消费项目都变成聊天产品。
+0.4 的 Lab 是基础、复杂、AI 三层组件目录，当前提供 70 / 36 / 20 个组件族；Workbench 则将共享组件组合成 Agent、文件与差异、设置工作面。基础包含 50 个官方 shadcn / Base UI base-nova 生成族及 20 个本地组合族，复杂与 AI 在其上组合。组件库仍服务于设置、表格、表单、导航、弹层和其他桌面场景；例工程的结构不要求每个消费项目都变成聊天产品。
 
 ## 先确认什么
 
@@ -132,6 +132,8 @@ SplitButton 由共享 ButtonGroup、Button 与 DropdownMenu 组合。主操作�
 ConfirmPopover 使用 modal Popover 在局部触发器旁完成短确认。取消、Escape 与成功提交关闭后恢复触发器焦点；取消按钮先取得默认焦点。异步 pending 期间同时禁用确认与取消，并阻止重复提交和意外关闭；失败留在原位，通过 alert 说明并允许重试。宽度、内距、间隙、边界和动作尺寸来自 Graphite tokens；长条款或需要输入确认文字的流程继续使用 AlertDialog。
 
 UserInfo 把 Avatar、名称、辅助说明、可读状态和独立宿主动作组织为一条紧凑静态行。名称与说明在窄处截断并保留完整 title，不通过缩小字号挤入；状态文字与语义色点同时出现。动作分别持有焦点、loading 与 disabled，整行不伪装成可点击容器，避免与内部按钮形成嵌套交互。行内距、间隙、头像和按钮尺寸随共享 density/control tokens 变化。
+
+Banner 复用 Alert 的表面和 Button 动作，承载与当前工作直接相关的短通知。默认静态通知是带名称的 region；动态到达且需要播报时才选择 polite/status 或 assertive/alert。长内容换行，动作和关闭入口在窄处仍可达；不把 Banner 用作统计条或装饰性宣传横幅。
 
 组件组合表达结构：WorkspacePane 提供 title / actions / children；Dialog 使用 DialogContent / DialogTitle / DialogDescription 等子组件。先查实际类型；不要假设每个组件都有通用 `header`、`size` 或 `tone` 属性。
 

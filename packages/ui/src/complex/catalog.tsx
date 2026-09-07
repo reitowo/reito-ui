@@ -24,6 +24,7 @@ import { RichTextEditor } from './rich-text-editor.js';
 import { SplitButton, type SplitButtonItem } from './split-button.js';
 import { ConfirmPopover } from './confirm-popover.js';
 import { UserInfo } from './user-info.js';
+import { Banner } from './banner.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -163,6 +164,14 @@ export function UserInfoDemo() {
         { id: 'more', label: '更多用户操作', icon: <MoreHorizontal aria-hidden="true" />, disabled: true, onSelect: () => undefined },
       ]}
     />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function BannerDemo() {
+  const [message, setMessage] = useState('本地通知尚未处理。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <Banner title="组件索引可以更新" description="这是本地示例，不会请求远端服务。" tone="info" action={{ label: '查看', onSelect: () => setMessage('已触发查看操作（本地示例）。') }} onDismiss={() => setMessage('已关闭本地通知。')} />
     <p role="status" className="text-xs text-muted-foreground">{message}</p>
   </div>;
 }
@@ -413,6 +422,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'banner', name: 'Banner 通知条', description: '信息、动作、关闭、长内容和可控 live region 的紧凑通知。', component: BannerDemo },
   { id: 'user-info', name: 'User 信息行', description: '头像、主辅文字、状态和独立宿主操作的紧凑组合。', component: UserInfoDemo },
   { id: 'confirm-popover', name: 'ConfirmPopover 锚点确认', description: '贴近触发器的确认、取消、异步进度、错误与焦点恢复。', component: ConfirmPopoverDemo },
   { id: 'split-button', name: 'SplitButton 拆分按钮', description: '主操作与相关菜单共享边缘，独立控制忙碌、禁用、标签和快捷键。', component: SplitButtonDemo },

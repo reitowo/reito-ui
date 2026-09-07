@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**66 项完成，0 项进行中，37 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01` 与 `COMBO-USER-01` 已完成，下一项为 `COMBO-BANNER-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**67 项完成，0 项进行中，36 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01` 与 `COMBO-BANNER-01` 已完成，下一项为 `COMBO-TOOLBAR-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01 与 COMBO-USER-01 已完成，下一项为 COMBO-BANNER-01。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01 与 COMBO-BANNER-01 已完成，下一项为 COMBO-TOOLBAR-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -110,7 +110,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | COMBO-SPLIT-01 | SplitButton：主操作与菜单动作、各自 loading/disabled、标签、快捷键/焦点与共享边缘 | — | ✅ 完成 | 复杂-splitbutton-拆分按钮--playground / --default / --menu-with-shortcuts / --independent-disabled / --main-loading / --menu-loading / --item-loading / --empty / --keyboard-navigation；本族共 9 个 Story | [验收](validation-split-button.md)：13 项交互/视觉、36 次静态 Story 组合、可调 Controls、四主题密度；check/build 通过；[用法](components/split-button.md) |
 | COMBO-CONFIRM-01 | ConfirmPopover：锚点确认、危险/取消动作、异步 pending/error、关闭及焦点回到触发器 | — | ✅ 完成 | 复杂-confirmpopover-锚点确认--playground / --default / --destructive / --with-details / --external-pending / --host-error / --async-success / --async-failure / --disabled / --keyboard-focus；本族共 10 个 Story | [验收](validation-confirm-popover.md)：13 项交互/视觉、40 次静态 Story 组合、可调 Controls、四主题密度；check/build 通过；[用法](components/confirm-popover.md) |
 | COMBO-USER-01 | User 信息行：Avatar/文字/辅助状态/操作组合、长名称、缺头像与禁用动作；示例数据明确为本地 | — | ✅ 完成 | 复杂-user-信息行--playground / --default / --long-content / --missing-avatar / --status-tones / --visible-actions / --disabled-action / --loading-action / --disabled-row / --custom-trailing-content；本族共 10 个 Story | [验收](validation-user-info.md)：13 项交互/视觉、40 次静态 Story 组合、可调 Controls、四主题密度；check/build 通过；[用法](components/user-info.md) |
-| COMBO-BANNER-01 | Banner：信息/动作/关闭、长内容和窄布局、live region 使用边界；复用 Alert，不增加装饰性统计条 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-BANNER-01 | Banner：信息/动作/关闭、长内容和窄布局、live region 使用边界；复用 Alert，不增加装饰性统计条 | — | ✅ 完成 | 复杂-banner-通知条--playground 等 11 个 Story | [验收](validation-banner.md)：11 项交互/视觉、44 次 Story 组合、四主题密度；check/build 通过；[用法](components/banner.md) |
 | COMBO-TOOLBAR-01 | Toolbar：操作分组、状态控件、溢出策略和适用的键盘导航，窄工作面不隐藏不可达操作 | — | 待完成 | 待关联 | 待记录 |
 | COMBO-INLINE-01 | 通用 InlineEdit：显示/编辑插槽、草稿/提交/取消、异步错误、焦点与只读；由 PropertyList 文本/数字场景抽取 | FORM-02 | 待完成 | 待关联 | 待记录 |
 | COMBO-OVERLAY-01 | 命令式 Overlay 配方：Dialog/Sheet/AlertDialog 的打开/结果/关闭服务、并发/嵌套与卸载边界，保留声明式控制 | — | 待完成 | 待关联 | 待记录 |

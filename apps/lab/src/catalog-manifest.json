@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 35,
+    "complex": 36,
     "ai": 20
   },
-  "total": 125,
-  "stories": 1256,
+  "total": 126,
+  "stories": 1267,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "banner",
+      "name": "Banner 通知条",
+      "description": "信息、动作、关闭、长内容和可控 live region 的紧凑通知。",
+      "storyId": "复杂-banner-通知条--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "BannerDemo",
+      "stories": 11
     },
     {
       "layer": "complex",
