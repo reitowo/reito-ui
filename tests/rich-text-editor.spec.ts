@@ -17,6 +17,20 @@ async function editorOf(surface: Locator) {
   return editor;
 }
 
+async function axeViolations(page: Page) {
+  await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
+  return page.evaluate(async () => {
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      try { return (await (window as any).axe.run(document.body)).violations; }
+      catch (error) {
+        if (!String(error).includes('Axe is already running')) throw error;
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
+    throw new Error('Axe remained busy for five seconds');
+  });
+}
+
 test('Markdown input is parsed into schema nodes instead of displayed as source text', async ({ page }) => {
   const surface = await open(page, 'markdown-controlled');
   const editor = await editorOf(surface);
@@ -166,6 +180,96 @@ test('structure commands create real headings and multi-item lists', async ({ pa
   await expect(surface.getByRole('button', { name: '无序列表' })).toHaveAttribute('aria-pressed', 'true');
 });
 
+test('task-list Markdown parses nested checked state and checkbox changes serialize back', async ({ page }) => {
+  const surface = await open(page, 'task-list-markdown');
+  const editor = await editorOf(surface);
+  const tasks = editor.locator('li[data-type="taskItem"]');
+  const checkboxes = editor.getByRole('checkbox');
+  await expect(tasks).toHaveCount(3);
+  await expect(tasks.first().locator('ul[data-type="taskList"]')).toHaveCount(1);
+  await expect(checkboxes.nth(0)).not.toBeChecked();
+  await expect(checkboxes.nth(1)).toBeChecked();
+  await checkboxes.nth(0).click();
+  await expect(checkboxes.nth(0)).toBeChecked();
+  await expect(page.getByTestId('task-list-output')).toContainText('- [x] 检查紧凑间距');
+  await expect(page.getByTestId('task-list-output')).toContainText('  - [x] 确认嵌套任务');
+});
+
+test('task-list shortcut, Enter, Tab and Shift-Tab operate on real task nodes', async ({ page }) => {
+  const surface = await open(page, 'extension-toolbar');
+  const editor = await editorOf(surface);
+  await editor.fill('第一项');
+  await editor.press(process.platform === 'darwin' ? 'Meta+Shift+9' : 'Control+Shift+9');
+  await expect(editor.locator('ul[data-type="taskList"] > li[data-type="taskItem"]')).toHaveCount(1);
+  await expect(surface.getByRole('button', { name: '任务列表' })).toHaveAttribute('aria-pressed', 'true');
+  await editor.press('End');
+  await editor.press('Enter');
+  await editor.pressSequentially('第二项');
+  await expect(editor.locator('li[data-type="taskItem"]')).toHaveCount(2);
+  await editor.press('Tab');
+  await expect(editor.locator('li[data-type="taskItem"] ul[data-type="taskList"]')).toHaveCount(1);
+  await editor.press('Shift+Tab');
+  await expect(editor.locator('li[data-type="taskItem"] ul[data-type="taskList"]')).toHaveCount(0);
+});
+
+test('alignment writes HTML and JSON attributes while Markdown remains plain text', async ({ page }) => {
+  const surface = await open(page, 'alignment-serialization');
+  const editor = await editorOf(surface);
+  await editor.locator('p').click();
+  const center = surface.getByRole('button', { name: '居中对齐' });
+  await center.click();
+  await expect(editor.locator('p')).toHaveCSS('text-align', 'center');
+  await expect(center).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('alignment-html')).toContainText('text-align: center');
+  await expect(page.getByTestId('alignment-json')).toContainText('"textAlign":"center"');
+  await expect(page.getByTestId('alignment-markdown')).toHaveText('选中段落并更改对齐方式。');
+  await editor.press(process.platform === 'darwin' ? 'Meta+Shift+R' : 'Control+Shift+R');
+  await expect(editor.locator('p')).toHaveCSS('text-align', 'right');
+  await expect(surface.getByRole('button', { name: '右对齐' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('emoji picker restores the caret and exposes synchronized node serialization', async ({ page }) => {
+  const surface = await open(page, 'emoji-serialization');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await surface.getByRole('button', { name: '插入 Emoji' }).click();
+  await page.getByRole('option', { name: '完成 ✅' }).click();
+  await expect(editor.locator('span[data-type="emoji"][data-name="check"]')).toHaveText('✅');
+  await expect(page.getByTestId('emoji-markdown')).toContainText(':check:');
+  await expect(page.getByTestId('emoji-html')).toContainText('data-type="emoji"');
+  await expect(page.getByTestId('emoji-json')).toContainText('"type":"emoji"');
+  await expect(editor).toBeFocused();
+});
+
+test('emoji shortcode input rule creates the same schema node', async ({ page }) => {
+  const surface = await open(page, 'emoji-serialization');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await editor.pressSequentially(' :rocket:');
+  await editor.press('Space');
+  await expect(editor.locator('span[data-type="emoji"][data-name="rocket"]')).toHaveText('🚀');
+  await expect(page.getByTestId('emoji-markdown')).toContainText(':rocket:');
+});
+
+test('emoji picker exposes the configured empty state', async ({ page }) => {
+  const surface = await open(page, 'emoji-empty-picker');
+  await surface.getByRole('button', { name: '插入 Emoji' }).click();
+  await expect(page.getByText('没有可插入的 Emoji')).toBeVisible();
+  await expect(page.getByRole('option')).toHaveCount(0);
+});
+
+test('read-only task checkboxes retain their original checked state', async ({ page }) => {
+  const surface = await open(page, 'task-list-read-only');
+  const checkboxes = (await editorOf(surface)).getByRole('checkbox');
+  await expect(checkboxes).toHaveCount(2);
+  await expect(checkboxes.first()).not.toBeChecked();
+  await checkboxes.first().click({ force: true });
+  await expect(checkboxes.first()).not.toBeChecked();
+  await expect(checkboxes.nth(1)).toBeChecked();
+});
+
 test('link UI restores the editor selection, writes href, and can unlink it', async ({ page }) => {
   const surface = await open(page, 'link-selection');
   const editor = await editorOf(surface);
@@ -291,7 +395,7 @@ test('Playground declares an explicit control for every adjustable example prop'
     const include = current.parameters.controls.include as string[];
     return { include, controls: include.map(name => current.argTypes[name]?.control) };
   });
-  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'linkPlaceholder', 'showOutput']);
+  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'linkPlaceholder', 'showOutput']);
   expect(contract.controls.every(Boolean)).toBe(true);
 });
 
@@ -308,7 +412,15 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   const editor = await editorOf(surface);
   expect(await editor.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(224);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body)).violations)).toEqual([]);
+  expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ path: `.logs/rich-text-editor/${theme}-${density}.png`, fullPage: true });
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: editing extensions remain compact and accessible`, async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
+  const surface = await open(page, 'task-list-markdown', `theme:${theme};density:${density}`);
+  await expect((await editorOf(surface)).locator('li[data-type="taskItem"]')).toHaveCount(3);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ path: `.logs/rich-text-editor/extensions-${theme}-${density}.png`, fullPage: true });
 });

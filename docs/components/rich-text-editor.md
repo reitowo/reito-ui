@@ -10,7 +10,7 @@ const [value, setValue] = useState('# 工作区说明\n\n使用 **Graphite** 组
   value={value}
   onValueChange={next => setValue(String(next))}
   label="工作区说明"
-  toolbarItems={['bold', 'italic', 'heading-1', 'bullet-list', 'link', 'undo', 'redo']}
+  toolbarItems={['bold', 'italic', 'heading-1', 'task-list', 'align-left', 'emoji', 'link', 'undo', 'redo']}
 />
 ```
 
@@ -26,14 +26,14 @@ const [value, setValue] = useState('# 工作区说明\n\n使用 **Graphite** 组
 
 ## 基本编辑操作
 
-`toolbar` 默认为 `true`，渲染一行固定工具栏。`toolbarItems` 接收公开的 `RichTextEditorToolbarItem[]`，默认顺序覆盖加粗、斜体、下划线、删除线、行内代码、清除格式、正文、一级/二级标题、无序/有序列表、引用、链接/取消链接、撤销与重做。宿主可按工作面裁剪：
+`toolbar` 默认为 `true`，渲染一行固定工具栏。`toolbarItems` 接收公开的 `RichTextEditorToolbarItem[]`，默认顺序覆盖加粗、斜体、下划线、删除线、行内代码、清除格式、正文、一级/二级标题、无序/有序/任务列表、引用、四种对齐、Emoji、链接/取消链接、撤销与重做。宿主可按工作面裁剪：
 
 ```tsx
 <RichTextEditor
   format="html"
   value={value}
   onValueChange={setValue}
-  toolbarItems={['bold', 'italic', 'bullet-list', 'ordered-list', 'link', 'undo', 'redo']}
+  toolbarItems={['bold', 'italic', 'task-list', 'align-left', 'align-center', 'emoji', 'undo', 'redo']}
 />
 ```
 
@@ -44,10 +44,29 @@ const [value, setValue] = useState('# 工作区说明\n\n使用 **Graphite** 组
 - 工具栏按钮在 `readOnly` 或 `disabled` 时不可执行。中文组合输入期间自定义 `Mod-K` handler 返回给输入法，不打开弹层；真实操作系统输入法仍应由消费应用人工验证。
 - 默认固定工具栏在窄工作面保持单行并允许自身横向滚动。`toolbar={false}` 可隐藏整行，但不会移除 StarterKit 的原生键盘编辑能力；此时组件不会接管 `Mod-K`。
 
+## 任务列表、对齐与 Emoji
+
+EDIT-03 安装固定版本的 Tiptap TaskList、TaskItem、TextAlign 与 Emoji 扩展，并把动作接到同一工具栏与同一历史栈。扩展没有独立的富文本状态。
+
+- `task-list` 把当前块转换为 `taskList / taskItem` 节点。Markdown 输入输出支持 `- [ ]`、`- [x]` 和缩进后的嵌套任务；复选框更新真实 `checked` 属性。`Mod-Shift-9` 切换任务列表，Enter 拆分任务，Tab / Shift-Tab 下沉或提升任务。只读复选框不会改变文档。
+- `align-left / align-center / align-right / align-justify` 作用于 paragraph 与 heading。对齐值进入 JSON 的 `textAlign` 属性和 HTML 的 `style="text-align: …"`，但 Markdown 没有等价表示，导出 Markdown 时会丢失该属性。长期保存含对齐的文档应选择 JSON，或选择可接受该限制的 HTML。
+- `emoji` 插入真正的 inline `emoji` 节点。默认选择器只公开八个工作区常用项，`emojiItems` 可以用 `RichTextEditorEmojiName[]` 调整顺序、缩小集合或传空数组显示空态；扩展还识别 `:sparkles:` 等已登记 shortcode 输入规则。输出 HTML 包含 `data-type="emoji"`，JSON 保留节点名称，Markdown 输出 `:name:`。
+- Emoji 的 Markdown 扩展只声明导出，没有声明把 `:name:` 重新解析为 emoji 节点。因此当前受控会话会保留刚插入的节点，但把输出 Markdown 交给一个新编辑器解析时会得到普通文本 shortcode。需要跨会话保留节点身份时使用 JSON。
+
+```tsx
+<RichTextEditor
+  format="json"
+  value={document}
+  onValueChange={setDocument}
+  toolbarItems={['task-list', 'align-left', 'align-center', 'align-right', 'emoji']}
+  emojiItems={['eyes', 'check', 'warning']}
+/>
+```
+
 ## 状态与布局
 
 `readOnly` 保留阅读和选择能力，`disabled` 暴露禁用语义；两者都停止文档编辑。空文档的 `placeholder` 是界面提示，不进入序列化内容。编辑区使用 `--rui-editor-min-height`、内容 padding、语义边界和 Graphite 排版 token；`editorClassName` 可用已有 token 类组合具体容器高度。
 
-当前 StarterKit 支持段落、标题、加粗/斜体/删除线/下划线、链接、列表、引用、代码块和分隔线的内容模型与原生输入行为。`EDIT-01` 验收基础模型和格式边界，`EDIT-02` 验收固定工具栏、格式状态、链接和历史；任务列表/对齐/emoji、提及、块重排、图片上传和 AI 回调由后续 `EDIT-03`–`EDIT-06` 提供。
+当前 StarterKit 支持段落、标题、加粗/斜体/删除线/下划线、链接、列表、引用、代码块和分隔线；EDIT-03 额外组合任务列表、对齐与 Emoji。`EDIT-01` 验收基础模型和格式边界，`EDIT-02` 验收固定工具栏、格式状态、链接和历史，`EDIT-03` 验收扩展节点、键盘操作和三格式边界；提及、块重排、图片上传和 AI 回调由后续 `EDIT-04`–`EDIT-06` 提供。
 
 默认 HTML schema 会移除示例中的脚本和事件属性，但这不能替代消费应用对自定义扩展、URL 协议和服务端输出的安全策略。添加新节点或属性时，应同时定义解析、序列化、展示和输入校验边界。

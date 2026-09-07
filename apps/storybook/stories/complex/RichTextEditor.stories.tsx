@@ -3,7 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
-import { RichTextEditor, richTextEditorDefaultToolbarItems, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
+import { RichTextEditor, richTextEditorDefaultEmojiItems, richTextEditorDefaultToolbarItems, type RichTextEditorEmojiName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
 import { RichTextEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, choiceControl, textControl } from '../feature-controls.js';
 
@@ -20,7 +20,7 @@ const jsonValue = {
 const meta = {
   title: '复杂/RichTextEditor 富文本编辑',
   component: RichTextEditor,
-  parameters: { docs: { description: { component: 'Tiptap schema 驱动的内容面，公开 JSON、HTML、Markdown 受控输入输出，并提供改变真实文档模型的紧凑工具栏、链接编辑、格式状态和历史操作。' } } },
+  parameters: { docs: { description: { component: 'Tiptap schema 驱动的内容面，公开 JSON、HTML、Markdown 受控输入输出，并提供改变真实文档模型的紧凑工具栏、任务列表、段落对齐、Emoji、链接编辑、格式状态和历史操作。' } } },
 } satisfies Meta<typeof RichTextEditor>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -35,15 +35,23 @@ type PlaygroundArgs = {
   disabled: boolean;
   showOutput: boolean;
   showToolbar: boolean;
-  toolbarPreset: 'full' | 'marks' | 'structure' | 'history';
+  toolbarPreset: 'full' | 'marks' | 'structure' | 'extensions' | 'history';
+  emojiPreset: 'all' | 'status' | 'none';
   linkPlaceholder: string;
 };
 
 const toolbarPresets: Record<PlaygroundArgs['toolbarPreset'], readonly RichTextEditorToolbarItem[]> = {
   full: richTextEditorDefaultToolbarItems,
   marks: ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format'],
-  structure: ['paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'blockquote'],
+  structure: ['paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote'],
+  extensions: ['task-list', 'align-left', 'align-center', 'align-right', 'align-justify', 'emoji'],
   history: ['undo', 'redo'],
+};
+
+const emojiPresets: Record<PlaygroundArgs['emojiPreset'], readonly RichTextEditorEmojiName[]> = {
+  all: richTextEditorDefaultEmojiItems,
+  status: ['eyes', 'check', 'warning'],
+  none: [],
 };
 
 function parsePlaygroundValue(format: PlaygroundArgs['format'], value: string): RichTextEditorValue {
@@ -58,7 +66,7 @@ function printable(value: RichTextEditorValue) {
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: '参数调试',
-  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、内容和交互状态。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', linkPlaceholder: 'https://example.com' },
+  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、扩展内容和交互状态。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', linkPlaceholder: 'https://example.com' },
   argTypes: {
     format: choiceControl(['markdown', 'html', 'json']),
     value: textControl,
@@ -69,13 +77,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     disabled: booleanControl,
     showOutput: booleanControl,
     showToolbar: booleanControl,
-    toolbarPreset: choiceControl(['full', 'marks', 'structure', 'history']),
+    toolbarPreset: choiceControl(['full', 'marks', 'structure', 'extensions', 'history']),
+    emojiPreset: choiceControl(['all', 'status', 'none']),
     linkPlaceholder: textControl,
   },
-  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'linkPlaceholder', 'showOutput'] } },
+  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'linkPlaceholder', 'showOutput'] } },
   render: function Render(args) {
     const [, updateArgs] = useArgs<PlaygroundArgs>();
-    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
+    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
   },
 };
 
@@ -94,7 +103,31 @@ export const MultiFormatSnapshot: Story = { name: '同一模型多格式输出',
 
 export const MarksToolbar: Story = { name: '仅文本格式工具', args: { format: 'markdown', defaultValue: '选择文字后应用 **格式**。', label: '文本格式', toolbarItems: toolbarPresets.marks } };
 export const StructureToolbar: Story = { name: '仅结构工具', args: { format: 'markdown', defaultValue: '把当前段落转换为标题、列表或引用。', label: '段落结构', toolbarItems: toolbarPresets.structure } };
+export const ExtensionToolbar: Story = { name: '仅扩展工具', args: { format: 'markdown', defaultValue: '任务、对齐与 Emoji 共用同一文档模型。', label: '编辑扩展', toolbarItems: toolbarPresets.extensions } };
 export const ToolbarHidden: Story = { name: '隐藏工具栏', args: { format: 'markdown', defaultValue: markdownValue, label: '沉浸编辑', toolbar: false } };
+
+function TaskListExample() {
+  const [value, setValue] = useState('- [ ] 检查紧凑间距\n  - [x] 确认嵌套任务\n- [x] 记录验收结果');
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="Markdown 任务列表" toolbarItems={['task-list', 'undo', 'redo']} /><output data-testid="task-list-output" className="whitespace-pre-wrap font-mono text-xs text-muted-foreground">{value}</output></div>;
+}
+export const TaskListMarkdown: Story = { name: '任务列表与 Markdown', render: () => <TaskListExample /> };
+
+function AlignmentExample() {
+  const [value, setValue] = useState('<p>选中段落并更改对齐方式。</p>');
+  const [state, setState] = useState<RichTextEditorSnapshot>();
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="html" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="HTML 段落对齐" toolbarItems={['align-left', 'align-center', 'align-right', 'align-justify', 'undo', 'redo']} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">HTML</dt><dd data-testid="alignment-html" className="truncate font-mono">{state?.html ?? value}</dd><dt className="text-muted-foreground">Markdown</dt><dd data-testid="alignment-markdown" className="truncate font-mono">{state?.markdown ?? '对齐属性不进入 Markdown'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="alignment-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '操作后显示 textAlign'}</dd></dl></div>;
+}
+export const AlignmentSerialization: Story = { name: '对齐序列化边界', render: () => <AlignmentExample /> };
+
+function EmojiExample() {
+  const [value, setValue] = useState('发布状态：');
+  const [state, setState] = useState<RichTextEditorSnapshot>();
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="Emoji 节点" toolbarItems={['emoji', 'undo', 'redo']} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="emoji-markdown" className="truncate font-mono">{state?.markdown ?? value}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="emoji-html" className="truncate font-mono">{state?.html ?? '插入后显示 data-type=emoji'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="emoji-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '插入后显示 emoji 节点'}</dd></dl></div>;
+}
+export const EmojiSerialization: Story = { name: 'Emoji 插入与序列化', render: () => <EmojiExample /> };
+export const EmojiEmptyPicker: Story = { name: 'Emoji 空选项', args: { format: 'markdown', defaultValue: '宿主已隐藏全部 Emoji 选项。', label: 'Emoji 空选择器', toolbarItems: ['emoji'], emojiItems: [] } };
+
+export const TaskListReadOnly: Story = { name: '只读任务列表', args: { format: 'markdown', defaultValue: '- [ ] 只读任务\n- [x] 已完成任务', label: '只读检查项', readOnly: true, toolbarItems: toolbarPresets.extensions } };
 
 function HistoryExample() {
   const [value, setValue] = useState('历史起点');
