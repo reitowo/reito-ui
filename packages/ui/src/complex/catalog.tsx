@@ -20,7 +20,7 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, TreeSelect,
+  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, TreeSelect, TreeTable,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
 } from './index.js';
@@ -100,6 +100,31 @@ export const cascaderOptions = [
 export function CascaderDemo() {
   const [value, setValue] = useState<string[] | undefined>(['frontend', 'react', 'component-library']);
   return <div className="space-y-[var(--rui-content-gap)]"><Cascader options={cascaderOptions} value={value} onValueChange={setValue} label="工程类型" description="按技术栈逐级选择目标工程。" /><p role="status" className="text-xs text-muted-foreground">当前路径：{value?.join(' / ') || '未选择'}</p></div>;
+}
+
+export interface TreeTableDemoData { name: string; kind: string; status: '就绪' | '变更' | '忽略' }
+export const treeTableNodes = [
+  { id: 'src', data: { name: 'src', kind: '目录', status: '变更' as const }, children: [
+    { id: 'components', data: { name: 'components', kind: '目录', status: '变更' as const }, children: [
+      { id: 'button', data: { name: 'button.tsx', kind: 'React', status: '就绪' as const } },
+      { id: 'input', data: { name: 'input.tsx', kind: 'React', status: '变更' as const } },
+    ] },
+    { id: 'app', data: { name: 'App.tsx', kind: 'React', status: '就绪' as const } },
+  ] },
+  { id: 'docs', data: { name: 'docs', kind: '目录', status: '就绪' as const }, children: [
+    { id: 'readme', data: { name: 'README.md', kind: 'Markdown', status: '就绪' as const } },
+    { id: 'archive', data: { name: 'archive.md', kind: 'Markdown', status: '忽略' as const }, disabled: true },
+  ] },
+];
+export const treeTableColumns = [
+  { id: 'name', header: '名称', cell: (node: { data: TreeTableDemoData }) => node.data.name },
+  { id: 'kind', header: '类型', cell: (node: { data: TreeTableDemoData }) => node.data.kind },
+  { id: 'status', header: '状态', cell: (node: { data: TreeTableDemoData }) => <Badge variant="secondary">{node.data.status}</Badge> },
+];
+
+export function TreeTableDemo() {
+  const [checked, setChecked] = useState(['button']);
+  return <TreeTable nodes={treeTableNodes} columns={treeTableColumns} selectionMode="checkbox" checked={checked} onCheckedChange={setChecked} defaultExpanded={['src', 'components']} caption="项目文件" />;
 }
 
 export function SearchFilterBarDemo() {
@@ -260,6 +285,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'reorderable-tree-view', name: 'ReorderableTreeView 树重排', description: '受控树内与跨树移动、合法落点和键盘等价操作。', component: ReorderableTreeViewDemo },
   { id: 'tree-select', name: 'TreeSelect 树选择', description: '弹层树搜索、单选/复选、级联半选、懒加载与焦点恢复。', component: TreeSelectDemo },
   { id: 'cascader', name: 'Cascader 级联选择', description: '任意层级的路径选择、叶节点边界、懒加载和方向键导航。', component: CascaderDemo },
+  { id: 'tree-table', name: 'TreeTable 树表格', description: '层级表格、展开、树行键盘、单选与级联三态复选。', component: TreeTableDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },

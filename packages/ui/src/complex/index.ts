@@ -23,3 +23,4 @@ export * from './async-tree-view.js';
 export * from './reorderable-tree-view.js';
 export * from './tree-select.js';
 export * from './cascader.js';
+export * from './tree-table.js';

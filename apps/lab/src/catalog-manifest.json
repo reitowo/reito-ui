@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 67,
-    "complex": 25,
+    "complex": 26,
     "ai": 19
   },
-  "total": 111,
-  "stories": 965,
+  "total": 112,
+  "stories": 980,
   "entries": [
     {
       "layer": "basic",
@@ -765,6 +765,16 @@
       "storyId": "复杂-cascader-级联选择--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "CascaderDemo",
+      "stories": 15
+    },
+    {
+      "layer": "complex",
+      "id": "tree-table",
+      "name": "TreeTable 树表格",
+      "description": "层级表格、展开、树行键盘、单选与级联三态复选。",
+      "storyId": "复杂-treetable-树表格--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "TreeTableDemo",
       "stories": 15
     },
     {
