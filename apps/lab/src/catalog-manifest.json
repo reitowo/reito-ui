@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 66,
+    "basic": 67,
     "complex": 22,
     "ai": 19
   },
-  "total": 107,
-  "stories": 882,
+  "total": 108,
+  "stories": 898,
   "entries": [
     {
       "layer": "basic",
@@ -665,6 +665,16 @@
       "storyId": "基础-rating--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "RatingDemo",
+      "stories": 16
+    },
+    {
+      "layer": "basic",
+      "id": "knob",
+      "name": "Knob",
+      "description": "紧凑圆形单值输入与可读读数。",
+      "storyId": "基础-knob--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "KnobDemo",
       "stories": 16
     },
     {

@@ -8,6 +8,7 @@ export * from './basic/number-field.js';
 export * from './basic/meter.js';
 export * from './basic/meter-group.js';
 export * from './basic/rating.js';
+export * from './basic/knob.js';
 export * from './basic/color-picker.js';
 export * from './basic/input-date.js';
 export * from './basic/input-time.js';

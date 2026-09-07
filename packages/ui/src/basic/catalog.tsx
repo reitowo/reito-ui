@@ -9,6 +9,7 @@ import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
 import { MeterGroup } from './meter-group.js';
 import { Rating } from './rating.js';
+import { Knob } from './knob.js';
 import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
@@ -1742,6 +1743,7 @@ export const basicCatalog: BasicCatalogEntry[] = [
   { id: 'meter', name: 'Meter', description: '容量、预算与质量的有界测量值。', component: MeterDemo },
   { id: 'meter-group', name: 'MeterGroup / ProgressGroup', description: '多段容量构成与任务进度。', component: MeterGroupDemo },
   { id: 'rating', name: 'Rating', description: '可读、可编辑且支持精度的评分输入。', component: RatingDemo },
+  { id: 'knob', name: 'Knob', description: '紧凑圆形单值输入与可读读数。', component: KnobDemo },
 ];
 
 export function ToastDemo({ mode = 'default' }: { mode?: 'default' | 'undo' | 'async' | 'error' } = {}) {
@@ -1806,4 +1808,9 @@ export function MeterGroupDemo({ state = 'default' }: { state?: 'default' | 'zer
 export function RatingDemo({ state = 'default' }: { state?: 'default' | 'half' | 'readonly' | 'error' } = {}) {
   const [value, setValue] = React.useState<number | null>(state === 'half' ? 3.5 : 4);
   return <Stack><Rating label="本次回答质量" value={value} onValueChange={setValue} step={state === 'half' ? 0.5 : 1} readOnly={state === 'readonly'} error={state === 'error' ? '请选择评分后再提交。' : undefined} description="方向键移动，空格选择；可用清除按钮恢复未评分。" /><output>当前评分：{value ?? '未评分'}</output></Stack>;
+}
+
+export function KnobDemo({ state = 'default' }: { state?: 'default' | 'readonly' | 'disabled' | 'error' } = {}) {
+  const [value, setValue] = React.useState(62);
+  return <Stack><Knob label="上下文预算" value={value} onValueChange={setValue} readOnly={state === 'readonly'} disabled={state === 'disabled'} error={state === 'error' ? '当前值超过推荐预算。' : undefined} formatValue={current => `${current}%`} showRange description="紧凑单值调节；精确文本输入请使用 NumberField。" /><output>当前值：{value}</output></Stack>;
 }
