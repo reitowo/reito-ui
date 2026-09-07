@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**32 项完成，1 项进行中，70 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01` 与 `KNOB-01` 已完成，当前推进 `SELECT-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**33 项完成，1 项进行中，69 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-02`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01` 与 `KNOB-01` 已完成，当前推进 `SELECT-03`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -59,8 +59,8 @@ SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、PASSWORD-01�
 | RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | ✅ 完成 | 基础-rating--playground；本族 16 个 Story | [验收](validation-rating.md)：15 项交互/语义测试、64 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/rating.md) |
 | KNOB-01 | Knob：圆形数字交互、min/max/step、读数、键盘、只读/禁用与受控值；明确相对 Slider/NumberField 的场景价值 | FORM-01 | ✅ 完成 | 基础-knob--playground；本族 16 个 Story | [验收](validation-knob.md)：13 项交互/语义测试、64 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/knob.md) |
 | SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | ✅ 完成 | 基础-asynccombobox--playground、基础-asyncmultiselect--playground；两族合计 23 个 Story | [最终验收](validation-async-multi-select.md)：16 项多选交互、13 项单选回归、48 次多选 Story 组合；check/build 通过；[单选阶段](validation-async-combobox.md)、[多选用法](components/async-multi-select.md) |
-| SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | 进行中 | 待关联 | 待记录 |
-| SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | 待完成 | 待关联 | 待记录 |
+| SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | ✅ 完成 | 基础-multiselect--playground、基础-asyncmultiselect--playground；两族 30 个 Story | [验收](validation-select-enhancements.md)：30 项增强/回归测试、120 次 Story 组合、四主题密度窄屏；check/build 通过；[同步用法](components/multi-select.md)、[异步用法](components/async-multi-select.md) |
+| SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | 进行中 | 待关联 | 待记录 |
 | DATERANGE-01 | DateRangePicker 预设与 locale：常用范围、可配置格式/locale、草稿/应用/取消、预设与上下限一致 | DATE-01 | 待完成 | 待关联 | 待记录 |
 | DATERANGE-02 | 日期范围时间组合：起止时刻精度、时区支持边界、跨日/倒置/上下限验证、序列化与提交 | DATERANGE-01、DATETIME-01 | 待完成 | 待关联 | 待记录 |
 

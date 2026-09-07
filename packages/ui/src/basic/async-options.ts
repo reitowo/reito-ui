@@ -4,6 +4,7 @@ export interface AsyncSelectOption {
   value: string;
   label: string;
   description?: string;
+  group?: string;
   disabled?: boolean;
 }
 

@@ -3,6 +3,19 @@ import { readFileSync } from 'node:fs';
 
 const prefix = '基础-asyncmultiselect';
 
+async function runAxe(page: Page) {
+  return page.evaluate(async () => {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try { return (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations; }
+      catch (error) {
+        if (!(error instanceof Error) || !error.message.includes('Axe is already running') || attempt === 19) throw error;
+        await new Promise(resolve => window.setTimeout(resolve, 100));
+      }
+    }
+    return [];
+  });
+}
+
 async function open(page: Page, story = 'minimum-query', globals = 'theme:dark;density:compact') {
   await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const input = page.getByRole('combobox', { name: '异步选择技术栈', exact: true });
@@ -85,6 +98,7 @@ test('keyboard navigation selects a remote option', async ({ page }) => {
   const input = await open(page, 'overview');
   await input.fill('type');
   await expect(page.getByRole('option', { name: /TypeScript/ })).toBeVisible();
+  await expect(page.getByRole('option')).toHaveCount(1);
   await input.press('ArrowDown');
   await input.press('Enter');
   await expect(page.locator('output')).toContainText('value=["react","typescript"]');
@@ -127,7 +141,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await input.fill('re');
   await expect(page.getByRole('option', { name: /React/ })).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  expect(await runAxe(page)).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/async-multi-select/${theme}-${density}.png`, fullPage: true });
 });

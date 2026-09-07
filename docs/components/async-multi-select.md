@@ -25,10 +25,14 @@ export function MemberPicker() {
 }
 ```
 
-`loadOptions(query, { signal })` 返回 `{ value, label, description?, disabled? }[]`。组件在查询改变、重试或卸载时中止旧 signal，并用请求序号忽略无法真正取消的旧 Promise。`minQueryLength` 以下显示 idle；有效查询具有 loading、ready/empty 和 error/retry 状态。
+`loadOptions(query, { signal })` 返回 `{ value, label, description?, group?, disabled? }[]`。组件在查询改变、重试或卸载时中止旧 signal，并用请求序号忽略无法真正取消的旧 Promise。`minQueryLength` 以下显示 idle；有效查询具有 loading、ready/empty 和 error/retry 状态。
 
 `query / onQueryChange` 与 `value / onValueChange` 可分别受控；`defaultQuery / defaultValue` 提供非受控初值。选中后只清空查询，不清空已有值。`selectedOptions` 用于解析初始受控值；之后加载和选中过的选项保存在组件实例生命周期内。该缓存只保存显示元数据，不负责请求结果持久化或失效策略。
 
 `name` 会让 Base UI 生成同名原生表单值；多选时可通过 `FormData.getAll(name)` 读取。`required` 只在当前没有选中值时约束查询输入。`disabled`、`error`、描述关联和选项级禁用保留原生或 ARIA 语义。
 
-固定本地 options 使用 `MultiSelect`；任意文本标签使用 `InputTags`；单个远程值使用 `AsyncCombobox`。创建新选项、分组、全选范围和虚拟化分别属于后续 `SELECT-02` / `SELECT-03`。
+`group` 会在当前远程结果页中生成分组标签。`showSelectAll` 提供三态的“全选当前结果”和批量清除：只增减当前结果中的非禁用项，保留其他结果页的已选值；禁用且已选的值不能由 chip 或批量清除移除。
+
+`onCreateOption(query)` 可以返回选项或 Promise。成功后选项进入实例缓存并立即选中，失败时保留查询并显示错误；宿主负责持久化。精确匹配已有结果时不会提供重复创建动作。创建只在 ready 状态开放，不会掩盖加载或请求错误。
+
+固定本地 options 使用 `MultiSelect`；任意文本标签使用 `InputTags`；单个远程值使用 `AsyncCombobox`。大量选项与动态高度的窗口化属于 `SELECT-03`。

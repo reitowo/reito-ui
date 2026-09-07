@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 108,
-  "stories": 898,
+  "stories": 909,
   "entries": [
     {
       "layer": "basic",
@@ -265,7 +265,7 @@
       "storyId": "基础-asyncmultiselect--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "AsyncMultiSelectDemo",
-      "stories": 12
+      "stories": 18
     },
     {
       "layer": "basic",
@@ -625,7 +625,7 @@
       "storyId": "基础-multiselect--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "MultiSelectDemo",
-      "stories": 7
+      "stories": 12
     },
     {
       "layer": "basic",
