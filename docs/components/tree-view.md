@@ -24,6 +24,6 @@
 
 复选级联会向下处理可变子项，并根据完整子项集合向上规范化父项；部分子项形成 `aria-checked="mixed"`。禁用节点不可切换，并阻断祖先级联进入该分支；其可用后代仍可单独操作。Shift 范围只覆盖当前可见且可用的树项，Ctrl/Cmd+A 切换所有可用节点。受控 `checked` 可传入叶项或父项，渲染与回调使用相同的规范化规则。
 
-TreeView 使用 XS 行高、柔和层级线、中性选中底色和明确 focus ring。双击父节点可展开/折叠，单击选择或复选节点。异步子节点属于 TREE-03；拖放重排属于 TREE-04。
+TreeView 使用 XS 行高、柔和层级线、中性选中底色和明确 focus ring。单击父节点的 disclosure 图标只展开/折叠，单击其余行区域选择或复选节点，双击父节点也可展开/折叠。异步子节点属于 TREE-03；拖放重排属于 TREE-04。`visibleNodeIds` 只供 TreeSelect 等组合组件投影可见树，选择与半选仍按完整节点模型计算。
 
 [Storybook 参数调试](http://127.0.0.1:6006/?path=/story/复杂-treeview-树形导航--playground) 在同一 Canvas 中控制单选/复选、级联模式、选择、展开、范围/批量开关、名称和空文案；另有半选、父子级联、独立复选、禁用边界、折叠、窄宽度和焦点恢复预设。[Lab](http://127.0.0.1:5173/?layer=complex&component=tree-view) 使用同一组件。

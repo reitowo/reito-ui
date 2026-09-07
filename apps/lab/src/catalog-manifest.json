@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 67,
-    "complex": 23,
+    "complex": 24,
     "ai": 19
   },
-  "total": 109,
-  "stories": 935,
+  "total": 110,
+  "stories": 950,
   "entries": [
     {
       "layer": "basic",
@@ -746,6 +746,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "ReorderableTreeViewDemo",
       "stories": 6
+    },
+    {
+      "layer": "complex",
+      "id": "tree-select",
+      "name": "TreeSelect 树选择",
+      "description": "弹层树搜索、单选/复选、级联半选、懒加载与焦点恢复。",
+      "storyId": "复杂-treeselect-树选择--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "TreeSelectDemo",
+      "stories": 15
     },
     {
       "layer": "complex",

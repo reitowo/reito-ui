@@ -132,6 +132,10 @@ Capability comparison uses PrimeVue 5 Tree Lazy at https://primevue.dev/tree/ an
 
 Capability comparison uses the DragDrop and Multiple sections of PrimeVue 5 Tree at https://primevue.dev/tree/. Reito UI adds original controlled move helpers, scope matching, cycle and disabled-target guards, native pointer drop zones, Alt+Arrow equivalents and focus restoration; no upstream source, CSS or assets copied.
 
+### TreeSelect · 2026-09-07
+
+Capability scope uses PrimeVue 3 [TreeSelect](https://v3.primevue.org/treeselect/) for controlled single selection, checkbox selection and partial checked states, and PrimeVue 3 [Tree](https://v3.primevue.org/tree/) for lenient/strict filtering and lazy loading. Nuxt UI's current catalog exposes [Tree](https://ui.nuxt.com/docs/components/tree), [Popover](https://ui.nuxt.com/docs/components/popover) and [SelectMenu](https://ui.nuxt.com/docs/components/select-menu), but no dedicated TreeSelect. Reito UI composes its own TreeView, AsyncTreeView and Popover with an original search projection, controlled state, repeated form values and Graphite tokens; no upstream source, CSS, examples or assets copied.
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。

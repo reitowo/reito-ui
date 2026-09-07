@@ -20,7 +20,7 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList,
+  AppShell, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, TreeSelect,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
 } from './index.js';
@@ -79,6 +79,11 @@ export function ReorderableTreeViewDemo() {
   const [nodes, setNodes] = useState<TreeViewNode[]>(demoNodes);
   const [selected, setSelected] = useState('button');
   return <ReorderableTreeView nodes={nodes} treeId="catalog-tree" defaultExpanded={['src', 'components']} value={selected} onValueChange={setSelected} label="可重排项目树" onMove={intent => { const next = moveTreeNode(nodes, intent); if (next) setNodes(next); }} />;
+}
+
+export function TreeSelectDemo() {
+  const [value, setValue] = useState<string | undefined>('button');
+  return <div className="space-y-[var(--rui-content-gap)]"><TreeSelect nodes={demoNodes} value={value} onValueChange={setValue} defaultExpanded={['src', 'components']} label="入口文件" description="从当前项目树中选择一个节点。" /><p role="status" className="text-xs text-muted-foreground">当前节点：{value || '未选择'}</p></div>;
 }
 
 export function SearchFilterBarDemo() {
@@ -237,6 +242,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'tree-view', name: 'TreeView 树形导航', description: 'ARIA 树、受控展开选择、方向键导航和焦点恢复。', component: TreeViewDemo },
   { id: 'async-tree-view', name: 'AsyncTreeView 异步树', description: '按需子节点、加载错误重试、刷新和过期响应隔离。', component: AsyncTreeViewDemo },
   { id: 'reorderable-tree-view', name: 'ReorderableTreeView 树重排', description: '受控树内与跨树移动、合法落点和键盘等价操作。', component: ReorderableTreeViewDemo },
+  { id: 'tree-select', name: 'TreeSelect 树选择', description: '弹层树搜索、单选/复选、级联半选、懒加载与焦点恢复。', component: TreeSelectDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },

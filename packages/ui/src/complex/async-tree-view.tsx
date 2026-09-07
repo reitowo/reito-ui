@@ -19,6 +19,7 @@ export interface AsyncTreeViewProps extends Omit<TreeViewProps, 'nodes' | 'expan
   loadingLabel?: string;
   retryLabel?: string;
   loadErrorLabel?: (node: AsyncTreeViewNode, error: unknown) => string;
+  onResolvedNodesChange?: (nodes: AsyncTreeViewNode[]) => void;
 }
 
 type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
@@ -27,7 +28,7 @@ interface LoadEntry { status: LoadStatus; children?: AsyncTreeViewNode[]; error?
 /** TreeView adapter for cancellable node loading, retry, refresh and stale-response isolation. */
 export function AsyncTreeView({ nodes, loadChildren, expanded, defaultExpanded = [], onExpandedChange, refreshKey,
   loadingLabel = '正在加载', retryLabel = '重试', loadErrorLabel = (_node, error) => error instanceof Error ? error.message : '加载失败',
-  emptyMessage = '没有子节点', ...treeProps }: AsyncTreeViewProps) {
+  onResolvedNodesChange, emptyMessage = '没有子节点', ...treeProps }: AsyncTreeViewProps) {
   const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
   const [loads, setLoads] = useState(() => new Map<string, LoadEntry>());
   const loadsRef = useRef(loads); loadsRef.current = loads;
@@ -41,6 +42,7 @@ export function AsyncTreeView({ nodes, loadChildren, expanded, defaultExpanded =
     });
     return merge(nodes);
   }, [loads, nodes]);
+  useEffect(() => onResolvedNodesChange?.(mergedNodes), [mergedNodes, onResolvedNodesChange]);
   const nodeIndex = useMemo(() => {
     const map = new Map<string, AsyncTreeViewNode>();
     const visit = (items: AsyncTreeViewNode[]) => items.forEach(node => { map.set(node.id, node); if (node.children) visit(node.children); });

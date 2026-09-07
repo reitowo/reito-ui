@@ -33,6 +33,7 @@ export interface TreeViewProps {
   bulkSelection?: boolean;
   renderTrailing?: (node: TreeViewNode) => ReactNode;
   getItemInteraction?: (node: TreeViewNode) => TreeViewItemInteraction | undefined;
+  visibleNodeIds?: string[];
   label?: string;
   emptyMessage?: string;
   className?: string;
@@ -44,7 +45,7 @@ type CheckState = boolean | 'mixed';
 /** ARIA tree with single selection or tri-state checkbox selection and a roving keyboard focus. */
 export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
   selectionMode = 'single', checked, defaultChecked = [], onCheckedChange, checkPropagation = 'cascade', rangeSelection = true,
-  bulkSelection = true, renderTrailing, getItemInteraction, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
+  bulkSelection = true, renderTrailing, getItemInteraction, visibleNodeIds, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [internalExpanded, setInternalExpanded] = useState(() => new Set(defaultExpanded));
   const [internalChecked, setInternalChecked] = useState(() => new Set(defaultChecked));
@@ -55,14 +56,15 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
     const visit = (items: TreeViewNode[], parentId?: string) => items.forEach(node => { map.set(node.id, { node, parentId }); if (node.children) visit(node.children, node.id); });
     visit(nodes); return map;
   }, [nodes]);
+  const visibleNodeSet = useMemo(() => visibleNodeIds ? new Set(visibleNodeIds) : undefined, [visibleNodeIds]);
   const visible = useMemo(() => {
     const result: FlatNode[] = [];
-    const visit = (items: TreeViewNode[], level: number, parentId?: string) => items.forEach((node, index) => {
-      result.push({ node, parentId, level, posInSet: index + 1, setSize: items.length });
+    const visit = (items: TreeViewNode[], level: number, parentId?: string) => items.filter(node => !visibleNodeSet || visibleNodeSet.has(node.id)).forEach((node, index, filtered) => {
+      result.push({ node, parentId, level, posInSet: index + 1, setSize: filtered.length });
       if (node.children && open.has(node.id)) visit(node.children, level + 1, node.id);
     });
     visit(nodes, 1); return result;
-  }, [nodes, open]);
+  }, [nodes, open, visibleNodeSet]);
   const mutableDescendants = useCallback((id: string) => {
     const result: string[] = [];
     const visit = (node: TreeViewNode) => node.children?.forEach(child => {
@@ -174,12 +176,12 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
     if (event.detail > 1) return;
     focus(node.id); selectionMode === 'checkbox' ? toggleCheck(node, event.shiftKey) : choose(node);
   };
-  const render = (items: TreeViewNode[], level: number, parentId?: string) => <>{items.map((node, index) => {
+  const render = (items: TreeViewNode[], level: number, parentId?: string) => <>{items.filter(node => !visibleNodeSet || visibleNodeSet.has(node.id)).map((node, index, filtered) => {
     const branch = Boolean(node.children); const isOpen = branch && open.has(node.id); const state = checkState(node.id);
-    const item = { node, parentId, level, posInSet: index + 1, setSize: items.length };
+    const item = { node, parentId, level, posInSet: index + 1, setSize: filtered.length };
     const interaction = getItemInteraction?.(node);
     return <li key={node.id} ref={element => { if (element) itemRefs.current.set(node.id, element); else itemRefs.current.delete(node.id); }}
-      role="treeitem" aria-level={level} aria-posinset={index + 1} aria-setsize={items.length} aria-expanded={branch ? isOpen : undefined}
+      role="treeitem" aria-level={level} aria-posinset={index + 1} aria-setsize={filtered.length} aria-expanded={branch ? isOpen : undefined}
       aria-selected={selectionMode === 'single' && !node.disabled ? selected === node.id : undefined}
       aria-checked={selectionMode === 'checkbox' && !node.disabled ? state : undefined} aria-disabled={node.disabled || undefined} aria-busy={node.busy || undefined} tabIndex={activeId === node.id ? 0 : -1}
       className="group/treeitem min-w-0 outline-none" draggable={interaction?.draggable} onDragStart={interaction?.onDragStart} onDragOver={interaction?.onDragOver}
@@ -190,7 +192,7 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
         title={[node.label, node.description].filter(Boolean).join('\n')}
         className={cx('flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1 rounded-sm border-y border-transparent px-1 text-sm leading-5 hover:bg-muted group-focus/treeitem:ring-[length:var(--rui-outline-width)] group-focus/treeitem:ring-ring data-[selected=true]:bg-muted data-[selected=true]:font-medium data-[checked=true]:bg-muted data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[drop-position=before]:border-t-primary data-[drop-position=inside]:bg-muted data-[drop-position=inside]:ring-[length:var(--rui-outline-width)] data-[drop-position=inside]:ring-ring data-[drop-position=after]:border-b-primary')}
         onClick={event => activate(event, node)} onDoubleClick={() => { if (branch && !node.disabled) toggle(node.id); }}>
-        {branch ? <ChevronRight className={cx('size-3 shrink-0 text-muted-foreground', isOpen && 'rotate-90')} aria-hidden="true" /> : <span className="size-3 shrink-0" aria-hidden="true" />}
+        {branch ? <span data-slot="tree-toggle" aria-hidden="true" className="flex size-4 shrink-0 cursor-pointer items-center justify-center" onClick={event => { event.stopPropagation(); if (!node.disabled) toggle(node.id); }}><ChevronRight className={cx('size-3 text-muted-foreground', isOpen && 'rotate-90')} /></span> : <span className="size-4 shrink-0" aria-hidden="true" />}
         {selectionMode === 'checkbox' && <span aria-hidden="true" data-state={state}
           className="flex size-4 shrink-0 items-center justify-center rounded-[var(--rui-radius-xs)] border border-input text-primary-foreground data-[state=true]:border-primary data-[state=true]:bg-primary data-[state=mixed]:border-primary data-[state=mixed]:bg-primary">
           {state === true ? <Check className="size-3" /> : state === 'mixed' ? <Minus className="size-3" /> : null}
@@ -203,7 +205,7 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
         : node.emptyMessage !== null && <ul role="group" className="ml-3 min-w-0 border-l border-border pl-1"><li role="none" className="px-1 py-1 text-xs text-muted-foreground">{node.emptyMessage ?? emptyMessage}</li></ul>)}
     </li>;
   })}</>;
-  return nodes.length ? <ul role="tree" aria-label={label} aria-multiselectable={selectionMode === 'checkbox' ? true : false} data-slot="tree-view"
+  return visible.length ? <ul role="tree" aria-label={label} aria-multiselectable={selectionMode === 'checkbox' ? true : false} data-slot="tree-view"
     className={cx('min-w-0 p-1 font-sans text-foreground', className)}
     onBlur={event => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) focusOwned.current = false; }}>
     {render(nodes, 1)}

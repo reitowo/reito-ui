@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**36 项完成，1 项进行中，66 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01` 与 `KNOB-01` 已完成，当前推进 `TREESELECT-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**37 项完成，1 项进行中，65 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01` 与 `TREESELECT-01` 已完成，当前推进 `CASCADER-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01 与 KNOB-01 已完成，下一项推进 TREESELECT-01。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01 与 TREESELECT-01 已完成，下一项推进 CASCADER-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -68,8 +68,8 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
-| TREESELECT-01 | TreeSelect：弹层树搜索、单/多/复选/半选、清除、受控值、lazy 节点、焦点开关恢复；复用 Tree 模型 | TREE-02、TREE-03、SELECT-01 | 进行中 | 待关联 | 待记录 |
-| CASCADER-01 | Cascader：任意支持层级的逐级选择、路径值/叶选择边界、disabled/loading/error、清除与键盘；不将平面分组称为级联 | FORM-01、TREE-01 | 待完成 | 待关联 | 待记录 |
+| TREESELECT-01 | TreeSelect：弹层树搜索、单/多/复选/半选、清除、受控值、lazy 节点、焦点开关恢复；复用 Tree 模型 | TREE-02、TREE-03、SELECT-01 | ✅ 完成 | 复杂-treeselect-树选择--playground；单选/复选/半选/搜索投影/空态/禁用/错误/lazy/重试/焦点/表单预设 | [TreeSelect 验收](validation-tree-select.md)：17 项交互、60 次 Story 组合、ARIA 与溢出均通过；check/build 通过 |
+| CASCADER-01 | Cascader：任意支持层级的逐级选择、路径值/叶选择边界、disabled/loading/error、清除与键盘；不将平面分组称为级联 | FORM-01、TREE-01 | 进行中 | 待关联 | 待记录 |
 | TREETABLE-01 | TreeTable 基础：层级与列模型、展开、树行键盘、复选/半选、稳定行 ID；树表语义与普通表格一致整合 | TREE-02、TABLE-01 | 待完成 | 待关联 | 待记录 |
 | TREETABLE-02 | TreeTable 高级：列筛选/管理、父子筛选规则、根分页/子节点 lazy、错误重试、选择与更新一致性 | TREETABLE-01、TREE-03、TABLE-02、TABLE-03 | 待完成 | 待关联 | 待记录 |
 | TRANSFER-01 | PickList / Transfer：source/target 受控转移、双侧搜索、批量/全部范围、禁用项、键盘和空态；保持项唯一与顺序 | LISTBOX-01 | 待完成 | 待关联 | 待记录 |
