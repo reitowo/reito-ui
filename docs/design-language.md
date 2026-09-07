@@ -143,6 +143,8 @@ OverlayProvider 是声明式 Dialog、Sheet、AlertDialog 之上的可选命令�
 
 Workspace 布局偏好把 Sidebar 展开状态和分栏百分比保存在同一个版本化记录中。受控分栏只把指针或键盘产生的最终比例交给宿主保存；首次挂载、外部同步和容器缩放不能覆盖用户偏好。未知版本、损坏记录、违反最小栏宽的尺寸和不可用存储都回到明确默认值。若 `useWorkspaceLayoutState` 统一持久化，应关闭 Sidebar 自带的 Cookie 写入，避免两个来源竞争。
 
+应用搜索使用紧凑、单层的 Command Dialog：当前工作范围位于输入和结果之前，结果按文件、任务、动作等宿主资源分组，行尾只放简短动作或快捷键提示。查询、异步数据源和命令副作用由宿主注入；组件负责加载、空、失败、重试和动作 pending 的一致反馈。全局快捷键必须忽略中文 IME 组合输入，关闭或执行成功后将焦点还给触发位置。
+
 组件组合表达结构：WorkspacePane 提供 title / actions / children；Dialog 使用 DialogContent / DialogTitle / DialogDescription 等子组件。先查实际类型；不要假设每个组件都有通用 `header`、`size` 或 `tone` 属性。
 
 ## 状态与可操作性

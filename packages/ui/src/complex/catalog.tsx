@@ -366,8 +366,8 @@ export function WorkspaceDemo() {
 
 export const demoCommands: CommandGroupDefinition[] = [
   { id: 'workspace', label: '工作区', commands: [
-    { id: 'open-project', label: '打开项目', description: '选择本地示例项目', keywords: ['open', 'project'], icon: <FolderOpen aria-hidden="true" />, shortcut: '⌘ O' },
-    { id: 'search-files', label: '搜索文件', description: '查找工作区中的文件', keywords: ['search', 'find'], icon: <Search aria-hidden="true" />, shortcut: '⌘ P' },
+    { id: 'open-project', label: '打开项目', description: '选择本地示例项目', keywords: ['open', 'project'], icon: <FolderOpen aria-hidden="true" />, shortcut: '⌘ O', actionLabel: '打开' },
+    { id: 'search-files', label: '搜索文件', description: '查找工作区中的文件', keywords: ['search', 'find'], icon: <Search aria-hidden="true" />, shortcut: '⌘ P', actionLabel: '搜索' },
   ] },
   { id: 'tools', label: '工具', commands: [
     { id: 'settings', label: '偏好设置', keywords: ['settings'], icon: <Settings aria-hidden="true" /> },
@@ -376,7 +376,7 @@ export const demoCommands: CommandGroupDefinition[] = [
 ];
 export function CommandSearchDemo() {
   const [selected, setSelected] = useState('');
-  return <div className="space-y-[var(--rui-content-gap)]"><CommandSearch groups={demoCommands} onSelect={command => setSelected(command.label)} /><p role="status" className="text-xs text-muted-foreground">{selected ? `已选择：${selected}（本地演示）` : '选择命令以预览结果'}</p></div>;
+  return <div className="space-y-[var(--rui-content-gap)]"><CommandSearch groups={demoCommands} context="Reito UI / 当前工作区" onSelect={command => setSelected(command.label)} /><p role="status" className="text-xs text-muted-foreground">{selected ? `已选择：${selected}（本地演示）` : '选择命令以预览结果'}</p></div>;
 }
 
 export const demoDiffHunks: DiffHunk[] = [{
@@ -510,7 +510,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'stepper', name: 'Stepper 分步流程', description: '可导航步骤、必填门槛与本地确认流程。', component: StepperDemo },
   { id: 'settings-section', name: 'SettingsSection 设置分组', description: '标题、说明、行布局与真实受控表单。', component: SettingsSectionDemo },
   { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、受控分栏、版本化侧栏与尺寸持久化。', component: WorkspaceDemo },
-  { id: 'command-search', name: 'CommandSearch 命令搜索', description: '分组、关键词筛选、空态与中文输入法保护。', component: CommandSearchDemo },
+  { id: 'command-search', name: 'CommandSearch 命令搜索', description: '跨资源分组、应用 Dialog、异步状态、快捷键与上下文。', component: CommandSearchDemo },
   { id: 'diff-viewer', name: 'DiffViewer 差异查看', description: '显式结构化行与宿主配对，统一/并排切换与长行处理。', component: DiffViewerDemo },
   { id: 'log-viewer', name: 'LogViewer 日志查看', description: '动态虚拟日志、查询、稳定增量加载、暂停跟随与受控视图偏好。', component: LogViewerDemo },
   { id: 'key-value-editor', name: 'KeyValueEditor 键值编辑', description: '稳定 ID 的受控草稿，支持富类型值、嵌套路径、逐项状态、校验、遮罩与提交。', component: KeyValueEditorDemo },

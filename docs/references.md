@@ -127,6 +127,12 @@ SHELL-STATE-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardPanel](https://ui.nu
 
 Reito UI 使用自己的版本化 React 状态记录、Graphite tokens 与现有 Base UI / shadcn Sidebar，统一保存侧栏和分栏并显式处理旧配置、非法尺寸与不可用存储。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源。服务端首屏读取和账号偏好同步仍由宿主负责。
 
+## 应用搜索（2026-09-08 工作区增量）
+
+SHELL-SEARCH-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardSearch](https://ui.nuxt.com/docs/components/dashboard-search) 与 [CommandPalette](https://ui.nuxt.com/docs/components/command-palette) 深色桌面文档。截图为 `.logs/references/nuxt-ui-dashboard-search-4.11.1-2026-09-08.png`、`.logs/references/nuxt-ui-command-palette-4.11.1-2026-09-08.png` 和 `.logs/references/nuxt-ui-dashboard-search-open-4.11.1-2026-09-08.png`。参考只用于核对顶部搜索入口、全局快捷键、分组结果、行尾快捷键、异步状态与受控打开方式。
+
+Reito UI 使用自己的 React `CommandSearch` / `ApplicationSearch` 契约、Graphite tokens 与现有 Base UI / shadcn Command/Dialog，增加当前工作范围、动作标签、中文 IME 保护、异步动作失败恢复和焦点归还。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源；搜索索引、远程请求和命令效果仍由宿主负责。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

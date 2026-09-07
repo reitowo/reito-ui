@@ -5,7 +5,7 @@
     "ai": 20
   },
   "total": 129,
-  "stories": 1307,
+  "stories": 1313,
   "entries": [
     {
       "layer": "basic",
@@ -1041,11 +1041,11 @@
       "layer": "complex",
       "id": "command-search",
       "name": "CommandSearch 命令搜索",
-      "description": "分组、关键词筛选、空态与中文输入法保护。",
+      "description": "跨资源分组、应用 Dialog、异步状态、快捷键与上下文。",
       "storyId": "复杂-commandsearch-命令搜索--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "CommandSearchDemo",
-      "stories": 7
+      "stories": 13
     },
     {
       "layer": "complex",
