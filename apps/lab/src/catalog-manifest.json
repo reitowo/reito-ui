@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 116,
-  "stories": 1087,
+  "stories": 1090,
   "entries": [
     {
       "layer": "basic",
@@ -555,7 +555,7 @@
       "storyId": "基础-imagegallery-图片画廊--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ImageGalleryDemo",
-      "stories": 10
+      "stories": 13
     },
     {
       "layer": "basic",

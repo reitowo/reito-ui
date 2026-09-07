@@ -1,13 +1,14 @@
 import { useArgs } from 'storybook/preview-api';
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { ImageGallery, type ImageGalleryItem } from '../../../../packages/ui/src/basic/image-gallery.js';
 import { galleryDemoItems, ImageGalleryDemo } from '../../../../packages/ui/src/basic/catalog.js';
-import { booleanControl, choiceControl, recipeControl, textControl } from '../feature-controls.js';
+import { booleanControl, choiceControl, rangeControl, recipeControl, textControl } from '../feature-controls.js';
 
 const meta = {
   title: '基础/ImageGallery 图片画廊', component: ImageGalleryDemo,
-  parameters: { docs: { story: { inline: false, height: 'var(--rui-container-xl)' }, description: { component: '独立图片画廊，支持受控活动项、缩略图、模态放大、前后导航、加载/失败/重试、键盘和焦点恢复。缩放、旋转、全屏与下载属于后续查看器能力。' } } },
+  parameters: { docs: { story: { inline: false, height: 'var(--rui-container-xl)' }, description: { component: '独立图片画廊，支持受控活动项、缩略图、模态放大、前后导航、加载/失败/重试、键盘和焦点恢复；查看层提供有界缩放、拖动、旋转、翻转、浏览器全屏与显式下载回调。' } } },
 } satisfies Meta<typeof ImageGalleryDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -38,10 +39,18 @@ export const Loop: Story = { name: '循环导航', render: () => <ImageGallery i
 export const Disabled: Story = { name: '禁用预览', render: () => <ImageGallery items={galleryDemoItems} disabled /> };
 export const Narrow: Story = { name: '窄工作面', render: () => <div className="max-w-80"><ImageGallery items={galleryDemoItems} /></div> };
 
-type PlaygroundArgs = { activeId: string; previewOpen: boolean; showThumbnails: boolean; loop: boolean; disabled: boolean; label: string };
+function ViewerExample({ download = false, tools = true }: { download?: boolean; tools?: boolean }) {
+  const [latest, setLatest] = useState('视图为初始状态');
+  return <div className="space-y-[var(--rui-content-gap)]"><ImageGallery items={galleryDemoItems} defaultPreviewOpen viewerTools={tools} minZoom={0.5} maxZoom={3} zoomStep={0.5} onTransformChange={transform => setLatest(`${Math.round(transform.scale * 100)}% / ${transform.rotation}°`)} onDownload={download ? item => setLatest(`请求下载 ${item.title}`) : undefined} /><p data-testid="viewer-event" className="text-xs text-muted-foreground">{latest}</p></div>;
+}
+export const ViewerTools: Story = { name: '查看器变换工具', render: () => <ViewerExample /> };
+export const DownloadAction: Story = { name: '显式下载回调', render: () => <ViewerExample download /> };
+export const ToolsHidden: Story = { name: '隐藏查看工具', render: () => <ViewerExample tools={false} /> };
+
+type PlaygroundArgs = { activeId: string; previewOpen: boolean; showThumbnails: boolean; loop: boolean; viewerTools: boolean; minZoom: number; maxZoom: number; zoomStep: number; downloadAction: boolean; disabled: boolean; label: string };
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试', args: { activeId: galleryDemoItems[0]!.id, previewOpen: false, showThumbnails: true, loop: false, disabled: false, label: '图片画廊' },
-  argTypes: { activeId: recipeControl(choiceControl(galleryDemoItems.map(item => item.id)), 'activeId'), previewOpen: recipeControl(booleanControl, 'previewOpen'), showThumbnails: booleanControl, loop: booleanControl, disabled: booleanControl, label: textControl },
-  parameters: { controls: { include: ['activeId', 'previewOpen', 'showThumbnails', 'loop', 'disabled', 'label'] } },
-  render: function PlaygroundRender(args) { const [, updateArgs] = useArgs<PlaygroundArgs>(); return <ImageGallery {...args} items={galleryDemoItems} onActiveChange={id => updateArgs({ activeId: id })} onPreviewOpenChange={previewOpen => updateArgs({ previewOpen })} />; },
+  name: '参数调试', args: { activeId: galleryDemoItems[0]!.id, previewOpen: false, showThumbnails: true, loop: false, viewerTools: true, minZoom: 0.5, maxZoom: 4, zoomStep: 0.25, downloadAction: false, disabled: false, label: '图片画廊' },
+  argTypes: { activeId: recipeControl(choiceControl(galleryDemoItems.map(item => item.id)), 'activeId'), previewOpen: recipeControl(booleanControl, 'previewOpen'), showThumbnails: booleanControl, loop: booleanControl, viewerTools: booleanControl, minZoom: rangeControl(0.25, 1, 0.25), maxZoom: rangeControl(1, 8, 0.25), zoomStep: rangeControl(0.1, 1, 0.05), downloadAction: recipeControl(booleanControl, '提供 onDownload 回调。'), disabled: booleanControl, label: textControl },
+  parameters: { controls: { include: ['activeId', 'previewOpen', 'showThumbnails', 'loop', 'viewerTools', 'minZoom', 'maxZoom', 'zoomStep', 'downloadAction', 'disabled', 'label'] } },
+  render: function PlaygroundRender({ downloadAction, ...args }) { const [, updateArgs] = useArgs<PlaygroundArgs>(); return <ImageGallery {...args} items={galleryDemoItems} onActiveChange={id => updateArgs({ activeId: id })} onPreviewOpenChange={previewOpen => updateArgs({ previewOpen })} onDownload={downloadAction ? () => {} : undefined} />; },
 };

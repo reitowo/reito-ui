@@ -178,7 +178,7 @@ Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) an
 
 ### ImageGallery 能力边界（2026-09-07）
 
-基础集合能力核对 PrimeVue [Galleria](https://primevue.org/galleria/) 的活动项、缩略图、前后导航与无障碍结构，以及 PrimeVue [Image](https://primevue.org/image/) 的预览按钮、模态层和关闭键盘语义。Reito UI 以 React、Base UI Dialog 和 Graphite tokens 独立实现受控图片集合、加载/失败/重试与焦点恢复；示例图是仓库内生成的抽象 SVG data URI，不复制上游图片、模板、CSS、源码或品牌资产。缩放、旋转、翻转、全屏和下载留给 GALLERY-02。
+基础集合能力核对 PrimeVue [Galleria](https://primevue.org/galleria/) 的活动项、缩略图、前后导航与无障碍结构，以及 PrimeVue [Image](https://primevue.org/image/) 的预览按钮、模态层、缩放、旋转和关闭键盘语义。Reito UI 以 React、Base UI Dialog 和 Graphite tokens 独立实现受控图片集合、加载/失败/重试、焦点恢复、有界变换与切图/关闭复位；全屏使用浏览器 Fullscreen API 的实际状态，下载只提供当前条目的宿主回调。示例图是仓库内生成的抽象 SVG data URI，不复制上游图片、模板、CSS、源码或品牌资产。
 
 ### PropertyList 字段适配 · 2026-09-07
 
