@@ -19,3 +19,4 @@ export * from './basic/input-mask.js';
 export * from './basic/listbox.js';
 export * from './basic/image-gallery.js';
 export * from './basic/carousel.js';
+export * from './basic/image-compare.js';

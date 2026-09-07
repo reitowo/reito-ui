@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 69,
+    "basic": 70,
     "complex": 29,
     "ai": 19
   },
-  "total": 117,
-  "stories": 1105,
+  "total": 118,
+  "stories": 1120,
   "entries": [
     {
       "layer": "basic",
@@ -565,6 +565,16 @@
       "storyId": "基础-carousel-轮播--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CarouselDemo",
+      "stories": 15
+    },
+    {
+      "layer": "basic",
+      "id": "image-compare",
+      "name": "ImageCompare",
+      "description": "横纵图像重叠、受控比例与键盘范围。",
+      "storyId": "基础-imagecompare-图像对比--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ImageCompareDemo",
       "stories": 15
     },
     {

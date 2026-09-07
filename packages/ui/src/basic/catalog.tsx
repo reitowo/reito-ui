@@ -19,6 +19,7 @@ import { InputMask, formatMaskValue } from './input-mask.js';
 import { Listbox, type ListboxOption } from './listbox.js';
 import { ImageGallery, type ImageGalleryItem } from './image-gallery.js';
 import { Carousel } from './carousel.js';
+import { ImageCompare } from './image-compare.js';
 import {
   ArrowUp,
   Bold,
@@ -1226,6 +1227,10 @@ export const carouselDemoItems = [
 export function CarouselDemo() {
   return <div className="w-full max-w-xl"><Carousel items={carouselDemoItems} getItemId={item => item.id} renderItem={item => <article className="min-h-36 rounded-lg border border-border bg-card p-[var(--rui-content-padding)]"><p className="text-xs text-muted-foreground">步骤 {item.eyebrow}</p><h3 className="mt-[var(--rui-space-2)] text-sm font-medium">{item.title}</h3><p className="mt-[var(--rui-space-1)] text-xs leading-relaxed text-muted-foreground">{item.description}</p></article>} label="本地任务流程" /></div>;
 }
+export function ImageCompareDemo() {
+  const [position, setPosition] = React.useState(48);
+  return <div className="w-full max-w-xl"><ImageCompare before={{ src: gallerySources[0]!, alt: '调整前的山形工作区', label: '调整前' }} after={{ src: gallerySources[1]!, alt: '调整后的面板工作区', label: '调整后' }} position={position} onPositionChange={setPosition} /></div>;
+}
 export function InputOTPDemo() {
   const [value, setValue] = React.useState("");
   return (
@@ -1733,6 +1738,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "Carousel",
     description: "受控分页、指示器、手势与可暂停自动播放。",
     component: CarouselDemo,
+  },
+  {
+    id: "image-compare",
+    name: "ImageCompare",
+    description: "横纵图像重叠、受控比例与键盘范围。",
+    component: ImageCompareDemo,
   },
   {
     id: "input-otp",
