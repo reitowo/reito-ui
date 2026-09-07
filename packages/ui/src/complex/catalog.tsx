@@ -27,6 +27,7 @@ import { UserInfo } from './user-info.js';
 import { Banner } from './banner.js';
 import { Toolbar, type ToolbarGroup } from './toolbar.js';
 import { InlineEdit } from './inline-edit.js';
+import { OverlayProvider, useOverlay } from './overlay-provider.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -204,6 +205,30 @@ export function InlineEditDemo() {
     <InlineEdit label="工作区名称" value={value} onValueChange={next => setValue(String(next))} required validate={next => String(next).length < 2 ? '名称至少需要 2 个字符' : undefined} />
     <p role="status" className="text-xs text-muted-foreground">当前名称：{value}</p>
   </div>;
+}
+
+function OverlayProviderDemoLauncher() {
+  const overlay = useOverlay();
+  const [status, setStatus] = useState('尚未打开浮层');
+  async function open() {
+    const handle = overlay.open<boolean>({
+      title: '应用本地设置？',
+      description: '这个示例只更新下方状态，不会写入外部服务。',
+      content: '命令式入口与声明式 Dialog、Sheet、AlertDialog 使用同一套基础组件。',
+      confirmLabel: '应用',
+      confirmValue: true,
+    });
+    const outcome = await handle.result;
+    setStatus(outcome.status === 'closed' ? '已应用本地设置' : `已关闭：${outcome.reason}`);
+  }
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <Button type="button" size="sm" variant="outline" onClick={open}>打开设置浮层</Button>
+    <p role="status" className="text-xs text-muted-foreground">{status}</p>
+  </div>;
+}
+
+export function OverlayProviderDemo() {
+  return <OverlayProvider><OverlayProviderDemoLauncher /></OverlayProvider>;
 }
 
 export function TreeSelectDemo() {
@@ -452,6 +477,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'overlay-provider', name: 'OverlayProvider 命令式浮层', description: 'Dialog、Sheet 与 AlertDialog 的命令式打开、结果、关闭、并发栈和卸载收口。', component: OverlayProviderDemo },
   { id: 'inline-edit', name: 'InlineEdit 行内编辑', description: '显示与编辑槽、草稿提交取消、异步错误、只读和焦点恢复。', component: InlineEditDemo },
   { id: 'toolbar', name: 'Toolbar 工具栏', description: '操作分组、切换状态、可达溢出菜单与方向键漫游焦点。', component: ToolbarDemo },
   { id: 'banner', name: 'Banner 通知条', description: '信息、动作、关闭、长内容和可控 live region 的紧凑通知。', component: BannerDemo },

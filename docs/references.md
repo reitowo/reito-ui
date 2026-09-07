@@ -117,6 +117,10 @@ COMBO-TOOLBAR-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardToolbar](https://u
 
 COMBO-INLINE-01 实际查看 PrimeVue 5.0.1 当前 [Inplace](https://primevue.org/inplace/) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/primevue-inplace-2026-09-07.png`。参考只用于核对 display/content 两态、受控 active、显示按钮键盘入口与关闭入口。Reito UI 使用自己的 React 单值事务与 Graphite Input/Button/Field，增加显式保存/取消、文本/数字校验、可取消异步提交、失败保留草稿、中文输入法保护和焦点恢复；未复制 Vue API、默认 live region、源码、CSS、品牌色、字体、图标或资源。
 
+## OverlayProvider 组合（2026-09-08 工作区增量）
+
+COMBO-OVERLAY-01 实际查看 Nuxt UI 4.11.1 当前 [useOverlay](https://ui.nuxt.com/docs/composables/use-overlay)、PrimeVue 当前 [DynamicDialog](https://primevue.dev/dynamicdialog/) 与 Base UI 当前 [Dialog](https://base-ui.com/react/components/dialog) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/nuxt-ui-use-overlay-2026-09-08.png`、`.logs/references/primevue-dynamic-dialog-2026-09-08.png` 与 `.logs/references/base-ui-dialog-2026-09-08.png`。参考只用于核对共享服务、实例句柄、Promise 结果、动态内容、patch/closeAll、受控状态、焦点与嵌套语义。Reito UI 使用自己的 React Provider、判别结果联合和 Graphite Dialog/Sheet/AlertDialog，增加父层关闭与 Provider 卸载的明确收口；未复制 Vue 插件 API、源码、CSS、品牌色、字体、图标或资源。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

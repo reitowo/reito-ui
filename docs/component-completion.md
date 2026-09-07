@@ -1,8 +1,8 @@
 # 组件补齐进度账本
 
-基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
+基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-08。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**69 项完成，0 项进行中，34 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01` 与 `COMBO-INLINE-01` 已完成，下一项为 `COMBO-OVERLAY-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**70 项完成，0 项进行中，33 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01`、`COMBO-INLINE-01` 与 `COMBO-OVERLAY-01` 已完成，下一项为 `SHELL-STATE-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01 与 COMBO-INLINE-01 已完成，下一项为 COMBO-OVERLAY-01。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01、COMBO-INLINE-01 与 COMBO-OVERLAY-01 已完成，下一项为 SHELL-STATE-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -113,7 +113,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | COMBO-BANNER-01 | Banner：信息/动作/关闭、长内容和窄布局、live region 使用边界；复用 Alert，不增加装饰性统计条 | — | ✅ 完成 | 复杂-banner-通知条--playground 等 11 个 Story | [验收](validation-banner.md)：11 项交互/视觉、44 次 Story 组合、四主题密度；check/build 通过；[用法](components/banner.md) |
 | COMBO-TOOLBAR-01 | Toolbar：操作分组、状态控件、溢出策略和适用的键盘导航，窄工作面不隐藏不可达操作 | — | ✅ 完成 | 复杂-toolbar-工具栏--playground 等 11 个 Story | [验收](validation-toolbar.md)：11 项交互/视觉、44 次 Story 组合、四主题密度；check/build 通过；[用法](components/toolbar.md) |
 | COMBO-INLINE-01 | 通用 InlineEdit：显示/编辑插槽、草稿/提交/取消、异步错误、焦点与只读；由 PropertyList 文本/数字场景抽取 | FORM-02 | ✅ 完成 | 复杂-inlineedit-行内编辑--playground 等 12 个 Story | [验收](validation-inline-edit.md)：12 项交互/视觉、48 次 Story 组合、四主题密度；check/build 通过；[用法](components/inline-edit.md) |
-| COMBO-OVERLAY-01 | 命令式 Overlay 配方：Dialog/Sheet/AlertDialog 的打开/结果/关闭服务、并发/嵌套与卸载边界，保留声明式控制 | — | 待完成 | 待关联 | 待记录 |
+| COMBO-OVERLAY-01 | 命令式 Overlay 配方：Dialog/Sheet/AlertDialog 的打开/结果/关闭服务、并发/嵌套与卸载边界，保留声明式控制 | — | ✅ 完成 | 复杂-overlayprovider-命令式浮层--playground 等 13 个 Story | [验收](validation-overlay-provider.md)：18 项交互/视觉、52 次 Story 组合、四主题密度；check/build 通过；[用法](components/overlay-provider.md) |
 | SHELL-STATE-01 | Workspace / Sidebar 持久化：尺寸/展开状态受控、保存恢复、不可用尺寸/旧配置回退、键盘分栏不退化 | — | 待完成 | 待关联 | 待记录 |
 | SHELL-SEARCH-01 | 统一应用搜索：CommandSearch 组合、跨资源结果/动作、异步状态、快捷键/IME与当前工作上下文；搜索源为宿主注入 | SELECT-01 | 待完成 | 待关联 | 待记录 |
 | SHELL-PRESET-01 | 布局预设：Workspace 槽位、独立滚动、窄屏/面板隐藏、状态切换与持久化；不得覆盖基础分栏的公共契约 | SHELL-STATE-01 | 待完成 | 待关联 | 待记录 |

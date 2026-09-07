@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 38,
+    "complex": 39,
     "ai": 20
   },
-  "total": 128,
-  "stories": 1290,
+  "total": 129,
+  "stories": 1303,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "overlay-provider",
+      "name": "OverlayProvider 命令式浮层",
+      "description": "Dialog、Sheet 与 AlertDialog 的命令式打开、结果、关闭、并发栈和卸载收口。",
+      "storyId": "复杂-overlayprovider-命令式浮层--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "OverlayProviderDemo",
+      "stories": 13
     },
     {
       "layer": "complex",
