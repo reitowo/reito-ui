@@ -75,6 +75,8 @@ EDIT-03 增加固定版本 `@tiptap/extension-list@3.31.3`、`@tiptap/extension-
 
 EDIT-04 增加固定版本 `@tiptap/core@3.31.3`、`@tiptap/pm@3.31.3`、`@tiptap/extension-mention@3.31.3` 与 `@tiptap/suggestion@3.31.3`，安装包均标注 MIT。实现核对 [Mention](https://tiptap.dev/docs/editor/extensions/nodes/mention)、[Suggestion](https://tiptap.dev/docs/editor/api/utilities/suggestion) 与安装源码：Suggestion 负责触发匹配、异步 items、AbortSignal、装载定位和退出事务；Mention 提供 inline 节点及 HTML/Markdown parse/render。Reito UI 自行实现 Graphite 菜单、ARIA 关联、本地/异步数据契约、命令集合和 React 受控适配，没有复制 Nuxt UI 的 Vue 菜单、样式或资产。
 
+EDIT-05 增加固定版本 `@tiptap/extension-drag-handle-react@3.31.3`，并由其同版本运行依赖 `@tiptap/extension-drag-handle` 提供 ProseMirror 插件；安装包均标注 MIT。实现逐项核对 [Tiptap Drag Handle](https://tiptap.dev/docs/editor/extensions/functionality/drag-handle)、[React Node Views](https://tiptap.dev/docs/editor/extensions/custom-extensions/node-views/react) 与安装源码：官方插件负责命中顶层节点、原生 drag/drop、拖后选择恢复和文档位置映射；Reito UI 自行实现 Graphite 句柄、块菜单、受控移动/转换/删除事务、键盘等价操作和 Story，没有复制 Nuxt UI 的 Vue 模板、样式或资产。首版范围是顶层块，嵌套块句柄和跨编辑器拖放未声明支持。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

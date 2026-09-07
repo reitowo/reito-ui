@@ -3,7 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
-import { RichTextEditor, richTextEditorDefaultEmojiItems, richTextEditorDefaultSlashCommands, richTextEditorDefaultToolbarItems, type RichTextEditorEmojiName, type RichTextEditorMentionItem, type RichTextEditorSlashCommandName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
+import { RichTextEditor, richTextEditorDefaultBlockActions, richTextEditorDefaultEmojiItems, richTextEditorDefaultSlashCommands, richTextEditorDefaultToolbarItems, type RichTextEditorBlockAction, type RichTextEditorEmojiName, type RichTextEditorMentionItem, type RichTextEditorSlashCommandName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
 import { RichTextEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, choiceControl, textControl } from '../feature-controls.js';
 
@@ -46,6 +46,8 @@ type PlaygroundArgs = {
   suggestions: boolean;
   mentionPreset: 'team' | 'empty';
   slashPreset: 'full' | 'writing' | 'none';
+  blockControls: boolean;
+  blockPreset: 'full' | 'move' | 'structure' | 'none';
   linkPlaceholder: string;
 };
 
@@ -74,6 +76,13 @@ const slashPresets: Record<PlaygroundArgs['slashPreset'], readonly RichTextEdito
   none: [],
 };
 
+const blockPresets: Record<PlaygroundArgs['blockPreset'], readonly RichTextEditorBlockAction[]> = {
+  full: richTextEditorDefaultBlockActions,
+  move: ['move-up', 'move-down'],
+  structure: ['paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote', 'code-block'],
+  none: [],
+};
+
 function parsePlaygroundValue(format: PlaygroundArgs['format'], value: string): RichTextEditorValue {
   if (format !== 'json') return value;
   try { return JSON.parse(value) as RichTextEditorValue; }
@@ -86,7 +95,7 @@ function printable(value: RichTextEditorValue) {
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: '参数调试',
-  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、扩展内容和交互状态。输入 / 或 @ 查看建议。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', suggestions: true, mentionPreset: 'team', slashPreset: 'full', linkPlaceholder: 'https://example.com' },
+  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、块操作、扩展内容和交互状态。输入 / 或 @ 查看建议。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', suggestions: true, mentionPreset: 'team', slashPreset: 'full', blockControls: true, blockPreset: 'full', linkPlaceholder: 'https://example.com' },
   argTypes: {
     format: choiceControl(['markdown', 'html', 'json']),
     value: textControl,
@@ -102,12 +111,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     suggestions: booleanControl,
     mentionPreset: choiceControl(['team', 'empty']),
     slashPreset: choiceControl(['full', 'writing', 'none']),
+    blockControls: booleanControl,
+    blockPreset: choiceControl(['full', 'move', 'structure', 'none']),
     linkPlaceholder: textControl,
   },
-  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'linkPlaceholder', 'showOutput'] } },
+  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'blockControls', 'blockPreset', 'linkPlaceholder', 'showOutput'] } },
   render: function Render(args) {
     const [, updateArgs] = useArgs<PlaygroundArgs>();
-    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} suggestions={args.suggestions} mentionItems={mentionPresets[args.mentionPreset]} slashCommands={slashPresets[args.slashPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
+    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} suggestions={args.suggestions} mentionItems={mentionPresets[args.mentionPreset]} slashCommands={slashPresets[args.slashPreset]} blockControls={args.blockControls} blockActions={blockPresets[args.blockPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
   },
 };
 
@@ -128,6 +139,18 @@ export const MarksToolbar: Story = { name: '仅文本格式工具', args: { form
 export const StructureToolbar: Story = { name: '仅结构工具', args: { format: 'markdown', defaultValue: '把当前段落转换为标题、列表或引用。', label: '段落结构', toolbarItems: toolbarPresets.structure } };
 export const ExtensionToolbar: Story = { name: '仅扩展工具', args: { format: 'markdown', defaultValue: '任务、对齐与 Emoji 共用同一文档模型。', label: '编辑扩展', toolbarItems: toolbarPresets.extensions } };
 export const ToolbarHidden: Story = { name: '隐藏工具栏', args: { format: 'markdown', defaultValue: markdownValue, label: '沉浸编辑', toolbar: false } };
+
+function BlockActionsExample() {
+  const [value, setValue] = useState('# 发布说明\n\n第一段需要移动。\n\n第二段可以转换。\n\n最后一段用于检查边界。');
+  const [state, setState] = useState<RichTextEditorSnapshot>();
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="受控块操作" description="悬停块左侧可拖拽或打开菜单；Alt+Shift+↑/↓ 可移动当前块。" toolbarItems={['block-actions', 'undo', 'redo']} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="block-markdown" className="whitespace-pre-wrap font-mono">{state?.markdown ?? value}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="block-html" className="truncate font-mono">{state?.html ?? '操作后同步'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="block-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '操作后同步'}</dd></dl></div>;
+}
+export const BlockActionsControlled: Story = { name: '块移动转换删除与恢复', render: () => <BlockActionsExample /> };
+export const BlockActionsEmpty: Story = { name: '块操作空能力', args: { format: 'markdown', defaultValue: '宿主保留入口，但没有授予块操作。', label: '空块操作', toolbarItems: ['block-actions'], blockActions: [] } };
+export const BlockSingle: Story = { name: '唯一块删除与恢复', render: function Render() { const [value, setValue] = useState('唯一内容块'); return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="唯一块" toolbarItems={['block-actions', 'undo', 'redo']} /><output data-testid="single-block-output" className="font-mono text-xs text-muted-foreground">{value || '空文档'}</output></div>; } };
+export const BlockControlsOff: Story = { name: '关闭块控制', args: { format: 'markdown', defaultValue: '内容不显示块句柄和块操作入口。', label: '纯编辑面', blockControls: false } };
+export const BlockReadOnly: Story = { name: '只读块内容', args: { format: 'markdown', defaultValue: '# 只读内容\n\n块句柄与写操作均隐藏。', label: '只读块', readOnly: true } };
+export const BlockNarrow: Story = { name: '窄面板块操作', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue={'# 窄面板\n\n悬停此段检查句柄。\n\n末段保持在组件内。'} label="窄面板块" toolbarItems={['block-actions', 'undo', 'redo']} /></div> };
 
 export const SlashCommands: Story = {
   name: '斜杠命令',

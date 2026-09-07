@@ -476,6 +476,145 @@ test('suggestions do not act on IME composition key events', async ({ page }) =>
   await expect(editor.locator('span[data-type="mention"]')).toHaveCount(0);
 });
 
+test('block menu follows the selected top-level block and exposes boundary state', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  await editor.locator('h1').click();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await expect(page.getByRole('heading', { name: '块操作' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '上移块' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '转为一级标题' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: '下移块' })).toBeEnabled();
+});
+
+test('block menu moves a controlled block and preserves synchronized output', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  await editor.locator('p').nth(1).click();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await page.getByRole('button', { name: '上移块' }).click();
+  await expect(editor.locator(':scope > p').nth(0)).toHaveText('第二段可以转换。');
+  await expect(editor.locator(':scope > p').nth(1)).toHaveText('第一段需要移动。');
+  await expect(page.getByTestId('block-markdown')).toContainText('第二段可以转换。\n\n第一段需要移动。');
+  await expect(page.getByTestId('block-html')).toContainText('<p>第二段可以转换。</p>');
+  await expect(page.getByTestId('block-json')).toContainText('第二段可以转换。');
+  await expect(editor).toBeFocused();
+});
+
+test('Alt+Shift+Arrow moves the current block as one undoable transaction', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  await editor.locator('p').first().click();
+  await editor.dispatchEvent('keydown', { key: 'ArrowDown', code: 'ArrowDown', altKey: true, shiftKey: true });
+  await expect(editor.locator(':scope > p').nth(1)).toHaveText('第一段需要移动。');
+  await expect(page.getByTestId('block-markdown')).toContainText('第二段可以转换。\n\n第一段需要移动。');
+  await surface.getByRole('button', { name: '撤销' }).click();
+  await expect(editor.locator(':scope > p').first()).toHaveText('第一段需要移动。');
+});
+
+test('block transform updates Markdown, HTML and JSON without losing focus', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  await editor.locator('p').nth(1).click();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await page.getByRole('button', { name: '转为二级标题' }).click();
+  await expect(editor.locator('h2')).toHaveText('第二段可以转换。');
+  await expect(page.getByTestId('block-markdown')).toContainText('## 第二段可以转换。');
+  await expect(page.getByTestId('block-html')).toContainText('<h2>第二段可以转换。</h2>');
+  await expect(page.getByTestId('block-json')).toContainText('"level":2');
+  await expect(editor).toBeFocused();
+});
+
+test('block transforms cover paragraph, list, task, quote and code structures', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  const undo = surface.getByRole('button', { name: '撤销' });
+  async function transform(label: string) {
+    await editor.locator(':scope > p').nth(1).click();
+    await surface.getByRole('button', { name: '当前块操作' }).click();
+    await page.getByRole('button', { name: label }).click();
+  }
+  await transform('转为无序列表');
+  await expect(editor.locator(':scope > ul:not([data-type]) > li')).toHaveText('第二段可以转换。');
+  await undo.click();
+  await transform('转为有序列表');
+  await expect(editor.locator(':scope > ol > li')).toHaveText('第二段可以转换。');
+  await undo.click();
+  await transform('转为任务列表');
+  await expect(editor.locator(':scope > ul[data-type="taskList"] > li')).toContainText('第二段可以转换。');
+  await undo.click();
+  await transform('转为引用');
+  await expect(editor.locator(':scope > blockquote')).toHaveText('第二段可以转换。');
+  await undo.click();
+  await transform('转为代码块');
+  await expect(editor.locator(':scope > pre')).toHaveText('第二段可以转换。');
+  await undo.click();
+  await editor.locator('h1').click();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await page.getByRole('button', { name: '转为正文' }).click();
+  await expect(editor.locator(':scope > p').first()).toHaveText('发布说明');
+});
+
+test('block deletion and history restore the exact document order', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  await editor.locator('p').nth(1).click();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await page.getByRole('button', { name: '删除块' }).click();
+  await expect(editor).not.toContainText('第二段可以转换。');
+  await surface.getByRole('button', { name: '撤销' }).click();
+  await expect(editor.locator(':scope > p').nth(1)).toHaveText('第二段可以转换。');
+  await surface.getByRole('button', { name: '重做' }).click();
+  await expect(editor).not.toContainText('第二段可以转换。');
+});
+
+test('an empty block action set keeps a truthful empty menu', async ({ page }) => {
+  const surface = await open(page, 'block-actions-empty');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await expect(surface.getByRole('button', { name: '当前块操作' })).toBeVisible();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await expect(page.getByText('没有可用的块操作')).toBeVisible();
+  await expect(page.getByRole('button', { name: /上移块|删除块/ })).toHaveCount(0);
+});
+
+test('the only block deletes to an empty paragraph and remains recoverable', async ({ page }) => {
+  const surface = await open(page, 'block-single');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await page.getByRole('button', { name: '删除块' }).click();
+  await expect(surface).toHaveAttribute('data-empty', 'true');
+  await expect(editor.locator(':scope > p')).toHaveCount(1);
+  await expect(page.getByTestId('single-block-output')).toHaveText('空文档');
+  await surface.getByRole('button', { name: '撤销' }).click();
+  await expect(editor).toHaveText('唯一内容块');
+});
+
+test('block controls stay out of read-only, disabled and opt-out surfaces', async ({ page }) => {
+  let surface = await open(page, 'block-read-only');
+  await expect(surface.getByRole('button', { name: '当前块操作' })).toBeDisabled();
+  await expect(surface.locator('[data-slot="rich-text-editor-drag-handle"]')).toHaveCount(0);
+  surface = await open(page, 'block-controls-off');
+  await expect(surface.getByRole('button', { name: '当前块操作' })).toHaveCount(0);
+  await expect(surface.locator('[data-slot="rich-text-editor-drag-handle"]')).toHaveCount(0);
+  surface = await open(page, 'disabled');
+  await expect(surface.locator('[data-slot="rich-text-editor-drag-handle"]')).toHaveCount(0);
+});
+
+test('the official drag handle reorders top-level blocks through native drag events', async ({ page }) => {
+  const surface = await open(page, 'block-actions-controlled');
+  const editor = await editorOf(surface);
+  const firstParagraph = editor.locator(':scope > p').first();
+  const lastParagraph = editor.locator(':scope > p').last();
+  await firstParagraph.hover();
+  const handle = page.locator('[data-slot="rich-text-editor-drag-handle"]');
+  await expect(handle).toBeVisible();
+  await handle.dragTo(lastParagraph);
+  await expect(editor.locator(':scope > p').last()).toHaveText('第一段需要移动。');
+  await expect(page.getByTestId('block-markdown')).toContainText('最后一段用于检查边界。\n\n第一段需要移动。');
+});
+
 test('Playground Controls change props in the current Story', async ({ page }) => {
   const story = `${prefix}--playground`;
   await page.goto(`http://127.0.0.1:6007/?path=/story/${encodeURIComponent(story)}`);
@@ -504,7 +643,7 @@ test('Playground declares an explicit control for every adjustable example prop'
     const include = current.parameters.controls.include as string[];
     return { include, controls: include.map(name => current.argTypes[name]?.control) };
   });
-  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'linkPlaceholder', 'showOutput']);
+  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'blockControls', 'blockPreset', 'linkPlaceholder', 'showOutput']);
   expect(contract.controls.every(Boolean)).toBe(true);
 });
 
@@ -545,4 +684,17 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ path: `.logs/rich-text-editor/suggestions-${theme}-${density}.png`, fullPage: true });
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: block handle and menu remain compact and accessible`, async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
+  const surface = await open(page, 'block-narrow', `theme:${theme};density:${density}`);
+  const editor = await editorOf(surface);
+  await editor.locator('p').first().hover();
+  await expect(page.locator('[data-slot="rich-text-editor-drag-handle"]')).toBeVisible();
+  await surface.getByRole('button', { name: '当前块操作' }).click();
+  await expect(page.getByRole('heading', { name: '块操作' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ path: `.logs/rich-text-editor/blocks-${theme}-${density}.png`, fullPage: true });
 });

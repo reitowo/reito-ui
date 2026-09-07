@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { EditorContent, useEditor, useEditorState, type Editor, type JSONContent } from '@tiptap/react';
+import { DragHandle } from '@tiptap/extension-drag-handle-react';
 import { Markdown } from '@tiptap/markdown';
 import StarterKit from '@tiptap/starter-kit';
 import { Emoji, type EmojiItem } from '@tiptap/extension-emoji';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { TextAlign } from '@tiptap/extension-text-align';
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Braces, Heading1, Heading2, Italic, Link2, List, ListChecks, ListOrdered, Pilcrow, Quote, Redo2, RemoveFormatting, Smile, Strikethrough, Underline, Undo2, Unlink2, type LucideIcon } from 'lucide-react';
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Braces, GripVertical, Heading1, Heading2, Italic, Link2, List, ListChecks, ListOrdered, Pilcrow, Quote, Redo2, RemoveFormatting, Smile, Strikethrough, Underline, Undo2, Unlink2, type LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils.js';
 import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
@@ -20,14 +21,25 @@ import {
   type RichTextEditorSlashCommandName,
   type RichTextEditorSuggestionError,
 } from './rich-text-editor-suggestions.js';
+import {
+  getRichTextEditorBlockTarget,
+  getRichTextEditorBlockTargetAt,
+  RichTextEditorBlockMenu,
+  richTextEditorDefaultBlockActions,
+  runRichTextEditorBlockAction,
+  type RichTextEditorBlockAction,
+  type RichTextEditorBlockTarget,
+} from './rich-text-editor-blocks.js';
 
 export { richTextEditorDefaultSlashCommands, richTextEditorSlashCommands } from './rich-text-editor-suggestions.js';
 export type { RichTextEditorMentionItem, RichTextEditorMentionLoader, RichTextEditorSlashCommandName, RichTextEditorSuggestionError } from './rich-text-editor-suggestions.js';
+export { richTextEditorDefaultBlockActions } from './rich-text-editor-blocks.js';
+export type { RichTextEditorBlockAction, RichTextEditorBlockTarget } from './rich-text-editor-blocks.js';
 
 export type RichTextEditorFormat = 'json' | 'html' | 'markdown';
 export type RichTextEditorValue = string | JSONContent;
 export type RichTextEditorEmojiName = 'sparkles' | 'thumbsup' | 'eyes' | 'rocket' | 'check' | 'warning' | 'bulb' | 'memo';
-export type RichTextEditorToolbarItem = 'bold' | 'italic' | 'underline' | 'strike' | 'code' | 'clear-format' | 'paragraph' | 'heading-1' | 'heading-2' | 'bullet-list' | 'ordered-list' | 'task-list' | 'blockquote' | 'align-left' | 'align-center' | 'align-right' | 'align-justify' | 'emoji' | 'link' | 'unlink' | 'undo' | 'redo';
+export type RichTextEditorToolbarItem = 'bold' | 'italic' | 'underline' | 'strike' | 'code' | 'clear-format' | 'paragraph' | 'heading-1' | 'heading-2' | 'bullet-list' | 'ordered-list' | 'task-list' | 'blockquote' | 'block-actions' | 'align-left' | 'align-center' | 'align-right' | 'align-justify' | 'emoji' | 'link' | 'unlink' | 'undo' | 'redo';
 
 export interface RichTextEditorEmojiOption {
   name: RichTextEditorEmojiName;
@@ -71,6 +83,8 @@ export interface RichTextEditorProps {
   loadMentionItems?: RichTextEditorMentionLoader;
   slashCommands?: readonly RichTextEditorSlashCommandName[];
   onSuggestionError?: (error: RichTextEditorSuggestionError) => void;
+  blockControls?: boolean;
+  blockActions?: readonly RichTextEditorBlockAction[];
   linkPlaceholder?: string;
   editorClassName?: string;
   className?: string;
@@ -97,7 +111,7 @@ const editorExtensions = [
   Markdown,
 ];
 export const richTextEditorDefaultEmojiItems: readonly RichTextEditorEmojiName[] = richTextEditorEmojiOptions.map(item => item.name);
-export const richTextEditorDefaultToolbarItems: readonly RichTextEditorToolbarItem[] = ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format', 'paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote', 'align-left', 'align-center', 'align-right', 'align-justify', 'emoji', 'link', 'unlink', 'undo', 'redo'];
+export const richTextEditorDefaultToolbarItems: readonly RichTextEditorToolbarItem[] = ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format', 'paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote', 'block-actions', 'align-left', 'align-center', 'align-right', 'align-justify', 'emoji', 'link', 'unlink', 'undo', 'redo'];
 
 type ToolbarDefinition = {
   label: string;
@@ -147,6 +161,7 @@ const toolbarDefinitions: Record<RichTextEditorToolbarItem, ToolbarDefinition> =
   'ordered-list': { label: '有序列表', shortcut: 'Ctrl+Shift+7', icon: ListOrdered, group: 'block', active: 'orderedList' },
   'task-list': { label: '任务列表', shortcut: 'Ctrl+Shift+9', icon: ListChecks, group: 'block', active: 'taskList' },
   blockquote: { label: '引用', shortcut: 'Ctrl+Shift+B', icon: Quote, group: 'block', active: 'blockquote' },
+  'block-actions': { label: '当前块操作', shortcut: 'Alt+Shift+ArrowUp Alt+Shift+ArrowDown', icon: GripVertical, group: 'block' },
   'align-left': { label: '左对齐', shortcut: 'Ctrl+Shift+L', icon: AlignLeft, group: 'align', active: 'alignLeft' },
   'align-center': { label: '居中对齐', shortcut: 'Ctrl+Shift+E', icon: AlignCenter, group: 'align', active: 'alignCenter' },
   'align-right': { label: '右对齐', shortcut: 'Ctrl+Shift+R', icon: AlignRight, group: 'align', active: 'alignRight' },
@@ -244,6 +259,7 @@ function runToolbarCommand(editor: Editor, item: RichTextEditorToolbarItem) {
     case 'unlink': return chain.extendMarkRange('link').unsetLink().run();
     case 'undo': return editor.commands.undo();
     case 'redo': return editor.commands.redo();
+    case 'block-actions':
     case 'emoji':
     case 'link': return false;
   }
@@ -266,6 +282,11 @@ function RichTextEditorToolbar({
   onEmojiOpenChange,
   onOpenEmoji,
   onInsertEmoji,
+  blockControls,
+  blockActions,
+  blockOpen,
+  onBlockOpenChange,
+  onBlockAction,
 }: {
   editor: Editor | null;
   items: readonly RichTextEditorToolbarItem[];
@@ -283,6 +304,11 @@ function RichTextEditorToolbar({
   onEmojiOpenChange: (open: boolean) => void;
   onOpenEmoji: () => void;
   onInsertEmoji: (name: RichTextEditorEmojiName) => void;
+  blockControls: boolean;
+  blockActions: readonly RichTextEditorBlockAction[];
+  blockOpen: boolean;
+  onBlockOpenChange: (open: boolean) => void;
+  onBlockAction: (target: RichTextEditorBlockTarget, action: RichTextEditorBlockAction) => void;
 }) {
   const linkErrorId = useId();
   const [rovingIndex, setRovingIndex] = useState(0);
@@ -290,6 +316,7 @@ function RichTextEditorToolbar({
     editor,
     selector: ({ editor: current }) => toolbarState(current),
   }) ?? emptyToolbarState;
+  const blockTarget = useEditorState({ editor, selector: ({ editor: current }) => current ? getRichTextEditorBlockTarget(current) : null });
 
   function itemDisabled(item: RichTextEditorToolbarItem) {
     if (!editor || disabled) return true;
@@ -297,6 +324,7 @@ function RichTextEditorToolbar({
     if (item === 'redo') return !state.canRedo;
     if (item === 'link') return state.selectionEmpty && !state.link;
     if (item === 'unlink') return !state.link;
+    if (item === 'block-actions') return !blockControls || !blockTarget;
     return false;
   }
 
@@ -339,7 +367,7 @@ function RichTextEditorToolbar({
 
       return <Fragment key={`${item}-${index}`}>
         {separated && <Separator orientation="vertical" className="h-[var(--rui-space-4)] shrink-0" />}
-        {item === 'link' ? <Popover open={linkOpen} onOpenChange={onLinkOpenChange}>
+        {item === 'block-actions' && editor && blockTarget ? <RichTextEditorBlockMenu open={blockOpen} onOpenChange={onBlockOpenChange} trigger={button} editor={editor} target={blockTarget} actions={blockActions} onAction={action => onBlockAction(blockTarget, action)} /> : item === 'link' ? <Popover open={linkOpen} onOpenChange={onLinkOpenChange}>
           <PopoverTrigger render={button} />
           <PopoverContent align="start" className="w-[var(--rui-container-2xs)] max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-space-2)] p-[var(--rui-content-padding)]">
             <PopoverTitle>编辑链接</PopoverTitle>
@@ -390,6 +418,8 @@ export function RichTextEditor({
   loadMentionItems,
   slashCommands = richTextEditorDefaultSlashCommands,
   onSuggestionError,
+  blockControls = true,
+  blockActions = richTextEditorDefaultBlockActions,
   linkPlaceholder = 'https://example.com',
   editorClassName,
   className,
@@ -404,7 +434,7 @@ export function RichTextEditor({
   const pendingHostEchoes = useRef<Array<{ format: RichTextEditorFormat; value: RichTextEditorValue }>>([]);
   const editorRef = useRef<Editor | null>(null);
   const linkShortcutRef = useRef<() => void>(() => undefined);
-  const interactionRef = useRef({ toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji') });
+  const interactionRef = useRef({ toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji'), blockControls });
   const savedLinkSelection = useRef<{ from: number; to: number } | undefined>(undefined);
   const savedEmojiSelection = useRef<{ from: number; to: number } | undefined>(undefined);
   const formatRef = useRef(format);
@@ -436,7 +466,12 @@ export function RichTextEditor({
   const [linkHref, setLinkHref] = useState('');
   const [linkError, setLinkError] = useState<string>();
   const [emojiOpen, setEmojiOpen] = useState(false);
+  const [blockOpen, setBlockOpen] = useState(false);
+  const [handleBlockOpen, setHandleBlockOpen] = useState(false);
+  const [hoveredBlock, setHoveredBlock] = useState<RichTextEditorBlockTarget | null>(null);
   const visibleEmojiItems = emojiItems.filter((name, index) => emojiItems.indexOf(name) === index);
+  const visibleBlockActions = blockActions.filter((action, index) => blockActions.indexOf(action) === index);
+  const visibleToolbarItems = toolbarItems.filter(item => blockControls || item !== 'block-actions');
   const visibleError = error ?? parseError;
   const describedBy = [description && descriptionId, visibleError && errorId].filter(Boolean).join(' ') || undefined;
 
@@ -449,7 +484,7 @@ export function RichTextEditor({
   mentionLoaderRef.current = loadMentionItems;
   slashCommandsRef.current = slashCommands;
   onSuggestionErrorRef.current = onSuggestionError;
-  interactionRef.current = { toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji') };
+  interactionRef.current = { toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji'), blockControls };
 
   function openLinkEditor() {
     const current = editorRef.current;
@@ -517,6 +552,27 @@ export function RichTextEditor({
     requestAnimationFrame(() => current.commands.focus());
   }
 
+  function changeBlockMenu(source: 'toolbar' | 'handle', open: boolean) {
+    const current = editorRef.current;
+    if (source === 'toolbar') {
+      setBlockOpen(open);
+      if (open) setHandleBlockOpen(false);
+    } else {
+      setHandleBlockOpen(open);
+      if (open) setBlockOpen(false);
+    }
+    if (current) current.view.dispatch(current.state.tr.setMeta('lockDragHandle', open).setMeta('addToHistory', false));
+  }
+
+  function performBlockAction(target: RichTextEditorBlockTarget, action: RichTextEditorBlockAction) {
+    const current = editorRef.current;
+    if (!current || disabled || readOnly || !blockControls) return;
+    setBlockOpen(false);
+    setHandleBlockOpen(false);
+    current.view.dispatch(current.state.tr.setMeta('lockDragHandle', false).setMeta('addToHistory', false));
+    runRichTextEditorBlockAction(current, target, action);
+  }
+
   linkShortcutRef.current = openLinkEditor;
 
   function reportContentError(nextFormat: RichTextEditorFormat, nextValue: RichTextEditorValue, cause: unknown) {
@@ -559,8 +615,16 @@ export function RichTextEditor({
     editorProps: {
       handleKeyDown: (_view, event) => {
         const interaction = interactionRef.current;
-        if (event.isComposing || !interaction.toolbar || !interaction.linkAvailable || interaction.disabled || interaction.readOnly) return false;
-        if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
+        if (event.isComposing || event.keyCode === 229 || interaction.disabled || interaction.readOnly) return false;
+        if (interaction.blockControls && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+          const current = editorRef.current;
+          const target = current ? getRichTextEditorBlockTarget(current) : null;
+          if (!current || !target) return false;
+          const moved = runRichTextEditorBlockAction(current, target, event.key === 'ArrowUp' ? 'move-up' : 'move-down');
+          if (moved) event.preventDefault();
+          return moved;
+        }
+        if (interaction.toolbar && interaction.linkAvailable && (event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
           event.preventDefault();
           linkShortcutRef.current();
           return true;
@@ -618,7 +682,8 @@ export function RichTextEditor({
       ...(describedBy ? { 'aria-describedby': describedBy } : {}),
       'data-slot': 'rich-text-editor-content',
       class: cn(
-        'min-h-[var(--rui-editor-min-height)] px-[var(--rui-content-padding)] py-[var(--rui-content-padding)] text-sm leading-relaxed text-foreground outline-none',
+        'min-h-[var(--rui-editor-min-height)] pr-[var(--rui-content-padding)] py-[var(--rui-content-padding)] text-sm leading-relaxed text-foreground outline-none',
+        blockControls ? 'pl-[calc(var(--rui-content-padding)+var(--rui-control-height-xs))]' : 'pl-[var(--rui-content-padding)]',
         '[&_p]:my-[var(--rui-space-2)] [&_p:first-child]:mt-0 [&_p:last-child]:mb-0',
         '[&_h1]:my-[var(--rui-space-3)] [&_h1]:text-lg [&_h1]:font-semibold [&_h1]:tracking-tight [&_h1:first-child]:mt-0',
         '[&_h2]:my-[var(--rui-space-3)] [&_h2]:text-base [&_h2]:font-semibold [&_h2:first-child]:mt-0',
@@ -637,16 +702,25 @@ export function RichTextEditor({
         '[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4',
         '[&_span[data-type=mention]]:rounded-sm [&_span[data-type=mention]]:bg-muted [&_span[data-type=mention]]:px-[var(--rui-space-1)] [&_span[data-type=mention]]:font-medium',
         '[&_.rich-text-editor-suggestion]:rounded-sm [&_.rich-text-editor-suggestion]:bg-accent',
+        '[&_.ProseMirror-selectednode]:outline [&_.ProseMirror-selectednode]:outline-[length:var(--rui-outline-width)] [&_.ProseMirror-selectednode]:outline-ring [&_.ProseMirror-selectednode]:outline-offset-[var(--rui-space-1)]',
         '[&_hr]:my-[var(--rui-space-4)] [&_hr]:border-border',
         editorClassName,
       ),
     } } });
-  }, [describedBy, disabled, editor, editorClassName, label, readOnly, suggestions]);
+  }, [blockControls, describedBy, disabled, editor, editorClassName, label, readOnly, suggestions]);
 
   useEffect(() => {
     if (disabled || readOnly || !toolbar || !toolbarItems.includes('link')) setLinkOpen(false);
     if (disabled || readOnly || !toolbar || !toolbarItems.includes('emoji')) setEmojiOpen(false);
   }, [disabled, readOnly, toolbar, toolbarItems]);
+
+  useEffect(() => {
+    if (!editor || (blockControls && !disabled && !readOnly)) return;
+    setBlockOpen(false);
+    setHandleBlockOpen(false);
+    setHoveredBlock(null);
+    editor.view.dispatch(editor.state.tr.setMeta('lockDragHandle', false).setMeta('addToHistory', false));
+  }, [blockControls, disabled, editor, readOnly]);
 
   useEffect(() => {
     if (editor && (!suggestions || disabled || readOnly)) suggestionExtensionsRef.current?.exit(editor);
@@ -668,10 +742,13 @@ export function RichTextEditor({
     </div>
     {description && <div id={descriptionId} className="mb-[var(--rui-space-2)] text-xs text-muted-foreground">{description}</div>}
     <div className={cn('relative min-w-0 overflow-hidden rounded-lg border border-border bg-background transition-colors focus-within:border-ring focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring/50', visibleError && 'border-destructive', (readOnly || disabled) && 'bg-muted/30')}>
-      {toolbar && <RichTextEditorToolbar editor={editor} items={toolbarItems} disabled={disabled || readOnly} linkOpen={linkOpen} linkHref={linkHref} linkError={linkError} linkPlaceholder={linkPlaceholder} emojiOpen={emojiOpen} emojiItems={visibleEmojiItems} onLinkOpenChange={closeLinkEditor} onLinkHrefChange={value => { setLinkHref(value); setLinkError(undefined); }} onOpenLink={openLinkEditor} onApplyLink={applyLink} onEmojiOpenChange={closeEmojiPicker} onOpenEmoji={openEmojiPicker} onInsertEmoji={insertEmoji} />}
+      {toolbar && <RichTextEditorToolbar editor={editor} items={visibleToolbarItems} disabled={disabled || readOnly} linkOpen={linkOpen} linkHref={linkHref} linkError={linkError} linkPlaceholder={linkPlaceholder} emojiOpen={emojiOpen} emojiItems={visibleEmojiItems} onLinkOpenChange={closeLinkEditor} onLinkHrefChange={value => { setLinkHref(value); setLinkError(undefined); }} onOpenLink={openLinkEditor} onApplyLink={applyLink} onEmojiOpenChange={closeEmojiPicker} onOpenEmoji={openEmojiPicker} onInsertEmoji={insertEmoji} blockControls={blockControls} blockActions={visibleBlockActions} blockOpen={blockOpen} onBlockOpenChange={open => changeBlockMenu('toolbar', open)} onBlockAction={performBlockAction} />}
       <div className="relative min-w-0">
-        {isEmpty && placeholder && <span aria-hidden="true" className="pointer-events-none absolute left-[var(--rui-content-padding)] top-[var(--rui-content-padding)] text-sm leading-relaxed text-muted-foreground">{placeholder}</span>}
+        {isEmpty && placeholder && <span aria-hidden="true" className={cn('pointer-events-none absolute top-[var(--rui-content-padding)] text-sm leading-relaxed text-muted-foreground', blockControls ? 'left-[calc(var(--rui-content-padding)+var(--rui-control-height-xs))]' : 'left-[var(--rui-content-padding)]')}>{placeholder}</span>}
         <EditorContent editor={editor} />
+        {editor && blockControls && !disabled && !readOnly && <DragHandle editor={editor} className="rich-text-editor-drag-handle" onNodeChange={({ pos }) => setHoveredBlock(pos >= 0 ? getRichTextEditorBlockTargetAt(editor, pos) : null)} onElementDragStart={() => { setBlockOpen(false); setHandleBlockOpen(false); }}>
+          {hoveredBlock ? <RichTextEditorBlockMenu open={handleBlockOpen} onOpenChange={open => changeBlockMenu('handle', open)} editor={editor} target={hoveredBlock} actions={visibleBlockActions} onAction={action => performBlockAction(hoveredBlock, action)} trigger={<Button type="button" variant="ghost" size="icon-xs" data-slot="rich-text-editor-drag-handle" aria-label={`拖动块：${hoveredBlock.text || hoveredBlock.type}；点击打开块操作`} title="拖动重排；点击打开块操作"><GripVertical aria-hidden="true" /></Button>} /> : <Button type="button" variant="ghost" size="icon-xs" tabIndex={-1} aria-hidden="true"><GripVertical aria-hidden="true" /></Button>}
+        </DragHandle>}
       </div>
     </div>
     {visibleError && <div id={errorId} role="alert" className="mt-[var(--rui-space-2)] text-xs text-destructive">{visibleError}</div>}

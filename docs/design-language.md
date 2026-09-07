@@ -107,6 +107,8 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 编辑建议菜单沿用 Popover 的语义表面、容器宽度、阴影与 XS/SM 控件角色，不创建另一套命令面板样式。菜单锚定当前文字触发范围，编辑器继续持有焦点和键盘输入；活动项使用 accent 语义面，禁用项仍可读。`/` 只承担顶层行首结构转换，`@` 只承担空白边界后的 inline 提及；异步结果必须可取消并隔离旧查询，组合输入期间不执行选择。
 
+块句柄占用正文左侧一个 XS 控件槽位，只在可编辑内容的块悬停范围出现；它不是常驻工具栏装饰。点击句柄或工具栏块入口打开同一紧凑菜单，移动、转换和删除都写入编辑器事务与历史。当前块使用焦点 ring 的语义角色标出，边界动作直接禁用。块菜单继续消费 control-height、space、container、border、muted、accent、destructive 与 ring tokens，不使用组件内固定颜色或独立密度数值。
+
 主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间
