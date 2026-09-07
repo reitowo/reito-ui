@@ -19,6 +19,7 @@ export interface TreeViewItemInteraction {
 export interface TreeViewProps {
   nodes: TreeViewNode[];
   value?: string;
+  currentId?: string;
   defaultValue?: string;
   onValueChange?: (id: string) => void;
   expanded?: string[];
@@ -43,7 +44,7 @@ interface FlatNode { node: TreeViewNode; parentId?: string; level: number; posIn
 type CheckState = boolean | 'mixed';
 
 /** ARIA tree with single selection or tri-state checkbox selection and a roving keyboard focus. */
-export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
+export function TreeView({ nodes, value, currentId, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
   selectionMode = 'single', checked, defaultChecked = [], onCheckedChange, checkPropagation = 'cascade', rangeSelection = true,
   bulkSelection = true, renderTrailing, getItemInteraction, visibleNodeIds, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
@@ -182,6 +183,7 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
     const interaction = getItemInteraction?.(node);
     return <li key={node.id} ref={element => { if (element) itemRefs.current.set(node.id, element); else itemRefs.current.delete(node.id); }}
       role="treeitem" aria-level={level} aria-posinset={index + 1} aria-setsize={filtered.length} aria-expanded={branch ? isOpen : undefined}
+      aria-current={currentId === node.id ? 'location' : undefined}
       aria-selected={selectionMode === 'single' && !node.disabled ? selected === node.id : undefined}
       aria-checked={selectionMode === 'checkbox' && !node.disabled ? state : undefined} aria-disabled={node.disabled || undefined} aria-busy={node.busy || undefined} tabIndex={activeId === node.id ? 0 : -1}
       className="group/treeitem min-w-0 outline-none" draggable={interaction?.draggable} onDragStart={interaction?.onDragStart} onDragOver={interaction?.onDragOver}

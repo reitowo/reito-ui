@@ -31,7 +31,7 @@ import { OverlayProvider, useOverlay } from './overlay-provider.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, SortableList, Transfer, TreeSelect, TreeTable,
+  AppShell, Cascader, CommandSearch, ContentNavigation, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, SortableList, Transfer, TreeSelect, TreeTable,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type PropertyValue, type TimelineEvent,
 } from './index.js';
@@ -379,6 +379,18 @@ export function CommandSearchDemo() {
   return <div className="space-y-[var(--rui-content-gap)]"><CommandSearch groups={demoCommands} context="Reito UI / 当前工作区" onSelect={command => setSelected(command.label)} /><p role="status" className="text-xs text-muted-foreground">{selected ? `已选择：${selected}（本地演示）` : '选择命令以预览结果'}</p></div>;
 }
 
+export const demoContentSections = [
+  { id: 'overview', title: '概览', content: <p>文档目录与正文共享一个受控当前位置。</p> },
+  { id: 'usage', title: '使用方式', content: <p>选择目录项目会滚动正文；阅读正文也会更新目录。</p>, children: [
+    { id: 'keyboard', title: '键盘操作', content: <p>目录沿用 TreeView 的方向键、Home、End 与 Enter。</p> },
+  ] },
+  { id: 'boundary', title: '宿主边界', content: <p>路由、Markdown 解析和远程内容仍由宿主提供。</p> },
+];
+export function ContentNavigationDemo() {
+  const [current, setCurrent] = useState('overview');
+  return <ContentNavigation className="h-[var(--rui-container-lg)]" sections={demoContentSections} value={current} onValueChange={setCurrent} title="组件指南" contentTitle="设计语言" />;
+}
+
 export const demoDiffHunks: DiffHunk[] = [{
   id: 'workspace-options', header: '@@ -1,4 +1,4 @@', rows: [
     { id: 'open', kind: 'context', before: { lineNumber: 1, text: 'export const workspace = {' }, after: { lineNumber: 1, text: 'export const workspace = {' } },
@@ -511,6 +523,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'settings-section', name: 'SettingsSection 设置分组', description: '标题、说明、行布局与真实受控表单。', component: SettingsSectionDemo },
   { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、基础分栏、响应式三槽预设与版本化视图持久化。', component: WorkspaceDemo },
   { id: 'command-search', name: 'CommandSearch 命令搜索', description: '跨资源分组、应用 Dialog、异步状态、快捷键与上下文。', component: CommandSearchDemo },
+  { id: 'content-navigation', name: 'ContentNavigation 文档导航', description: '目录与阅读位置联动、受控路由、窄布局、长标题和空章节。', component: ContentNavigationDemo },
   { id: 'diff-viewer', name: 'DiffViewer 差异查看', description: '显式结构化行与宿主配对，统一/并排切换与长行处理。', component: DiffViewerDemo },
   { id: 'log-viewer', name: 'LogViewer 日志查看', description: '动态虚拟日志、查询、稳定增量加载、暂停跟随与受控视图偏好。', component: LogViewerDemo },
   { id: 'key-value-editor', name: 'KeyValueEditor 键值编辑', description: '稳定 ID 的受控草稿，支持富类型值、嵌套路径、逐项状态、校验、遮罩与提交。', component: KeyValueEditorDemo },

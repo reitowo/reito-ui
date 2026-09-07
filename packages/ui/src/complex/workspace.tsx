@@ -343,17 +343,18 @@ export interface WorkspacePaneProps extends Omit<React.HTMLAttributes<HTMLElemen
   actions?: React.ReactNode;
   footer?: React.ReactNode;
   scroll?: boolean;
+  bodyRef?: React.Ref<HTMLDivElement>;
 }
 
 /** A pane owns exactly one scrollable content region. It does not own application state. */
-export function WorkspacePane({ title, description, actions, footer, scroll = true, className, children, ...props }: WorkspacePaneProps) {
+export function WorkspacePane({ title, description, actions, footer, scroll = true, bodyRef, className, children, ...props }: WorkspacePaneProps) {
   const titleId = React.useId();
   return <section {...props} data-slot="workspace-pane" className={cx('flex min-h-0 min-w-0 flex-col bg-background text-foreground', className)}>
     {(title || actions) && <header className="flex shrink-0 items-center justify-between gap-[var(--rui-content-gap)] border-b border-border px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">
       <div className="min-w-0">{title && <h2 id={titleId} className="truncate text-sm font-medium">{title}</h2>}{description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}</div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
     </header>}
-    <div data-slot="workspace-pane-body" tabIndex={scroll ? 0 : undefined} role={scroll ? 'region' : undefined} aria-labelledby={scroll && title ? titleId : undefined} aria-label={scroll && !title ? '面板内容' : undefined} className={cx('min-h-0 min-w-0 flex-1', scroll && 'overflow-auto overscroll-contain focus-visible:outline-[length:var(--rui-outline-width)] focus-visible:-outline-offset-[var(--rui-outline-width)] focus-visible:outline-ring')}>{children}</div>
+    <div ref={bodyRef} data-slot="workspace-pane-body" tabIndex={scroll ? 0 : undefined} role={scroll ? 'region' : undefined} aria-labelledby={scroll && title ? titleId : undefined} aria-label={scroll && !title ? '面板内容' : undefined} className={cx('min-h-0 min-w-0 flex-1', scroll && 'overflow-auto overscroll-contain focus-visible:outline-[length:var(--rui-outline-width)] focus-visible:-outline-offset-[var(--rui-outline-width)] focus-visible:outline-ring')}>{children}</div>
     {footer && <footer className="shrink-0 border-t border-border px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">{footer}</footer>}
   </section>;
 }
@@ -385,6 +386,7 @@ export interface WorkspacePresetSlot {
   footer?: React.ReactNode;
   content: React.ReactNode;
   scroll?: boolean;
+  bodyRef?: React.Ref<HTMLDivElement>;
 }
 export interface WorkspacePresetProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'children' | 'onChange'> {
   title?: React.ReactNode;
@@ -450,7 +452,7 @@ export function WorkspacePreset({ title, toolbar, footer, navigation, workspace,
   const narrowControls = mode !== 'wide' && (navigation || inspector);
   const autoWideClass = mode === 'auto' ? 'hidden @4xl:flex' : 'flex';
   const autoNarrowClass = mode === 'auto' ? 'flex @4xl:hidden' : 'flex';
-  const renderSlot = (slot: WorkspacePresetSlot, id: string) => <WorkspacePane id={id} title={slot.title} description={slot.description} actions={slot.actions} footer={slot.footer} scroll={slot.scroll} className="h-full">{slot.content}</WorkspacePane>;
+  const renderSlot = (slot: WorkspacePresetSlot, id: string) => <WorkspacePane id={id} title={slot.title} description={slot.description} actions={slot.actions} footer={slot.footer} scroll={slot.scroll} bodyRef={slot.bodyRef} className="h-full">{slot.content}</WorkspacePane>;
 
   return <div {...props} data-slot="workspace-preset" data-mode={mode} data-active-panel={view.activePanel} className={cx('@container flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-background font-sans text-sm text-foreground', className)}>
     {(title || toolbar || wideControls || narrowControls) && <header className="flex shrink-0 items-center gap-[var(--rui-content-gap-sm)] border-b border-border bg-muted/30 px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">

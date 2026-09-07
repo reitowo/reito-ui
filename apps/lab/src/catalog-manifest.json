@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 39,
+    "complex": 40,
     "ai": 20
   },
-  "total": 129,
-  "stories": 1321,
+  "total": 130,
+  "stories": 1333,
   "entries": [
     {
       "layer": "basic",
@@ -1046,6 +1046,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "CommandSearchDemo",
       "stories": 13
+    },
+    {
+      "layer": "complex",
+      "id": "content-navigation",
+      "name": "ContentNavigation 文档导航",
+      "description": "目录与阅读位置联动、受控路由、窄布局、长标题和空章节。",
+      "storyId": "复杂-contentnavigation-文档导航--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ContentNavigationDemo",
+      "stories": 12
     },
     {
       "layer": "complex",

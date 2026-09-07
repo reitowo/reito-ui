@@ -139,6 +139,12 @@ SHELL-SEARCH-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardSearch](https://ui.
 
 Reito UI 使用自己的 React `CommandSearch` / `ApplicationSearch` 契约、Graphite tokens 与现有 Base UI / shadcn Command/Dialog，增加当前工作范围、动作标签、中文 IME 保护、异步动作失败恢复和焦点归还。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源；搜索索引、远程请求和命令效果仍由宿主负责。
 
+## 文档导航联动（2026-09-08 工作区增量）
+
+CONTENT-NAV-01 实际查看 Nuxt UI 4.11.1 当前 [ContentNavigation](https://ui.nuxt.com/docs/components/content-navigation) 与 [ContentToc](https://ui.nuxt.com/docs/components/content-toc) 深色桌面文档。前者提供层级折叠导航，后者提供随当前锚点变化的页内目录。截图为 `.logs/references/nuxt-ui-content-navigation-2026-09-08.png` 与 `.logs/references/nuxt-ui-content-toc-2026-09-08.png`。参考只用于核对层级目录、当前锚点、长页面滚动和内容工作面中的导航位置。
+
+Reito UI 使用自己的 React `ContentNavigationSection` 数据契约、Graphite tokens、TreeView 与 WorkspacePreset，增加受控路由/滚动原因、程序化滚动隔离、底部章节判定、目录显隐和窄布局。没有复制 Nuxt Content 模块、Vue API、源码、CSS、品牌色、字体、图标或资源；Markdown 解析、路由历史、内容加载和搜索仍由宿主负责。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

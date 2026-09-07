@@ -10,6 +10,7 @@ export * from './stepper.js';
 export * from './settings-section.js';
 export * from './workspace.js';
 export * from './command-search.js';
+export * from './content-navigation.js';
 export * from './diff-viewer.js';
 export * from './log-viewer.js';
 export * from './key-value-editor.js';
