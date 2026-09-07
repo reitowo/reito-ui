@@ -75,7 +75,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复�
 | [`ResourceList`](../packages/ui/src/complex/resource-list.tsx) | 必填 `items: ResourceItem[]`；`query / sort / selectedIds` 分别可受控。`selectionMode` 为 `none / single / multiple`，筛选不丢失已有选择，批量全选只影响当前可选结果。支持名称或更新时间排序、行操作、`loading / error / onRetry / emptyMessage`。当前提供列表布局，行操作调用宿主，不读取或修改文件。 |
 | [`OrganizationChart`](../packages/ui/src/complex/organization-chart.tsx) | `nodes` 使用全图唯一稳定 ID；支持受控/非受控单选与折叠、禁用节点、内容模板和完整 ARIA tree 方向键。宽层级只在自身容器滚动，折叠后恢复到最近可见祖先。它只呈现层级关系，不提供任意节点/边编辑、拖动或缩放。 |
 | [`TerminalPrompt`](../packages/ui/src/complex/terminal-prompt.tsx) | `entries` 与 `running` 由宿主持有；草稿、历史与输出跟随可受控。支持异步 `onSubmit / onCancel`、防重复、失败保留、Escape 取消和中文 IME。组件只呈现命令交互，不执行 shell、启动进程、发送信号或连接 PTY。 |
-| [`RichTextEditor`](../packages/ui/src/complex/rich-text-editor.tsx) | Tiptap schema 持有真实文档树；`format` 明确 JSON/HTML/Markdown 输入输出，`value / onValueChange` 可受控并提供三格式 snapshot。严格拒绝无效 JSON，HTML/Markdown 按已安装 schema 规范化；支持空、只读、禁用、宿主/解析错误和中文输入。工具栏、提及、块操作、媒体与 AI 接点按后续 EDIT 项组合。 |
+| [`RichTextEditor`](../packages/ui/src/complex/rich-text-editor.tsx) | Tiptap schema 持有真实文档树；`format` 明确 JSON/HTML/Markdown 输入输出，`value / onValueChange` 可受控并提供三格式 snapshot。内置可裁剪的紧凑工具栏，格式与列表按钮反映当前选区并执行真实事务；链接面恢复选区、校验协议，历史按钮与原生快捷键共用撤销栈，组合输入期间不抢占 `Mod-K`。严格拒绝无效 JSON，HTML/Markdown 按已安装 schema 规范化；支持空、只读、禁用和宿主/解析错误。任务列表、提及、块操作、媒体与 AI 接点按后续 EDIT 项组合。 |
 
 公共布局组件适合编辑器、设置页和数据页共同复用。文件目录选择哪个文件、检查器何时打开、页面路由、数据请求与保存失败后的恢复，属于产品逻辑。将这些状态留在宿主，避免把一个聊天页的布局固定成整个组件库的默认结构。
 

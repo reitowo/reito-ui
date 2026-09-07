@@ -101,6 +101,8 @@ TerminalPrompt 默认输出区高度为 `--rui-terminal-height`（256px），标
 
 RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--rui-editor-min-height`（224px）。正文使用界面小号字与宽松行高，标题只提高一到两级，段落/列表/引用/代码间距全部来自 content/space tokens；不套用面向博客的超大标题或固定像素 prose 规则。JSON、HTML、Markdown 共用同一 schema 文档树，格式标签只说明宿主序列化契约。编辑区使用弱边界，焦点和错误分别使用 ring/destructive 语义角色。
 
+编辑器固定工具栏使用 XS 图标按钮、弱底色和单一底边界，保持一行并在窄面板内横向滚动。相邻能力用短分隔线分组，激活格式使用 secondary 语义面；禁用历史和链接动作保持可辨但降低强调。链接输入进入 Popover，不改变编辑器外框或把正文推成多层卡片。格式按钮必须从当前 Tiptap 选区计算状态，初始加载与宿主替换不写入用户撤销历史。
+
 主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间

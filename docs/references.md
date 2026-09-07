@@ -69,6 +69,8 @@
 
 使用固定版本 `@tiptap/react@3.31.3`、`@tiptap/starter-kit@3.31.3` 与 `@tiptap/markdown@3.31.3`，安装包均标注 MIT，并保留各自 `LICENSE.md`。能力与内容边界核对 [Nuxt UI Editor](https://ui.nuxt.com/docs/components/editor)、[Tiptap 内容模型](https://tiptap.dev/docs/editor/core-concepts/introduction)、[持久化](https://tiptap.dev/docs/editor/core-concepts/persistence)与 [Markdown](https://tiptap.dev/docs/editor/markdown)。Reito UI 使用自己的 React 受控适配、Graphite tokens、状态、错误和 Story；没有复制 Nuxt UI 的 Vue 源码、样式、模板或资源。JSON 是严格 schema 文档，HTML/Markdown 会按已安装扩展规范化；Markdown 扩展当前仍是 Beta，不能承诺任意方言逐字往返。
 
+EDIT-02 继续核对 Nuxt UI 4.11.0 当前 Editor/EditorToolbar 文档、[Tiptap Link](https://tiptap.dev/docs/editor/extensions/marks/link)、[Undo/Redo](https://tiptap.dev/docs/editor/extensions/functionality/undo-redo)与[快捷键](https://tiptap.dev/docs/editor/core-concepts/keyboard-shortcuts)。参考把 marks、heading、lists、blockquote、link、undo/redo 和 clear formatting 建模为可判断 `active / disabled` 的 handler，并提供 fixed/bubble/floating 布局。Reito 首版只实现适合桌面工作面的 fixed 工具栏与内联链接 Popover；bubble/floating、扩展 handler 和块菜单仍归后续 EDIT 项。所有按钮、布局和交互均为本项目 React 实现。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

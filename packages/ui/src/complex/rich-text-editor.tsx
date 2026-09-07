@@ -1,11 +1,17 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { EditorContent, useEditor, type Editor, type JSONContent } from '@tiptap/react';
+import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { EditorContent, useEditor, useEditorState, type Editor, type JSONContent } from '@tiptap/react';
 import { Markdown } from '@tiptap/markdown';
 import StarterKit from '@tiptap/starter-kit';
+import { Bold, Braces, Heading1, Heading2, Italic, Link2, List, ListOrdered, Pilcrow, Quote, Redo2, RemoveFormatting, Strikethrough, Underline, Undo2, Unlink2, type LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils.js';
+import { Button } from '../primitives/button.js';
+import { Input } from '../primitives/input.js';
+import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '../primitives/popover.js';
+import { Separator } from '../primitives/separator.js';
 
 export type RichTextEditorFormat = 'json' | 'html' | 'markdown';
 export type RichTextEditorValue = string | JSONContent;
+export type RichTextEditorToolbarItem = 'bold' | 'italic' | 'underline' | 'strike' | 'code' | 'clear-format' | 'paragraph' | 'heading-1' | 'heading-2' | 'bullet-list' | 'ordered-list' | 'blockquote' | 'link' | 'unlink' | 'undo' | 'redo';
 
 export interface RichTextEditorSnapshot {
   json: JSONContent;
@@ -35,12 +41,64 @@ export interface RichTextEditorProps {
   readOnly?: boolean;
   disabled?: boolean;
   autoFocus?: boolean;
+  toolbar?: boolean;
+  toolbarItems?: readonly RichTextEditorToolbarItem[];
+  linkPlaceholder?: string;
   editorClassName?: string;
   className?: string;
 }
 
 const emptyDocument: JSONContent = { type: 'doc', content: [{ type: 'paragraph' }] };
-const editorExtensions = [StarterKit, Markdown];
+const editorExtensions = [StarterKit.configure({ link: { openOnClick: false } }), Markdown];
+export const richTextEditorDefaultToolbarItems: readonly RichTextEditorToolbarItem[] = ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format', 'paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'blockquote', 'link', 'unlink', 'undo', 'redo'];
+
+type ToolbarDefinition = {
+  label: string;
+  shortcut?: string;
+  icon: LucideIcon;
+  group: 'mark' | 'block' | 'link' | 'history';
+  active?: keyof RichTextToolbarState;
+};
+
+type RichTextToolbarState = {
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strike: boolean;
+  code: boolean;
+  paragraph: boolean;
+  heading1: boolean;
+  heading2: boolean;
+  bulletList: boolean;
+  orderedList: boolean;
+  blockquote: boolean;
+  link: boolean;
+  linkHref: string;
+  selectionEmpty: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+};
+
+const emptyToolbarState: RichTextToolbarState = { bold: false, italic: false, underline: false, strike: false, code: false, paragraph: false, heading1: false, heading2: false, bulletList: false, orderedList: false, blockquote: false, link: false, linkHref: '', selectionEmpty: true, canUndo: false, canRedo: false };
+
+const toolbarDefinitions: Record<RichTextEditorToolbarItem, ToolbarDefinition> = {
+  bold: { label: '粗体', shortcut: 'Ctrl+B', icon: Bold, group: 'mark', active: 'bold' },
+  italic: { label: '斜体', shortcut: 'Ctrl+I', icon: Italic, group: 'mark', active: 'italic' },
+  underline: { label: '下划线', shortcut: 'Ctrl+U', icon: Underline, group: 'mark', active: 'underline' },
+  strike: { label: '删除线', shortcut: 'Ctrl+Shift+S', icon: Strikethrough, group: 'mark', active: 'strike' },
+  code: { label: '行内代码', shortcut: 'Ctrl+E', icon: Braces, group: 'mark', active: 'code' },
+  'clear-format': { label: '清除格式', icon: RemoveFormatting, group: 'mark' },
+  paragraph: { label: '正文', shortcut: 'Ctrl+Alt+0', icon: Pilcrow, group: 'block', active: 'paragraph' },
+  'heading-1': { label: '一级标题', shortcut: 'Ctrl+Alt+1', icon: Heading1, group: 'block', active: 'heading1' },
+  'heading-2': { label: '二级标题', shortcut: 'Ctrl+Alt+2', icon: Heading2, group: 'block', active: 'heading2' },
+  'bullet-list': { label: '无序列表', shortcut: 'Ctrl+Shift+8', icon: List, group: 'block', active: 'bulletList' },
+  'ordered-list': { label: '有序列表', shortcut: 'Ctrl+Shift+7', icon: ListOrdered, group: 'block', active: 'orderedList' },
+  blockquote: { label: '引用', shortcut: 'Ctrl+Shift+B', icon: Quote, group: 'block', active: 'blockquote' },
+  link: { label: '编辑链接', shortcut: 'Ctrl+K', icon: Link2, group: 'link', active: 'link' },
+  unlink: { label: '移除链接', icon: Unlink2, group: 'link' },
+  undo: { label: '撤销', shortcut: 'Ctrl+Z', icon: Undo2, group: 'history' },
+  redo: { label: '重做', shortcut: 'Ctrl+Shift+Z', icon: Redo2, group: 'history' },
+};
 
 function emptyValue(format: RichTextEditorFormat): RichTextEditorValue {
   return format === 'json' ? emptyDocument : '';
@@ -75,6 +133,142 @@ function sameValue(format: RichTextEditorFormat, left: RichTextEditorValue, righ
   return left === right;
 }
 
+function runToolbarCommand(editor: Editor, item: RichTextEditorToolbarItem) {
+  const chain = editor.chain().focus();
+  switch (item) {
+    case 'bold': return chain.toggleBold().run();
+    case 'italic': return chain.toggleItalic().run();
+    case 'underline': return chain.toggleUnderline().run();
+    case 'strike': return chain.toggleStrike().run();
+    case 'code': return chain.toggleCode().run();
+    case 'clear-format': return chain.unsetAllMarks().clearNodes().run();
+    case 'paragraph': return chain.setParagraph().run();
+    case 'heading-1': return chain.toggleHeading({ level: 1 }).run();
+    case 'heading-2': return chain.toggleHeading({ level: 2 }).run();
+    case 'bullet-list': return chain.toggleBulletList().run();
+    case 'ordered-list': return chain.toggleOrderedList().run();
+    case 'blockquote': return chain.toggleBlockquote().run();
+    case 'unlink': return chain.extendMarkRange('link').unsetLink().run();
+    case 'undo': return editor.commands.undo();
+    case 'redo': return editor.commands.redo();
+    case 'link': return false;
+  }
+}
+
+function RichTextEditorToolbar({
+  editor,
+  items,
+  disabled,
+  linkOpen,
+  linkHref,
+  linkError,
+  linkPlaceholder,
+  onLinkOpenChange,
+  onLinkHrefChange,
+  onOpenLink,
+  onApplyLink,
+}: {
+  editor: Editor | null;
+  items: readonly RichTextEditorToolbarItem[];
+  disabled: boolean;
+  linkOpen: boolean;
+  linkHref: string;
+  linkError?: string;
+  linkPlaceholder: string;
+  onLinkOpenChange: (open: boolean) => void;
+  onLinkHrefChange: (href: string) => void;
+  onOpenLink: () => void;
+  onApplyLink: () => void;
+}) {
+  const linkErrorId = useId();
+  const [rovingIndex, setRovingIndex] = useState(0);
+  const state = useEditorState({
+    editor,
+    selector: ({ editor: current }) => current ? {
+      bold: current.isActive('bold'),
+      italic: current.isActive('italic'),
+      underline: current.isActive('underline'),
+      strike: current.isActive('strike'),
+      code: current.isActive('code'),
+      paragraph: current.isActive('paragraph'),
+      heading1: current.isActive('heading', { level: 1 }),
+      heading2: current.isActive('heading', { level: 2 }),
+      bulletList: current.isActive('bulletList'),
+      orderedList: current.isActive('orderedList'),
+      blockquote: current.isActive('blockquote'),
+      link: current.isActive('link'),
+      linkHref: String(current.getAttributes('link').href ?? ''),
+      selectionEmpty: current.state.selection.empty,
+      canUndo: current.can().undo(),
+      canRedo: current.can().redo(),
+    } : emptyToolbarState,
+  }) ?? emptyToolbarState;
+
+  function itemDisabled(item: RichTextEditorToolbarItem) {
+    if (!editor || disabled) return true;
+    if (item === 'undo') return !state.canUndo;
+    if (item === 'redo') return !state.canRedo;
+    if (item === 'link') return state.selectionEmpty && !state.link;
+    if (item === 'unlink') return !state.link;
+    return false;
+  }
+
+  const tabStopIndex = items[rovingIndex] && !itemDisabled(items[rovingIndex]) ? rovingIndex : items.findIndex(item => !itemDisabled(item));
+
+  return <div data-slot="rich-text-editor-toolbar" role="toolbar" aria-label="文本格式" aria-orientation="horizontal" className="flex min-w-0 items-center gap-[var(--rui-space-1)] overflow-x-auto border-b border-border bg-muted/30 p-[var(--rui-space-1)]" onKeyDown={event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key) || !(event.target instanceof HTMLButtonElement)) return;
+    const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'));
+    const current = buttons.indexOf(event.target);
+    if (current < 0 || !buttons.length) return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+    buttons[next]?.focus();
+    buttons[next]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }}>
+    {items.map((item, index) => {
+      const definition = toolbarDefinitions[item];
+      const previous = items[index - 1];
+      const separated = previous && toolbarDefinitions[previous].group !== definition.group;
+      const active = definition.active ? Boolean(state[definition.active]) : false;
+      const Icon = definition.icon;
+      const button = <Button
+        type="button"
+        size="icon-xs"
+        variant={active ? 'secondary' : 'ghost'}
+        aria-label={definition.label}
+        aria-pressed={definition.active ? active : undefined}
+        aria-keyshortcuts={definition.shortcut?.replace('Ctrl', 'Control')}
+        title={definition.shortcut ? `${definition.label}（${definition.shortcut}）` : definition.label}
+        disabled={itemDisabled(item)}
+        tabIndex={itemDisabled(item) ? -1 : index === tabStopIndex ? 0 : -1}
+        onFocus={() => setRovingIndex(index)}
+        onPointerDown={event => event.preventDefault()}
+        onClick={() => {
+          if (item === 'link') onOpenLink();
+          else if (editor) runToolbarCommand(editor, item);
+        }}
+      ><Icon aria-hidden="true" /></Button>;
+
+      return <Fragment key={`${item}-${index}`}>
+        {separated && <Separator orientation="vertical" className="h-[var(--rui-space-4)] shrink-0" />}
+        {item === 'link' ? <Popover open={linkOpen} onOpenChange={onLinkOpenChange}>
+          <PopoverTrigger render={button} />
+          <PopoverContent align="start" className="w-[var(--rui-container-2xs)] max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-space-2)] p-[var(--rui-content-padding)]">
+            <PopoverTitle>编辑链接</PopoverTitle>
+            <form className="grid gap-[var(--rui-space-2)]" onSubmit={event => { event.preventDefault(); onApplyLink(); }}>
+              <label className="grid gap-[var(--rui-space-1)] text-xs text-muted-foreground">链接地址
+                <Input name="href" value={linkHref} placeholder={linkPlaceholder} aria-invalid={linkError ? true : undefined} aria-describedby={linkError ? linkErrorId : undefined} onChange={event => onLinkHrefChange(event.target.value)} />
+              </label>
+              {linkError && <p id={linkErrorId} role="alert" className="text-xs text-destructive">{linkError}</p>}
+              <div className="flex justify-end gap-[var(--rui-space-1)]"><Button type="button" size="xs" variant="ghost" onClick={() => onLinkOpenChange(false)}>取消</Button><Button type="submit" size="xs">应用链接</Button></div>
+            </form>
+          </PopoverContent>
+        </Popover> : button}
+      </Fragment>;
+    })}
+  </div>;
+}
+
 /** A schema-backed Tiptap document surface with explicit JSON, HTML and Markdown I/O. */
 export function RichTextEditor({
   format = 'json',
@@ -89,6 +283,9 @@ export function RichTextEditor({
   readOnly = false,
   disabled = false,
   autoFocus = false,
+  toolbar = true,
+  toolbarItems = richTextEditorDefaultToolbarItems,
+  linkPlaceholder = 'https://example.com',
   editorClassName,
   className,
 }: RichTextEditorProps) {
@@ -99,11 +296,18 @@ export function RichTextEditor({
   const initialValue = useRef(defaultValue ?? value ?? emptyValue(format));
   const currentInput = useRef<RichTextEditorValue>(controlled ? value! : initialValue.current);
   const pendingHostEchoes = useRef<Array<{ format: RichTextEditorFormat; value: RichTextEditorValue }>>([]);
+  const editorRef = useRef<Editor | null>(null);
+  const linkShortcutRef = useRef<() => void>(() => undefined);
+  const interactionRef = useRef({ toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link') });
+  const savedLinkSelection = useRef<{ from: number; to: number } | undefined>(undefined);
   const formatRef = useRef(format);
   const onValueChangeRef = useRef(onValueChange);
   const onContentErrorRef = useRef(onContentError);
   const [isEmpty, setIsEmpty] = useState(true);
   const [parseError, setParseError] = useState<string>();
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [linkHref, setLinkHref] = useState('');
+  const [linkError, setLinkError] = useState<string>();
   const visibleError = error ?? parseError;
   const describedBy = [description && descriptionId, visibleError && errorId].filter(Boolean).join(' ') || undefined;
 
@@ -111,6 +315,51 @@ export function RichTextEditor({
   currentInput.current = controlled ? value! : initialValue.current;
   onValueChangeRef.current = onValueChange;
   onContentErrorRef.current = onContentError;
+  interactionRef.current = { toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link') };
+
+  function openLinkEditor() {
+    const current = editorRef.current;
+    if (!current || interactionRef.current.disabled || interactionRef.current.readOnly || !interactionRef.current.toolbar || !interactionRef.current.linkAvailable) return;
+    const { from, to } = current.state.selection;
+    if (from === to && !current.isActive('link')) return;
+    savedLinkSelection.current = { from, to };
+    setLinkHref(String(current.getAttributes('link').href ?? ''));
+    setLinkError(undefined);
+    setLinkOpen(true);
+  }
+
+  function closeLinkEditor(open: boolean) {
+    setLinkOpen(open);
+    if (!open) {
+      setLinkError(undefined);
+      requestAnimationFrame(() => editorRef.current?.commands.focus());
+    }
+  }
+
+  function applyLink() {
+    const current = editorRef.current;
+    const selected = savedLinkSelection.current;
+    const href = linkHref.trim();
+    if (!current || !selected) return;
+    if (!href) {
+      setLinkError('请输入链接地址');
+      return;
+    }
+    const maximum = current.state.doc.content.size;
+    const from = Math.min(selected.from, maximum);
+    const to = Math.min(selected.to, maximum);
+    const applied = current.chain().focus().setTextSelection({ from, to }).extendMarkRange('link').setLink({ href }).run();
+    if (!applied) {
+      setLinkError('链接地址无效或当前选区不支持链接');
+      return;
+    }
+    savedLinkSelection.current = { from: current.state.selection.from, to: current.state.selection.to };
+    setLinkError(undefined);
+    setLinkOpen(false);
+    requestAnimationFrame(() => current.commands.focus());
+  }
+
+  linkShortcutRef.current = openLinkEditor;
 
   function reportContentError(nextFormat: RichTextEditorFormat, nextValue: RichTextEditorValue, cause: unknown) {
     const message = cause instanceof Error ? cause.message : String(cause || '内容无法按所选格式解析');
@@ -127,13 +376,13 @@ export function RichTextEditor({
       const parsed = nextFormat === 'markdown'
         ? editor.markdown?.parse(nextValue as string) ?? emptyDocument
         : nextValue;
-      editor.commands.setContent(parsed, {
+      editor.chain().setMeta('addToHistory', false).setContent(parsed, {
         contentType: nextFormat === 'markdown' ? 'json' : nextFormat,
         emitUpdate: false,
         // JSON is the canonical schema document and must be exact. HTML is
         // intentionally normalized to the installed schema like browser paste.
         errorOnInvalidContent: nextFormat === 'json',
-      });
+      }).run();
       setParseError(undefined);
       setIsEmpty(editor.isEmpty);
       return true;
@@ -149,6 +398,18 @@ export function RichTextEditor({
     editable: false,
     immediatelyRender: false,
     enableContentCheck: true,
+    editorProps: {
+      handleKeyDown: (_view, event) => {
+        const interaction = interactionRef.current;
+        if (event.isComposing || !interaction.toolbar || !interaction.linkAvailable || interaction.disabled || interaction.readOnly) return false;
+        if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
+          event.preventDefault();
+          linkShortcutRef.current();
+          return true;
+        }
+        return false;
+      },
+    },
     onUpdate: ({ editor: current }) => {
       const state = snapshot(current);
       const currentFormat = formatRef.current;
@@ -164,6 +425,7 @@ export function RichTextEditor({
       reportContentError(currentFormat, currentInput.current, contentError);
     },
   });
+  editorRef.current = editor;
 
   useLayoutEffect(() => {
     if (!editor || initialized.current) return;
@@ -215,6 +477,10 @@ export function RichTextEditor({
     } } });
   }, [describedBy, disabled, editor, editorClassName, label, readOnly]);
 
+  useEffect(() => {
+    if (disabled || readOnly || !toolbar || !toolbarItems.includes('link')) setLinkOpen(false);
+  }, [disabled, readOnly, toolbar, toolbarItems]);
+
   return <div
     data-slot="rich-text-editor"
     role="region"
@@ -231,8 +497,11 @@ export function RichTextEditor({
     </div>
     {description && <div id={descriptionId} className="mb-[var(--rui-space-2)] text-xs text-muted-foreground">{description}</div>}
     <div className={cn('relative min-w-0 overflow-hidden rounded-lg border border-border bg-background transition-colors focus-within:border-ring focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring/50', visibleError && 'border-destructive', (readOnly || disabled) && 'bg-muted/30')}>
-      {isEmpty && placeholder && <span aria-hidden="true" className="pointer-events-none absolute left-[var(--rui-content-padding)] top-[var(--rui-content-padding)] text-sm leading-relaxed text-muted-foreground">{placeholder}</span>}
-      <EditorContent editor={editor} />
+      {toolbar && <RichTextEditorToolbar editor={editor} items={toolbarItems} disabled={disabled || readOnly} linkOpen={linkOpen} linkHref={linkHref} linkError={linkError} linkPlaceholder={linkPlaceholder} onLinkOpenChange={closeLinkEditor} onLinkHrefChange={value => { setLinkHref(value); setLinkError(undefined); }} onOpenLink={openLinkEditor} onApplyLink={applyLink} />}
+      <div className="relative min-w-0">
+        {isEmpty && placeholder && <span aria-hidden="true" className="pointer-events-none absolute left-[var(--rui-content-padding)] top-[var(--rui-content-padding)] text-sm leading-relaxed text-muted-foreground">{placeholder}</span>}
+        <EditorContent editor={editor} />
+      </div>
     </div>
     {visibleError && <div id={errorId} role="alert" className="mt-[var(--rui-space-2)] text-xs text-destructive">{visibleError}</div>}
   </div>;

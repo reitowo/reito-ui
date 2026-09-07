@@ -3,7 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
-import { RichTextEditor, type RichTextEditorSnapshot, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
+import { RichTextEditor, richTextEditorDefaultToolbarItems, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
 import { RichTextEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, choiceControl, textControl } from '../feature-controls.js';
 
@@ -20,7 +20,7 @@ const jsonValue = {
 const meta = {
   title: '复杂/RichTextEditor 富文本编辑',
   component: RichTextEditor,
-  parameters: { docs: { description: { component: 'Tiptap schema 驱动的基础内容面，公开 JSON、HTML、Markdown 受控输入输出及规范化边界；工具栏和高级扩展由后续能力项提供。' } } },
+  parameters: { docs: { description: { component: 'Tiptap schema 驱动的内容面，公开 JSON、HTML、Markdown 受控输入输出，并提供改变真实文档模型的紧凑工具栏、链接编辑、格式状态和历史操作。' } } },
 } satisfies Meta<typeof RichTextEditor>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -34,6 +34,16 @@ type PlaygroundArgs = {
   readOnly: boolean;
   disabled: boolean;
   showOutput: boolean;
+  showToolbar: boolean;
+  toolbarPreset: 'full' | 'marks' | 'structure' | 'history';
+  linkPlaceholder: string;
+};
+
+const toolbarPresets: Record<PlaygroundArgs['toolbarPreset'], readonly RichTextEditorToolbarItem[]> = {
+  full: richTextEditorDefaultToolbarItems,
+  marks: ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format'],
+  structure: ['paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'blockquote'],
+  history: ['undo', 'redo'],
 };
 
 function parsePlaygroundValue(format: PlaygroundArgs['format'], value: string): RichTextEditorValue {
@@ -48,7 +58,7 @@ function printable(value: RichTextEditorValue) {
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: '参数调试',
-  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、内容和交互状态。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true },
+  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、内容和交互状态。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', linkPlaceholder: 'https://example.com' },
   argTypes: {
     format: choiceControl(['markdown', 'html', 'json']),
     value: textControl,
@@ -58,11 +68,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     readOnly: booleanControl,
     disabled: booleanControl,
     showOutput: booleanControl,
+    showToolbar: booleanControl,
+    toolbarPreset: choiceControl(['full', 'marks', 'structure', 'history']),
+    linkPlaceholder: textControl,
   },
-  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showOutput'] } },
+  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'linkPlaceholder', 'showOutput'] } },
   render: function Render(args) {
     const [, updateArgs] = useArgs<PlaygroundArgs>();
-    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor {...args} value={parsePlaygroundValue(args.format, args.value)} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
+    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
   },
 };
 
@@ -78,6 +91,28 @@ function SnapshotExample() {
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="多格式输出" /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="snapshot-markdown" className="truncate font-mono">{state?.markdown ?? '编辑后生成'}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="snapshot-html" className="truncate font-mono">{state?.html ?? '编辑后生成'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="snapshot-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '编辑后生成'}</dd></dl></div>;
 }
 export const MultiFormatSnapshot: Story = { name: '同一模型多格式输出', render: () => <SnapshotExample /> };
+
+export const MarksToolbar: Story = { name: '仅文本格式工具', args: { format: 'markdown', defaultValue: '选择文字后应用 **格式**。', label: '文本格式', toolbarItems: toolbarPresets.marks } };
+export const StructureToolbar: Story = { name: '仅结构工具', args: { format: 'markdown', defaultValue: '把当前段落转换为标题、列表或引用。', label: '段落结构', toolbarItems: toolbarPresets.structure } };
+export const ToolbarHidden: Story = { name: '隐藏工具栏', args: { format: 'markdown', defaultValue: markdownValue, label: '沉浸编辑', toolbar: false } };
+
+function HistoryExample() {
+  const [value, setValue] = useState('历史起点');
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="撤销重做" toolbarItems={toolbarPresets.history} /><output data-testid="history-output" className="text-xs text-muted-foreground">{value}</output></div>;
+}
+export const HistoryControls: Story = { name: '撤销与重做', render: () => <HistoryExample /> };
+
+function LinkExample() {
+  const [value, setValue] = useState('选择这段文字并设置链接。');
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="html" value={value} onValueChange={next => setValue(String(next))} label="链接与选区" toolbarItems={['link', 'unlink', 'undo', 'redo']} /><output data-testid="link-output" className="break-all font-mono text-xs text-muted-foreground">{value}</output></div>;
+}
+export const LinkSelection: Story = { name: '链接与选区保留', render: () => <LinkExample /> };
+
+function FormatStateExample() {
+  const [value, setValue] = useState('<p><strong>粗体</strong> 与普通文本</p>');
+  return <RichTextEditor format="html" value={value} onValueChange={next => setValue(String(next))} label="格式状态" toolbarItems={['bold', 'italic', 'underline', 'strike', 'code']} />;
+}
+export const ActiveFormatState: Story = { name: '当前格式状态', render: () => <FormatStateExample /> };
 
 function ExternalReplacementExample() {
   const [value, setValue] = useState(markdownValue);

@@ -123,9 +123,144 @@ test('IME composition updates the document and controlled Markdown output once c
   const surface = await open(page, 'ime-input');
   const editor = await editorOf(surface);
   await editor.dispatchEvent('compositionstart');
+  await editor.dispatchEvent('keydown', { key: 'k', ctrlKey: true, isComposing: true });
+  await expect(page.getByRole('textbox', { name: '链接地址' })).toHaveCount(0);
   await editor.pressSequentially('统一组件');
   await editor.dispatchEvent('compositionend', { data: '统一组件' });
   await expect(page.getByTestId('ime-output')).toContainText('统一组件');
+});
+
+test('toolbar mark commands update the document and expose current format state', async ({ page }) => {
+  const surface = await open(page, 'playground');
+  const editor = await editorOf(surface);
+  await editor.fill('统一组件');
+  await editor.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  const bold = surface.getByRole('button', { name: '粗体' });
+  await bold.click();
+  await expect(editor.locator('strong')).toHaveText('统一组件');
+  await expect(bold).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('playground-output')).toContainText('**统一组件**');
+  await surface.getByRole('button', { name: '清除格式' }).click();
+  await expect(editor.locator('strong')).toHaveCount(0);
+});
+
+test('structure commands create real headings and multi-item lists', async ({ page }) => {
+  let surface = await open(page, 'structure-toolbar');
+  let editor = await editorOf(surface);
+  await editor.fill('工作区标题');
+  await editor.press('Home');
+  await surface.getByRole('button', { name: '一级标题' }).click();
+  await expect(editor.locator('h1')).toHaveText('工作区标题');
+  await expect(surface.getByRole('button', { name: '一级标题' })).toHaveAttribute('aria-pressed', 'true');
+
+  surface = await open(page, 'structure-toolbar');
+  editor = await editorOf(surface);
+  await editor.fill('第一项');
+  await editor.press('End');
+  await editor.press('Enter');
+  await editor.pressSequentially('第二项');
+  await editor.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await surface.getByRole('button', { name: '无序列表' }).click();
+  await expect(editor.locator('ul > li')).toHaveCount(2);
+  await editor.locator('li p').first().click();
+  await expect(surface.getByRole('button', { name: '无序列表' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('link UI restores the editor selection, writes href, and can unlink it', async ({ page }) => {
+  const surface = await open(page, 'link-selection');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('Home');
+  await editor.press('Shift+ArrowRight');
+  await editor.press('Shift+ArrowRight');
+  await editor.press('Shift+ArrowRight');
+  await editor.press('Shift+ArrowRight');
+  await surface.getByRole('button', { name: '编辑链接' }).click();
+  const href = page.getByRole('textbox', { name: '链接地址' });
+  await href.fill('https://example.com/workspace');
+  await page.getByRole('button', { name: '应用链接' }).click();
+  await expect(editor.locator('a')).toHaveAttribute('href', 'https://example.com/workspace');
+  await expect(editor.locator('a')).toHaveText('选择这段');
+  await expect(page.getByTestId('link-output')).toContainText('https://example.com/workspace');
+  await expect(surface.getByRole('button', { name: '编辑链接' })).toHaveAttribute('aria-pressed', 'true');
+  await surface.getByRole('button', { name: '移除链接' }).click();
+  await expect(editor.locator('a')).toHaveCount(0);
+});
+
+test('link command rejects unsafe schemes and keeps selected content unchanged', async ({ page }) => {
+  const surface = await open(page, 'link-selection');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await surface.getByRole('button', { name: '编辑链接' }).click();
+  await page.getByRole('textbox', { name: '链接地址' }).fill('javascript:alert(1)');
+  await page.getByRole('button', { name: '应用链接' }).click();
+  await expect(page.getByRole('alert')).toContainText('链接地址无效');
+  await expect(editor.locator('a')).toHaveCount(0);
+  await expect(editor).toContainText('选择这段文字并设置链接。');
+});
+
+test('Mod-K opens link editing without losing the selected text range', async ({ page }) => {
+  const surface = await open(page, 'link-selection');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await editor.press(process.platform === 'darwin' ? 'Meta+K' : 'Control+K');
+  await expect(page.getByRole('textbox', { name: '链接地址' })).toBeFocused();
+  await page.getByRole('textbox', { name: '链接地址' }).fill('https://example.com/shortcut');
+  await page.getByRole('button', { name: '应用链接' }).click();
+  await expect(editor.locator('a')).toHaveText('选择这段文字并设置链接。');
+});
+
+test('undo and redo buttons track history availability and controlled output', async ({ page }) => {
+  const surface = await open(page, 'history-controls');
+  const editor = await editorOf(surface);
+  const undo = surface.getByRole('button', { name: '撤销' });
+  const redo = surface.getByRole('button', { name: '重做' });
+  await expect(undo).toBeDisabled();
+  await expect(redo).toBeDisabled();
+  await editor.press('End');
+  await editor.pressSequentially(' 已修改');
+  await expect(undo).toBeEnabled();
+  await undo.click();
+  await expect(page.getByTestId('history-output')).toHaveText('历史起点');
+  await expect(redo).toBeEnabled();
+  await redo.click();
+  await expect(page.getByTestId('history-output')).toContainText('已修改');
+});
+
+test('StarterKit keyboard shortcuts change marks and share the same undo history', async ({ page }) => {
+  const surface = await open(page, 'playground');
+  const editor = await editorOf(surface);
+  await editor.fill('快捷键');
+  await editor.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await editor.press(process.platform === 'darwin' ? 'Meta+B' : 'Control+B');
+  await expect(editor.locator('strong')).toHaveText('快捷键');
+  await editor.press(process.platform === 'darwin' ? 'Meta+Z' : 'Control+Z');
+  await expect(editor.locator('strong')).toHaveCount(0);
+  await editor.press(process.platform === 'darwin' ? 'Meta+Shift+Z' : 'Control+Y');
+  await expect(editor.locator('strong')).toHaveText('快捷键');
+});
+
+test('toolbar is configurable and disabled states do not expose writable actions', async ({ page }) => {
+  let surface = await open(page, 'marks-toolbar');
+  await expect(surface.getByRole('toolbar')).toBeVisible();
+  const bold = surface.getByRole('button', { name: '粗体' });
+  await expect(bold).toBeVisible();
+  await expect(surface.getByRole('button', { name: '一级标题' })).toHaveCount(0);
+  await bold.focus();
+  await bold.press('ArrowRight');
+  await expect(surface.getByRole('button', { name: '斜体' })).toBeFocused();
+  await page.keyboard.press('End');
+  await expect(surface.getByRole('button', { name: '清除格式' })).toBeFocused();
+  await page.keyboard.press('Home');
+  await expect(bold).toBeFocused();
+  surface = await open(page, 'toolbar-hidden');
+  await expect(surface.getByRole('toolbar')).toHaveCount(0);
+  surface = await open(page, 'disabled');
+  const buttons = surface.getByRole('toolbar').getByRole('button');
+  await expect(buttons.first()).toBeDisabled();
+  expect(await buttons.count()).toBeGreaterThan(8);
 });
 
 test('Playground Controls change props in the current Story', async ({ page }) => {
@@ -156,7 +291,7 @@ test('Playground declares an explicit control for every adjustable example prop'
     const include = current.parameters.controls.include as string[];
     return { include, controls: include.map(name => current.argTypes[name]?.control) };
   });
-  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showOutput']);
+  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'linkPlaceholder', 'showOutput']);
   expect(contract.controls.every(Boolean)).toBe(true);
 });
 
