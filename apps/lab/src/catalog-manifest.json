@@ -2,10 +2,10 @@
   "counts": {
     "basic": 70,
     "complex": 32,
-    "ai": 19
+    "ai": 20
   },
-  "total": 121,
-  "stories": 1202,
+  "total": 122,
+  "stories": 1219,
   "entries": [
     {
       "layer": "basic",
@@ -1156,6 +1156,16 @@
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "CodeBlockDemo",
       "stories": 30
+    },
+    {
+      "layer": "ai",
+      "id": "markdown-content",
+      "name": "MarkdownContent / RichMessage",
+      "description": "CommonMark/GFM 文档、安全内容策略与消息组合",
+      "storyId": "ai-markdowncontent-richmessage--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "MarkdownContentDemo",
+      "stories": 17
     },
     {
       "layer": "ai",

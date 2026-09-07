@@ -1,12 +1,12 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复杂组件族、19 个 AI 组件族**，共 121 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复杂组件族、20 个 AI 组件族**，共 122 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
 | 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 70 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 20 个本地组合族；统一主题、尺寸和必要修复。 |
 | 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 32 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
-| 草稿、消息、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 19 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
+| 草稿、消息、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 20 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
 `@reito/ui` 根入口同时导出三层。新页面可以按上表选择子入口，让依赖用途清晰。`basic/catalog.tsx`、`complex/catalog.tsx` 和 `ai/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
 
@@ -79,7 +79,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复�
 
 公共布局组件适合编辑器、设置页和数据页共同复用。文件目录选择哪个文件、检查器何时打开、页面路由、数据请求与保存失败后的恢复，属于产品逻辑。将这些状态留在宿主，避免把一个聊天页的布局固定成整个组件库的默认结构。
 
-## AI 层：19 个组件族
+## AI 层：20 个组件族
 
 公共导出见 [`ai/index.ts`](../packages/ui/src/ai/index.ts)，演示入口见 [`ai/catalog.tsx`](../packages/ui/src/ai/catalog.tsx)。这层没有模型客户端或后台 Agent；组件通过宿主传入的数据和回调工作。
 
@@ -98,6 +98,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复�
 | [`PermissionRequest`](../packages/ui/src/ai/decisions.tsx) | 必填 `title / description / decision / onDecision`；`decision` 为 `pending / allowed / denied`，回调只返回允许或拒绝。**点击允许不会执行命令或授予后端权限**，宿主负责绑定准确操作、记录决定并实施授权。 |
 | [`ArtifactPanel`](../packages/ui/src/ai/artifact.tsx) | `title` 与 `versions` 必填；版本提供 `id / label / status / preview / code / language / error`。`version / onVersionChange` 和 `view / onViewChange` 可受控，`onClose` 交给宿主。`preview` 是宿主提供的 ReactNode，没有沙箱，也不编译或执行 `code` 字符串。 |
 | [`CodeBlock`](../packages/ui/src/ai/code-block.tsx) | 必填 `code`，可选 `language / filename / copyable / onCopy`。按语言提供真实语法高亮，保持源码与局部滚动；未知语言或超长内容回退为原样文本。默认复制使用系统剪贴板，提供失败反馈。`variant="embedded"` 用于已有产物外框，移除自身外框并保留代码文本内距。支持的语言与边界见 [复用指南](reuse-guide.md#工作区增量代码高亮)；不把语法色当作 diff。 |
+| [`MarkdownContent / RichMessage`](../packages/ui/src/ai/markdown-content.tsx) | `MarkdownContent.value` 接收 CommonMark/GFM 文本，渲染标题、列表、任务、表格、链接、行内代码与 fenced code；代码块复用 `CodeBlock`。默认转义原始 HTML 并过滤危险 URL；`htmlPolicy`、元素筛选、URL 转换、remark/rehype plugins、`components` 和 `renderCodeBlock` 都是显式宿主边界。`RichMessage` 复用 `Message` 的角色、输出和操作语义，并允许在 Markdown 后组合工具或产物节点。它们不请求模型、抓取链接或执行 HTML/代码。 |
 | [`TokenUsage`](../packages/ui/src/ai/decisions.tsx) | `sourceLabel` 必填；`input / output / contextUsed / contextLimit` 由宿主提供。有效数值显示用量和上下文比例，未知值显示占位；不按字符数估算 token，也不查询账户额度。 |
 | [`AgentTaskCard`](../packages/ui/src/ai/decisions.tsx) | 必填 `title / status`，支持执行状态和 `needs-attention`；`onOpen`、`actions`、上下文及更新时间说明由宿主提供。它是任务呈现，不启动后台任务。 |
 | [`MessageActions`](../packages/ui/src/ai/message-actions.tsx) | 必填 `text` 是复制内容，不从渲染后的 DOM 提取。`onCopy / onRetry / onEdit / onFeedbackChange` 支持 Promise，操作期间防止重复提交并显示失败；`feedback` 可受控，为 `up / down / null`。未传 `onCopy` 时使用剪贴板，其余业务操作由宿主提供。 |

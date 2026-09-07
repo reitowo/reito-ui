@@ -123,6 +123,8 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 桌面对话的 `Message` 正文默认使用 `--rui-font-interface`（14px）与 24px 行高，用户、助手和系统消息共享这一尺度，角色标签为 12px。两种密度只调整消息间距与容器内距；独立长文阅读页仍可选择 16px 阅读字号。Lab 和 Workbench 通过共享 Message 保持一致，不在宿主中覆盖正文。
 
+`MarkdownContent` 延续同一 14px / 24px 消息尺度，标题只提高一到两级，段落、列表、引用和任务项使用共享 space/content tokens。表格和代码块各自在局部容器滚动，不能扩大消息或页面；fenced code 直接复用单层 `CodeBlock` 外框，不能再叠加 Markdown `pre` 的边界和内距。Markdown 正文保持自然文档流，不为每个段落、列表或引用创建卡片。`RichMessage` 只把该文档流放入共享 `Message` 角色、流式状态和操作结构，工具与产物继续作为相邻组合节点。
+
 组件组合表达结构：WorkspacePane 提供 title / actions / children；Dialog 使用 DialogContent / DialogTitle / DialogDescription 等子组件。先查实际类型；不要假设每个组件都有通用 `header`、`size` 或 `tone` 属性。
 
 ## 状态与可操作性

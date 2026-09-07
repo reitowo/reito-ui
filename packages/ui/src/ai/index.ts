@@ -6,6 +6,7 @@ export { ModelSelector, type ModelOption, type ModelSelectorProps } from './mode
 export { PermissionRequest, TokenUsage, AgentTaskCard, type PermissionDecision, type PermissionRequestProps, type TokenUsageProps, type AgentTaskCardProps } from './decisions.js';
 export { ArtifactPanel, type ArtifactVersion, type ArtifactPanelProps } from './artifact.js';
 export { CodeBlock, type CodeBlockProps } from './code-block.js';
+export { MarkdownContent, RichMessage, type MarkdownCodeBlock, type MarkdownContentComponents, type MarkdownContentElementFilter, type MarkdownContentProps, type MarkdownContentUrlTransform, type RichMessageProps } from './markdown-content.js';
 export type { ExecutionStatus } from './shared.js';
 export { MessageActions, type MessageActionsProps, type MessageFeedback } from './message-actions.js';
 export { MessageBranch, type MessageBranchProps } from './message-branch.js';

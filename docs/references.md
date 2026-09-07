@@ -79,6 +79,12 @@ EDIT-05 增加固定版本 `@tiptap/extension-drag-handle-react@3.31.3`，并由
 
 EDIT-06 增加固定版本 `@tiptap/extension-image@3.31.3`，安装包标注 MIT。实现核对 [Image](https://tiptap.dev/docs/editor/extensions/nodes/image)、[FileHandler](https://tiptap.dev/docs/editor/extensions/functionality/filehandler) 与安装源码：Image 声明自己只渲染节点、不上传文件，并提供 JSON/HTML/Markdown 解析与输出；FileHandler 同样只把 paste/drop 交给回调。Reito UI 因此让宿主 `uploadImage` 完整持有网络、鉴权与持久化，只组合进度、取消、错误、重试和 image 节点插入。AI 能力仅参考 [Tiptap AI Suggestion](https://tiptap.dev/docs/content-ai/capabilities/suggestion/use-with-content-ai-cloud) 的“上下文由应用发送并审阅结果”边界；该扩展属于单独的 Pro/Cloud 产品且仍有 Beta 版本，本库没有安装或仿冒它，而是公开 provider-neutral 的文本候选回调与本地 Story，避免把模型、密钥或数据流锁入 UI 包。
 
+## MarkdownContent / RichMessage 内容渲染（2026-09-07 工作区增量）
+
+MARKDOWN-01 使用固定版本 [`react-markdown@10.1.0`](https://github.com/remarkjs/react-markdown/blob/main/readme.md) 与 [`remark-gfm@4.0.1`](https://github.com/remarkjs/remark-gfm)，安装包均标注 MIT。react-markdown 提供 CommonMark AST 到 React 元素的映射、元素过滤、URL 转换和插件入口，并默认不使用危险的 `innerHTML`；remark-gfm 增加表格、任务列表、自动链接和删除线。能力分层参考 [Nuxt UI Components](https://ui.nuxt.com/docs/components/) 中 ChatMessage / ChatMessages 与 Editor 分离的做法，只用于确认“阅读消息”和“编辑文档”是不同表面。
+
+Reito UI 使用自己的 React API、Graphite tokens、紧凑排版、表格滚动、CodeBlock 组合与 Story。默认原始 HTML 只显示为文本或显式移除，危险 URL 由 react-markdown 默认转换过滤；宿主一旦提供自定义 `urlTransform`、rehype 插件或节点渲染器，就同时接管相应的安全与可访问性责任。没有安装原始 HTML 执行插件，没有复制 Nuxt UI 的 Vue 源码、样式、模板、品牌资源或外部产品消息布局。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

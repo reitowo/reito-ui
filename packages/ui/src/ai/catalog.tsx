@@ -4,6 +4,7 @@ import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
 import { ArtifactPanel, type ArtifactVersion } from './artifact.js';
 import { CodeBlock } from './code-block.js';
+import { MarkdownContent } from './markdown-content.js';
 import { Composer } from './composer.js';
 import { AttachmentList, Citation, ContextPill, PromptSuggestions, Sources, type AttachmentItem, type SourceItem } from './context.js';
 import { Conversation, Message } from './conversation.js';
@@ -107,6 +108,7 @@ export function ArtifactPanelDemo() {
 }
 
 export function CodeBlockDemo() { return <AiDemoFrame note="代码展示示例 · 复制使用系统剪贴板"><CodeBlock filename="workspace.ts" language="typescript" code={'export const workspace = {\n  name: "个人工作区",\n  density: "compact",\n};'} /></AiDemoFrame>; }
+export function MarkdownContentDemo() { return <AiDemoFrame note="Markdown 渲染示例 · 内容与链接由调用方提供"><MarkdownContent value={'## 组件验收\n\n使用 **Graphite tokens** 统一消息和文档。\n\n- 检查窄宽度\n- 保留语义结构\n\n```ts\nexport const density = "compact";\n```'} /></AiDemoFrame>; }
 export function TokenUsageDemo() { return <AiDemoFrame note="静态数值示例 · 不根据文本估算用量"><TokenUsage input={1280} output={346} contextUsed={8120} contextLimit={32000} sourceLabel="手动提供的示例数据" /></AiDemoFrame>; }
 export function AgentTaskCardDemo() {
   const [opened, setOpened] = useState(false);
@@ -161,6 +163,7 @@ export const aiCatalog: AiCatalogEntry[] = [
   { id: 'permission', name: 'PermissionRequest', description: '权限请求：由宿主持有允许与拒绝状态', component: PermissionRequestDemo },
   { id: 'artifact', name: 'ArtifactPanel', description: '代码、交互预览与版本切换', component: ArtifactPanelDemo },
   { id: 'code-block', name: 'CodeBlock', description: '语法高亮、滚动代码与原文复制', component: CodeBlockDemo },
+  { id: 'markdown-content', name: 'MarkdownContent / RichMessage', description: 'CommonMark/GFM 文档、安全内容策略与消息组合', component: MarkdownContentDemo },
   { id: 'token-usage', name: 'TokenUsage', description: '展示调用方提供的用量与来源', component: TokenUsageDemo },
   { id: 'agent-task', name: 'AgentTaskCard', description: '任务状态、需处理状态与操作', component: AgentTaskCardDemo },
   { id: 'message-actions', name: 'MessageActions', description: '消息复制、重试、编辑与反馈操作', component: MessageActionsDemo },

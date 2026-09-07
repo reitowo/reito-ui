@@ -29,6 +29,7 @@ async function accessible(page: Page) {
 test('workbench records a local request, queues it, and keeps new chat independent', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: '工作区布局探索' })).toBeVisible();
+  await expect(page.getByRole('article', { name: '助手的消息' }).locator('[data-slot="markdown-content"]')).toBeVisible();
   const input = page.getByRole('textbox', { name: '消息草稿' });
   await input.fill('检查桌面布局的共享间距');
   await input.press('Shift+Enter');
@@ -36,6 +37,7 @@ test('workbench records a local request, queues it, and keeps new chat independe
   await input.press('Enter');
   await expect(input).toHaveValue('');
   await expect(page.getByRole('article', { name: '你的消息' }).last()).toContainText('检查桌面布局的共享间距');
+  await expect(page.getByRole('article', { name: '你的消息' }).last().locator('[data-slot="markdown-content"]')).toBeVisible();
   await page.getByRole('button', { name: '查看任务队列' }).click();
   const queue = page.getByRole('complementary', { name: '任务队列面板' });
   await expect(queue.getByText('检查桌面布局的共享间距')).toBeVisible();
@@ -99,11 +101,11 @@ test('workbench resource selection, paired diff and local logs are interactive',
   await page.getByRole('button', { name: '并排视图' }).click();
   await expect(page.getByRole('table')).toHaveAccessibleName('并排差异：修改前与修改后');
   await page.getByRole('button', { name: '记录已查看' }).click();
-  await expect(page.getByRole('region', { name: '本地操作日志内容' })).toContainText('已查看 workspace-layout.css');
+  await expect(page.getByRole('region', { name: '本地操作日志', exact: true })).toContainText('已查看 workspace-layout.css');
   await page.getByRole('textbox', { name: '搜索示例文件' }).fill('不存在的文件');
   await expect(page.getByText('没有匹配的资源')).toBeVisible();
-  await page.getByRole('button', { name: '清除日志' }).click();
-  await expect(page.getByRole('region', { name: '本地操作日志内容' })).toContainText('还没有日志记录');
+  await page.getByRole('button', { name: '清除', exact: true }).click();
+  await expect(page.getByRole('region', { name: '本地操作日志', exact: true })).toContainText('还没有日志记录');
 });
 
 test('workbench settings validate drafts, step numbers and apply key/value entries', async ({ page }) => {
@@ -127,10 +129,10 @@ test('workbench settings validate drafts, step numbers and apply key/value entri
   await expect(page.getByRole('status', { name: '工作台状态' })).toHaveText('已保存 3 项本地参数。');
   await page.getByRole('switch', { name: '保留本地操作历史' }).click();
   await navigate(page, '文件与差异');
-  await page.getByRole('button', { name: '清除日志' }).click();
+  await page.getByRole('button', { name: '清除', exact: true }).click();
   await page.getByRole('button', { name: '记录已查看' }).click();
   await expect(page.getByRole('status', { name: '工作台状态' })).toContainText('已查看 workspace-settings.ts');
-  await expect(page.getByRole('region', { name: '本地操作日志内容' })).toContainText('还没有日志记录');
+  await expect(page.getByRole('region', { name: '本地操作日志', exact: true })).toContainText('还没有日志记录');
 });
 
 test('workbench theme and density persist through reload', async ({ page }) => {
