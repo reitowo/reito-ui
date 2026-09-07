@@ -17,6 +17,7 @@ import { DateTimePicker, formatLocalDateTime, type LocalDateTimeValue } from './
 import { PasswordInput, type PasswordRule } from './password-input.js';
 import { InputMask, formatMaskValue } from './input-mask.js';
 import { Listbox, type ListboxOption } from './listbox.js';
+import { ImageGallery, type ImageGalleryItem } from './image-gallery.js';
 import {
   ArrowUp,
   Bold,
@@ -1205,6 +1206,16 @@ export function AspectRatioDemo() {
     </div>
   );
 }
+const gallerySources = [
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iNTQwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjcyNzJhIi8+PHBhdGggZD0iTTAgNDMwTDIxMCAyNTBsMTUwIDEyMCAxOTAtMjEwIDQxMCAzNzBIMHoiIGZpbGw9IiM3MTcxN2EiLz48Y2lyY2xlIGN4PSI3MzUiIGN5PSIxNDUiIHI9IjU4IiBmaWxsPSIjZDRkNGQ4Ii8+PC9zdmc+',
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iNTQwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTRlNGU3Ii8+PHJlY3QgeD0iMTEwIiB5PSI4MCIgd2lkdGg9Ijc0MCIgaGVpZ2h0PSIzODAiIHJ4PSIyNCIgZmlsbD0iI2ExYTFhYSIvPjxyZWN0IHg9IjE2NSIgeT0iMTQwIiB3aWR0aD0iNjMwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzNmM2Y0NiIvPjxyZWN0IHg9IjE2NSIgeT0iMjIwIiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjE4MCIgcng9IjEyIiBmaWxsPSIjZmFmYWZhIi8+PHJlY3QgeD0iNDYwIiB5PSIyMjAiIHdpZHRoPSIzMzUiIGhlaWdodD0iMTgwIiByeD0iMTIiIGZpbGw9IiM3MTcxN2EiLz48L3N2Zz4=',
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iNTQwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTgxODFiIi8+PGcgZmlsbD0iI2ExYTFhYSI+PGNpcmNsZSBjeD0iMjgwIiBjeT0iMjcwIiByPSIxMzAiLz48Y2lyY2xlIGN4PSI2ODAiIGN5PSIyNzAiIHI9IjEzMCIvPjwvZz48cGF0aCBkPSJNMjgwIDI3MGg0MDAiIHN0cm9rZT0iI2ZhZmFmYSIgc3Ryb2tlLXdpZHRoPSIyNCIvPjwvc3ZnPg==',
+];
+export const galleryDemoItems: ImageGalleryItem[] = gallerySources.map((src, index) => ({ id: `gallery-${index + 1}`, src, alt: ['山形工作区占位图', '面板工作区占位图', '连接状态占位图'][index] ?? `示例图 ${index + 1}`, title: ['视觉方向', '工作区布局', '连接关系'][index], description: '本地 SVG 示例资源，不请求外部服务。' }));
+export function ImageGalleryDemo() {
+  const [activeId, setActiveId] = React.useState(galleryDemoItems[0]?.id);
+  return <div className="w-full max-w-xl"><ImageGallery items={galleryDemoItems} activeId={activeId} onActiveChange={setActiveId} onRetry={() => {}} /></div>;
+}
 export function InputOTPDemo() {
   const [value, setValue] = React.useState("");
   return (
@@ -1700,6 +1711,12 @@ export const basicCatalog: BasicCatalogEntry[] = [
     name: "Aspect Ratio",
     description: "保持固定比例的内容容器。",
     component: AspectRatioDemo,
+  },
+  {
+    id: "image-gallery",
+    name: "ImageGallery",
+    description: "缩略图、放大预览、图像状态与键盘导航。",
+    component: ImageGalleryDemo,
   },
   {
     id: "input-otp",

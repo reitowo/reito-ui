@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 67,
+    "basic": 68,
     "complex": 29,
     "ai": 19
   },
-  "total": 115,
-  "stories": 1077,
+  "total": 116,
+  "stories": 1087,
   "entries": [
     {
       "layer": "basic",
@@ -546,6 +546,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "AspectRatioDemo",
       "stories": 5
+    },
+    {
+      "layer": "basic",
+      "id": "image-gallery",
+      "name": "ImageGallery",
+      "description": "缩略图、放大预览、图像状态与键盘导航。",
+      "storyId": "基础-imagegallery-图片画廊--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ImageGalleryDemo",
+      "stories": 10
     },
     {
       "layer": "basic",
