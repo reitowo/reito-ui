@@ -1,11 +1,11 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复杂组件族、20 个 AI 组件族**，共 122 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、33 个复杂组件族、20 个 AI 组件族**，共 123 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
 | 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 70 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 20 个本地组合族；统一主题、尺寸和必要修复。 |
-| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 32 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
+| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 33 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 20 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
 `@reito/ui` 根入口同时导出三层。新页面可以按上表选择子入口，让依赖用途清晰。`basic/catalog.tsx`、`complex/catalog.tsx` 和 `ai/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
@@ -48,12 +48,13 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、32 个复�
 
 需要按钮尺寸、输入焦点、菜单键盘行为或主题修复时，先改共享 token 或对应基础组件。新增产品页面应组合已有 API；选择器的 `onValueChange`、复选框的 `onCheckedChange` 等必须按实际类型使用，不能沿用旧 API 名称。
 
-## 复杂层：32 个组件族
+## 复杂层：33 个组件族
 
 公共导出见 [`complex/index.ts`](../packages/ui/src/complex/index.ts)，可交互演示见 [`complex/catalog.tsx`](../packages/ui/src/complex/catalog.tsx)。
 
 | 组件族及实际导出 | 关键契约与边界 |
 | --- | --- |
+| [`SplitButton`](../packages/ui/src/complex/split-button.tsx) | `label / onAction` 定义默认命令，`items` 定义稳定 ID、标签、图标、快捷键、禁用/忙碌与条目回调。整组、主按钮和菜单按钮可独立禁用；主操作、菜单内容与单条目可独立 loading。`open / onOpenChange` 可控制弹层；菜单复用 Base UI 键盘、类型查找和焦点恢复。快捷键属性只声明宿主绑定，不注册全局监听。 |
 | [`DataTable`](../packages/ui/src/complex/data-table.tsx) | 泛型 `data` / `columns` 与稳定 `getRowId`；本地或 manual 远程筛选、排序、分页，类型化列筛选、列管理/固定/宽度，层级展开、详情、数据行分组/聚合，带校验和失败恢复的编辑事务，范围明确的导出请求和版本化视图偏好，以及可定位、动态测量并报告加载边界的行窗口化。所有状态、持久化、文件生成、网络和缓存均可由宿主接管。 |
 | [`DisclosureTree`](../packages/ui/src/complex/disclosure-tree.tsx) | `nodes` 使用稳定 `id`、`label`、可选 `children`；`value` / `onValueChange` 控制叶节点选择，`defaultExpanded` 初始化展开目录，叶节点支持 `disabled`。使用原生 `details` / `summary`；Tab 逐项移动，Enter / Space 展开。**它不是 ARIA tree，没有树控件的方向键导航模型。** |
 | [`SearchFilterBar`](../packages/ui/src/complex/search-filter-bar.tsx) | `query` / `onQueryChange` 与 `selected` / `onSelectedChange` 均受控；`filters` 定义可选条件、数量和禁用项。组件发出筛选状态，宿主负责根据状态过滤数据；`resultCount` 由宿主传入。 |

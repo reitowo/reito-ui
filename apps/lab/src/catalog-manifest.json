@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 32,
+    "complex": 33,
     "ai": 20
   },
-  "total": 122,
-  "stories": 1227,
+  "total": 123,
+  "stories": 1236,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "split-button",
+      "name": "SplitButton 拆分按钮",
+      "description": "主操作与相关菜单共享边缘，独立控制忙碌、禁用、标签和快捷键。",
+      "storyId": "复杂-splitbutton-拆分按钮--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "SplitButtonDemo",
+      "stories": 9
     },
     {
       "layer": "complex",

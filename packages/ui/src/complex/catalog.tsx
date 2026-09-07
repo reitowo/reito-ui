@@ -1,7 +1,7 @@
 import { useId, useMemo, useState, type ComponentType } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { DateRange } from 'react-day-picker';
-import { FileText, FolderOpen, Search, Settings, Terminal } from 'lucide-react';
+import { Download, FileText, FolderOpen, GitBranch, Search, Settings, Terminal } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Badge } from '../primitives/badge.js';
 import { Input } from '../primitives/input.js';
@@ -21,6 +21,7 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import { OrganizationChart, type OrganizationChartNode } from './organization-chart.js';
 import { TerminalPrompt, type TerminalPromptEntry } from './terminal-prompt.js';
 import { RichTextEditor } from './rich-text-editor.js';
+import { SplitButton, type SplitButtonItem } from './split-button.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -107,6 +108,27 @@ const richTextDemoValue = '# 组件说明\n\n这是一份由 **Tiptap 文档模�
 export function RichTextEditorDemo() {
   const [value, setValue] = useState(richTextDemoValue);
   return <div className="space-y-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="组件说明" description="本地受控 Markdown；输入 / 或 @，悬停块可重排，也可插入图片地址。" mentionItems={[{ id: 'reito', label: 'Reito', description: '设计系统维护者' }, { id: 'lin', label: 'Lin', description: '组件工程' }]} /><p role="status" className="text-xs text-muted-foreground">宿主值：{value.length} 个字符</p></div>;
+}
+
+const splitButtonDemoItems: SplitButtonItem[] = [
+  { id: 'save-copy', label: '保存副本', icon: <Download aria-hidden="true" />, shortcut: 'Ctrl+Shift+S' },
+  { id: 'create-branch', label: '保存并创建分支', icon: <GitBranch aria-hidden="true" />, shortcut: 'Ctrl+Alt+S' },
+  { id: 'publish', label: '发布到远端', disabled: true },
+];
+export function SplitButtonDemo() {
+  const [message, setMessage] = useState('选择主操作或展开相关操作。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <SplitButton
+      label="保存"
+      groupLabel="保存操作"
+      menuLabel="更多保存操作"
+      actionShortcut="Ctrl+S"
+      items={splitButtonDemoItems}
+      onAction={() => setMessage('已运行主操作：保存（本地示例）')}
+      onItemSelect={item => setMessage(`已选择：${String(item.label)}（本地示例）`)}
+    />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
 }
 
 export function TreeSelectDemo() {
@@ -355,6 +377,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'split-button', name: 'SplitButton 拆分按钮', description: '主操作与相关菜单共享边缘，独立控制忙碌、禁用、标签和快捷键。', component: SplitButtonDemo },
   { id: 'form', name: 'Form 表单管理', description: 'Schema、跨字段与异步校验、提交重置、嵌套字段和数组。', component: FormDemo },
   { id: 'async-form', name: 'AsyncForm 异步表单', description: '可取消的异步校验、过期响应隔离、记录切换和提交恢复。', component: AsyncFormDemo },
   { id: 'virtual-list', name: 'VirtualList 虚拟列表', description: '窗口化行、稳定 key、滚动定位、可见范围和按需加载。', component: VirtualListDemo },
