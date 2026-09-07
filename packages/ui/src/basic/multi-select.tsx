@@ -8,7 +8,7 @@ import { Spinner } from '../primitives/spinner.js';
 import { cn } from '../lib/utils.js';
 import { MultiSelectActions, MultiSelectCreateAction, MultiSelectOptionList, filterMultiSelectOptions, hasExactMultiSelectOption, mergeMultiSelectOptions, type MultiSelectEnhancementProps, type MultiSelectOption } from './multi-select-shared.js';
 
-export type { MultiSelectOption } from './multi-select-shared.js';
+export type { MultiSelectOption, MultiSelectVirtualRange } from './multi-select-shared.js';
 export interface MultiSelectProps extends MultiSelectEnhancementProps {
   label: string;
   options: MultiSelectOption[];
@@ -26,7 +26,7 @@ export interface MultiSelectProps extends MultiSelectEnhancementProps {
 }
 
 /** Searchable local multiselection with grouped options, creation and visible-result bulk actions. */
-export function MultiSelect({ label, options, value, defaultValue, onValueChange, name, disabled = false, loading = false, error, description, placeholder = '搜索并选择…', emptyMessage = '没有匹配的选项', className, showSelectAll = false, selectAllLabel, clearAllLabel, onCreateOption, createLabel = query => `创建“${query}”`, creatingLabel = '正在创建…', onCreateError }: MultiSelectProps) {
+export function MultiSelect({ label, options, value, defaultValue, onValueChange, name, disabled = false, loading = false, error, description, placeholder = '搜索并选择…', emptyMessage = '没有匹配的选项', className, showSelectAll = false, selectAllLabel, clearAllLabel, onCreateOption, createLabel = query => `创建“${query}”`, creatingLabel = '正在创建…', onCreateError, virtual = false, virtualOverscan = 4, onVirtualRangeChange }: MultiSelectProps) {
   const id = useId();
   const anchor = useComboboxAnchor();
   const [internalValue, setInternalValue] = useState(defaultValue ?? []);
@@ -34,6 +34,7 @@ export function MultiSelect({ label, options, value, defaultValue, onValueChange
   const [createdOptions, setCreatedOptions] = useState<MultiSelectOption[]>([]);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string>();
+  const [highlightedValue, setHighlightedValue] = useState<string>();
   const selectedValue = value ?? internalValue;
   const allOptions = useMemo(() => mergeMultiSelectOptions(options, createdOptions), [options, createdOptions]);
   const visibleOptions = useMemo(() => filterMultiSelectOptions(allOptions, query), [allOptions, query]);
@@ -60,16 +61,16 @@ export function MultiSelect({ label, options, value, defaultValue, onValueChange
   }
   return <div data-slot="multi-select" className={cn('grid min-w-0 gap-2 text-sm', className)}>
     <Label htmlFor={id}>{label}</Label>
-    <Combobox<string, true> multiple items={items} filteredItems={filteredItems} filter={null} value={selectedValue} onValueChange={next => { changeValue(next); setQuery(''); }} inputValue={query} onInputValueChange={(next, details) => { if (details.reason === 'input-change' || details.reason === 'input-clear' || details.reason === 'clear-press') { setQuery(next); setCreateError(undefined); } }} itemToStringLabel={item => labels.get(item) ?? item} disabled={disabled || loading} name={name}>
+    <Combobox<string, true> multiple items={items} filteredItems={filteredItems} filter={null} virtualized={virtual} onItemHighlighted={item => setHighlightedValue(item)} value={selectedValue} onValueChange={next => { changeValue(next); setQuery(''); }} inputValue={query} onInputValueChange={(next, details) => { if (details.reason === 'input-change' || details.reason === 'input-clear' || details.reason === 'clear-press') { setQuery(next); setCreateError(undefined); } }} itemToStringLabel={item => labels.get(item) ?? item} disabled={disabled || loading} name={name}>
       <ComboboxChips ref={anchor} className="min-h-[var(--rui-control-height)]" aria-busy={loading}>
         <ComboboxValue>{(selected: string[]) => selected.map(item => { const option = optionMap.get(item); return <ComboboxChip key={item} showRemove={false}><span>{labels.get(item) ?? item}</span><ComboboxPrimitive.ChipRemove disabled={option?.disabled} aria-label={`移除${labels.get(item) ?? item}`} render={<Button variant="ghost" size="icon-xs" className="-mr-1" />}><X className="size-3" aria-hidden="true" /></ComboboxPrimitive.ChipRemove></ComboboxChip>; })}</ComboboxValue>
-        <ComboboxChipsInput id={id} value={query} placeholder={loading ? '正在加载选项…' : placeholder} aria-invalid={Boolean(error || createError)} aria-describedby={describedBy} />
+        <ComboboxChipsInput id={id} value={query} placeholder={loading ? '正在加载选项…' : placeholder} aria-label={label} aria-invalid={Boolean(error || createError)} aria-describedby={describedBy} />
         {loading && <Spinner aria-label="正在加载选项" />}
       </ComboboxChips>
       <ComboboxContent anchor={anchor}>
         <MultiSelectActions selected={selectedValue} visibleOptions={visibleOptions} optionMap={optionMap} showSelectAll={showSelectAll} selectAllLabel={selectAllLabel} clearAllLabel={clearAllLabel} onValueChange={changeValue} />
         <ComboboxEmpty>{canCreate ? null : emptyMessage}</ComboboxEmpty>
-        <MultiSelectOptionList options={visibleOptions} />
+        <MultiSelectOptionList options={visibleOptions} virtual={virtual} overscan={virtualOverscan} highlightedValue={highlightedValue} onRangeChange={onVirtualRangeChange} />
         {canCreate && <MultiSelectCreateAction label={creating ? creatingLabel : createLabel(query.trim())} creating={creating} onCreate={() => void create()} />}
       </ComboboxContent>
     </Combobox>

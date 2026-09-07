@@ -180,6 +180,8 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 
 SELECT-02 继续核对 Nuxt UI 4 [SelectMenu](https://ui.nuxt.com/docs/components/select-menu) 的可搜索多选与创建定位、PrimeVue 5 [MultiSelect](https://primevue.org/multiselect/) 的分组、全选/半选、禁用选项和 header/footer 批量动作，以及 PrimeReact [MultiSelect](https://primereact.org/multiselect/) 的 grouped / optionDisabled / selectAll 能力边界。Reito UI 定义自己的扁平 `group` 选项模型、当前结果范围、禁用值保留规则和宿主创建回调，并复用 Base UI Combobox 语义与 Graphite tokens；未复制上游源码、CSS、模板或资源。
 
+SELECT-03 核对 Base UI 1.8 [Combobox](https://base-ui.com/react/components/combobox) 的 `virtualized`、外部筛选窗口与已选记录保留规则，TanStack Virtual [Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer) 的稳定 key、overscan、`rangeExtractor`、`scrollToIndex`、动态 `measureElement` 和滚动位置校正，以及 PrimeVue 5 [MultiSelect](https://primevue.org/multiselect/) 的大集合 virtual scroller 能力范围。Reito UI 把活动项保持在实际渲染范围，用可变 DOM 高度校正滚动锚点，并将增量请求、取消、过期响应隔离与重试定义为宿主 API；未复制上游源码、CSS、模板或资源。
+
 ### ColorPicker / ColorInput · 2026-09-07
 
 能力范围核对 Nuxt UI [ColorPicker](https://ui.nuxt.com/docs/components/color-picker) 的表单选择器定位，以及 PrimeVue [ColorPicker](https://v3.primevue.org/colorpicker/) 的受控值、弹出/内联模式和 HEX/RGB/HSB 格式。Reito UI 实现独立 React 契约，选择 HEX/RGB/HSL 文本输出，并增加无效草稿恢复、透明度边界、可见 RGB(A) 通道、预设、原生表单值和提交事件。颜色空间端点与色相渐变进入本库 token 源；未复制上游源码、CSS、模板或资源。

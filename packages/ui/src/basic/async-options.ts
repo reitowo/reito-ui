@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface AsyncSelectOption {
   value: string;
@@ -30,6 +30,7 @@ export function useAsyncOptions({ loadOptions, query: controlledQuery, defaultQu
   const [options, setOptions] = useState(initialOptions);
   const [status, setStatus] = useState<AsyncOptionsStatus>(query.trim().length < minQueryLength ? 'idle' : initialOptions.length ? 'ready' : 'loading');
   const [loadError, setLoadError] = useState<string>();
+  const [resultQuery, setResultQuery] = useState<string | null>(initialOptions.length ? query.trim() : null);
   const [retryVersion, setRetryVersion] = useState(0);
   const requestId = useRef(0);
   const loaderRef = useRef(loadOptions);
@@ -43,6 +44,13 @@ export function useAsyncOptions({ loadOptions, query: controlledQuery, defaultQu
     if (controlledQuery === undefined) setInternalQuery(next);
     onQueryChange?.(next);
   }
+  const appendOptions = useCallback((additional: AsyncSelectOption[]) => {
+    setOptions(current => {
+      const merged = new Map(current.map(option => [option.value, option]));
+      for (const option of additional) { cache.current.set(option.value, option); merged.set(option.value, option); }
+      return [...merged.values()];
+    });
+  }, []);
 
   useEffect(() => {
     const normalized = query.trim();
@@ -51,6 +59,7 @@ export function useAsyncOptions({ loadOptions, query: controlledQuery, defaultQu
       setStatus('idle');
       setLoadError(undefined);
       setOptions([]);
+      setResultQuery(null);
       return;
     }
     const currentRequest = ++requestId.current;
@@ -59,11 +68,13 @@ export function useAsyncOptions({ loadOptions, query: controlledQuery, defaultQu
       setStatus('loading');
       setLoadError(undefined);
       setOptions([]);
+      setResultQuery(null);
       void loaderRef.current(query, { signal: controller.signal }).then(result => {
         if (controller.signal.aborted || requestId.current !== currentRequest) return;
         for (const option of result) cache.current.set(option.value, option);
         setOptions(result);
         setStatus('ready');
+        setResultQuery(normalized);
       }).catch(cause => {
         if (controller.signal.aborted || requestId.current !== currentRequest) return;
         setStatus('error');
@@ -74,5 +85,5 @@ export function useAsyncOptions({ loadOptions, query: controlledQuery, defaultQu
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [query, minQueryLength, debounceMs, retryVersion]);
 
-  return { query, changeQuery, options, status, loadError, retry: () => setRetryVersion(version => version + 1), cache };
+  return { query, changeQuery, options, appendOptions, status, resultQuery, loadError, retry: () => setRetryVersion(version => version + 1), cache };
 }
