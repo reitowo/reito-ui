@@ -23,7 +23,7 @@ export { FormDemo } from './form-demo.js';
 import {
   AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, SortableList, Transfer, TreeSelect, TreeTable,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
-  serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
+  serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type PropertyValue, type TimelineEvent,
 } from './index.js';
 
 export interface DemoRecord { id: string; name: string; owner: string; status: string; updated: string; }
@@ -173,10 +173,12 @@ export function DateTimeRangePickerDemo() {
 export function FileUploadDemo() { return <FileUpload accept=".txt,.md,.json" maxSize={1024 * 1024} maxFiles={3} />; }
 
 export function PropertyListDemo() {
-  const [values, setValues] = useState<Record<string, string | number>>({ name: 'Graphite 工作区', retention: 30, id: 'workspace-local-01' });
+  const [values, setValues] = useState<Record<string, PropertyValue>>({ name: 'Graphite 工作区', retention: 30, autosave: true, density: 'compact', id: 'workspace-local-01' });
   const items: PropertyItem[] = [
-    { key: 'name', label: '工作区名称', value: values.name, validate: value => String(value).length < 2 ? '名称至少需要 2 个字符' : undefined },
-    { key: 'retention', label: '保留天数', description: '允许 1 至 365 天', kind: 'number', value: values.retention, validate: value => Number(value) < 1 || Number(value) > 365 || !Number.isInteger(Number(value)) ? '请输入 1 至 365 的整数' : undefined },
+    { key: 'name', path: ['workspace', 'name'], label: '工作区名称', value: values.name, validate: value => String(value).length < 2 ? '名称至少需要 2 个字符' : undefined },
+    { key: 'retention', path: ['workspace', 'retentionDays'], label: '保留天数', description: '允许 1 至 365 天', kind: 'number', value: values.retention, min: 1, max: 365, step: 1 },
+    { key: 'autosave', path: ['editor', 'autosave'], label: '自动保存', kind: 'boolean', value: values.autosave },
+    { key: 'density', path: ['appearance', 'density'], label: '界面密度', kind: 'select', value: values.density, options: [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] },
     { key: 'id', label: '工作区 ID', value: values.id, readOnly: true },
   ];
   return <div className="space-y-[var(--rui-content-gap)]"><PropertyList items={items} onValueChange={(key, value) => setValues(previous => ({ ...previous, [key]: value }))} /><p className="text-xs text-muted-foreground">编辑仅保存在此示例的内存中。</p></div>;
@@ -344,7 +346,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'date-range-picker', name: 'DateRangePicker 日期范围', description: '日历、日期输入、上下界校验、应用与取消。', component: DateRangePickerDemo },
   { id: 'date-time-range-picker', name: 'DateTimeRangePicker 日期时间范围', description: '起止本地日期时间、精度、范围校验、时区元数据与稳定提交。', component: DateTimeRangePickerDemo },
   { id: 'file-upload', name: 'FileUpload 文件上传', description: '本地校验、受控上传生命周期，以及会释放资源的图片缩略图和文件回退。', component: FileUploadDemo },
-  { id: 'property-list', name: 'PropertyList 属性编辑', description: '逐项编辑、数字验证、取消与只读字段。', component: PropertyListDemo },
+  { id: 'property-list', name: 'PropertyList 属性编辑', description: '文本、数字、布尔、选项、日期字段，以及嵌套路径、草稿、逐项禁用与只读。', component: PropertyListDemo },
   { id: 'timeline', name: 'Timeline 时间线', description: '按时间呈现完成、进行、失败和等待状态。', component: TimelineDemo },
   { id: 'stepper', name: 'Stepper 分步流程', description: '可导航步骤、必填门槛与本地确认流程。', component: StepperDemo },
   { id: 'settings-section', name: 'SettingsSection 设置分组', description: '标题、说明、行布局与真实受控表单。', component: SettingsSectionDemo },

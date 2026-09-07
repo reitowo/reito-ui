@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1063,
+  "stories": 1069,
   "entries": [
     {
       "layer": "basic",
@@ -861,11 +861,11 @@
       "layer": "complex",
       "id": "property-list",
       "name": "PropertyList 属性编辑",
-      "description": "逐项编辑、数字验证、取消与只读字段。",
+      "description": "文本、数字、布尔、选项、日期字段，以及嵌套路径、草稿、逐项禁用与只读。",
       "storyId": "复杂-propertylist-属性编辑--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "PropertyListDemo",
-      "stories": 6
+      "stories": 12
     },
     {
       "layer": "complex",

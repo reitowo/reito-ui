@@ -176,6 +176,10 @@ Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) an
 
 能力存在性核对 Nuxt UI 当前组件目录中的 FileUpload，以及 PrimeVue 5 [FileUpload Image Preview](https://primevue.dev/fileupload/#image-preview) 的缩略图队列。资源语义依据 MDN [URL.createObjectURL](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static) 与 [URL.revokeObjectURL](https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL_static)：临时 Blob URL 在文件移除、替换和组件卸载时释放。Reito UI 使用自己的紧凑行、状态独立预览、解码失败回退和非图片表示；不复制上游网格模板、源码、CSS、图像或品牌资源，也不在 FileUpload 内实现全屏 Gallery。
 
+### PropertyList 字段适配 · 2026-09-07
+
+能力范围核对 Nuxt UI 当前组件目录中的 Input、InputNumber、Switch、Select、InputDate 与 FormField，并核对 Base UI [Input](https://base-ui.com/react/components/input)、[Switch](https://base-ui.com/react/components/switch) 和 [Select](https://base-ui.com/react/components/select) 对可访问名称与受控值的约束。Reito UI PropertyList 将自己的 Field、Input、NativeSelect 与 Switch 组合成同步保存行，增加嵌套路径、草稿通知、逐项禁用/只读和焦点恢复；没有复制上游源码、CSS、模板或资源，也不把这个同步属性列表称为完整 Form 引擎。
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。

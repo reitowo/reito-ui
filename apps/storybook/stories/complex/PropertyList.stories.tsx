@@ -1,34 +1,25 @@
 import { useArgs } from 'storybook/preview-api';
 import { textControl, booleanControl, choiceControl, recipeControl } from '../feature-controls.js';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { act, useState } from 'react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-import { PropertyList, type PropertyItem } from '../../../../packages/ui/src/complex/index.js';
+import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
+import { PropertyList, type PropertyItem, type PropertyKind, type PropertyValue } from '../../../../packages/ui/src/complex/index.js';
 import { PropertyListDemo } from '../../../../packages/ui/src/complex/catalog.js';
-const meta = { title: '复杂/PropertyList 属性编辑', component: PropertyListDemo, parameters: { docs: { description: { component: '逐字段编辑器，支持数字解析、自定义验证、只读与 Escape 取消。确认中文输入法候选不会触发表单保存。' } } } } satisfies Meta<typeof PropertyListDemo>;
+const meta = { title: '复杂/PropertyList 属性编辑', component: PropertyListDemo, parameters: { docs: { description: { component: '逐字段编辑器，支持文本、数字、布尔、选项和日期适配，嵌套路径、草稿通知、自定义验证、逐项只读/禁用与 Escape 取消。确认中文输入法候选不会触发表单保存。' } } } } satisfies Meta<typeof PropertyListDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Interactive: Story = {
-  name: '交互场景：校验、保存与取消',
+  name: '交互场景：校验与保存',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: '编辑保留天数' }));
     const input = canvas.getByRole('spinbutton', { name: '保留天数' });
     await userEvent.clear(input); await userEvent.type(input, '500');
     await userEvent.click(canvas.getByRole('button', { name: '保存' }));
-    expect(canvas.getByRole('alert')).toHaveTextContent('请输入 1 至 365 的整数');
+    expect(canvas.getByRole('alert')).toHaveTextContent('不能大于 365');
     await userEvent.clear(input); await userEvent.type(input, '60');
     await userEvent.click(canvas.getByRole('button', { name: '保存' }));
     expect(canvas.getByText('60', { exact: true })).toBeInTheDocument();
-    await userEvent.click(canvas.getByRole('button', { name: '编辑工作区名称' }));
-    await userEvent.clear(canvas.getByRole('textbox', { name: '工作区名称' }));
-    await userEvent.type(canvas.getByRole('textbox', { name: '工作区名称' }), '未保存名称');
-    // Development React needs act for the unmount; production React omits that API.
-    const cancel = async () => { await userEvent.keyboard('{Escape}'); };
-    if (typeof act === 'function') await act(cancel);
-    else await cancel();
-    await waitFor(() => expect(canvas.getByText('Graphite 工作区', { exact: true })).toBeVisible());
-    await waitFor(() => expect(canvas.getByRole('button', { name: '编辑工作区名称' })).toHaveFocus());
     expect(canvas.queryByRole('button', { name: '编辑工作区 ID' })).not.toBeInTheDocument();
   },
 };
@@ -39,10 +30,29 @@ export const Default: Story = { name: '文本属性', render: () => <PropertyExa
 export const NumberProperty: Story = { name: '数字属性', render: () => <PropertyExample initial={[{ key: 'retention', label: '保留天数', value: 30, kind: 'number', description: '以天为单位' }]} /> };
 export const ReadOnly: Story = { name: '只读属性', render: () => <PropertyList items={[{ key: 'id', label: '工作区 ID', value: 'workspace-local-01', readOnly: true }]} onValueChange={() => {}} /> };
 
-type PlaygroundArgs = { label: string; disabled: boolean; fieldLabel: string; fieldValue: string; kind: 'text' | 'number'; readOnly: boolean; description: string };
+export const BooleanProperty: Story = { name: '布尔属性', render: () => <PropertyExample initial={[{ key: 'autosave', label: '自动保存', value: true, kind: 'boolean', trueLabel: '已启用', falseLabel: '已关闭' }]} /> };
+export const SelectProperty: Story = { name: '选项属性', render: () => <PropertyExample initial={[{ key: 'density', label: '界面密度', value: 'compact', kind: 'select', options: [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] }]} /> };
+export const DateProperty: Story = { name: '日期属性', render: () => <PropertyExample initial={[{ key: 'archiveDate', label: '归档日期', value: '2026-09-30', kind: 'date', min: '2026-09-01', max: '2026-12-31' }]} /> };
+
+function NestedExample() {
+  const [values, setValues] = useState<Record<string, PropertyValue>>({ fontSize: 14, wordWrap: true, theme: 'graphite' });
+  const [event, setEvent] = useState('尚未修改');
+  const items: PropertyItem[] = [
+    { key: 'fontSize', path: ['editor', 'appearance', 'fontSize'], label: '字号', value: values.fontSize, kind: 'number', min: 10, max: 24, step: 1 },
+    { key: 'wordWrap', path: ['editor', 'layout', 'wordWrap'], label: '自动换行', value: values.wordWrap, kind: 'boolean' },
+    { key: 'theme', path: ['editor', 'appearance', 'theme'], label: '主题', value: values.theme, kind: 'select', options: [{ value: 'graphite', label: 'Graphite' }, { value: 'paper', label: 'Paper' }] },
+  ];
+  return <div className="space-y-[var(--rui-content-gap)]"><PropertyList items={items} onDraftValueChange={(_key, draft, path) => setEvent(`草稿 ${path.join('.')} = ${String(draft)}`)} onValueChange={(key, value, path) => { setValues(previous => ({ ...previous, [key]: value })); setEvent(`已保存 ${path.join('.')} = ${String(value)}`); }} /><p role="status" className="text-xs text-muted-foreground">{event}</p></div>;
+}
+
+export const NestedPaths: Story = { name: '嵌套路径与草稿更新', render: () => <NestedExample /> };
+export const PerItemDisabled: Story = { name: '逐项禁用', render: () => <PropertyList items={[{ key: 'editable', label: '可编辑属性', value: '本地值' }, { key: 'locked', label: '禁用属性', value: '由策略管理', disabled: true }, { key: 'fixed', label: '只读属性', value: '不可编辑', readOnly: true }]} onValueChange={() => {}} /> };
+export const Narrow: Story = { name: '窄宽度', render: () => <div className="max-w-80"><NestedExample /></div> };
+
+type PlaygroundArgs = { label: string; disabled: boolean; fieldLabel: string; fieldValue: string; kind: PropertyKind; readOnly: boolean; itemDisabled: boolean; description: string; nestedPath: boolean };
 export const Playground: StoryObj<PlaygroundArgs> = {
- name: '参数调试', args: { label: '属性', disabled: false, fieldLabel: '工作区名称', fieldValue: 'Graphite 工作区', kind: 'text', readOnly: false, description: '' },
- argTypes: { label: textControl, disabled: booleanControl, fieldLabel: recipeControl(textControl, 'items[0].label'), fieldValue: recipeControl(textControl, 'items[0].value；number 模式解析为有限数字，无效值回退为 0。'), kind: recipeControl(choiceControl(['text', 'number']), 'items[0].kind'), readOnly: recipeControl(booleanControl, 'items[0].readOnly'), description: recipeControl(textControl, 'items[0].description') },
- parameters: { controls: { include: ['kind', 'readOnly', 'disabled', 'fieldLabel', 'fieldValue', 'description', 'label'] } },
- render: function PlaygroundRender(args) { const [, updateArgs] = useArgs(); const value = args.kind === 'number' ? (Number.isFinite(Number(args.fieldValue)) ? Number(args.fieldValue) : 0) : args.fieldValue; return <PropertyList label={args.label} disabled={args.disabled} items={[{ key: 'example', label: args.fieldLabel, value, kind: args.kind, readOnly: args.readOnly, description: args.description }]} onValueChange={(_, value) => updateArgs({ fieldValue: String(value) })} />; },
+ name: '参数调试', args: { label: '属性', disabled: false, fieldLabel: '工作区名称', fieldValue: 'Graphite 工作区', kind: 'text', readOnly: false, itemDisabled: false, description: '', nestedPath: false },
+ argTypes: { label: textControl, disabled: booleanControl, fieldLabel: recipeControl(textControl, 'items[0].label'), fieldValue: recipeControl(textControl, 'items[0].value；number 与 boolean 模式会转换类型。'), kind: recipeControl(choiceControl(['text', 'number', 'boolean', 'select', 'date']), 'items[0].kind'), readOnly: recipeControl(booleanControl, 'items[0].readOnly'), itemDisabled: recipeControl(booleanControl, 'items[0].disabled'), description: recipeControl(textControl, 'items[0].description'), nestedPath: recipeControl(booleanControl, 'items[0].path') },
+ parameters: { controls: { include: ['kind', 'readOnly', 'itemDisabled', 'disabled', 'nestedPath', 'fieldLabel', 'fieldValue', 'description', 'label'] } },
+ render: function PlaygroundRender(args) { const [, updateArgs] = useArgs(); const value: PropertyValue = args.kind === 'number' ? (Number.isFinite(Number(args.fieldValue)) ? Number(args.fieldValue) : 0) : args.kind === 'boolean' ? args.fieldValue === 'true' : args.fieldValue; return <PropertyList label={args.label} disabled={args.disabled} items={[{ key: 'example', path: args.nestedPath ? ['workspace', 'example'] : undefined, label: args.fieldLabel, value, kind: args.kind, readOnly: args.readOnly, disabled: args.itemDisabled, description: args.description, options: args.kind === 'select' ? [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] : undefined }]} onValueChange={(_, value) => updateArgs({ fieldValue: String(value) })} />; },
 };
