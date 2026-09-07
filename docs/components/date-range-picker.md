@@ -58,4 +58,4 @@ const [range, setRange] = useState<DateRange>();
 />
 ```
 
-原生日期输入使用 `YYYY-MM-DD` 值并保留浏览器的本地显示与键盘行为。组件不附加任意时区、时刻或 UTC 转换；起止时刻精度及序列化由 `DATERANGE-02` 跟踪。“清除”是明确的立即受控提交，不等待应用。
+原生日期输入使用 `YYYY-MM-DD` 值并保留浏览器的本地显示与键盘行为。组件不附加任意时区、时刻或 UTC 转换；需要起止时刻、精度和时区元数据时使用 [`DateTimeRangePicker`](date-time-range-picker.md)。“清除”是明确的立即受控提交，不等待应用。

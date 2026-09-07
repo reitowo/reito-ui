@@ -17,11 +17,12 @@ import { VirtualGridDemo } from './virtual-grid-demo.js';
 import { TreeView, type TreeViewNode } from './tree-view.js';
 import { AsyncTreeView, type AsyncTreeViewNode } from './async-tree-view.js';
 import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
+import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, CommandSearch, DataTable, DateRangePicker, DisclosureTree, FileUpload, PropertyList,
+  AppShell, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
-  type CommandGroupDefinition, type DisclosureNode, type PropertyItem, type TimelineEvent,
+  serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
 } from './index.js';
 
 export interface DemoRecord { id: string; name: string; owner: string; status: string; updated: string; }
@@ -89,6 +90,12 @@ export function SearchFilterBarDemo() {
 export function DateRangePickerDemo() {
   const [range, setRange] = useState<DateRange | undefined>({ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) });
   return <div className="space-y-[var(--rui-content-gap)]"><DateRangePicker value={range} onValueChange={setRange} minDate={new Date(2026, 0, 1)} maxDate={new Date(2026, 11, 31)} /><p role="status" className="text-xs text-muted-foreground">{range?.from && range.to ? `已应用 ${range.from.getMonth() + 1} 月 ${range.from.getDate()} 日至 ${range.to.getMonth() + 1} 月 ${range.to.getDate()} 日` : '尚未设置日期范围'}</p><p className="text-xs text-muted-foreground">可选择 2026 年内的日期，取消会保留上次应用的范围。</p></div>;
+}
+
+const catalogDateTime = (day: number, hour: number, minute: number): LocalDateTimeValue => ({ date: new Date(2026, 8, day), time: { hour, minute } });
+export function DateTimeRangePickerDemo() {
+  const [range, setRange] = useState<DateTimeRangeValue>({ start: catalogDateTime(7, 17, 30), end: catalogDateTime(8, 9, 30) });
+  return <div className="space-y-[var(--rui-content-gap)]"><DateTimeRangePicker value={range} onValueChange={setRange} min={catalogDateTime(7, 16, 0)} max={catalogDateTime(8, 10, 0)} minuteStep={5} timeZone="Asia/Shanghai" description="本地墙上时间与时区标识分开保存；组件不会隐式换算 UTC 瞬时值。" /><output className="block break-all font-mono text-xs text-muted-foreground">{serializeDateTimeRange(range, { timeZone: 'Asia/Shanghai' }) || '范围尚未完整或有效'}</output></div>;
 }
 export function FileUploadDemo() { return <FileUpload accept=".txt,.md,.json" maxSize={1024 * 1024} maxFiles={3} />; }
 
@@ -234,6 +241,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
   { id: 'date-range-picker', name: 'DateRangePicker 日期范围', description: '日历、日期输入、上下界校验、应用与取消。', component: DateRangePickerDemo },
+  { id: 'date-time-range-picker', name: 'DateTimeRangePicker 日期时间范围', description: '起止本地日期时间、精度、范围校验、时区元数据与稳定提交。', component: DateTimeRangePickerDemo },
   { id: 'file-upload', name: 'FileUpload 文件队列', description: '文件类型、大小、重复与数量校验；仅本地队列。', component: FileUploadDemo },
   { id: 'property-list', name: 'PropertyList 属性编辑', description: '逐项编辑、数字验证、取消与只读字段。', component: PropertyListDemo },
   { id: 'timeline', name: 'Timeline 时间线', description: '按时间呈现完成、进行、失败和等待状态。', component: TimelineDemo },

@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 67,
-    "complex": 22,
+    "complex": 23,
     "ai": 19
   },
-  "total": 108,
-  "stories": 919,
+  "total": 109,
+  "stories": 935,
   "entries": [
     {
       "layer": "basic",
@@ -786,6 +786,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "DateRangePickerDemo",
       "stories": 11
+    },
+    {
+      "layer": "complex",
+      "id": "date-time-range-picker",
+      "name": "DateTimeRangePicker 日期时间范围",
+      "description": "起止本地日期时间、精度、范围校验、时区元数据与稳定提交。",
+      "storyId": "复杂-datetimerangepicker-日期时间范围--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "DateTimeRangePickerDemo",
+      "stories": 16
     },
     {
       "layer": "complex",

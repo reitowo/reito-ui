@@ -202,6 +202,10 @@ SELECT-03 核对 Base UI 1.8 [Combobox](https://base-ui.com/react/components/com
 
 DATERANGE-01 核对 Nuxt UI [Calendar](https://ui.nuxt.com/docs/components/calendar) 的 range 选择定位、PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) 的 range / locale / minDate / maxDate 能力，以及 React DayPicker [Range Mode](https://daypicker.dev/selections/range-mode) 和 [PropsBase locale](https://daypicker.dev/api/react/interfaces/PropsBase) 的范围、禁用日与本地化契约。Reito UI 定义自己的预设回调、超界禁用、草稿提交和可替换格式/文案 API，保留现有清除语义与 Graphite tokens；未复制上游源码、CSS、模板或资源。
 
+### DateTimeRangePicker · 2026-09-07
+
+DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) 的 range、showTime、12/24 小时和 min/max 能力，Nuxt UI [InputDate](https://ui.nuxt.com/docs/components/input-date) / [InputTime](https://ui.nuxt.com/docs/components/input-time) 的分段字段定位，以及 MDN [`datetime-local`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/datetime-local) 的本地值、稳定文本和时区分离边界。Reito UI 复用自己的 DateTimePicker，定义独立起止对象、完整范围校验、固定键序 JSON 与显式 IANA 时区元数据；没有复制上游源码、CSS、模板或资源。
+
 ### PasswordInput · 2026-09-07
 
 能力范围核对 PrimeVue 3 [Password](https://v3.primevue.org/password/) 的强度、显隐、可替换反馈和 `aria-live` 说明，以及 Base UI [Input](https://base-ui.com/react/components/input) 与 [Forms](https://base-ui.com/react/handbook/forms) 的可访问名称、描述、错误和 ref 要求。Reito UI 使用宿主传入的规则与强度算法，保留原生 password、autocomplete 和 FormData 语义；未复制上游源码、CSS、模板或资源。

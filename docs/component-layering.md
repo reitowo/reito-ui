@@ -1,6 +1,6 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、22 个复杂组件族、19 个 AI 组件族**，共 108 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、23 个复杂组件族、19 个 AI 组件族**，共 109 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
@@ -58,6 +58,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、22 个复�
 | [`DisclosureTree`](../packages/ui/src/complex/disclosure-tree.tsx) | `nodes` 使用稳定 `id`、`label`、可选 `children`；`value` / `onValueChange` 控制叶节点选择，`defaultExpanded` 初始化展开目录，叶节点支持 `disabled`。使用原生 `details` / `summary`；Tab 逐项移动，Enter / Space 展开。**它不是 ARIA tree，没有树控件的方向键导航模型。** |
 | [`SearchFilterBar`](../packages/ui/src/complex/search-filter-bar.tsx) | `query` / `onQueryChange` 与 `selected` / `onSelectedChange` 均受控；`filters` 定义可选条件、数量和禁用项。组件发出筛选状态，宿主负责根据状态过滤数据；`resultCount` 由宿主传入。 |
 | [`DateRangePicker`](../packages/ui/src/complex/date-range-picker.tsx) | `value: DateRange \| undefined` 与 `onValueChange` 必填。日历与日期输入编辑本地草稿；“应用范围”提交，“取消”或关闭丢弃草稿，“清除”提交 `undefined`。`minDate` / `maxDate` 和开始、结束顺序参与校验。使用本地日历日期，不内置时区转换。 |
+| [`DateTimeRangePicker`](../packages/ui/src/complex/date-time-range-picker.tsx) | 组合两个 `DateTimePicker`，保留可修正的起止草稿并校验完整性、顺序和全局上下限。分钟/秒精度与 12/24 小时显示共享；IANA `timeZone` 只作为显式元数据进入稳定 JSON，不在组件内换算 UTC 瞬时值。 |
 | [`FileUpload`](../packages/ui/src/complex/file-upload.tsx) | `value?: QueuedFile[]` / `onValueChange` 可接管队列，每项为 `{ id, file: File }`。支持 `accept`、`maxSize`（字节）、`maxFiles`、重复校验、拖放与移除；默认 10 MB、5 个。**组件只保留本地文件引用，不读取内容，也不向外部发送文件。** |
 | [`PropertyList`](../packages/ui/src/complex/property-list.tsx) | `items` 提供 `key`、`label`、`value: string \| number`；宿主在 `onValueChange(key, value)` 中更新数据。字段可设 `kind: 'number'`、`readOnly`、`validate`。验证返回错误字符串时保留编辑；Escape 取消并恢复编辑入口焦点。回调为同步更新契约，远程保存及冲突处理由宿主提供。 |
 | [`Timeline`](../packages/ui/src/complex/timeline.tsx) | `events` 包含稳定 ID、标题、说明、可选时间与内容；`status` 为 `complete / current / error / pending`。按传入顺序呈现，不自动按日期重排，也不执行事件。 |

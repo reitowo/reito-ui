@@ -15,8 +15,8 @@ npm run dev
 npm run storybook
 ```
 
-- [组件 Lab](http://127.0.0.1:5173/)：108 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
-- [Storybook](http://127.0.0.1:6006/)：108 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
+- [组件 Lab](http://127.0.0.1:5173/)：109 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
+- [Storybook](http://127.0.0.1:6006/)：109 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
 - [Workbench](http://127.0.0.1:5175/)：另开终端运行 `npm run dev:workbench`，查看 Agent、文件与差异、设置三个组合工作面。消息、文件与任务均为本地示例，主题和密度保存在当前浏览器。
 
 | 层 | 组件族 | 代表内容 | 公共入口 |

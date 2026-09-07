@@ -2,6 +2,7 @@ export * from './data-table.js';
 export * from './disclosure-tree.js';
 export * from './search-filter-bar.js';
 export * from './date-range-picker.js';
+export * from './date-time-range-picker.js';
 export * from './file-upload.js';
 export * from './property-list.js';
 export * from './timeline.js';

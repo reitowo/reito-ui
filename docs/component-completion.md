@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**35 项完成，1 项进行中，67 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01` 与 `KNOB-01` 已完成，当前推进 `DATERANGE-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**36 项完成，1 项进行中，66 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01` 与 `KNOB-01` 已完成，当前推进 `TREESELECT-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01 与 KNOB-01 已完成，当前推进 DATERANGE-02。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01 与 KNOB-01 已完成，下一项推进 TREESELECT-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -62,13 +62,13 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | ✅ 完成 | 基础-multiselect--playground、基础-asyncmultiselect--playground；两族 30 个 Story | [验收](validation-select-enhancements.md)：30 项增强/回归测试、120 次 Story 组合、四主题密度窄屏；check/build 通过；[同步用法](components/multi-select.md)、[异步用法](components/async-multi-select.md) |
 | SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | ✅ 完成 | 基础-multiselect--virtual-large / --virtual-variable-rows / --virtual-range；基础-asyncmultiselect--virtual-remote-pages / --virtual-load-failure；两族 35 个 Story | [验收](validation-select-virtualization.md)：44 项交互/回归、140 次 Story 组合、5 万项 DOM 有界、四主题密度窄屏；check/build 通过；[同步用法](components/multi-select.md)、[异步用法](components/async-multi-select.md) |
 | DATERANGE-01 | DateRangePicker 预设与 locale：常用范围、可配置格式/locale、草稿/应用/取消、预设与上下限一致 | DATE-01 | ✅ 完成 | 复杂-daterangepicker-日期范围--playground；预设/locale/边界/草稿等 11 个 Story | [验收](validation-date-range-picker.md)：13 项交互与视觉测试、44 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/date-range-picker.md) |
-| DATERANGE-02 | 日期范围时间组合：起止时刻精度、时区支持边界、跨日/倒置/上下限验证、序列化与提交 | DATERANGE-01、DATETIME-01 | 进行中 | 待关联 | 待记录 |
+| DATERANGE-02 | 日期范围时间组合：起止时刻精度、时区支持边界、跨日/倒置/上下限验证、序列化与提交 | DATERANGE-01、DATETIME-01 | ✅ 完成 | 复杂-datetimerangepicker-日期时间范围--playground；跨日/同日/倒置/边界/秒/时区/表单等 16 个 Story | [验收](validation-date-time-range-picker.md)：14 项交互、64 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/date-time-range-picker.md) |
 
 ## 阶段 3：树形数据、集合、上传与媒体
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
-| TREESELECT-01 | TreeSelect：弹层树搜索、单/多/复选/半选、清除、受控值、lazy 节点、焦点开关恢复；复用 Tree 模型 | TREE-02、TREE-03、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| TREESELECT-01 | TreeSelect：弹层树搜索、单/多/复选/半选、清除、受控值、lazy 节点、焦点开关恢复；复用 Tree 模型 | TREE-02、TREE-03、SELECT-01 | 进行中 | 待关联 | 待记录 |
 | CASCADER-01 | Cascader：任意支持层级的逐级选择、路径值/叶选择边界、disabled/loading/error、清除与键盘；不将平面分组称为级联 | FORM-01、TREE-01 | 待完成 | 待关联 | 待记录 |
 | TREETABLE-01 | TreeTable 基础：层级与列模型、展开、树行键盘、复选/半选、稳定行 ID；树表语义与普通表格一致整合 | TREE-02、TABLE-01 | 待完成 | 待关联 | 待记录 |
 | TREETABLE-02 | TreeTable 高级：列筛选/管理、父子筛选规则、根分页/子节点 lazy、错误重试、选择与更新一致性 | TREETABLE-01、TREE-03、TABLE-02、TABLE-03 | 待完成 | 待关联 | 待记录 |

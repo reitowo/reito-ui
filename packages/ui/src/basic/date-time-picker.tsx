@@ -46,7 +46,7 @@ function secondsOf(time: TimeValue) {
   return time.hour * 3600 + time.minute * 60 + (time.second ?? 0);
 }
 
-function compareDateTime(left: LocalDateTimeValue, right: LocalDateTimeValue) {
+export function compareLocalDateTime(left: LocalDateTimeValue, right: LocalDateTimeValue) {
   const dateComparison = formatLocalDate(left.date).localeCompare(formatLocalDate(right.date));
   return dateComparison || secondsOf(left.time) - secondsOf(right.time);
 }
@@ -116,7 +116,7 @@ export function DateTimePicker({
 
   const emit = (date: Date | null, time: TimeValue | null, commit: boolean) => {
     const next = date && time ? { date, time } : null;
-    const valid = next && !(min && compareDateTime(next, min) < 0) && !(max && compareDateTime(next, max) > 0);
+    const valid = next && !(min && compareLocalDateTime(next, min) < 0) && !(max && compareLocalDateTime(next, max) > 0);
     if (valid || !next) {
       if (!controlled) setInternalValue(valid ? next : null);
       onValueChange?.(valid ? next : null);
