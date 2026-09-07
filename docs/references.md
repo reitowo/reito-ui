@@ -152,6 +152,10 @@ Filtering, lazy nodes and root pagination capability scope uses PrimeVue 3 [Tree
 
 Capability scope uses PrimeVue 5 [PickList](https://primevue.dev/picklist/) and PrimeReact v11 [PickList](https://primereact.dev/docs/styled/components/picklist) for dual collections, filtering and transfer controls. Reito UI composes its own Listbox with ordered stable IDs, separately controlled selections and queries, current-result bulk rules, disabled-item barriers, responsive Graphite layout and Alt+Arrow equivalents; no upstream source, CSS, examples or assets copied.
 
+### SortableList · 2026-09-07
+
+Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) and PrimeReact v11 [OrderList](https://primereact.dev/docs/styled/components/orderlist). Reito UI defines its own stable order normalization, batch movement, disabled segment barriers, Alt+Arrow controls, native drag feedback and Graphite layout; no upstream source, CSS, examples or assets copied.
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。

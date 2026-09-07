@@ -25,3 +25,4 @@ export * from './tree-select.js';
 export * from './cascader.js';
 export * from './tree-table.js';
 export * from './transfer.js';
+export * from './sortable-list.js';

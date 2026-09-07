@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 67,
-    "complex": 27,
+    "complex": 28,
     "ai": 19
   },
-  "total": 113,
-  "stories": 1005,
+  "total": 114,
+  "stories": 1018,
   "entries": [
     {
       "layer": "basic",
@@ -786,6 +786,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "TransferDemo",
       "stories": 15
+    },
+    {
+      "layer": "complex",
+      "id": "sortable-list",
+      "name": "SortableList 排序列表",
+      "description": "受控顺序、批量移动、键盘等价操作与拖放边界。",
+      "storyId": "复杂-sortablelist-排序列表--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "SortableListDemo",
+      "stories": 13
     },
     {
       "layer": "complex",

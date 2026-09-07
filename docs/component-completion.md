@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**41 项完成，1 项进行中，61 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02` 与 `TRANSFER-01` 已完成，当前推进 `SORTABLE-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**42 项完成，1 项进行中，60 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01` 与 `SORTABLE-01` 已完成，当前推进 `RESOURCE-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02 与 TRANSFER-01 已完成，下一项推进 SORTABLE-01。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01 与 SORTABLE-01 已完成，下一项推进 RESOURCE-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -73,8 +73,8 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | TREETABLE-01 | TreeTable 基础：层级与列模型、展开、树行键盘、复选/半选、稳定行 ID；树表语义与普通表格一致整合 | TREE-02、TABLE-01 | ✅ 完成 | 复杂-treetable-树表格--playground；单选/级联/半选/独立/折叠/受控/禁用/空态/加载/错误/窄容器预设 | [TreeTable 基础验收](validation-tree-table.md)：17 项交互、60 次 Story 组合、treegrid ARIA 与溢出均通过；check/build 通过 |
 | TREETABLE-02 | TreeTable 高级：列筛选/管理、父子筛选规则、根分页/子节点 lazy、错误重试、选择与更新一致性 | TREETABLE-01、TREE-03、TABLE-02、TABLE-03 | ✅ 完成 | 复杂-treetable-树表格--playground；父子筛选、列视图、根分页、受控视图、lazy/重试/选择预设，本族 25 个 Story | [高级验收](validation-tree-table-advanced.md)：15 项高级交互与 17 项基础回归、100 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/tree-table.md) |
 | TRANSFER-01 | PickList / Transfer：source/target 受控转移、双侧搜索、批量/全部范围、禁用项、键盘和空态；保持项唯一与顺序 | LISTBOX-01 | ✅ 完成 | 复杂-transfer-穿梭选择--playground；受控/批量/键盘/禁用/空态/窄布局预设，本族 15 个 Story | [验收](validation-transfer.md)：14 项交互、60 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/transfer.md) |
-| SORTABLE-01 | OrderList / SortableList：手动受控顺序、拖拽及键盘上移/下移/置顶/置底、批量/禁用、焦点与重排反馈 | LISTBOX-01 | 进行中 | 待关联 | 待记录 |
-| RESOURCE-01 | ResourceList 数据规模：虚拟化、增量加载、总量/加载边界、查询变化和跨窗口选择保持 | VIRT-01、SELECT-01 | 待完成 | 待关联 | 待记录 |
+| SORTABLE-01 | OrderList / SortableList：手动受控顺序、拖拽及键盘上移/下移/置顶/置底、批量/禁用、焦点与重排反馈 | LISTBOX-01 | ✅ 完成 | 复杂-sortablelist-排序列表--playground；受控/批量/键盘/拖放/禁用/窄布局预设，本族 13 个 Story | [验收](validation-sortable-list.md)：14 项交互、52 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/sortable-list.md) |
+| RESOURCE-01 | ResourceList 数据规模：虚拟化、增量加载、总量/加载边界、查询变化和跨窗口选择保持 | VIRT-01、SELECT-01 | 进行中 | 待关联 | 待记录 |
 | RESOURCE-02 | DataView / ResourceGrid：同集合列表/网格切换，共享搜索/选择/分页/动作及受控视图偏好，网格不能另存一份业务状态 | RESOURCE-01、VIRT-03 | 待完成 | 待关联 | 待记录 |
 | LOG-01 | LogViewer 大数据：虚拟化、增量追加/加载、等级查询、暂停/恢复跟随、可配置视图偏好；动态长行与追加不跳动 | VIRT-02 | 待完成 | 待关联 | 待记录 |
 | UPLOAD-01 | FileUpload 生命周期：queued/uploading/success/error、受控进度、开始/取消/重试、单文件错误、transport 回调；保留本地校验并由宿主执行网络 | — | 待完成 | 待关联 | 待记录 |

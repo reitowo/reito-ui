@@ -20,7 +20,7 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, Transfer, TreeSelect, TreeTable,
+  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, SortableList, Transfer, TreeSelect, TreeTable,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
 } from './index.js';
@@ -138,6 +138,19 @@ export const transferItems = [
 export function TransferDemo() {
   const [value, setValue] = useState(['read']);
   return <Transfer items={transferItems} value={value} onValueChange={setValue} sourceLabel="可用权限" targetLabel="已授予权限" />;
+}
+
+export const sortableItems = [
+  { id: 'context', label: '读取上下文', description: '收集当前工作区文件' },
+  { id: 'plan', label: '生成计划', description: '拆分可执行步骤' },
+  { id: 'approval', label: '等待批准', description: '锁定的流程边界', disabled: true },
+  { id: 'execute', label: '执行变更', description: '修改并验证代码' },
+  { id: 'report', label: '汇报结果', description: '记录验证证据' },
+];
+
+export function SortableListDemo() {
+  const [order, setOrder] = useState(sortableItems.map(item => item.id));
+  return <SortableList items={sortableItems} order={order} onOrderChange={setOrder} defaultSelected={['plan']} label="任务顺序" />;
 }
 
 export function SearchFilterBarDemo() {
@@ -300,6 +313,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'cascader', name: 'Cascader 级联选择', description: '任意层级的路径选择、叶节点边界、懒加载和方向键导航。', component: CascaderDemo },
   { id: 'tree-table', name: 'TreeTable 树表格', description: '层级表格、筛选、列视图、根分页、lazy 子节点与稳定选择。', component: TreeTableDemo },
   { id: 'transfer', name: 'Transfer 穿梭选择', description: '双侧搜索、选择与批量转移，保持稳定值和目标顺序。', component: TransferDemo },
+  { id: 'sortable-list', name: 'SortableList 排序列表', description: '受控顺序、批量移动、键盘等价操作与拖放边界。', component: SortableListDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
