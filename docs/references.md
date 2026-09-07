@@ -121,6 +121,12 @@ COMBO-INLINE-01 实际查看 PrimeVue 5.0.1 当前 [Inplace](https://primevue.or
 
 COMBO-OVERLAY-01 实际查看 Nuxt UI 4.11.1 当前 [useOverlay](https://ui.nuxt.com/docs/composables/use-overlay)、PrimeVue 当前 [DynamicDialog](https://primevue.dev/dynamicdialog/) 与 Base UI 当前 [Dialog](https://base-ui.com/react/components/dialog) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/nuxt-ui-use-overlay-2026-09-08.png`、`.logs/references/primevue-dynamic-dialog-2026-09-08.png` 与 `.logs/references/base-ui-dialog-2026-09-08.png`。参考只用于核对共享服务、实例句柄、Promise 结果、动态内容、patch/closeAll、受控状态、焦点与嵌套语义。Reito UI 使用自己的 React Provider、判别结果联合和 Graphite Dialog/Sheet/AlertDialog，增加父层关闭与 Provider 卸载的明确收口；未复制 Vue 插件 API、源码、CSS、品牌色、字体、图标或资源。
 
+## Workspace / Sidebar 状态（2026-09-08 工作区增量）
+
+SHELL-STATE-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardPanel](https://ui.nuxt.com/docs/components/dashboard-panel) 与 [DashboardSidebar](https://ui.nuxt.com/docs/components/dashboard-sidebar)，并核对固定依赖 `react-resizable-panels@4.12.3` 对应的 [Group / Panel / Separator API](https://github.com/bvaughn/react-resizable-panels)。截图为 `.logs/references/nuxt-ui-dashboard-panel-4.11.1-2026-09-08.png`、`.logs/references/nuxt-ui-dashboard-sidebar-4.11.1-2026-09-08.png` 与 `.logs/references/react-resizable-panels-4.12.3-2026-09-08.png`。参考只用于核对保存位置、百分比尺寸、折叠、最终布局回调、用户输入来源和键盘分隔线。
+
+Reito UI 使用自己的版本化 React 状态记录、Graphite tokens 与现有 Base UI / shadcn Sidebar，统一保存侧栏和分栏并显式处理旧配置、非法尺寸与不可用存储。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源。服务端首屏读取和账号偏好同步仍由宿主负责。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

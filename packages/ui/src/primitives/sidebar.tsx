@@ -30,6 +30,11 @@ const SIDEBAR_WIDTH_MOBILE = "var(--rui-sidebar-width-mobile)"
 const SIDEBAR_WIDTH_ICON = "var(--rui-sidebar-width-icon)"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
+export interface SidebarPersistenceOptions {
+  cookieName?: string
+  maxAge?: number
+}
+
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
   open: boolean
@@ -55,6 +60,7 @@ function SidebarProvider({
   defaultOpen = true,
   open: openProp,
   onOpenChange: setOpenProp,
+  persistOpen = true,
   className,
   style,
   children,
@@ -63,6 +69,7 @@ function SidebarProvider({
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  persistOpen?: boolean | SidebarPersistenceOptions
 }) {
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
@@ -80,10 +87,14 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      if (persistOpen && typeof document !== "undefined") {
+        const options = persistOpen === true ? {} : persistOpen
+        const cookieName = options.cookieName?.trim() || SIDEBAR_COOKIE_NAME
+        const maxAge = Number.isFinite(options.maxAge) ? Math.max(0, Math.floor(options.maxAge!)) : SIDEBAR_COOKIE_MAX_AGE
+        document.cookie = `${encodeURIComponent(cookieName)}=${openState}; path=/; max-age=${maxAge}; SameSite=Lax`
+      }
     },
-    [setOpenProp, open]
+    [persistOpen, setOpenProp, open]
   )
 
   // Helper to toggle the sidebar.

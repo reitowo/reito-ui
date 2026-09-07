@@ -141,6 +141,8 @@ InlineEdit 只承载单个短文本或数字的显示与编辑事务。显示态
 
 OverlayProvider 是声明式 Dialog、Sheet、AlertDialog 之上的可选命令式事务层。调用方获得稳定句柄和明确结果，不需要把临时浮层塞进业务全局状态；内容可更新、可打开子层，也可以批量关闭。栈中只有顶层进入可访问交互面，子层关闭后焦点回到父层入口；关闭父层会结束其上的子事务，Provider 卸载会结束全部等待。固定局部弹层仍直接组合基础组件，不要为每个 Dialog 都引入服务。
 
+Workspace 布局偏好把 Sidebar 展开状态和分栏百分比保存在同一个版本化记录中。受控分栏只把指针或键盘产生的最终比例交给宿主保存；首次挂载、外部同步和容器缩放不能覆盖用户偏好。未知版本、损坏记录、违反最小栏宽的尺寸和不可用存储都回到明确默认值。若 `useWorkspaceLayoutState` 统一持久化，应关闭 Sidebar 自带的 Cookie 写入，避免两个来源竞争。
+
 组件组合表达结构：WorkspacePane 提供 title / actions / children；Dialog 使用 DialogContent / DialogTitle / DialogDescription 等子组件。先查实际类型；不要假设每个组件都有通用 `header`、`size` 或 `tone` 属性。
 
 ## 状态与可操作性

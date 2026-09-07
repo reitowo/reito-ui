@@ -74,7 +74,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、39 个复�
 | [`Timeline`](../packages/ui/src/complex/timeline.tsx) | `events` 包含稳定 ID、标题、说明、可选时间与内容；`status` 为 `complete / current / error / pending`。按传入顺序呈现，不自动按日期重排，也不执行事件。 |
 | [`Stepper`](../packages/ui/src/complex/stepper.tsx) | 必填 `steps`、`value`；可选 `onValueChange` 控制导航。每步可设 `disabled`、`error` 和说明。允许跳步及业务验证由宿主决定；它不负责保存整个流程。 |
 | [`SettingsSection / SettingsRow`](../packages/ui/src/complex/settings-section.tsx) | `SettingsSection` 提供必填 `title` 与可选 `description`、`actions`、`children`。`SettingsRow` 提供 `label`、`description` 和控件区域。行标题不会自动成为内部控件的 label，宿主仍须提供 `aria-label` 或显式 `<label>` 关联。 |
-| [`AppShell / WorkspacePane / ResizableWorkspace`](../packages/ui/src/complex/workspace.tsx) | `AppShell` 的 `header / sidebar / inspector / footer / children` 负责窗口区域，容器高度由宿主决定。`WorkspacePane` 提供 `title / description / actions / footer`，`scroll` 默认 `true`，内容区独立滚动。`ResizableWorkspace` 接收必填 `primary / secondary`，支持水平或垂直分栏及键盘调整；默认主栏 60%、最小栏 20%，`onSizesChange` 返回百分比。它不自动持久化布局。 |
+| [`AppShell / WorkspacePane / ResizableWorkspace / useWorkspaceLayoutState`](../packages/ui/src/complex/workspace.tsx) | `AppShell` 的 `header / sidebar / inspector / footer / children` 负责窗口区域，容器高度由宿主决定。`WorkspacePane` 提供独立滚动区。`ResizableWorkspace` 支持水平或垂直分栏、键盘调整及受控 `primaryPercent`；最终回调区分用户输入和程序同步。`useWorkspaceLayoutState` 将 Sidebar 展开与主栏百分比写入版本化存储，迁移旧字段并对非法尺寸或不可用存储回退。 |
 | [`CommandSearch`](../packages/ui/src/complex/command-search.tsx) | 必填分组 `groups` 与 `onSelect(command)`；命令具备稳定 ID、标签、说明、关键词、禁用项及可选快捷键提示。`query` / `onQueryChange` 可受控。cmdk 负责过滤、分组、空态和键盘选择，组件保护中文 IME Enter；`shortcut` 只显示提示，不注册全局快捷键。 |
 | [`DiffViewer`](../packages/ui/src/complex/diff-viewer.tsx) | 必填 `hunks: DiffHunk[]`，每行由宿主明确提供 `kind`、修改前后文本及行号；`view / onViewChange` 可控制 `unified / split`。提供换行切换、局部滚动、文本增删语义和 `binary / error / emptyMessage` 状态。**组件不计算 diff，也不推断修改前后行的配对。** |
 | [`LogViewer`](../packages/ui/src/complex/log-viewer.tsx) | `entries: LogEntry[]` 来自宿主，级别为 `debug / info / warning / error`。`query / levels / follow` 分别可受控；本地搜索与级别筛选，上滚暂停、明确操作恢复跟随。`onClear` 请求宿主清除数据，支持 `loading / error / disabled`。它不连接日志服务，也不执行终端命令。 |
@@ -198,7 +198,7 @@ export function RequestComposer() {
 }
 ```
 
-需要组合数据页或工作区时，继续使用复杂层的 `AppShell`、`WorkspacePane` 和 `ResizableWorkspace`。宿主负责数据获取、持久化、模型认证、实际上传、执行授权、取消请求与错误恢复；共享组件负责将这些状态清楚地呈现出来。
+需要组合数据页或工作区时，继续使用复杂层的 `AppShell`、`WorkspacePane` 和 `ResizableWorkspace`。`useWorkspaceLayoutState` 可保存本地布局偏好；账号同步、数据获取、模型认证、实际上传、执行授权、取消请求与错误恢复仍由宿主负责。
 
 ## 核对依据
 
