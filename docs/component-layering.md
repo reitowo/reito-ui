@@ -48,7 +48,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、26 个复�
 
 需要按钮尺寸、输入焦点、菜单键盘行为或主题修复时，先改共享 token 或对应基础组件。新增产品页面应组合已有 API；选择器的 `onValueChange`、复选框的 `onCheckedChange` 等必须按实际类型使用，不能沿用旧 API 名称。
 
-## 复杂层：26 个组件族
+## 复杂层：30 个组件族
 
 公共导出见 [`complex/index.ts`](../packages/ui/src/complex/index.ts)，可交互演示见 [`complex/catalog.tsx`](../packages/ui/src/complex/catalog.tsx)。
 
@@ -73,6 +73,7 @@ Reito UI 0.4 工作区按应用场景提供 **67 个基础组件族、26 个复�
 | [`LogViewer`](../packages/ui/src/complex/log-viewer.tsx) | `entries: LogEntry[]` 来自宿主，级别为 `debug / info / warning / error`。`query / levels / follow` 分别可受控；本地搜索与级别筛选，上滚暂停、明确操作恢复跟随。`onClear` 请求宿主清除数据，支持 `loading / error / disabled`。它不连接日志服务，也不执行终端命令。 |
 | [`KeyValueEditor`](../packages/ui/src/complex/key-value-editor.tsx) | `value: KeyValueEntry[] / onValueChange` 必填，数组与稳定 ID 保留重复键和无效草稿。值支持 `text / number / boolean / select / date`，可带嵌套 `path`、逐项禁用/只读和验证；`onDraftValueChange` 报告键或值草稿的路径。`secret` 只遮罩文本显示，`onSubmit` 支持 Promise；组件不负责安全存储或嵌套对象写回。 |
 | [`ResourceList`](../packages/ui/src/complex/resource-list.tsx) | 必填 `items: ResourceItem[]`；`query / sort / selectedIds` 分别可受控。`selectionMode` 为 `none / single / multiple`，筛选不丢失已有选择，批量全选只影响当前可选结果。支持名称或更新时间排序、行操作、`loading / error / onRetry / emptyMessage`。当前提供列表布局，行操作调用宿主，不读取或修改文件。 |
+| [`OrganizationChart`](../packages/ui/src/complex/organization-chart.tsx) | `nodes` 使用全图唯一稳定 ID；支持受控/非受控单选与折叠、禁用节点、内容模板和完整 ARIA tree 方向键。宽层级只在自身容器滚动，折叠后恢复到最近可见祖先。它只呈现层级关系，不提供任意节点/边编辑、拖动或缩放。 |
 
 公共布局组件适合编辑器、设置页和数据页共同复用。文件目录选择哪个文件、检查器何时打开、页面路由、数据请求与保存失败后的恢复，属于产品逻辑。将这些状态留在宿主，避免把一个聊天页的布局固定成整个组件库的默认结构。
 

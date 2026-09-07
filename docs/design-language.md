@@ -95,6 +95,8 @@ DisclosureTree 使用 XS 最小行高（紧凑 24px / 舒适 32px），取消额
 
 DiffViewer 的代码、行号和增删符号统一使用等宽字体及 `--rui-line-interface`（20px）行高，代码行不叠加数据表格的纵向 cell padding；两种密度保持相同源码行距，横向内距与工具栏继续跟随密度。换行后行号对齐首行；统一和并排布局使用 colgroup 固定行号、符号栏，让代码使用剩余宽度，避免并排换行时将六列均分。
 
+OrganizationChart 使用 160px 紧凑节点、共享行高与内容间距，连接线只使用 `border-border`。宽层级在组件容器内横向滚动，不扩大页面；节点名称单行截断、说明最多两行，完整文本继续通过 `title` 和可访问名称提供。节点模板只能替换卡片内容，不能绕开统一焦点、选择与禁用状态。
+
 主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间

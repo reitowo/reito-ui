@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 29,
+    "complex": 30,
     "ai": 19
   },
-  "total": 118,
-  "stories": 1120,
+  "total": 119,
+  "stories": 1132,
   "entries": [
     {
       "layer": "basic",
@@ -826,6 +826,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "SortableListDemo",
       "stories": 13
+    },
+    {
+      "layer": "complex",
+      "id": "organization-chart",
+      "name": "OrganizationChart 组织结构图",
+      "description": "层级关系布局、受控折叠选择、模板与树键盘导航。",
+      "storyId": "复杂-organizationchart-组织结构图--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "OrganizationChartDemo",
+      "stories": 12
     },
     {
       "layer": "complex",

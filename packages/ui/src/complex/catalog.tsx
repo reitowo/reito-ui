@@ -18,6 +18,7 @@ import { VirtualGridDemo } from './virtual-grid-demo.js';
 import { TreeView, type TreeViewNode } from './tree-view.js';
 import { AsyncTreeView, type AsyncTreeViewNode } from './async-tree-view.js';
 import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
+import { OrganizationChart, type OrganizationChartNode } from './organization-chart.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -80,6 +81,18 @@ export function ReorderableTreeViewDemo() {
   const [nodes, setNodes] = useState<TreeViewNode[]>(demoNodes);
   const [selected, setSelected] = useState('button');
   return <ReorderableTreeView nodes={nodes} treeId="catalog-tree" defaultExpanded={['src', 'components']} value={selected} onValueChange={setSelected} label="可重排项目树" onMove={intent => { const next = moveTreeNode(nodes, intent); if (next) setNodes(next); }} />;
+}
+
+export const organizationDemoNodes: OrganizationChartNode[] = [{
+  id: 'lead', label: 'Reito', description: '产品与组件系统', children: [
+    { id: 'design', label: '界面设计', description: 'Graphite 视觉与交互', children: [{ id: 'tokens', label: '设计令牌', description: '主题、密度与语义角色' }, { id: 'stories', label: '组件示例', description: 'Storybook 变体与检查' }] },
+    { id: 'engineering', label: '工程实现', description: 'React 与桌面工作区', children: [{ id: 'runtime', label: '本地运行时', description: '进程与文件集成' }, { id: 'quality', label: '质量验证', description: '类型、交互与可访问性' }] },
+  ],
+}];
+export function OrganizationChartDemo() {
+  const [selected, setSelected] = useState<string | null>('lead');
+  const [collapsed, setCollapsed] = useState<string[]>([]);
+  return <div className="space-y-[var(--rui-content-gap)]"><OrganizationChart nodes={organizationDemoNodes} selectedId={selected} onSelectedIdChange={setSelected} collapsedIds={collapsed} onCollapsedIdsChange={setCollapsed} label="组件团队结构" /><p role="status" className="text-xs text-muted-foreground">当前节点：{selected ?? '无'} · 折叠 {collapsed.length} 项</p></div>;
 }
 
 export function TreeSelectDemo() {
@@ -340,6 +353,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'tree-table', name: 'TreeTable 树表格', description: '层级表格、筛选、列视图、根分页、lazy 子节点与稳定选择。', component: TreeTableDemo },
   { id: 'transfer', name: 'Transfer 穿梭选择', description: '双侧搜索、选择与批量转移，保持稳定值和目标顺序。', component: TransferDemo },
   { id: 'sortable-list', name: 'SortableList 排序列表', description: '受控顺序、批量移动、键盘等价操作与拖放边界。', component: SortableListDemo },
+  { id: 'organization-chart', name: 'OrganizationChart 组织结构图', description: '层级关系布局、受控折叠选择、模板与树键盘导航。', component: OrganizationChartDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
