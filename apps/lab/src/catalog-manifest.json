@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 114,
-  "stories": 1018,
+  "stories": 1024,
   "entries": [
     {
       "layer": "basic",
@@ -951,11 +951,11 @@
       "layer": "complex",
       "id": "resource-list",
       "name": "ResourceList 资源列表",
-      "description": "本地搜索排序、单选/批量选择与宿主行操作。",
+      "description": "本地/远程查询、虚拟窗口、增量加载与跨窗口稳定选择。",
       "storyId": "复杂-resourcelist-资源列表--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "ResourceListDemo",
-      "stories": 9
+      "stories": 15
     },
     {
       "layer": "ai",

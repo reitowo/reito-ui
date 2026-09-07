@@ -1,4 +1,4 @@
-import { useId, useState, type ComponentType } from 'react';
+import { useId, useMemo, useState, type ComponentType } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { DateRange } from 'react-day-picker';
 import { FileText, FolderOpen, Search, Settings, Terminal } from 'lucide-react';
@@ -283,20 +283,33 @@ export const demoResources: ResourceItem[] = [
   { id: 'archive', name: 'archive.zip', kind: '归档', description: '不可操作状态示例', disabled: true },
 ];
 
+const catalogResources: ResourceItem[] = [...demoResources, ...Array.from({ length: 56 }, (_, index) => ({
+  id: `catalog-${index + 5}`,
+  name: `component-${String(index + 5).padStart(2, '0')}.tsx`,
+  kind: index % 2 ? '代码' : '文档',
+  description: `增量加载资源 ${index + 5}`,
+  updatedAt: `2026-08-${String((index % 28) + 1).padStart(2, '0')}T10:00:00+08:00`,
+}))];
+
 export function ResourceListDemo() {
-  const [items, setItems] = useState(demoResources);
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState<'name-asc' | 'name-desc' | 'updated-desc'>('name-asc');
+  const [loaded, setLoaded] = useState(16);
   const [selection, setSelection] = useState<string[]>([]);
   const [opened, setOpened] = useState('');
+  const matches = useMemo(() => catalogResources.filter(item => `${item.name} ${item.description} ${item.kind}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => {
+    if (sort === 'updated-desc') return (Date.parse(b.updatedAt ?? '') || 0) - (Date.parse(a.updatedAt ?? '') || 0);
+    return sort === 'name-desc' ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
+  }), [query, sort]);
+  const items = matches.slice(0, loaded);
   return <div className="space-y-[var(--rui-content-gap)]">
-    <ResourceList label="项目资源" items={items} selectionMode="multiple" selectedIds={selection} onSelectionChange={setSelection}
+    <ResourceList label="项目资源" items={items} dataMode="remote" totalCount={matches.length} virtualized viewportClassName="h-64"
+      query={query} onQueryChange={next => { setQuery(next); setLoaded(16); }} sort={sort} onSortChange={next => { setSort(next); setLoaded(16); }}
+      selectionMode="multiple" selectedIds={selection} onSelectionChange={setSelection} hasMore={loaded < matches.length} onLoadMore={() => setLoaded(current => Math.min(matches.length, current + 16))}
       actions={[
         { id: 'open', label: '打开', onAction: item => setOpened(item.name) },
-        { id: 'remove', label: '移除', onAction: item => {
-          setItems(current => current.filter(resource => resource.id !== item.id));
-          setSelection(current => current.filter(id => id !== item.id));
-        } },
       ]} />
-    <p role="status" className="text-xs text-muted-foreground">{opened ? `已打开 ${opened}（本地预览）` : '行操作仅更新本地示例，不读取磁盘资源。'}</p>
+    <p role="status" className="text-xs text-muted-foreground">{opened ? `已打开 ${opened}（本地预览）` : '远程数据由本地数组模拟；查询会替换加载窗口，稳定 ID 选择继续保留。'}</p>
   </div>;
 }
 
@@ -329,5 +342,5 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'diff-viewer', name: 'DiffViewer 差异查看', description: '显式结构化行与宿主配对，统一/并排切换与长行处理。', component: DiffViewerDemo },
   { id: 'log-viewer', name: 'LogViewer 日志查看', description: '搜索、级别筛选、滚动暂停与跟随，以及宿主清除回调。', component: LogViewerDemo },
   { id: 'key-value-editor', name: 'KeyValueEditor 键值编辑', description: '增删键值、重复和必填验证、可选敏感值遮罩。', component: KeyValueEditorDemo },
-  { id: 'resource-list', name: 'ResourceList 资源列表', description: '本地搜索排序、单选/批量选择与宿主行操作。', component: ResourceListDemo },
+  { id: 'resource-list', name: 'ResourceList 资源列表', description: '本地/远程查询、虚拟窗口、增量加载与跨窗口稳定选择。', component: ResourceListDemo },
 ];

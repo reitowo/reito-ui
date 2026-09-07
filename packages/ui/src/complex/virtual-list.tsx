@@ -81,7 +81,10 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
       return retained.length ? [...indexes, ...retained].sort((a, b) => a - b) : indexes;
     }, [dataAnchorIndex, focusedIndex]),
   });
-  virtualizer.shouldAdjustScrollPositionOnItemSizeChange = item => item.start < (virtualizer.scrollOffset ?? 0) + 1;
+  virtualizer.shouldAdjustScrollPositionOnItemSizeChange = item => {
+    const scrollOffset = virtualizer.scrollOffset ?? 0;
+    return scrollOffset > 1 && item.start < scrollOffset + 1;
+  };
   useLayoutEffect(() => {
     const element = probe.current;
     if (!element) return;

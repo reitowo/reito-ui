@@ -156,6 +156,10 @@ Capability scope uses PrimeVue 5 [PickList](https://primevue.dev/picklist/) and 
 
 Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) and PrimeReact v11 [OrderList](https://primereact.dev/docs/styled/components/orderlist). Reito UI defines its own stable order normalization, batch movement, disabled segment barriers, Alt+Arrow controls, native drag feedback and Graphite layout; no upstream source, CSS, examples or assets copied.
 
+### ResourceList 数据规模 · 2026-09-07
+
+能力范围核对 PrimeVue 5 [VirtualScroller](https://primevue.dev/virtualscroller/) 的大数据窗口、loading 与 lazy 分块，以及 Nuxt UI 当前[组件目录](https://ui.nuxt.com/docs/components/)中 Listbox 的搜索、虚拟化和富项目定位。ResourceList 复用本项目已验证的 TanStack Virtual 适配层，定义自己的本地/远程边界、已加载/总量文案、手动或滚动增量、稳定 ID 选择与 Graphite 行布局；网络请求、缓存和取消由宿主实现。未复制上游源码、CSS、示例或资源。PrimeVue DataView 的列表/网格切换属于后续 RESOURCE-02，不混入本项。
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。
