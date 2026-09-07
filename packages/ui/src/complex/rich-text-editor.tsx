@@ -1,17 +1,20 @@
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { EditorContent, useEditor, useEditorState, type Editor, type JSONContent } from '@tiptap/react';
 import { DragHandle } from '@tiptap/extension-drag-handle-react';
+import TiptapImage from '@tiptap/extension-image';
 import { Markdown } from '@tiptap/markdown';
 import StarterKit from '@tiptap/starter-kit';
 import { Emoji, type EmojiItem } from '@tiptap/extension-emoji';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { TextAlign } from '@tiptap/extension-text-align';
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Braces, GripVertical, Heading1, Heading2, Italic, Link2, List, ListChecks, ListOrdered, Pilcrow, Quote, Redo2, RemoveFormatting, Smile, Strikethrough, Underline, Undo2, Unlink2, type LucideIcon } from 'lucide-react';
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Braces, GripVertical, Heading1, Heading2, ImagePlus, Italic, Link2, List, ListChecks, ListOrdered, Pilcrow, Quote, Redo2, RemoveFormatting, RotateCcw, Smile, Sparkles, Strikethrough, Underline, Undo2, Unlink2, X, type LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils.js';
 import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '../primitives/popover.js';
+import { Progress } from '../primitives/progress.js';
 import { Separator } from '../primitives/separator.js';
+import { Spinner } from '../primitives/spinner.js';
 import {
   createRichTextEditorSuggestionExtensions,
   richTextEditorDefaultSlashCommands,
@@ -39,7 +42,7 @@ export type { RichTextEditorBlockAction, RichTextEditorBlockTarget } from './ric
 export type RichTextEditorFormat = 'json' | 'html' | 'markdown';
 export type RichTextEditorValue = string | JSONContent;
 export type RichTextEditorEmojiName = 'sparkles' | 'thumbsup' | 'eyes' | 'rocket' | 'check' | 'warning' | 'bulb' | 'memo';
-export type RichTextEditorToolbarItem = 'bold' | 'italic' | 'underline' | 'strike' | 'code' | 'clear-format' | 'paragraph' | 'heading-1' | 'heading-2' | 'bullet-list' | 'ordered-list' | 'task-list' | 'blockquote' | 'block-actions' | 'align-left' | 'align-center' | 'align-right' | 'align-justify' | 'emoji' | 'link' | 'unlink' | 'undo' | 'redo';
+export type RichTextEditorToolbarItem = 'bold' | 'italic' | 'underline' | 'strike' | 'code' | 'clear-format' | 'paragraph' | 'heading-1' | 'heading-2' | 'bullet-list' | 'ordered-list' | 'task-list' | 'blockquote' | 'block-actions' | 'align-left' | 'align-center' | 'align-right' | 'align-justify' | 'emoji' | 'image' | 'ai-complete' | 'link' | 'unlink' | 'undo' | 'redo';
 
 export interface RichTextEditorEmojiOption {
   name: RichTextEditorEmojiName;
@@ -58,6 +61,34 @@ export interface RichTextEditorSnapshot {
 export interface RichTextEditorContentError {
   format: RichTextEditorFormat;
   value: RichTextEditorValue;
+  message: string;
+  cause?: unknown;
+}
+
+export interface RichTextEditorImageValue {
+  src: string;
+  alt?: string;
+  title?: string;
+}
+
+export interface RichTextEditorImageUploadContext {
+  signal: AbortSignal;
+  onProgress: (progress: number) => void;
+}
+
+export type RichTextEditorImageUpload = (file: File, context: RichTextEditorImageUploadContext) => Promise<RichTextEditorImageValue>;
+
+export interface RichTextEditorCompletionContext {
+  snapshot: RichTextEditorSnapshot;
+  selection: { from: number; to: number };
+  selectedText: string;
+  signal: AbortSignal;
+}
+
+export type RichTextEditorCompletionProvider = (context: RichTextEditorCompletionContext) => Promise<string>;
+
+export interface RichTextEditorExtensionError {
+  kind: 'image-upload' | 'completion';
   message: string;
   cause?: unknown;
 }
@@ -85,6 +116,11 @@ export interface RichTextEditorProps {
   onSuggestionError?: (error: RichTextEditorSuggestionError) => void;
   blockControls?: boolean;
   blockActions?: readonly RichTextEditorBlockAction[];
+  uploadImage?: RichTextEditorImageUpload;
+  imageAccept?: string;
+  imageMaxSize?: number;
+  requestCompletion?: RichTextEditorCompletionProvider;
+  onExtensionError?: (error: RichTextEditorExtensionError) => void;
   linkPlaceholder?: string;
   editorClassName?: string;
   className?: string;
@@ -108,10 +144,11 @@ const editorExtensions = [
   TaskItem.configure({ nested: true, HTMLAttributes: { 'data-type': 'taskItem' }, a11y: { checkboxLabel: (node, checked) => `${checked ? '取消完成' : '标记完成'}任务：${node.textContent || '空任务'}` } }),
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
   Emoji.configure({ emojis: editorEmojiItems }),
+  TiptapImage.configure({ allowBase64: false }),
   Markdown,
 ];
 export const richTextEditorDefaultEmojiItems: readonly RichTextEditorEmojiName[] = richTextEditorEmojiOptions.map(item => item.name);
-export const richTextEditorDefaultToolbarItems: readonly RichTextEditorToolbarItem[] = ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format', 'paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote', 'block-actions', 'align-left', 'align-center', 'align-right', 'align-justify', 'emoji', 'link', 'unlink', 'undo', 'redo'];
+export const richTextEditorDefaultToolbarItems: readonly RichTextEditorToolbarItem[] = ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format', 'paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote', 'block-actions', 'align-left', 'align-center', 'align-right', 'align-justify', 'emoji', 'image', 'ai-complete', 'link', 'unlink', 'undo', 'redo'];
 
 type ToolbarDefinition = {
   label: string;
@@ -167,6 +204,8 @@ const toolbarDefinitions: Record<RichTextEditorToolbarItem, ToolbarDefinition> =
   'align-right': { label: '右对齐', shortcut: 'Ctrl+Shift+R', icon: AlignRight, group: 'align', active: 'alignRight' },
   'align-justify': { label: '两端对齐', shortcut: 'Ctrl+Shift+J', icon: AlignJustify, group: 'align', active: 'alignJustify' },
   emoji: { label: '插入 Emoji', icon: Smile, group: 'insert' },
+  image: { label: '插入图片', icon: ImagePlus, group: 'insert' },
+  'ai-complete': { label: '生成补全', icon: Sparkles, group: 'insert' },
   link: { label: '编辑链接', shortcut: 'Ctrl+K', icon: Link2, group: 'link', active: 'link' },
   unlink: { label: '移除链接', icon: Unlink2, group: 'link' },
   undo: { label: '撤销', shortcut: 'Ctrl+Z', icon: Undo2, group: 'history' },
@@ -236,6 +275,32 @@ function sameValue(format: RichTextEditorFormat, left: RichTextEditorValue, righ
   return left === right;
 }
 
+type ImageUploadState = { status: 'idle' } | { status: 'uploading'; file: File; progress: number } | { status: 'error' | 'canceled'; file: File; message: string };
+type CompletionState = { status: 'loading' } | { status: 'ready'; text: string } | { status: 'error'; message: string };
+
+function acceptsFile(file: File, accept: string) {
+  const rules = accept.split(',').map(rule => rule.trim().toLocaleLowerCase()).filter(Boolean);
+  if (!rules.length) return true;
+  const mime = file.type.toLocaleLowerCase();
+  const name = file.name.toLocaleLowerCase();
+  return rules.some(rule => rule.startsWith('.') ? name.endsWith(rule) : rule.endsWith('/*') ? mime.startsWith(rule.slice(0, -1)) : mime === rule);
+}
+
+function imageSourceError(value: string) {
+  const source = value.trim();
+  if (!source) return '请输入图片地址';
+  try {
+    const protocol = new URL(source, 'https://reito.invalid').protocol;
+    return ['http:', 'https:', 'blob:'].includes(protocol) ? undefined : '仅支持 HTTP、HTTPS、Blob 或相对地址';
+  } catch {
+    return '图片地址无效';
+  }
+}
+
+function clampProgress(value: number) {
+  return Math.min(100, Math.max(0, Number.isFinite(value) ? value : 0));
+}
+
 function runToolbarCommand(editor: Editor, item: RichTextEditorToolbarItem) {
   const chain = editor.chain().focus();
   switch (item) {
@@ -261,6 +326,8 @@ function runToolbarCommand(editor: Editor, item: RichTextEditorToolbarItem) {
     case 'redo': return editor.commands.redo();
     case 'block-actions':
     case 'emoji':
+    case 'image':
+    case 'ai-complete':
     case 'link': return false;
   }
 }
@@ -287,6 +354,23 @@ function RichTextEditorToolbar({
   blockOpen,
   onBlockOpenChange,
   onBlockAction,
+  imageOpen,
+  imageSrc,
+  imageAlt,
+  imageError,
+  imageUpload,
+  imageAccept,
+  canUploadImage,
+  onImageOpenChange,
+  onImageSrcChange,
+  onImageAltChange,
+  onInsertImage,
+  onChooseImage,
+  onCancelImageUpload,
+  onRetryImageUpload,
+  completionAvailable,
+  completionLoading,
+  onRequestCompletion,
 }: {
   editor: Editor | null;
   items: readonly RichTextEditorToolbarItem[];
@@ -309,8 +393,28 @@ function RichTextEditorToolbar({
   blockOpen: boolean;
   onBlockOpenChange: (open: boolean) => void;
   onBlockAction: (target: RichTextEditorBlockTarget, action: RichTextEditorBlockAction) => void;
+  imageOpen: boolean;
+  imageSrc: string;
+  imageAlt: string;
+  imageError?: string;
+  imageUpload: ImageUploadState;
+  imageAccept: string;
+  canUploadImage: boolean;
+  onImageOpenChange: (open: boolean) => void;
+  onImageSrcChange: (value: string) => void;
+  onImageAltChange: (value: string) => void;
+  onInsertImage: () => void;
+  onChooseImage: (file: File) => void;
+  onCancelImageUpload: () => void;
+  onRetryImageUpload: () => void;
+  completionAvailable: boolean;
+  completionLoading: boolean;
+  onRequestCompletion: () => void;
 }) {
   const linkErrorId = useId();
+  const imageErrorId = useId();
+  const imageInputId = useId();
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [rovingIndex, setRovingIndex] = useState(0);
   const state = useEditorState({
     editor,
@@ -325,6 +429,7 @@ function RichTextEditorToolbar({
     if (item === 'link') return state.selectionEmpty && !state.link;
     if (item === 'unlink') return !state.link;
     if (item === 'block-actions') return !blockControls || !blockTarget;
+    if (item === 'ai-complete') return !completionAvailable || completionLoading;
     return false;
   }
 
@@ -361,6 +466,7 @@ function RichTextEditorToolbar({
         onClick={() => {
           if (item === 'link') onOpenLink();
           else if (item === 'emoji') onOpenEmoji();
+          else if (item === 'ai-complete') onRequestCompletion();
           else if (editor) runToolbarCommand(editor, item);
         }}
       ><Icon aria-hidden="true" /></Button>;
@@ -389,6 +495,27 @@ function RichTextEditorToolbar({
                 return option ? <Button key={name} type="button" size="icon-sm" variant="ghost" role="option" aria-label={`${option.label} ${option.emoji}`} title={`:${name}:`} onClick={() => onInsertEmoji(name)}><span aria-hidden="true" className="text-base leading-none">{option.emoji}</span></Button> : null;
               })}
             </div> : <p className="text-xs text-muted-foreground">没有可插入的 Emoji</p>}
+          </PopoverContent>
+        </Popover> : item === 'image' ? <Popover open={imageOpen} onOpenChange={onImageOpenChange}>
+          <PopoverTrigger render={button} />
+          <PopoverContent align="start" className="w-[var(--rui-container-xs)] max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-space-2)] p-[var(--rui-content-padding)]">
+            <PopoverTitle>插入图片</PopoverTitle>
+            <form className="grid gap-[var(--rui-space-2)]" onSubmit={event => { event.preventDefault(); onInsertImage(); }}>
+              <label className="grid gap-[var(--rui-space-1)] text-xs text-muted-foreground">图片地址
+                <Input name="src" value={imageSrc} placeholder="/images/example.png" aria-invalid={imageError ? true : undefined} aria-describedby={imageError ? imageErrorId : undefined} onChange={event => onImageSrcChange(event.target.value)} />
+              </label>
+              <label className="grid gap-[var(--rui-space-1)] text-xs text-muted-foreground">替代文字
+                <Input name="alt" value={imageAlt} placeholder="描述图片内容" onChange={event => onImageAltChange(event.target.value)} />
+              </label>
+              {imageError && <p id={imageErrorId} role="alert" className="text-xs text-destructive">{imageError}</p>}
+              {imageUpload.status !== 'idle' && <div data-slot="rich-text-editor-image-upload" data-status={imageUpload.status} className="grid gap-[var(--rui-space-1)] rounded-md border border-border bg-muted/30 p-[var(--rui-space-2)] text-xs">
+                <div className="flex min-w-0 items-center justify-between gap-[var(--rui-space-2)]"><span className="truncate">{imageUpload.file.name}</span><span className={imageUpload.status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>{imageUpload.status === 'uploading' ? `${Math.round(imageUpload.progress)}%` : imageUpload.message}</span></div>
+                {imageUpload.status === 'uploading' && <Progress value={imageUpload.progress} aria-label={`${imageUpload.file.name}上传进度`} />}
+                <div className="flex justify-end">{imageUpload.status === 'uploading' ? <Button type="button" size="xs" variant="ghost" onClick={onCancelImageUpload}><X aria-hidden="true" />取消上传</Button> : <Button type="button" size="xs" variant="ghost" onClick={onRetryImageUpload}><RotateCcw aria-hidden="true" />重试</Button>}</div>
+              </div>}
+              <input id={imageInputId} ref={imageInputRef} type="file" accept={imageAccept} aria-label="上传图片文件" className="sr-only" tabIndex={-1} onChange={event => { const file = event.target.files?.[0]; if (file) onChooseImage(file); event.target.value = ''; }} />
+              <div className="flex items-center justify-between gap-[var(--rui-space-1)]"><Button type="button" size="xs" variant="outline" disabled={!canUploadImage || imageUpload.status === 'uploading'} onClick={() => imageInputRef.current?.click()}><ImagePlus aria-hidden="true" />选择图片</Button><div className="flex gap-[var(--rui-space-1)]"><Button type="button" size="xs" variant="ghost" onClick={() => onImageOpenChange(false)}>取消</Button><Button type="submit" size="xs">插入地址</Button></div></div>
+            </form>
           </PopoverContent>
         </Popover> : button}
       </Fragment>;
@@ -420,6 +547,11 @@ export function RichTextEditor({
   onSuggestionError,
   blockControls = true,
   blockActions = richTextEditorDefaultBlockActions,
+  uploadImage,
+  imageAccept = 'image/*',
+  imageMaxSize = 10 * 1024 * 1024,
+  requestCompletion,
+  onExtensionError,
   linkPlaceholder = 'https://example.com',
   editorClassName,
   className,
@@ -437,6 +569,12 @@ export function RichTextEditor({
   const interactionRef = useRef({ toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji'), blockControls });
   const savedLinkSelection = useRef<{ from: number; to: number } | undefined>(undefined);
   const savedEmojiSelection = useRef<{ from: number; to: number } | undefined>(undefined);
+  const savedImageSelection = useRef<{ from: number; to: number } | undefined>(undefined);
+  const imageUploadController = useRef<AbortController | null>(null);
+  const imageUploadId = useRef(0);
+  const completionController = useRef<AbortController | null>(null);
+  const completionId = useRef(0);
+  const completionRequest = useRef<{ selection: { from: number; to: number }; documentKey: string } | null>(null);
   const formatRef = useRef(format);
   const onValueChangeRef = useRef(onValueChange);
   const onContentErrorRef = useRef(onContentError);
@@ -445,6 +583,9 @@ export function RichTextEditor({
   const mentionLoaderRef = useRef(loadMentionItems);
   const slashCommandsRef = useRef(slashCommands);
   const onSuggestionErrorRef = useRef(onSuggestionError);
+  const uploadImageRef = useRef(uploadImage);
+  const requestCompletionRef = useRef(requestCompletion);
+  const onExtensionErrorRef = useRef(onExtensionError);
   const suggestionExtensionsRef = useRef<ReturnType<typeof createRichTextEditorSuggestionExtensions> | null>(null);
   if (!suggestionExtensionsRef.current) {
     suggestionExtensionsRef.current = createRichTextEditorSuggestionExtensions({
@@ -469,9 +610,15 @@ export function RichTextEditor({
   const [blockOpen, setBlockOpen] = useState(false);
   const [handleBlockOpen, setHandleBlockOpen] = useState(false);
   const [hoveredBlock, setHoveredBlock] = useState<RichTextEditorBlockTarget | null>(null);
+  const [imageOpen, setImageOpen] = useState(false);
+  const [imageSrc, setImageSrc] = useState('');
+  const [imageAlt, setImageAlt] = useState('');
+  const [imageError, setImageError] = useState<string>();
+  const [imageUpload, setImageUpload] = useState<ImageUploadState>({ status: 'idle' });
+  const [completion, setCompletion] = useState<CompletionState | null>(null);
   const visibleEmojiItems = emojiItems.filter((name, index) => emojiItems.indexOf(name) === index);
   const visibleBlockActions = blockActions.filter((action, index) => blockActions.indexOf(action) === index);
-  const visibleToolbarItems = toolbarItems.filter(item => blockControls || item !== 'block-actions');
+  const visibleToolbarItems = toolbarItems.filter(item => (blockControls || item !== 'block-actions') && (requestCompletion || item !== 'ai-complete'));
   const visibleError = error ?? parseError;
   const describedBy = [description && descriptionId, visibleError && errorId].filter(Boolean).join(' ') || undefined;
 
@@ -484,6 +631,9 @@ export function RichTextEditor({
   mentionLoaderRef.current = loadMentionItems;
   slashCommandsRef.current = slashCommands;
   onSuggestionErrorRef.current = onSuggestionError;
+  uploadImageRef.current = uploadImage;
+  requestCompletionRef.current = requestCompletion;
+  onExtensionErrorRef.current = onExtensionError;
   interactionRef.current = { toolbar, disabled, readOnly, linkAvailable: toolbarItems.includes('link'), emojiAvailable: toolbarItems.includes('emoji'), blockControls };
 
   function openLinkEditor() {
@@ -550,6 +700,161 @@ export function RichTextEditor({
     current.chain().focus().setTextSelection({ from, to }).setEmoji(name).run();
     setEmojiOpen(false);
     requestAnimationFrame(() => current.commands.focus());
+  }
+
+  function reportExtensionError(kind: RichTextEditorExtensionError['kind'], cause: unknown, fallback: string) {
+    const message = cause instanceof Error ? cause.message : String(cause || fallback);
+    onExtensionErrorRef.current?.({ kind, message, cause });
+    return message;
+  }
+
+  function changeImageOpen(open: boolean) {
+    const current = editorRef.current;
+    if (open && current) {
+      savedImageSelection.current = { from: current.state.selection.from, to: current.state.selection.to };
+      setImageError(undefined);
+    }
+    if (!open && imageUploadController.current) {
+      imageUploadController.current.abort();
+      imageUploadController.current = null;
+      imageUploadId.current += 1;
+      setImageUpload(previous => previous.status === 'uploading' ? { status: 'canceled', file: previous.file, message: '已取消' } : previous);
+    }
+    setImageOpen(open);
+    if (!open) requestAnimationFrame(() => editorRef.current?.commands.focus());
+  }
+
+  function insertImageValue(image: RichTextEditorImageValue) {
+    const current = editorRef.current;
+    const selected = savedImageSelection.current;
+    const sourceError = imageSourceError(image.src);
+    if (!current || !selected) return false;
+    if (sourceError) {
+      setImageError(sourceError);
+      return false;
+    }
+    const maximum = current.state.doc.content.size;
+    const from = Math.min(selected.from, maximum);
+    const to = Math.min(selected.to, maximum);
+    const inserted = current.chain().focus().setTextSelection({ from, to }).setImage({ src: image.src.trim(), alt: image.alt?.trim() || undefined, title: image.title?.trim() || undefined }).run();
+    if (!inserted) {
+      setImageError('当前选区无法插入图片');
+      return false;
+    }
+    setImageError(undefined);
+    setImageUpload({ status: 'idle' });
+    setImageOpen(false);
+    requestAnimationFrame(() => current.commands.focus());
+    return true;
+  }
+
+  function insertImageFromAddress() {
+    insertImageValue({ src: imageSrc, alt: imageAlt });
+  }
+
+  async function startImageUpload(file: File) {
+    const uploader = uploadImageRef.current;
+    if (!uploader || disabled || readOnly) return;
+    imageUploadController.current?.abort();
+    const controller = new AbortController();
+    const requestId = ++imageUploadId.current;
+    imageUploadController.current = controller;
+    setImageError(undefined);
+    setImageUpload({ status: 'uploading', file, progress: 0 });
+    try {
+      const result = await uploader(file, {
+        signal: controller.signal,
+        onProgress: progress => {
+          if (controller.signal.aborted || imageUploadId.current !== requestId) return;
+          setImageUpload({ status: 'uploading', file, progress: clampProgress(progress) });
+        },
+      });
+      if (controller.signal.aborted || imageUploadId.current !== requestId) return;
+      if (!insertImageValue({ ...result, alt: result.alt ?? imageAlt })) throw new Error('上传结果未能插入文档');
+    } catch (cause) {
+      if (controller.signal.aborted || imageUploadId.current !== requestId) return;
+      const message = reportExtensionError('image-upload', cause, '图片上传失败');
+      setImageUpload({ status: 'error', file, message });
+    } finally {
+      if (imageUploadController.current === controller) imageUploadController.current = null;
+    }
+  }
+
+  function chooseImage(file: File) {
+    if (!acceptsFile(file, imageAccept)) {
+      setImageError(`${file.name}：文件类型不支持`);
+      return;
+    }
+    if (file.size > imageMaxSize) {
+      setImageError(`${file.name}：超过图片大小上限`);
+      return;
+    }
+    void startImageUpload(file);
+  }
+
+  function cancelImageUpload() {
+    imageUploadController.current?.abort();
+    imageUploadController.current = null;
+    imageUploadId.current += 1;
+    setImageUpload(previous => previous.status === 'uploading' ? { status: 'canceled', file: previous.file, message: '已取消' } : previous);
+  }
+
+  function retryImageUpload() {
+    if (imageUpload.status === 'error' || imageUpload.status === 'canceled') void startImageUpload(imageUpload.file);
+  }
+
+  async function requestCompletionNow() {
+    const current = editorRef.current;
+    const provider = requestCompletionRef.current;
+    if (!current || !provider || disabled || readOnly) return;
+    completionController.current?.abort();
+    const controller = new AbortController();
+    const requestId = ++completionId.current;
+    completionController.current = controller;
+    const selection = { from: current.state.selection.from, to: current.state.selection.to };
+    const currentSnapshot = snapshot(current);
+    completionRequest.current = { selection, documentKey: JSON.stringify(currentSnapshot.json) };
+    setCompletion({ status: 'loading' });
+    try {
+      const text = await provider({ snapshot: currentSnapshot, selection, selectedText: current.state.doc.textBetween(selection.from, selection.to, '\n'), signal: controller.signal });
+      if (controller.signal.aborted || completionId.current !== requestId) return;
+      if (!text) throw new Error('补全结果为空');
+      setCompletion({ status: 'ready', text });
+    } catch (cause) {
+      if (controller.signal.aborted || completionId.current !== requestId) return;
+      setCompletion({ status: 'error', message: reportExtensionError('completion', cause, '生成补全失败') });
+    } finally {
+      if (completionController.current === controller) completionController.current = null;
+    }
+  }
+
+  function dismissCompletion() {
+    completionController.current?.abort();
+    completionController.current = null;
+    completionId.current += 1;
+    completionRequest.current = null;
+    setCompletion(null);
+    requestAnimationFrame(() => editorRef.current?.commands.focus());
+  }
+
+  function acceptCompletion() {
+    const current = editorRef.current;
+    const requested = completionRequest.current;
+    if (!current || !requested || completion?.status !== 'ready') return;
+    if (JSON.stringify(current.getJSON()) !== requested.documentKey) {
+      setCompletion({ status: 'error', message: '文档已更改，请重新生成补全' });
+      return;
+    }
+    const maximum = current.state.doc.content.size;
+    const from = Math.min(requested.selection.from, maximum);
+    const to = Math.min(requested.selection.to, maximum);
+    const text = completion.text;
+    completionRequest.current = null;
+    setCompletion(null);
+    current.chain().focus().command(({ tr }) => {
+      tr.insertText(text, from, to);
+      return true;
+    }).run();
   }
 
   function changeBlockMenu(source: 'toolbar' | 'handle', open: boolean) {
@@ -701,6 +1006,7 @@ export function RichTextEditor({
         '[&_code]:rounded-sm [&_code]:bg-muted [&_code]:px-[var(--rui-space-1)] [&_code]:font-mono [&_code]:text-xs [&_pre_code]:bg-transparent [&_pre_code]:p-0',
         '[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4',
         '[&_span[data-type=mention]]:rounded-sm [&_span[data-type=mention]]:bg-muted [&_span[data-type=mention]]:px-[var(--rui-space-1)] [&_span[data-type=mention]]:font-medium',
+        '[&_img]:my-[var(--rui-space-3)] [&_img]:max-w-full [&_img]:rounded-md [&_img]:border [&_img]:border-border [&_img]:bg-muted/30',
         '[&_.rich-text-editor-suggestion]:rounded-sm [&_.rich-text-editor-suggestion]:bg-accent',
         '[&_.ProseMirror-selectednode]:outline [&_.ProseMirror-selectednode]:outline-[length:var(--rui-outline-width)] [&_.ProseMirror-selectednode]:outline-ring [&_.ProseMirror-selectednode]:outline-offset-[var(--rui-space-1)]',
         '[&_hr]:my-[var(--rui-space-4)] [&_hr]:border-border',
@@ -712,7 +1018,14 @@ export function RichTextEditor({
   useEffect(() => {
     if (disabled || readOnly || !toolbar || !toolbarItems.includes('link')) setLinkOpen(false);
     if (disabled || readOnly || !toolbar || !toolbarItems.includes('emoji')) setEmojiOpen(false);
-  }, [disabled, readOnly, toolbar, toolbarItems]);
+    if ((disabled || readOnly || !toolbar || !toolbarItems.includes('image')) && imageOpen) changeImageOpen(false);
+    if ((disabled || readOnly || !requestCompletion) && completion) dismissCompletion();
+  }, [completion, disabled, imageOpen, readOnly, requestCompletion, toolbar, toolbarItems]);
+
+  useEffect(() => () => {
+    imageUploadController.current?.abort();
+    completionController.current?.abort();
+  }, []);
 
   useEffect(() => {
     if (!editor || (blockControls && !disabled && !readOnly)) return;
@@ -742,7 +1055,7 @@ export function RichTextEditor({
     </div>
     {description && <div id={descriptionId} className="mb-[var(--rui-space-2)] text-xs text-muted-foreground">{description}</div>}
     <div className={cn('relative min-w-0 overflow-hidden rounded-lg border border-border bg-background transition-colors focus-within:border-ring focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring/50', visibleError && 'border-destructive', (readOnly || disabled) && 'bg-muted/30')}>
-      {toolbar && <RichTextEditorToolbar editor={editor} items={visibleToolbarItems} disabled={disabled || readOnly} linkOpen={linkOpen} linkHref={linkHref} linkError={linkError} linkPlaceholder={linkPlaceholder} emojiOpen={emojiOpen} emojiItems={visibleEmojiItems} onLinkOpenChange={closeLinkEditor} onLinkHrefChange={value => { setLinkHref(value); setLinkError(undefined); }} onOpenLink={openLinkEditor} onApplyLink={applyLink} onEmojiOpenChange={closeEmojiPicker} onOpenEmoji={openEmojiPicker} onInsertEmoji={insertEmoji} blockControls={blockControls} blockActions={visibleBlockActions} blockOpen={blockOpen} onBlockOpenChange={open => changeBlockMenu('toolbar', open)} onBlockAction={performBlockAction} />}
+      {toolbar && <RichTextEditorToolbar editor={editor} items={visibleToolbarItems} disabled={disabled || readOnly} linkOpen={linkOpen} linkHref={linkHref} linkError={linkError} linkPlaceholder={linkPlaceholder} emojiOpen={emojiOpen} emojiItems={visibleEmojiItems} onLinkOpenChange={closeLinkEditor} onLinkHrefChange={value => { setLinkHref(value); setLinkError(undefined); }} onOpenLink={openLinkEditor} onApplyLink={applyLink} onEmojiOpenChange={closeEmojiPicker} onOpenEmoji={openEmojiPicker} onInsertEmoji={insertEmoji} blockControls={blockControls} blockActions={visibleBlockActions} blockOpen={blockOpen} onBlockOpenChange={open => changeBlockMenu('toolbar', open)} onBlockAction={performBlockAction} imageOpen={imageOpen} imageSrc={imageSrc} imageAlt={imageAlt} imageError={imageError} imageUpload={imageUpload} imageAccept={imageAccept} canUploadImage={Boolean(uploadImage)} onImageOpenChange={changeImageOpen} onImageSrcChange={value => { setImageSrc(value); setImageError(undefined); }} onImageAltChange={setImageAlt} onInsertImage={insertImageFromAddress} onChooseImage={chooseImage} onCancelImageUpload={cancelImageUpload} onRetryImageUpload={retryImageUpload} completionAvailable={Boolean(requestCompletion)} completionLoading={completion?.status === 'loading'} onRequestCompletion={() => void requestCompletionNow()} />}
       <div className="relative min-w-0">
         {isEmpty && placeholder && <span aria-hidden="true" className={cn('pointer-events-none absolute top-[var(--rui-content-padding)] text-sm leading-relaxed text-muted-foreground', blockControls ? 'left-[calc(var(--rui-content-padding)+var(--rui-control-height-xs))]' : 'left-[var(--rui-content-padding)]')}>{placeholder}</span>}
         <EditorContent editor={editor} />
@@ -750,6 +1063,9 @@ export function RichTextEditor({
           {hoveredBlock ? <RichTextEditorBlockMenu open={handleBlockOpen} onOpenChange={open => changeBlockMenu('handle', open)} editor={editor} target={hoveredBlock} actions={visibleBlockActions} onAction={action => performBlockAction(hoveredBlock, action)} trigger={<Button type="button" variant="ghost" size="icon-xs" data-slot="rich-text-editor-drag-handle" aria-label={`拖动块：${hoveredBlock.text || hoveredBlock.type}；点击打开块操作`} title="拖动重排；点击打开块操作"><GripVertical aria-hidden="true" /></Button>} /> : <Button type="button" variant="ghost" size="icon-xs" tabIndex={-1} aria-hidden="true"><GripVertical aria-hidden="true" /></Button>}
         </DragHandle>}
       </div>
+      {completion && <section data-slot="rich-text-editor-completion" data-status={completion.status} aria-label="补全建议" aria-live="polite" className="grid gap-[var(--rui-space-2)] border-t border-border bg-muted/30 p-[var(--rui-content-padding)] text-xs">
+        {completion.status === 'loading' ? <><div role="status" className="flex items-center gap-[var(--rui-space-2)] text-muted-foreground"><Spinner />正在生成本地宿主补全…</div><div className="flex justify-end"><Button type="button" size="xs" variant="ghost" onClick={dismissCompletion}><X aria-hidden="true" />取消生成</Button></div></> : completion.status === 'ready' ? <><p className="whitespace-pre-wrap text-foreground">{completion.text}</p><div className="flex justify-end gap-[var(--rui-space-1)]"><Button type="button" size="xs" variant="ghost" onClick={dismissCompletion}>拒绝</Button><Button type="button" size="xs" onClick={acceptCompletion}>接受补全</Button></div></> : <><p role="alert" className="text-destructive">{completion.message}</p><div className="flex justify-end gap-[var(--rui-space-1)]"><Button type="button" size="xs" variant="ghost" onClick={dismissCompletion}>关闭</Button><Button type="button" size="xs" variant="outline" onClick={() => void requestCompletionNow()}><RotateCcw aria-hidden="true" />重试</Button></div></>}
+      </section>}
     </div>
     {visibleError && <div id={errorId} role="alert" className="mt-[var(--rui-space-2)] text-xs text-destructive">{visibleError}</div>}
   </div>;

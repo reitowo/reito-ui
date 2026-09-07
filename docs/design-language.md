@@ -109,6 +109,8 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 块句柄占用正文左侧一个 XS 控件槽位，只在可编辑内容的块悬停范围出现；它不是常驻工具栏装饰。点击句柄或工具栏块入口打开同一紧凑菜单，移动、转换和删除都写入编辑器事务与历史。当前块使用焦点 ring 的语义角色标出，边界动作直接禁用。块菜单继续消费 control-height、space、container、border、muted、accent、destructive 与 ring tokens，不使用组件内固定颜色或独立密度数值。
 
+编辑器媒体入口仍是一枚 XS 工具栏按钮。地址、替代文字、上传进度和失败恢复放在同一个紧凑 Popover 中；图片本身直接进入文档流，使用内容间距、弱边界和响应式最大宽度，不套独立卡片。宿主补全在正文底部附着一条弱底色审阅面，候选内容与接受/拒绝动作保持可见，加载、错误和重试不覆盖正文。所有 Story 中的上传与补全都明确标为本地模拟，组件不显示外部模型品牌或虚构在线状态。
+
 主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间

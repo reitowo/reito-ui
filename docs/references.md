@@ -77,6 +77,8 @@ EDIT-04 增加固定版本 `@tiptap/core@3.31.3`、`@tiptap/pm@3.31.3`、`@tipta
 
 EDIT-05 增加固定版本 `@tiptap/extension-drag-handle-react@3.31.3`，并由其同版本运行依赖 `@tiptap/extension-drag-handle` 提供 ProseMirror 插件；安装包均标注 MIT。实现逐项核对 [Tiptap Drag Handle](https://tiptap.dev/docs/editor/extensions/functionality/drag-handle)、[React Node Views](https://tiptap.dev/docs/editor/extensions/custom-extensions/node-views/react) 与安装源码：官方插件负责命中顶层节点、原生 drag/drop、拖后选择恢复和文档位置映射；Reito UI 自行实现 Graphite 句柄、块菜单、受控移动/转换/删除事务、键盘等价操作和 Story，没有复制 Nuxt UI 的 Vue 模板、样式或资产。首版范围是顶层块，嵌套块句柄和跨编辑器拖放未声明支持。
 
+EDIT-06 增加固定版本 `@tiptap/extension-image@3.31.3`，安装包标注 MIT。实现核对 [Image](https://tiptap.dev/docs/editor/extensions/nodes/image)、[FileHandler](https://tiptap.dev/docs/editor/extensions/functionality/filehandler) 与安装源码：Image 声明自己只渲染节点、不上传文件，并提供 JSON/HTML/Markdown 解析与输出；FileHandler 同样只把 paste/drop 交给回调。Reito UI 因此让宿主 `uploadImage` 完整持有网络、鉴权与持久化，只组合进度、取消、错误、重试和 image 节点插入。AI 能力仅参考 [Tiptap AI Suggestion](https://tiptap.dev/docs/content-ai/capabilities/suggestion/use-with-content-ai-cloud) 的“上下文由应用发送并审阅结果”边界；该扩展属于单独的 Pro/Cloud 产品且仍有 Beta 版本，本库没有安装或仿冒它，而是公开 provider-neutral 的文本候选回调与本地 Story，避免把模型、密钥或数据流锁入 UI 包。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

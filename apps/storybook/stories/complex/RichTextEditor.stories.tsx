@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
-import { RichTextEditor, richTextEditorDefaultBlockActions, richTextEditorDefaultEmojiItems, richTextEditorDefaultSlashCommands, richTextEditorDefaultToolbarItems, type RichTextEditorBlockAction, type RichTextEditorEmojiName, type RichTextEditorMentionItem, type RichTextEditorSlashCommandName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
+import { RichTextEditor, richTextEditorDefaultBlockActions, richTextEditorDefaultEmojiItems, richTextEditorDefaultSlashCommands, richTextEditorDefaultToolbarItems, type RichTextEditorBlockAction, type RichTextEditorCompletionProvider, type RichTextEditorEmojiName, type RichTextEditorImageUpload, type RichTextEditorMentionItem, type RichTextEditorSlashCommandName, type RichTextEditorSnapshot, type RichTextEditorToolbarItem, type RichTextEditorValue } from '../../../../packages/ui/src/complex/rich-text-editor.js';
 import { RichTextEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, choiceControl, textControl } from '../feature-controls.js';
 
@@ -22,6 +22,7 @@ const teamMentions: readonly RichTextEditorMentionItem[] = [
   { id: 'graphite-bot', label: 'Graphite Bot', description: '自动检查', keywords: ['bot', 'audit'] },
   { id: 'archived', label: 'Archived User', description: '已停用', disabled: true },
 ];
+const localImageUrl = new URL('../../../../docs/images/graphite-preview.png', import.meta.url).href;
 
 const meta = {
   title: '复杂/RichTextEditor 富文本编辑',
@@ -41,13 +42,15 @@ type PlaygroundArgs = {
   disabled: boolean;
   showOutput: boolean;
   showToolbar: boolean;
-  toolbarPreset: 'full' | 'marks' | 'structure' | 'extensions' | 'history';
+  toolbarPreset: 'full' | 'marks' | 'structure' | 'extensions' | 'media' | 'history';
   emojiPreset: 'all' | 'status' | 'none';
   suggestions: boolean;
   mentionPreset: 'team' | 'empty';
   slashPreset: 'full' | 'writing' | 'none';
   blockControls: boolean;
   blockPreset: 'full' | 'move' | 'structure' | 'none';
+  imageUploadPreset: 'success' | 'failure' | 'none';
+  completionPreset: 'success' | 'failure' | 'none';
   linkPlaceholder: string;
 };
 
@@ -56,6 +59,7 @@ const toolbarPresets: Record<PlaygroundArgs['toolbarPreset'], readonly RichTextE
   marks: ['bold', 'italic', 'underline', 'strike', 'code', 'clear-format'],
   structure: ['paragraph', 'heading-1', 'heading-2', 'bullet-list', 'ordered-list', 'task-list', 'blockquote'],
   extensions: ['task-list', 'align-left', 'align-center', 'align-right', 'align-justify', 'emoji'],
+  media: ['image', 'ai-complete', 'undo', 'redo'],
   history: ['undo', 'redo'],
 };
 
@@ -83,6 +87,38 @@ const blockPresets: Record<PlaygroundArgs['blockPreset'], readonly RichTextEdito
   none: [],
 };
 
+function waitForDemo(delay: number, signal: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = window.setTimeout(resolve, delay);
+    signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('已取消', 'AbortError')); }, { once: true });
+  });
+}
+
+const successfulImageUpload: RichTextEditorImageUpload = async (file, { signal, onProgress }) => {
+  onProgress(20);
+  await waitForDemo(120, signal);
+  onProgress(70);
+  await waitForDemo(120, signal);
+  return { src: localImageUrl, alt: file.name };
+};
+const failedImageUpload: RichTextEditorImageUpload = async (_file, { signal, onProgress }) => {
+  onProgress(35);
+  await waitForDemo(120, signal);
+  throw new Error('本地上传示例失败');
+};
+const successfulCompletion: RichTextEditorCompletionProvider = async ({ selectedText, signal }) => {
+  await waitForDemo(160, signal);
+  return selectedText ? `${selectedText}（已按工作区规范补全）` : '补充验收范围、失败恢复和宿主数据边界。';
+};
+const literalCompletion: RichTextEditorCompletionProvider = async ({ signal }) => {
+  await waitForDemo(80, signal);
+  return '<strong>这是补全文本</strong>';
+};
+const failedCompletion: RichTextEditorCompletionProvider = async ({ signal }) => {
+  await waitForDemo(160, signal);
+  throw new Error('本地补全示例失败');
+};
+
 function parsePlaygroundValue(format: PlaygroundArgs['format'], value: string): RichTextEditorValue {
   if (format !== 'json') return value;
   try { return JSON.parse(value) as RichTextEditorValue; }
@@ -95,7 +131,7 @@ function printable(value: RichTextEditorValue) {
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: '参数调试',
-  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、块操作、扩展内容和交互状态。输入 / 或 @ 查看建议。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', suggestions: true, mentionPreset: 'team', slashPreset: 'full', blockControls: true, blockPreset: 'full', linkPlaceholder: 'https://example.com' },
+  args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、块操作、媒体、补全和交互状态。所有上传与补全均为本地示例。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', suggestions: true, mentionPreset: 'team', slashPreset: 'full', blockControls: true, blockPreset: 'full', imageUploadPreset: 'success', completionPreset: 'success', linkPlaceholder: 'https://example.com' },
   argTypes: {
     format: choiceControl(['markdown', 'html', 'json']),
     value: textControl,
@@ -106,19 +142,23 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     disabled: booleanControl,
     showOutput: booleanControl,
     showToolbar: booleanControl,
-    toolbarPreset: choiceControl(['full', 'marks', 'structure', 'extensions', 'history']),
+    toolbarPreset: choiceControl(['full', 'marks', 'structure', 'extensions', 'media', 'history']),
     emojiPreset: choiceControl(['all', 'status', 'none']),
     suggestions: booleanControl,
     mentionPreset: choiceControl(['team', 'empty']),
     slashPreset: choiceControl(['full', 'writing', 'none']),
     blockControls: booleanControl,
     blockPreset: choiceControl(['full', 'move', 'structure', 'none']),
+    imageUploadPreset: choiceControl(['success', 'failure', 'none']),
+    completionPreset: choiceControl(['success', 'failure', 'none']),
     linkPlaceholder: textControl,
   },
-  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'blockControls', 'blockPreset', 'linkPlaceholder', 'showOutput'] } },
+  parameters: { controls: { include: ['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'blockControls', 'blockPreset', 'imageUploadPreset', 'completionPreset', 'linkPlaceholder', 'showOutput'] } },
   render: function Render(args) {
     const [, updateArgs] = useArgs<PlaygroundArgs>();
-    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} suggestions={args.suggestions} mentionItems={mentionPresets[args.mentionPreset]} slashCommands={slashPresets[args.slashPreset]} blockControls={args.blockControls} blockActions={blockPresets[args.blockPreset]} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
+    const uploadImage = args.imageUploadPreset === 'success' ? successfulImageUpload : args.imageUploadPreset === 'failure' ? failedImageUpload : undefined;
+    const requestCompletion = args.completionPreset === 'success' ? successfulCompletion : args.completionPreset === 'failure' ? failedCompletion : undefined;
+    return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format={args.format} value={parsePlaygroundValue(args.format, args.value)} label={args.label} description={args.description} placeholder={args.placeholder} readOnly={args.readOnly} disabled={args.disabled} toolbar={args.showToolbar} toolbarItems={toolbarPresets[args.toolbarPreset]} emojiItems={emojiPresets[args.emojiPreset]} suggestions={args.suggestions} mentionItems={mentionPresets[args.mentionPreset]} slashCommands={slashPresets[args.slashPreset]} blockControls={args.blockControls} blockActions={blockPresets[args.blockPreset]} uploadImage={uploadImage} requestCompletion={requestCompletion} linkPlaceholder={args.linkPlaceholder} onValueChange={next => updateArgs({ value: printable(next) })} />{args.showOutput && <pre data-testid="playground-output" className="max-h-[var(--rui-preview-min-height)] overflow-auto rounded-md border border-border bg-muted p-[var(--rui-content-padding)] font-mono text-xs whitespace-pre-wrap">{args.value}</pre>}</div>;
   },
 };
 
@@ -151,6 +191,64 @@ export const BlockSingle: Story = { name: '唯一块删除与恢复', render: fu
 export const BlockControlsOff: Story = { name: '关闭块控制', args: { format: 'markdown', defaultValue: '内容不显示块句柄和块操作入口。', label: '纯编辑面', blockControls: false } };
 export const BlockReadOnly: Story = { name: '只读块内容', args: { format: 'markdown', defaultValue: '# 只读内容\n\n块句柄与写操作均隐藏。', label: '只读块', readOnly: true } };
 export const BlockNarrow: Story = { name: '窄面板块操作', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue={'# 窄面板\n\n悬停此段检查句柄。\n\n末段保持在组件内。'} label="窄面板块" toolbarItems={['block-actions', 'undo', 'redo']} /></div> };
+
+function ImageSerializationExample() {
+  const [value, setValue] = useState('图片插入点');
+  const [state, setState] = useState<RichTextEditorSnapshot>();
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="图片与上传" description="地址插入和文件上传都写入同一个 image 节点；上传由本地 Story Provider 模拟。" toolbarItems={toolbarPresets.media} uploadImage={successfulImageUpload} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="media-markdown" className="break-all font-mono">{state?.markdown ?? value}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="media-html" className="truncate font-mono">{state?.html ?? '插入后同步'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="media-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '插入后同步'}</dd></dl></div>;
+}
+export const ImageSerialization: Story = { name: '图片地址上传与序列化', render: () => <ImageSerializationExample /> };
+
+const slowImageUpload: RichTextEditorImageUpload = async (file, { signal, onProgress }) => {
+  onProgress(15);
+  await waitForDemo(2_000, signal);
+  return { src: localImageUrl, alt: file.name };
+};
+export const ImageUploadCancel: Story = { name: '图片上传取消', args: { format: 'markdown', defaultValue: '取消上传不会改变文档。', label: '可取消图片上传', toolbarItems: ['image'], uploadImage: slowImageUpload } };
+
+function ImageUploadRecoveryExample() {
+  const attempts = useRef(0);
+  const upload: RichTextEditorImageUpload = async (file, context) => {
+    attempts.current += 1;
+    if (attempts.current === 1) return failedImageUpload(file, context);
+    return successfulImageUpload(file, context);
+  };
+  return <RichTextEditor format="markdown" defaultValue="失败后保留文件并允许重试。" label="图片失败恢复" toolbarItems={['image', 'undo', 'redo']} uploadImage={upload} onExtensionError={() => undefined} />;
+}
+export const ImageUploadRecovery: Story = { name: '图片上传失败与重试', render: () => <ImageUploadRecoveryExample /> };
+export const ImageInvalid: Story = { name: '图片校验错误', args: { format: 'markdown', defaultValue: '无效地址与文件不会进入文档。', label: '图片校验', toolbarItems: ['image'], uploadImage: successfulImageUpload, imageMaxSize: 8 } };
+export const ImageReadOnly: Story = { name: '只读图片内容', args: { format: 'markdown', defaultValue: `![Graphite 预览](${localImageUrl})`, label: '只读图片', readOnly: true, toolbarItems: ['image'] } };
+
+function CompletionExample() {
+  const [value, setValue] = useState('发布前确认');
+  return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="宿主补全" description="Provider 是本地 Story 函数；建议先预览，再由用户接受或拒绝。" toolbarItems={['ai-complete', 'undo', 'redo']} requestCompletion={successfulCompletion} /><output data-testid="completion-output" className="whitespace-pre-wrap font-mono text-xs text-muted-foreground">{value}</output></div>;
+}
+export const CompletionReview: Story = { name: '补全预览接受与拒绝', render: () => <CompletionExample /> };
+
+const slowCompletion: RichTextEditorCompletionProvider = async ({ signal }) => {
+  await waitForDemo(2_000, signal);
+  return '这条结果应在取消后被忽略。';
+};
+export const CompletionCancel: Story = { name: '补全请求取消', args: { format: 'markdown', defaultValue: '取消中的补全', label: '可取消补全', toolbarItems: ['ai-complete'], requestCompletion: slowCompletion } };
+export const CompletionLiteralText: Story = { name: '补全结果按纯文本插入', args: { format: 'markdown', defaultValue: '字面值测试：', label: '纯文本补全', toolbarItems: ['ai-complete'], requestCompletion: literalCompletion } };
+
+function CompletionRecoveryExample() {
+  const attempts = useRef(0);
+  const provider: RichTextEditorCompletionProvider = async context => {
+    attempts.current += 1;
+    if (attempts.current === 1) return failedCompletion(context);
+    return successfulCompletion(context);
+  };
+  return <RichTextEditor format="markdown" defaultValue="重试补全" label="补全失败恢复" toolbarItems={['ai-complete']} requestCompletion={provider} onExtensionError={() => undefined} />;
+}
+export const CompletionRecovery: Story = { name: '补全失败与重试', render: () => <CompletionRecoveryExample /> };
+
+function CompletionStaleExample() {
+  const [value, setValue] = useState('等待补全');
+  return <div className="grid gap-[var(--rui-content-gap)]"><Button size="xs" variant="outline" onClick={() => setValue('宿主已经替换文档')}>替换宿主文档</Button><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="过期补全" toolbarItems={['ai-complete']} requestCompletion={successfulCompletion} /></div>;
+}
+export const CompletionStale: Story = { name: '宿主替换后的过期补全', render: () => <CompletionStaleExample /> };
+export const MediaNarrow: Story = { name: '窄面板媒体与补全', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue="窄面板保持工具、图片和建议在组件内部。" label="窄媒体编辑" toolbarItems={toolbarPresets.media} uploadImage={successfulImageUpload} requestCompletion={successfulCompletion} /></div> };
 
 export const SlashCommands: Story = {
   name: '斜杠命令',

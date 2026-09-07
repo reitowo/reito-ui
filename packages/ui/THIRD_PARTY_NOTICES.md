@@ -239,6 +239,7 @@ The JavaScript build keeps bare package imports external. These dependencies are
 | @tiptap/suggestion | 3.31.3 | MIT | node_modules/@tiptap/suggestion/LICENSE.md |
 | @tiptap/extension-drag-handle-react | 3.31.3 | MIT | node_modules/@tiptap/extension-drag-handle-react/LICENSE.md |
 | @tiptap/extension-drag-handle | 3.31.3 | MIT | node_modules/@tiptap/extension-drag-handle/LICENSE.md |
+| @tiptap/extension-image | 3.31.3 | MIT | node_modules/@tiptap/extension-image/LICENSE.md |
 | class-variance-authority | 0.7.1 | Apache-2.0 | node_modules/class-variance-authority/LICENSE |
 | cmdk | 1.1.1 | MIT | node_modules/cmdk/LICENSE.md |
 | cn | 0.2.5 | MIT | node_modules/cn/LICENSE |

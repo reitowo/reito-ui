@@ -615,6 +615,157 @@ test('the official drag handle reorders top-level blocks through native drag eve
   await expect(page.getByTestId('block-markdown')).toContainText('最后一段用于检查边界。\n\n第一段需要移动。');
 });
 
+test('image address insertion writes one node to Markdown, HTML and JSON', async ({ page }) => {
+  const surface = await open(page, 'image-serialization');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  await page.getByRole('textbox', { name: '图片地址' }).fill('https://example.com/workspace.png');
+  await page.getByRole('textbox', { name: '替代文字' }).fill('工作区预览');
+  await page.getByRole('button', { name: '插入地址' }).click();
+  await expect(editor.locator('img')).toHaveAttribute('src', 'https://example.com/workspace.png');
+  await expect(editor.locator('img')).toHaveAttribute('alt', '工作区预览');
+  await expect(page.getByTestId('media-markdown')).toContainText('![工作区预览](https://example.com/workspace.png)');
+  await expect(page.getByTestId('media-html')).toContainText('<img');
+  await expect(page.getByTestId('media-json')).toContainText('"type":"image"');
+});
+
+test('image address validation rejects unsafe and malformed sources', async ({ page }) => {
+  const surface = await open(page, 'image-serialization');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  const source = page.getByRole('textbox', { name: '图片地址' });
+  await source.fill('javascript:alert(1)');
+  await page.getByRole('button', { name: '插入地址' }).click();
+  await expect(page.getByRole('alert')).toContainText('仅支持 HTTP、HTTPS、Blob 或相对地址');
+  await expect((await editorOf(surface)).locator('img')).toHaveCount(0);
+});
+
+test('image address insertion accepts a bare relative path', async ({ page }) => {
+  const surface = await open(page, 'image-serialization');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  await page.getByLabel('图片地址').fill('images/workspace.png');
+  await page.getByLabel('替代文字').fill('工作区');
+  await page.getByRole('button', { name: '插入地址' }).click();
+  await expect(page.getByTestId('media-markdown')).toContainText('![工作区](images/workspace.png)');
+});
+
+test('host image upload publishes progress and inserts its resolved image', async ({ page }) => {
+  const surface = await open(page, 'image-serialization');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  await page.locator('input[type="file"]').setInputFiles({ name: 'preview.png', mimeType: 'image/png', buffer: Buffer.from('preview') });
+  await expect(page.locator('[data-slot="rich-text-editor-image-upload"][data-status="uploading"]')).toBeVisible();
+  const editor = await editorOf(surface);
+  await expect(editor.locator('img')).toHaveAttribute('alt', 'preview.png');
+  await expect(page.getByTestId('media-markdown')).toContainText('![preview.png]');
+  await expect(editor).toBeFocused();
+});
+
+test('image upload cancellation aborts the host request and ignores its late result', async ({ page }) => {
+  const surface = await open(page, 'image-upload-cancel');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  await page.locator('input[type="file"]').setInputFiles({ name: 'slow.png', mimeType: 'image/png', buffer: Buffer.from('slow') });
+  await page.getByRole('button', { name: '取消上传' }).click();
+  await expect(page.locator('[data-slot="rich-text-editor-image-upload"]')).toHaveAttribute('data-status', 'canceled');
+  await page.waitForTimeout(2_100);
+  await expect((await editorOf(surface)).locator('img')).toHaveCount(0);
+});
+
+test('failed image upload retains the file and retries through the same host callback', async ({ page }) => {
+  const surface = await open(page, 'image-upload-recovery');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  await page.locator('input[type="file"]').setInputFiles({ name: 'retry.png', mimeType: 'image/png', buffer: Buffer.from('retry') });
+  await expect(page.locator('[data-slot="rich-text-editor-image-upload"]')).toHaveAttribute('data-status', 'error');
+  await expect(page.getByText('本地上传示例失败')).toBeVisible();
+  await page.getByRole('button', { name: '重试' }).click();
+  await expect((await editorOf(surface)).locator('img')).toHaveAttribute('alt', 'retry.png');
+});
+
+test('image file validation enforces accepted type and configured size before the host callback', async ({ page }) => {
+  const surface = await open(page, 'image-invalid');
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  const file = page.locator('input[type="file"]');
+  await file.setInputFiles({ name: 'notes.txt', mimeType: 'text/plain', buffer: Buffer.from('text') });
+  await expect(page.getByRole('alert')).toContainText('文件类型不支持');
+  await file.setInputFiles({ name: 'large.png', mimeType: 'image/png', buffer: Buffer.from('too-large') });
+  await expect(page.getByRole('alert')).toContainText('超过图片大小上限');
+  await expect((await editorOf(surface)).locator('img')).toHaveCount(0);
+});
+
+test('read-only documents parse image Markdown without exposing an upload action', async ({ page }) => {
+  const surface = await open(page, 'image-read-only');
+  await expect((await editorOf(surface)).locator('img')).toHaveAttribute('alt', 'Graphite 预览');
+  await expect(surface.getByRole('button', { name: '插入图片' })).toBeDisabled();
+});
+
+test('completion remains a reviewable proposal until the user accepts it', async ({ page }) => {
+  const surface = await open(page, 'completion-review');
+  const editor = await editorOf(surface);
+  await editor.click();
+  await editor.press('End');
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  const proposal = surface.locator('[data-slot="rich-text-editor-completion"]');
+  await expect(proposal).toHaveAttribute('data-status', 'ready');
+  await expect(editor).toHaveText('发布前确认');
+  await surface.getByRole('button', { name: '接受补全' }).click();
+  await expect(page.getByTestId('completion-output')).toContainText('补充验收范围、失败恢复和宿主数据边界。');
+  await expect(editor).toBeFocused();
+});
+
+test('completion inserts provider output as literal text instead of parsing HTML', async ({ page }) => {
+  const surface = await open(page, 'completion-literal-text');
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveAttribute('data-status', 'ready');
+  await surface.getByRole('button', { name: '接受补全' }).click();
+  const editor = await editorOf(surface);
+  await expect(editor.locator('strong')).toHaveCount(0);
+  await expect(editor).toContainText('<strong>这是补全文本</strong>');
+});
+
+test('completion rejection leaves the controlled document unchanged', async ({ page }) => {
+  const surface = await open(page, 'completion-review');
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveAttribute('data-status', 'ready');
+  await surface.getByRole('button', { name: '拒绝' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveCount(0);
+  await expect(page.getByTestId('completion-output')).toHaveText('发布前确认');
+});
+
+test('completion cancellation aborts the provider and removes the pending state', async ({ page }) => {
+  const surface = await open(page, 'completion-cancel');
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveAttribute('data-status', 'loading');
+  await surface.getByRole('button', { name: '取消生成' }).click();
+  await page.waitForTimeout(2_100);
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveCount(0);
+  await expect((await editorOf(surface))).toHaveText('取消中的补全');
+});
+
+test('failed completion exposes host error and retries to a reviewable result', async ({ page }) => {
+  const surface = await open(page, 'completion-recovery');
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  await expect(surface.getByRole('alert')).toHaveText('本地补全示例失败');
+  await surface.getByRole('button', { name: '重试' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveAttribute('data-status', 'ready');
+  await expect(surface.getByRole('button', { name: '接受补全' })).toBeVisible();
+});
+
+test('completion cannot apply after a controlled host replacement', async ({ page }) => {
+  const surface = await open(page, 'completion-stale');
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveAttribute('data-status', 'ready');
+  await page.getByRole('button', { name: '替换宿主文档' }).click();
+  await surface.getByRole('button', { name: '接受补全' }).click();
+  await expect(surface.getByRole('alert')).toHaveText('文档已更改，请重新生成补全');
+  await expect((await editorOf(surface))).toHaveText('宿主已经替换文档');
+});
+
+test('AI completion control is omitted when the host has no provider', async ({ page }) => {
+  const surface = await open(page, 'default');
+  await expect(surface.getByRole('button', { name: '生成补全' })).toHaveCount(0);
+  await expect(surface.getByRole('button', { name: '插入图片' })).toBeVisible();
+});
+
 test('Playground Controls change props in the current Story', async ({ page }) => {
   const story = `${prefix}--playground`;
   await page.goto(`http://127.0.0.1:6007/?path=/story/${encodeURIComponent(story)}`);
@@ -643,7 +794,7 @@ test('Playground declares an explicit control for every adjustable example prop'
     const include = current.parameters.controls.include as string[];
     return { include, controls: include.map(name => current.argTypes[name]?.control) };
   });
-  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'blockControls', 'blockPreset', 'linkPlaceholder', 'showOutput']);
+  expect(contract.include).toEqual(['format', 'value', 'label', 'description', 'placeholder', 'readOnly', 'disabled', 'showToolbar', 'toolbarPreset', 'emojiPreset', 'suggestions', 'mentionPreset', 'slashPreset', 'blockControls', 'blockPreset', 'imageUploadPreset', 'completionPreset', 'linkPlaceholder', 'showOutput']);
   expect(contract.controls.every(Boolean)).toBe(true);
 });
 
@@ -697,4 +848,24 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ path: `.logs/rich-text-editor/blocks-${theme}-${density}.png`, fullPage: true });
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: image upload surface remains compact and accessible`, async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
+  const surface = await open(page, 'media-narrow', `theme:${theme};density:${density}`);
+  await surface.getByRole('button', { name: '插入图片' }).click();
+  await expect(page.getByRole('heading', { name: '插入图片' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ path: `.logs/rich-text-editor/media-${theme}-${density}.png`, fullPage: true });
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: completion review remains compact and accessible`, async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
+  const surface = await open(page, 'media-narrow', `theme:${theme};density:${density}`);
+  await surface.getByRole('button', { name: '生成补全' }).click();
+  await expect(surface.locator('[data-slot="rich-text-editor-completion"]')).toHaveAttribute('data-status', 'ready');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ path: `.logs/rich-text-editor/completion-${theme}-${density}.png`, fullPage: true });
 });

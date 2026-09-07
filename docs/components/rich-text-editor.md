@@ -108,10 +108,38 @@ EDIT-03 安装固定版本的 Tiptap TaskList、TaskItem、TextAlign 与 Emoji �
 
 当前范围是文档的顶层块。嵌套列表项的独立句柄、跨编辑器拖放、多块框选操作和协作光标不在 EDIT-05 契约内。
 
+## 图片与宿主补全
+
+工具栏的 `image` 打开图片 Popover。地址插入始终可用；可选的 `uploadImage` 把本地文件交给宿主，并接收上传完成后的可持久化地址。Tiptap Image 只负责 schema 节点和渲染，组件不会猜测上传接口：
+
+```tsx
+<RichTextEditor
+  format="json"
+  value={document}
+  onValueChange={setDocument}
+  toolbarItems={['image', 'ai-complete', 'undo', 'redo']}
+  uploadImage={async (file, { signal, onProgress }) => {
+    const image = await upload(file, { signal, onProgress })
+    return { src: image.url, alt: image.alt }
+  }}
+  requestCompletion={async ({ snapshot, selection, selectedText, signal }) =>
+    generateSuggestion({ snapshot, selection, selectedText, signal })
+  }
+/>
+```
+
+- `uploadImage(file, { signal, onProgress })` 返回 `{ src, alt?, title? }`。组件验证 `imageAccept` 和 `imageMaxSize`，归一化 0–100 进度；关闭面板、取消或卸载会中止请求并忽略迟到结果。失败保留文件和重试入口。上传地址、鉴权、分片和持久化由宿主负责。
+- 地址和上传结果只允许 HTTP、HTTPS、Blob 或相对地址；Image 扩展保持 `allowBase64: false`。JSON 保存 image 节点属性，HTML 输出 `img`，Markdown 使用 `![alt](src "title")`。Blob 地址适合会话预览，长期保存前宿主应返回稳定 URL。
+- `requestCompletion(context)` 是可选宿主 Provider。context 包含当前五字段 snapshot、选区、选中文字与 AbortSignal；组件不携带模型 SDK、密钥、网络请求或自动发送策略。没有 Provider 时 `ai-complete` 从工具栏移除。
+- 补全结果先进入附着在正文下方的审阅面。接受后才在保存的选区执行真实插入事务；拒绝和取消不改变文档。生成期间可取消，失败可重试；如果宿主在建议生成后替换文档，接受会被拒绝并要求重新生成，避免把旧上下文写入新文档。
+- `onExtensionError` 接收 `{ kind: 'image-upload' | 'completion', message, cause }`，便于宿主记录错误。Storybook Provider 都是本地延时函数，不表示真实上传、AI 服务或外部连接。
+
+当前图片节点提供响应式展示、替代文字、拖动块和删除/历史能力；图片裁剪、调整尺寸、caption、图库管理及服务端清理由更专门的组件或宿主承担。补全首版处理纯文本候选；富 diff、多候选、流式 token 和协作建议不在 EDIT-06 契约内。
+
 ## 状态与布局
 
 `readOnly` 保留阅读和选择能力，`disabled` 暴露禁用语义；两者都停止文档编辑。空文档的 `placeholder` 是界面提示，不进入序列化内容。编辑区使用 `--rui-editor-min-height`、内容 padding、语义边界和 Graphite 排版 token；`editorClassName` 可用已有 token 类组合具体容器高度。
 
-当前 StarterKit 支持段落、标题、加粗/斜体/删除线/下划线、链接、列表、引用、代码块和分隔线；EDIT-03 额外组合任务列表、对齐与 Emoji，EDIT-04 组合斜杠命令与提及，EDIT-05 组合顶层块句柄和块事务。`EDIT-01` 验收基础模型和格式边界，`EDIT-02` 验收固定工具栏、格式状态、链接和历史，`EDIT-03` 验收扩展节点、键盘操作和三格式边界，`EDIT-04` 验收触发范围、同步/异步筛选、键盘退出和插入序列化，`EDIT-05` 验收受控拖拽/键盘移动、转换、删除、历史、焦点和序列化；图片上传和 AI 回调由后续 `EDIT-06` 提供。
+当前 StarterKit 支持段落、标题、加粗/斜体/删除线/下划线、链接、列表、引用、代码块和分隔线；EDIT-03 组合任务列表、对齐与 Emoji，EDIT-04 组合斜杠命令与提及，EDIT-05 组合顶层块句柄和块事务，EDIT-06 组合 Image 节点、上传生命周期和宿主补全审阅。`EDIT-01`～`EDIT-06` 分别验收内容模型、基本编辑、编辑扩展、建议、块操作和媒体/宿主回调边界。
 
 默认 HTML schema 会移除示例中的脚本和事件属性，但这不能替代消费应用对自定义扩展、URL 协议和服务端输出的安全策略。添加新节点或属性时，应同时定义解析、序列化、展示和输入校验边界。
