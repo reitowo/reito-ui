@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 37,
+    "complex": 38,
     "ai": 20
   },
-  "total": 127,
-  "stories": 1278,
+  "total": 128,
+  "stories": 1290,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "inline-edit",
+      "name": "InlineEdit 行内编辑",
+      "description": "显示与编辑槽、草稿提交取消、异步错误、只读和焦点恢复。",
+      "storyId": "复杂-inlineedit-行内编辑--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "InlineEditDemo",
+      "stories": 12
     },
     {
       "layer": "complex",

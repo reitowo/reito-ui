@@ -26,6 +26,7 @@ import { ConfirmPopover } from './confirm-popover.js';
 import { UserInfo } from './user-info.js';
 import { Banner } from './banner.js';
 import { Toolbar, type ToolbarGroup } from './toolbar.js';
+import { InlineEdit } from './inline-edit.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -194,6 +195,14 @@ export function ToolbarDemo() {
   return <div className="grid gap-[var(--rui-content-gap-sm)]">
     <Toolbar label="编辑操作" groups={groups} overflow="menu" maxVisibleItems={3} status="本地草稿" onItemSelect={item => item.kind === 'toggle' && setMessage(`${String(item.label)}：${item.pressed ? '关闭' : '打开'}`)} />
     <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function InlineEditDemo() {
+  const [value, setValue] = useState('Graphite 工作区');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <InlineEdit label="工作区名称" value={value} onValueChange={next => setValue(String(next))} required validate={next => String(next).length < 2 ? '名称至少需要 2 个字符' : undefined} />
+    <p role="status" className="text-xs text-muted-foreground">当前名称：{value}</p>
   </div>;
 }
 
@@ -443,6 +452,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'inline-edit', name: 'InlineEdit 行内编辑', description: '显示与编辑槽、草稿提交取消、异步错误、只读和焦点恢复。', component: InlineEditDemo },
   { id: 'toolbar', name: 'Toolbar 工具栏', description: '操作分组、切换状态、可达溢出菜单与方向键漫游焦点。', component: ToolbarDemo },
   { id: 'banner', name: 'Banner 通知条', description: '信息、动作、关闭、长内容和可控 live region 的紧凑通知。', component: BannerDemo },
   { id: 'user-info', name: 'User 信息行', description: '头像、主辅文字、状态和独立宿主操作的紧凑组合。', component: UserInfoDemo },

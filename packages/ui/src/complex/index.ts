@@ -35,3 +35,4 @@ export * from './confirm-popover.js';
 export * from './user-info.js';
 export * from './banner.js';
 export * from './toolbar.js';
+export * from './inline-edit.js';

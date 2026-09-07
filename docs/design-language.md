@@ -2,7 +2,7 @@
 
 Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧凑控件、可读内容和安静的窗口结构。Cursor 提供任务、会话与审查工作区的主参考，Claude Desktop 提供输入区与阅读空间的参考，Multica 提供任务信息结构参考。这里的颜色、尺寸、字体栈和 API 由本项目定义，**不是三款产品的官方 tokens，也不是像素复刻**。已实际查看的官方图像、官网演示及各自的证据边界见 [references.md](references.md)。
 
-0.4 的 Lab 是基础、复杂、AI 三层组件目录，当前提供 70 / 37 / 20 个组件族；Workbench 则将共享组件组合成 Agent、文件与差异、设置工作面。基础包含 50 个官方 shadcn / Base UI base-nova 生成族及 20 个本地组合族，复杂与 AI 在其上组合。组件库仍服务于设置、表格、表单、导航、弹层和其他桌面场景；例工程的结构不要求每个消费项目都变成聊天产品。
+0.4 的 Lab 是基础、复杂、AI 三层组件目录，当前提供 70 / 38 / 20 个组件族；Workbench 则将共享组件组合成 Agent、文件与差异、设置工作面。基础包含 50 个官方 shadcn / Base UI base-nova 生成族及 20 个本地组合族，复杂与 AI 在其上组合。组件库仍服务于设置、表格、表单、导航、弹层和其他桌面场景；例工程的结构不要求每个消费项目都变成聊天产品。
 
 ## 先确认什么
 
@@ -136,6 +136,8 @@ UserInfo 把 Avatar、名称、辅助说明、可读状态和独立宿主动作�
 Banner 复用 Alert 的表面和 Button 动作，承载与当前工作直接相关的短通知。默认静态通知是带名称的 region；动态到达且需要播报时才选择 polite/status 或 assertive/alert。长内容换行，动作和关闭入口在窄处仍可达；不把 Banner 用作统计条或装饰性宣传横幅。
 
 Toolbar 使用 XS/SM 控件、弱边界和单层背景组织短操作组。相关动作由 Separator 和可访问 group 名称分开；toggle 由受控 pressed 状态表达。窄工作面显式选择横向滚动或溢出菜单：关键动作可固定保留，低频动作进入菜单后仍可达，不能只用 CSS 隐藏。行内控件共享一个 Tab 停靠点，左右方向键与 Home/End 在可用动作间移动；菜单继续使用 Base UI 键盘与焦点恢复。动态状态由宿主提供 live region，Toolbar 尾部状态槽本身不擅自播报。
+
+InlineEdit 只承载单个短文本或数字的显示与编辑事务。显示态是轻量按钮，编辑态使用共享 Field/Input 和 XS 保存/取消动作；同步或异步失败保留草稿，取消与成功保存把焦点还给入口。只读值直接显示，不伪装成可点击内容。自定义显示/编辑槽仍应保留组件提供的标签、错误、禁用和焦点属性；多字段与富文本继续使用专用表单或编辑器。
 
 组件组合表达结构：WorkspacePane 提供 title / actions / children；Dialog 使用 DialogContent / DialogTitle / DialogDescription 等子组件。先查实际类型；不要假设每个组件都有通用 `header`、`size` 或 `tone` 属性。
 
