@@ -8,7 +8,7 @@ import { KeyValueEditorDemo } from '../../../../packages/ui/src/complex/catalog.
 
 const meta = {
   title: '复杂/KeyValueEditor 键值编辑', component: KeyValueEditorDemo,
-  parameters: { docs: { description: { component: '受控数组保留稳定行 ID 和无效草稿。支持文本、数字、布尔、选项和日期值，嵌套路径、逐项禁用/只读、草稿通知、重复键校验与异步提交。密码输入只提供视觉遮罩。' } } },
+  parameters: { docs: { description: { component: '受控数组保留稳定行 ID 和无效草稿。支持文本、数字、布尔、选项和日期值，嵌套路径、逐项禁用/只读、草稿通知、重复键校验，以及跨行校验、批量提交、取消/重置和异步错误定位。密码输入只提供视觉遮罩。' } } },
 } satisfies Meta<typeof KeyValueEditorDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -68,14 +68,51 @@ export const NestedPaths: Story = { name: '嵌套路径与草稿', render: funct
 export const PerEntryDisabled: Story = { name: '逐项禁用与只读', render: () => <EntryExample initial={[{ id: 'open', key: 'EDITABLE', value: 'local' }, { id: 'disabled', key: 'POLICY', value: 'managed', disabled: true }, { id: 'readonly', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} /> };
 export const Narrow: Story = { name: '窄宽度', render: () => <div className="max-w-80"><EntryExample initial={typedEntries} requireValues /></div> };
 
-type PlaygroundArgs = Pick<ComponentProps<typeof KeyValueEditor>, 'label' | 'requireValues' | 'maxRows' | 'disabled' | 'submitLabel'> & { kind: KeyValueKind; entryDisabled: boolean; secret: boolean; nestedPath: boolean; fieldKey: string; fieldValue: string };
+const transactionInitial: KeyValueEntry[] = [
+  { id: 'mode', key: 'MODE', value: 'local', kind: 'select', options: [{ value: 'local', label: '本地' }, { value: 'production', label: '生产' }, { value: 'reserved', label: '保留值' }] },
+  { id: 'port', key: 'PORT', value: '5173', kind: 'number', min: 1, max: 65535 },
+];
+const transactionDefaults: KeyValueEntry[] = [
+  { ...transactionInitial[0], value: 'local' },
+  { ...transactionInitial[1], value: '3000' },
+];
+
+function TransactionExample({ failure = false }: { failure?: boolean }) {
+  const [value, setValue] = useState(() => transactionInitial.map(entry => ({ ...entry })));
+  const [receipt, setReceipt] = useState('尚未应用');
+  return <div className="space-y-[var(--rui-content-gap)]">
+    <KeyValueEditor
+      value={value}
+      defaultValue={transactionDefaults}
+      onValueChange={setValue}
+      validateAll={async entries => {
+        await new Promise(resolve => setTimeout(resolve, 40));
+        const mode = entries.find(entry => entry.id === 'mode')?.value;
+        const port = Number(entries.find(entry => entry.id === 'port')?.value);
+        return mode === 'production' && port < 1024 ? { port: { value: '生产模式端口不能小于 1024' } } : {};
+      }}
+      onSubmit={async (entries, changes) => {
+        await new Promise(resolve => setTimeout(resolve, 60));
+        if (failure) throw new Error('本地配置服务暂时不可用，草稿仍然保留。');
+        if (entries.find(entry => entry.id === 'mode')?.value === 'reserved') return { entryErrors: { mode: { value: '该模式值已被策略保留' } }, error: '请修正标记的配置。' };
+        setReceipt(`已应用 ${entries.length} 项 / ${changes.length} 处更改`);
+      }}
+    />
+    <p data-testid="key-value-receipt" className="text-xs text-muted-foreground">{receipt}</p>
+  </div>;
+}
+
+export const Transactional: Story = { name: '批量事务与跨行校验', render: () => <TransactionExample /> };
+export const SubmitFailure: Story = { name: '提交失败并保留草稿', render: () => <TransactionExample failure /> };
+
+type PlaygroundArgs = Pick<ComponentProps<typeof KeyValueEditor>, 'label' | 'requireValues' | 'maxRows' | 'disabled' | 'submitLabel'> & { kind: KeyValueKind; entryDisabled: boolean; secret: boolean; nestedPath: boolean; fieldKey: string; fieldValue: string; transactional: boolean; submitBehavior: 'success' | 'field-error' | 'error' };
 function KeyValuePlayground(args: PlaygroundArgs) {
  const [value, setValue] = useState<KeyValueEntry[]>([]);
  useEffect(() => setValue([{ id: 'example', key: args.fieldKey, value: args.fieldValue, kind: args.kind, disabled: args.entryDisabled, secret: args.secret, path: args.nestedPath ? ['workspace', args.fieldKey.toLowerCase()] : undefined, options: args.kind === 'select' ? [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] : undefined }]), [args.entryDisabled, args.fieldKey, args.fieldValue, args.kind, args.nestedPath, args.secret]);
- return <KeyValueEditor label={args.label} requireValues={args.requireValues} maxRows={args.maxRows} disabled={args.disabled} submitLabel={args.submitLabel} value={value} onValueChange={setValue} onSubmit={() => {}} />;
+ return <KeyValueEditor label={args.label} requireValues={args.requireValues} maxRows={args.maxRows} disabled={args.disabled} submitLabel={args.submitLabel} value={value} defaultValue={[{ id: 'example', key: 'WORKSPACE_NAME', value: 'Graphite' }]} onValueChange={setValue} onSubmit={args.transactional ? async () => args.submitBehavior === 'error' ? { error: '示例提交失败，草稿已保留。' } : args.submitBehavior === 'field-error' ? { entryErrors: { example: { value: '示例字段错误' } } } : undefined : undefined} />;
 }
 export const Playground: StoryObj<PlaygroundArgs> = {
- name: '参数调试', args: { label: '键值配置', requireValues: false, maxRows: 5, disabled: false, submitLabel: '应用配置', kind: 'text', entryDisabled: false, secret: false, nestedPath: false, fieldKey: 'WORKSPACE_NAME', fieldValue: 'Graphite' },
- argTypes: { label: textControl, requireValues: booleanControl, maxRows: rangeControl(1, 10), disabled: booleanControl, submitLabel: textControl, kind: recipeControl(choiceControl(['text', 'number', 'boolean', 'select', 'date']), 'value[0].kind'), entryDisabled: recipeControl(booleanControl, 'value[0].disabled'), secret: recipeControl(booleanControl, 'value[0].secret'), nestedPath: recipeControl(booleanControl, 'value[0].path'), fieldKey: recipeControl(textControl, 'value[0].key'), fieldValue: recipeControl(textControl, 'value[0].value') },
- parameters: { controls: { include: ['kind', 'entryDisabled', 'secret', 'nestedPath', 'fieldKey', 'fieldValue', 'requireValues', 'maxRows', 'disabled', 'label', 'submitLabel'] } }, render: args => <KeyValuePlayground {...args} />,
+ name: '参数调试', args: { label: '键值配置', requireValues: false, maxRows: 5, disabled: false, submitLabel: '应用配置', kind: 'text', entryDisabled: false, secret: false, nestedPath: false, fieldKey: 'WORKSPACE_NAME', fieldValue: 'Graphite', transactional: true, submitBehavior: 'success' },
+ argTypes: { label: textControl, requireValues: booleanControl, maxRows: rangeControl(1, 10), disabled: booleanControl, submitLabel: textControl, kind: recipeControl(choiceControl(['text', 'number', 'boolean', 'select', 'date']), 'value[0].kind'), entryDisabled: recipeControl(booleanControl, 'value[0].disabled'), secret: recipeControl(booleanControl, 'value[0].secret'), nestedPath: recipeControl(booleanControl, 'value[0].path'), fieldKey: recipeControl(textControl, 'value[0].key'), fieldValue: recipeControl(textControl, 'value[0].value'), transactional: recipeControl(booleanControl, '启用提交、取消与重置。'), submitBehavior: recipeControl(choiceControl(['success', 'field-error', 'error']), 'onSubmit 返回结果。') },
+ parameters: { controls: { include: ['kind', 'entryDisabled', 'secret', 'nestedPath', 'transactional', 'submitBehavior', 'fieldKey', 'fieldValue', 'requireValues', 'maxRows', 'disabled', 'label', 'submitLabel'] } }, render: args => <KeyValuePlayground {...args} />,
 };

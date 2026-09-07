@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1075,
+  "stories": 1077,
   "entries": [
     {
       "layer": "basic",
@@ -945,7 +945,7 @@
       "storyId": "复杂-keyvalueeditor-键值编辑--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "KeyValueEditorDemo",
-      "stories": 14
+      "stories": 16
     },
     {
       "layer": "complex",

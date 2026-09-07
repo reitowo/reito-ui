@@ -13,7 +13,7 @@ async function open(page: Page, story: string, globals = 'theme:dark;density:com
 test('existing add, duplicate validation, secret reveal, submit and remove remain intact', async ({ page }) => {
   const editor = await open(page, 'interactive');
   await expect(editor.getByLabel('键 3')).toHaveCount(0);
-  await expect(editor.getByRole('status')).toContainText('2 项配置有效');
+  await expect(editor.getByRole('status')).toContainText('1 项更改尚未应用');
   await expect(editor.getByLabel('值 2（敏感）')).toHaveAttribute('type', 'password');
 });
 
