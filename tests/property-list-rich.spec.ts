@@ -26,7 +26,7 @@ test('boolean adapter edits a boolean value through the shared Switch', async ({
   const toggle = page.getByRole('switch', { name: '自动保存' });
   await expect(toggle).toBeFocused();
   await toggle.click();
-  await page.getByRole('button', { name: '保存' }).click();
+  await page.getByRole('button', { name: '保存字段' }).click();
   await expect(page.getByText('已关闭', { exact: true })).toBeVisible();
 });
 
@@ -34,7 +34,7 @@ test('select adapter saves an enabled option', async ({ page }) => {
   await open(page, 'select-property');
   await page.getByRole('button', { name: '编辑界面密度' }).click();
   await page.getByRole('combobox', { name: '界面密度' }).selectOption('comfortable');
-  await page.getByRole('button', { name: '保存' }).click();
+  await page.getByRole('button', { name: '保存字段' }).click();
   await expect(page.getByText('舒适', { exact: true })).toBeVisible();
 });
 
@@ -45,7 +45,7 @@ test('date adapter keeps local date text and native bounds', async ({ page }) =>
   await expect(input).toHaveAttribute('type', 'date');
   await expect(input).toHaveAttribute('min', '2026-09-01');
   await input.fill('2026-10-15');
-  await page.getByRole('button', { name: '保存' }).click();
+  await page.getByRole('button', { name: '保存字段' }).click();
   await expect(page.getByText('2026-10-15', { exact: true })).toBeVisible();
 });
 
@@ -55,7 +55,7 @@ test('nested path is reported for drafts and committed values', async ({ page })
   const input = page.getByRole('spinbutton', { name: '字号' });
   await input.fill('16');
   await expect(page.getByRole('status')).toHaveText('草稿 editor.appearance.fontSize = 16');
-  await page.getByRole('button', { name: '保存' }).click();
+  await page.getByRole('button', { name: '保存字段' }).click();
   await expect(page.getByRole('status')).toHaveText('已保存 editor.appearance.fontSize = 16');
 });
 
@@ -63,7 +63,7 @@ test('number adapter enforces item bounds before custom validation', async ({ pa
   await open(page, 'nested-paths');
   await page.getByRole('button', { name: '编辑字号' }).click();
   await page.getByRole('spinbutton', { name: '字号' }).fill('30');
-  await page.getByRole('button', { name: '保存' }).click();
+  await page.getByRole('button', { name: '保存字段' }).click();
   await expect(page.getByRole('alert')).toHaveText('不能大于 24');
 });
 

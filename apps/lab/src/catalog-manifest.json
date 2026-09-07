@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1073,
+  "stories": 1075,
   "entries": [
     {
       "layer": "basic",
@@ -865,7 +865,7 @@
       "storyId": "复杂-propertylist-属性编辑--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "PropertyListDemo",
-      "stories": 12
+      "stories": 14
     },
     {
       "layer": "complex",
