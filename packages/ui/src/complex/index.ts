@@ -32,3 +32,4 @@ export * from './terminal-prompt.js';
 export * from './rich-text-editor.js';
 export * from './split-button.js';
 export * from './confirm-popover.js';
+export * from './user-info.js';

@@ -99,6 +99,12 @@ COMBO-CONFIRM-01 实际查看 PrimeVue 当前 [ConfirmPopup](https://primevue.or
 
 Reito UI 使用自己的声明式异步状态、无箭头 Graphite 浮层和原创 tokens，增加外部 pending/error、Promise 成功关闭、失败 alert 与重试、重复提交保护。没有复制 PrimeVue 服务 API、Vue 源码、CSS、品牌颜色、图标、字体、模板或资源。
 
+## User 信息行组合（2026-09-07 工作区增量）
+
+COMBO-USER-01 实际查看 Nuxt UI 4.1.1 当前 [User](https://ui.nuxt.com/docs/components/user) 浅色桌面文档，视口 1280 × 900。官方示例将 name、description 与 Avatar 组合为紧凑信息行，并列出 chip、size、orientation 和 link 配方；截图保存在 `.logs/references/nuxt-ui-user-2026-09-07.png` 与 `.logs/references/nuxt-ui-user-avatar-2026-09-07.png`。头像基础能力同时核对 PrimeVue 当前 [Avatar](https://primevue.org/avatar/) 的图片、文本、图标、尺寸和可访问名称边界。
+
+Reito UI 采用同类信息层级，但使用自己的静态 React 容器、Graphite Avatar/Button 和语义 tokens，增加可读状态、独立动作 loading/disabled、整行禁用与长文本 title。没有复制 Nuxt UI / PrimeVue 的 Vue API、源码、CSS、品牌色、字体、chip、链接、纵向模板或示例资源。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

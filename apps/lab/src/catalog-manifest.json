@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 34,
+    "complex": 35,
     "ai": 20
   },
-  "total": 124,
-  "stories": 1246,
+  "total": 125,
+  "stories": 1256,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "user-info",
+      "name": "User 信息行",
+      "description": "头像、主辅文字、状态和独立宿主操作的紧凑组合。",
+      "storyId": "复杂-user-信息行--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "UserInfoDemo",
+      "stories": 10
     },
     {
       "layer": "complex",

@@ -1,7 +1,7 @@
 import { useId, useMemo, useState, type ComponentType } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { DateRange } from 'react-day-picker';
-import { Download, FileText, FolderOpen, GitBranch, Search, Settings, Terminal, Trash2 } from 'lucide-react';
+import { Download, FileText, FolderOpen, GitBranch, Mail, MoreHorizontal, Search, Settings, Terminal, Trash2 } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Badge } from '../primitives/badge.js';
 import { Input } from '../primitives/input.js';
@@ -23,6 +23,7 @@ import { TerminalPrompt, type TerminalPromptEntry } from './terminal-prompt.js';
 import { RichTextEditor } from './rich-text-editor.js';
 import { SplitButton, type SplitButtonItem } from './split-button.js';
 import { ConfirmPopover } from './confirm-popover.js';
+import { UserInfo } from './user-info.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -142,6 +143,25 @@ export function ConfirmPopoverDemo() {
       destructive
       confirmLabel="删除"
       onConfirm={() => setMessage('已删除本地示例草稿。')}
+    />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function UserInfoDemo() {
+  const [message, setMessage] = useState('这是本地示例用户。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <UserInfo
+      name="Reito"
+      description="组件系统维护者"
+      fallback="R"
+      status="在线"
+      statusTone="success"
+      variant="muted"
+      actions={[
+        { id: 'message', label: '发送本地示例消息', icon: <Mail aria-hidden="true" />, onSelect: () => setMessage('已触发消息操作（本地示例）。') },
+        { id: 'more', label: '更多用户操作', icon: <MoreHorizontal aria-hidden="true" />, disabled: true, onSelect: () => undefined },
+      ]}
     />
     <p role="status" className="text-xs text-muted-foreground">{message}</p>
   </div>;
@@ -393,6 +413,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'user-info', name: 'User 信息行', description: '头像、主辅文字、状态和独立宿主操作的紧凑组合。', component: UserInfoDemo },
   { id: 'confirm-popover', name: 'ConfirmPopover 锚点确认', description: '贴近触发器的确认、取消、异步进度、错误与焦点恢复。', component: ConfirmPopoverDemo },
   { id: 'split-button', name: 'SplitButton 拆分按钮', description: '主操作与相关菜单共享边缘，独立控制忙碌、禁用、标签和快捷键。', component: SplitButtonDemo },
   { id: 'form', name: 'Form 表单管理', description: 'Schema、跨字段与异步校验、提交重置、嵌套字段和数组。', component: FormDemo },
