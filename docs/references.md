@@ -164,6 +164,10 @@ Capability scope uses PrimeVue 5 [OrderList](https://primevue.dev/orderlist/) an
 
 能力范围核对 PrimeVue 5 [DataView](https://primevue.dev/dataview/) 的列表/网格布局、分页、排序、loading 和带 `aria-pressed` 的布局按钮。Reito UI 定义自己的单一集合投影、受控布局偏好、查询复位页码、稳定 ID 跨布局选择、当前页批量范围和 Graphite 响应式卡片；网格自定义只替换内容槽，不另建业务状态。未复制上游源码、CSS、示例或资源。
 
+### LogViewer 大数据与跟随 · 2026-09-07
+
+实现核对当前安装 `@tanstack/react-virtual@3.14.10` 和官方 [Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer)：动态 `measureElement`、稳定 `getItemKey`、末尾锚点、追加跟随、初始偏移、范围与末尾定位构成日志虚拟窗口。能力范围同时核对 PrimeVue 5 [VirtualScroller](https://primevue.dev/virtualscroller/) 的大数据、lazy 与 loading 状态。Reito UI 复用自己的 VirtualList，定义结构化等级/查询、宿主历史分页、用户滚动暂停、完整受控视图偏好和 Graphite 紧凑日志行；不解析 ANSI、不执行终端命令，也不复制上游源码、CSS、示例或资源。
+
 ### DataTable 受控远程状态 · 2026-09-07
 
 行为引擎使用固定的 `@tanstack/react-table@8.21.3`（MIT，许可已从安装包读取）。官方分页文档明确 manual pagination 接收已经分页的数据，并需要 `rowCount` 或 `pageCount` 得知远程总量；排序文档要求客户端/服务端筛选、排序和分页保持一致，受控排序通过 state 与回调交给宿主；行选择文档说明受控 selection 可以保留当前 `data` 中不存在的稳定 ID。来源：[Pagination Guide](https://tanstack.com/table/v8/docs/guide/pagination)、[Sorting Guide](https://tanstack.com/table/v8/docs/guide/sorting)、[Row Selection Guide](https://tanstack.com/table/v8/docs/guide/row-selection)。

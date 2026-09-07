@@ -255,7 +255,7 @@ export function LogViewerDemo() {
   const [entries, setEntries] = useState(demoLogEntries);
   const [serial, setSerial] = useState(1);
   return <div className="space-y-[var(--rui-content-gap)]">
-    <LogViewer entries={entries} onClear={() => setEntries([])} />
+    <LogViewer entries={entries} onClear={() => setEntries([])} viewportClassName="h-56" />
     <Button size="sm" variant="outline" onClick={() => {
       setEntries(current => [...current, { id: `added-${serial}`, level: 'warning', time: '09:30', message: `新增本地日志 ${serial}` }]);
       setSerial(current => current + 1);
@@ -351,7 +351,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、独立滚动面板、指针与键盘分栏。', component: WorkspaceDemo },
   { id: 'command-search', name: 'CommandSearch 命令搜索', description: '分组、关键词筛选、空态与中文输入法保护。', component: CommandSearchDemo },
   { id: 'diff-viewer', name: 'DiffViewer 差异查看', description: '显式结构化行与宿主配对，统一/并排切换与长行处理。', component: DiffViewerDemo },
-  { id: 'log-viewer', name: 'LogViewer 日志查看', description: '搜索、级别筛选、滚动暂停与跟随，以及宿主清除回调。', component: LogViewerDemo },
+  { id: 'log-viewer', name: 'LogViewer 日志查看', description: '动态虚拟日志、查询、稳定增量加载、暂停跟随与受控视图偏好。', component: LogViewerDemo },
   { id: 'key-value-editor', name: 'KeyValueEditor 键值编辑', description: '增删键值、重复和必填验证、可选敏感值遮罩。', component: KeyValueEditorDemo },
   { id: 'resource-list', name: 'ResourceList 资源列表', description: '本地/远程查询、虚拟窗口、增量加载与跨窗口稳定选择。', component: ResourceListDemo },
   { id: 'resource-view', name: 'ResourceView 资源视图', description: '同一集合状态的列表/网格切换、搜索、分页、选择与动作。', component: ResourceViewDemo },

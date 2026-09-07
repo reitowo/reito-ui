@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1040,
+  "stories": 1051,
   "entries": [
     {
       "layer": "basic",
@@ -931,11 +931,11 @@
       "layer": "complex",
       "id": "log-viewer",
       "name": "LogViewer 日志查看",
-      "description": "搜索、级别筛选、滚动暂停与跟随，以及宿主清除回调。",
+      "description": "动态虚拟日志、查询、稳定增量加载、暂停跟随与受控视图偏好。",
       "storyId": "复杂-logviewer-日志查看--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "LogViewerDemo",
-      "stories": 8
+      "stories": 19
     },
     {
       "layer": "complex",

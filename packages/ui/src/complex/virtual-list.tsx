@@ -4,7 +4,11 @@ import { Button } from '../primitives/button.js';
 import { cn } from '../lib/utils.js';
 
 export interface VirtualListRange { startIndex: number; endIndex: number; visibleStartIndex: number; visibleEndIndex: number }
-export interface VirtualListHandle { scrollToIndex: (index: number, align?: 'start' | 'center' | 'end' | 'auto') => void }
+export interface VirtualListHandle {
+  scrollToIndex: (index: number, align?: 'start' | 'center' | 'end' | 'auto') => void;
+  scrollToEnd: () => void;
+  isAtEnd: (threshold?: number) => boolean;
+}
 export interface VirtualListProps<T> {
   count: number;
   getItem: (index: number) => T | undefined;
@@ -24,12 +28,14 @@ export interface VirtualListProps<T> {
   dynamic?: boolean;
   /** Stay at the end only when the viewport was already at the end before an append. */
   followOnAppend?: boolean;
+  /** Initial viewport edge. Useful for logs and feeds that open at the latest item. */
+  initialPosition?: 'start' | 'end';
   ref?: Ref<VirtualListHandle>;
 }
 
 /** Fixed token-height or measured rows. The host owns data fetching and stable item keys. */
 export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderPlaceholder, onRangeChange, overscan = 4, label,
-  loading = false, error, onRetry, emptyMessage = '暂无项目', className, viewportClassName, dynamic = false, followOnAppend = false, ref }: VirtualListProps<T>) {
+  loading = false, error, onRetry, emptyMessage = '暂无项目', className, viewportClassName, dynamic = false, followOnAppend = false, initialPosition = 'start', ref }: VirtualListProps<T>) {
   const viewport = useRef<HTMLDivElement>(null);
   const probe = useRef<HTMLDivElement>(null);
   const densityAnchor = useRef<{ key: Key; relativeTop: number } | null>(null);
@@ -74,7 +80,7 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
     count: itemCount, getScrollElement: () => viewport.current,
     estimateSize: useCallback(() => rowHeight || 1, [rowHeight]),
     getItemKey, overscan: Math.max(0, Math.floor(Number.isFinite(overscan) ? overscan : 0)), enabled: rowHeight > 0 && !error,
-    anchorTo: 'end', followOnAppend,
+    anchorTo: 'end', followOnAppend, initialOffset: initialPosition === 'end' ? () => Number.MAX_SAFE_INTEGER : 0,
     rangeExtractor: useCallback((range: Range) => {
       const indexes = defaultRangeExtractor(range);
       const retained = [focusedIndex, dataAnchorIndex].filter(index => index >= 0 && !indexes.includes(index));
@@ -154,10 +160,14 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
       setFocusedKey(null);
     }
   }, [focusedKey, focusedIndex]);
-  useImperativeHandle(ref, () => ({ scrollToIndex: (index, align = 'auto') => {
-    if (!itemCount || !Number.isFinite(index)) return;
-    virtualizer.scrollToIndex(Math.min(itemCount - 1, Math.max(0, Math.floor(index))), { align });
-  } }), [itemCount, virtualizer]);
+  useImperativeHandle(ref, () => ({
+    scrollToIndex: (index, align = 'auto') => {
+      if (!itemCount || !Number.isFinite(index)) return;
+      virtualizer.scrollToIndex(Math.min(itemCount - 1, Math.max(0, Math.floor(index))), { align });
+    },
+    scrollToEnd: () => { if (itemCount) virtualizer.scrollToEnd({ behavior: 'auto' }); },
+    isAtEnd: threshold => virtualizer.isAtEnd(threshold),
+  }), [itemCount, virtualizer]);
   const rows = virtualizer.getVirtualItems();
   const start = rows[0]?.index ?? -1;
   const end = rows[rows.length - 1]?.index ?? -1;
