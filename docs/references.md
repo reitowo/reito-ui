@@ -109,6 +109,10 @@ Reito UI 采用同类信息层级，但使用自己的静态 React 容器、Grap
 
 COMBO-BANNER-01 实际查看 Nuxt UI 4.1.1 当前 [Banner](https://ui.nuxt.com/docs/components/banner) 浅色桌面文档，核对 title、icon、color、actions 与 close 的组合，截图为 `.logs/references/nuxt-ui-banner-2026-09-07.png`。Reito UI 复用自己的 Alert/Button 和语义 tokens，补充明确的 live region 边界与受控关闭；未复制 Vue API、源码、CSS、品牌色、动画或资源。
 
+## Toolbar 组合（2026-09-07 工作区增量）
+
+COMBO-TOOLBAR-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardToolbar](https://ui.nuxt.com/docs/components/dashboard-toolbar) 与 PrimeVue 5.0.1 当前 [Toolbar](https://primevue.org/toolbar/) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/nuxt-ui-dashboard-toolbar-2026-09-07.png` 与 `.logs/references/primevue-toolbar-2026-09-07.png`。参考只用于核对短横向操作容器、Dashboard header 位置和 start/center/end 分区。Reito UI 使用自己的 React 数据契约、Graphite tokens 与 Button/Separator/DropdownMenu，增加 action/toggle、never/auto/always 溢出优先级、滚动策略和 roving focus；未复制 Vue API、源码、CSS、品牌色、字体、图标或资源。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

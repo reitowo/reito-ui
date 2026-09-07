@@ -1,7 +1,7 @@
 import { useId, useMemo, useState, type ComponentType } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { DateRange } from 'react-day-picker';
-import { Download, FileText, FolderOpen, GitBranch, Mail, MoreHorizontal, Search, Settings, Terminal, Trash2 } from 'lucide-react';
+import { Bold, Download, Eye, FileText, FolderOpen, GitBranch, Italic, Mail, MoreHorizontal, PanelRightOpen, Search, Settings, Terminal, Trash2, Undo2 } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Badge } from '../primitives/badge.js';
 import { Input } from '../primitives/input.js';
@@ -25,6 +25,7 @@ import { SplitButton, type SplitButtonItem } from './split-button.js';
 import { ConfirmPopover } from './confirm-popover.js';
 import { UserInfo } from './user-info.js';
 import { Banner } from './banner.js';
+import { Toolbar, type ToolbarGroup } from './toolbar.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
@@ -172,6 +173,26 @@ export function BannerDemo() {
   const [message, setMessage] = useState('本地通知尚未处理。');
   return <div className="grid gap-[var(--rui-content-gap-sm)]">
     <Banner title="组件索引可以更新" description="这是本地示例，不会请求远端服务。" tone="info" action={{ label: '查看', onSelect: () => setMessage('已触发查看操作（本地示例）。') }} onDismiss={() => setMessage('已关闭本地通知。')} />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function ToolbarDemo() {
+  const [bold, setBold] = useState(true);
+  const [message, setMessage] = useState('等待本地操作。');
+  const groups: ToolbarGroup[] = [
+    { id: 'history', label: '历史', items: [{ id: 'undo', label: '撤销', icon: <Undo2 aria-hidden="true" />, shortcut: 'Control+Z', onSelect: () => setMessage('已触发撤销（本地示例）。') }] },
+    { id: 'format', label: '格式', items: [
+      { id: 'bold', label: '加粗', icon: <Bold aria-hidden="true" />, kind: 'toggle', pressed: bold, onPressedChange: setBold },
+      { id: 'italic', label: '斜体', icon: <Italic aria-hidden="true" />, kind: 'toggle', pressed: false, onPressedChange: pressed => setMessage(pressed ? '已打开斜体。' : '已关闭斜体。') },
+    ] },
+    { id: 'view', label: '视图', items: [
+      { id: 'preview', label: '预览', icon: <Eye aria-hidden="true" />, overflow: 'always', onSelect: () => setMessage('已打开本地预览。') },
+      { id: 'inspector', label: '检查器', icon: <PanelRightOpen aria-hidden="true" />, overflow: 'always', onSelect: () => setMessage('已打开本地检查器。') },
+    ] },
+  ];
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <Toolbar label="编辑操作" groups={groups} overflow="menu" maxVisibleItems={3} status="本地草稿" onItemSelect={item => item.kind === 'toggle' && setMessage(`${String(item.label)}：${item.pressed ? '关闭' : '打开'}`)} />
     <p role="status" className="text-xs text-muted-foreground">{message}</p>
   </div>;
 }
@@ -422,6 +443,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'toolbar', name: 'Toolbar 工具栏', description: '操作分组、切换状态、可达溢出菜单与方向键漫游焦点。', component: ToolbarDemo },
   { id: 'banner', name: 'Banner 通知条', description: '信息、动作、关闭、长内容和可控 live region 的紧凑通知。', component: BannerDemo },
   { id: 'user-info', name: 'User 信息行', description: '头像、主辅文字、状态和独立宿主操作的紧凑组合。', component: UserInfoDemo },
   { id: 'confirm-popover', name: 'ConfirmPopover 锚点确认', description: '贴近触发器的确认、取消、异步进度、错误与焦点恢复。', component: ConfirmPopoverDemo },

@@ -48,13 +48,15 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、36 个复�
 
 需要按钮尺寸、输入焦点、菜单键盘行为或主题修复时，先改共享 token 或对应基础组件。新增产品页面应组合已有 API；选择器的 `onValueChange`、复选框的 `onCheckedChange` 等必须按实际类型使用，不能沿用旧 API 名称。
 
-## 复杂层：36 个组件族
+## 复杂层：37 个组件族
 
 公共导出见 [`complex/index.ts`](../packages/ui/src/complex/index.ts)，可交互演示见 [`complex/catalog.tsx`](../packages/ui/src/complex/catalog.tsx)。
 
 | 组件族及实际导出 | 关键契约与边界 |
 | --- | --- |
-| [`Banner`](../packages/ui/src/complex/banner.tsx) | 必填 `title`；复用 Alert/Button，支持五种语义、单动作、关闭、受控可见性和显式 off/polite/assertive live 边界。长内容与窄容器保留操作；不用于装饰统计条。 |`n| [`UserInfo`](../packages/ui/src/complex/user-info.tsx) | 必填 `name`；组合 Avatar、辅助说明、文字状态与独立动作。长字符串截断并保留 title，缺头像自动生成缩写；动作可分别 disabled/loading，整行 disabled 禁用全部动作。三档尺寸和三种表面只消费共享 tokens；导航、选择与菜单由宿主组合。 |
+| [`Toolbar`](../packages/ui/src/complex/toolbar.tsx) | 必填 `label / groups`；action/toggle 项共享稳定 ID、标签、图标、快捷键、disabled/loading 和宿主回调。`scroll` 保留全部行内动作，`menu` 按容量与 never/auto/always 优先级移动动作。行内使用 roving focus，菜单复用 Base UI 键盘和焦点恢复。 |
+| [`Banner`](../packages/ui/src/complex/banner.tsx) | 必填 `title`；复用 Alert/Button，支持五种语义、单动作、关闭、受控可见性和显式 off/polite/assertive live 边界。长内容与窄容器保留操作；不用于装饰统计条。 |
+| [`UserInfo`](../packages/ui/src/complex/user-info.tsx) | 必填 `name`；组合 Avatar、辅助说明、文字状态与独立动作。长字符串截断并保留 title，缺头像自动生成缩写；动作可分别 disabled/loading，整行 disabled 禁用全部动作。三档尺寸和三种表面只消费共享 tokens；导航、选择与菜单由宿主组合。 |
 | [`ConfirmPopover`](../packages/ui/src/complex/confirm-popover.tsx) | 必填 `trigger / title / onConfirm`；锚点 modal Popover 提供取消、Escape、焦点循环与关闭后触发器焦点恢复。Promise 确认提供 pending、重复提交保护、失败 alert 与重试；`pending / error / open` 也可由宿主控制。长条款或需要输入的确认使用 AlertDialog。 |
 | [`SplitButton`](../packages/ui/src/complex/split-button.tsx) | `label / onAction` 定义默认命令，`items` 定义稳定 ID、标签、图标、快捷键、禁用/忙碌与条目回调。整组、主按钮和菜单按钮可独立禁用；主操作、菜单内容与单条目可独立 loading。`open / onOpenChange` 可控制弹层；菜单复用 Base UI 键盘、类型查找和焦点恢复。快捷键属性只声明宿主绑定，不注册全局监听。 |
 | [`DataTable`](../packages/ui/src/complex/data-table.tsx) | 泛型 `data` / `columns` 与稳定 `getRowId`；本地或 manual 远程筛选、排序、分页，类型化列筛选、列管理/固定/宽度，层级展开、详情、数据行分组/聚合，带校验和失败恢复的编辑事务，范围明确的导出请求和版本化视图偏好，以及可定位、动态测量并报告加载边界的行窗口化。所有状态、持久化、文件生成、网络和缓存均可由宿主接管。 |

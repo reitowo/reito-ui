@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 36,
+    "complex": 37,
     "ai": 20
   },
-  "total": 126,
-  "stories": 1267,
+  "total": 127,
+  "stories": 1278,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "toolbar",
+      "name": "Toolbar 工具栏",
+      "description": "操作分组、切换状态、可达溢出菜单与方向键漫游焦点。",
+      "storyId": "复杂-toolbar-工具栏--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ToolbarDemo",
+      "stories": 11
     },
     {
       "layer": "complex",
