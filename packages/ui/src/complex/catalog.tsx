@@ -343,7 +343,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
   { id: 'date-range-picker', name: 'DateRangePicker 日期范围', description: '日历、日期输入、上下界校验、应用与取消。', component: DateRangePickerDemo },
   { id: 'date-time-range-picker', name: 'DateTimeRangePicker 日期时间范围', description: '起止本地日期时间、精度、范围校验、时区元数据与稳定提交。', component: DateTimeRangePickerDemo },
-  { id: 'file-upload', name: 'FileUpload 文件队列', description: '文件类型、大小、重复与数量校验；仅本地队列。', component: FileUploadDemo },
+  { id: 'file-upload', name: 'FileUpload 文件上传', description: '本地校验、受控生命周期、进度，以及宿主 transport 的开始、取消与重试。', component: FileUploadDemo },
   { id: 'property-list', name: 'PropertyList 属性编辑', description: '逐项编辑、数字验证、取消与只读字段。', component: PropertyListDemo },
   { id: 'timeline', name: 'Timeline 时间线', description: '按时间呈现完成、进行、失败和等待状态。', component: TimelineDemo },
   { id: 'stepper', name: 'Stepper 分步流程', description: '可导航步骤、必填门槛与本地确认流程。', component: StepperDemo },

@@ -5,7 +5,7 @@
     "ai": 19
   },
   "total": 115,
-  "stories": 1051,
+  "stories": 1058,
   "entries": [
     {
       "layer": "basic",
@@ -850,12 +850,12 @@
     {
       "layer": "complex",
       "id": "file-upload",
-      "name": "FileUpload 文件队列",
-      "description": "文件类型、大小、重复与数量校验；仅本地队列。",
-      "storyId": "复杂-fileupload-本地文件队列--playground",
+      "name": "FileUpload 文件上传",
+      "description": "本地校验、受控生命周期、进度，以及宿主 transport 的开始、取消与重试。",
+      "storyId": "复杂-fileupload-文件上传--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "FileUploadDemo",
-      "stories": 6
+      "stories": 13
     },
     {
       "layer": "complex",
