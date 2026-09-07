@@ -285,7 +285,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'reorderable-tree-view', name: 'ReorderableTreeView 树重排', description: '受控树内与跨树移动、合法落点和键盘等价操作。', component: ReorderableTreeViewDemo },
   { id: 'tree-select', name: 'TreeSelect 树选择', description: '弹层树搜索、单选/复选、级联半选、懒加载与焦点恢复。', component: TreeSelectDemo },
   { id: 'cascader', name: 'Cascader 级联选择', description: '任意层级的路径选择、叶节点边界、懒加载和方向键导航。', component: CascaderDemo },
-  { id: 'tree-table', name: 'TreeTable 树表格', description: '层级表格、展开、树行键盘、单选与级联三态复选。', component: TreeTableDemo },
+  { id: 'tree-table', name: 'TreeTable 树表格', description: '层级表格、筛选、列视图、根分页、lazy 子节点与稳定选择。', component: TreeTableDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
