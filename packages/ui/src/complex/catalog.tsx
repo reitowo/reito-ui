@@ -20,7 +20,7 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, TreeSelect, TreeTable,
+  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, Transfer, TreeSelect, TreeTable,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type TimelineEvent,
 } from './index.js';
@@ -125,6 +125,19 @@ export const treeTableColumns = [
 export function TreeTableDemo() {
   const [checked, setChecked] = useState(['button']);
   return <TreeTable nodes={treeTableNodes} columns={treeTableColumns} selectionMode="checkbox" checked={checked} onCheckedChange={setChecked} defaultExpanded={['src', 'components']} caption="项目文件" />;
+}
+
+export const transferItems = [
+  { value: 'read', label: '读取文件', description: '查看工作区内容', group: '文件' },
+  { value: 'write', label: '写入文件', description: '修改工作区内容', group: '文件' },
+  { value: 'terminal', label: '运行终端', description: '执行本地命令', group: '工具' },
+  { value: 'browser', label: '使用浏览器', description: '打开本地预览', group: '工具' },
+  { value: 'admin', label: '管理策略', description: '由宿主锁定', group: '系统', disabled: true },
+];
+
+export function TransferDemo() {
+  const [value, setValue] = useState(['read']);
+  return <Transfer items={transferItems} value={value} onValueChange={setValue} sourceLabel="可用权限" targetLabel="已授予权限" />;
 }
 
 export function SearchFilterBarDemo() {
@@ -286,6 +299,7 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'tree-select', name: 'TreeSelect 树选择', description: '弹层树搜索、单选/复选、级联半选、懒加载与焦点恢复。', component: TreeSelectDemo },
   { id: 'cascader', name: 'Cascader 级联选择', description: '任意层级的路径选择、叶节点边界、懒加载和方向键导航。', component: CascaderDemo },
   { id: 'tree-table', name: 'TreeTable 树表格', description: '层级表格、筛选、列视图、根分页、lazy 子节点与稳定选择。', component: TreeTableDemo },
+  { id: 'transfer', name: 'Transfer 穿梭选择', description: '双侧搜索、选择与批量转移，保持稳定值和目标顺序。', component: TransferDemo },
   { id: 'data-table', name: 'DataTable 数据表格', description: '真实排序、跨页选中、筛选与分页，使用稳定行 ID。', component: DataTableDemo },
   { id: 'disclosure-tree', name: 'DisclosureTree 目录导航', description: '原生折叠目录，使用 Tab 和 Enter 操作，不冒充 ARIA 树。', component: DisclosureTreeDemo },
   { id: 'search-filter-bar', name: 'SearchFilterBar 搜索筛选', description: '受控搜索与多选条件，直接筛选本地数据。', component: SearchFilterBarDemo },
