@@ -46,7 +46,7 @@
 
 ## 组件基础的选择
 
-**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 15 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
+**当前实施（本地源码核对，0.4）：**本库已采用固定 shadcn CLI 的 Base UI / `base-nova` 基础与 Tailwind 4，包含 50 个官方 CLI 生成族和 16 个本地组合族，复杂与 AI 层消费这套基础。具体来源与本地修正见 [生成来源清单](shadcn-provenance.json)；公开分层见 [组件契约](component-layering.md)。这是当前仓库实施情况，不是对以下外部文档的一次新联网复核。Radix 仍是早期评估过的候选，表中“第一版”指 0.2 阶段，不代表当前推荐迁回 Radix。
 
 下表保留**0.2 早期候选评估与历史判断**，原来源链接不变。
 
@@ -209,3 +209,7 @@ TAGS-02 的建议查询复用本库 AsyncCombobox 的 AbortSignal / 请求序号
 ### MeterGroup / ProgressGroup · 2026-09-07
 
 能力范围核对 PrimeVue 5 [MeterGroup](https://primevue.org/metergroup/) 的多段测量、标签模板与 meter 语义，以及 Nuxt UI [ProgressGroup](https://ui.nuxt.com/docs/components/progress-group) 的多段任务进度定位。范围属性按 W3C WAI-ARIA APG [Range-Related Properties](https://www.w3.org/WAI/ARIA/apg/practices/range-related-properties/) 和 [Meter Example](https://www.w3.org/WAI/ARIA/apg/patterns/meter/examples/meter/) 处理：测量量始终提供当前值，不确定任务进度可以省略当前值。Reito UI 使用独立 React 结构、Graphite tokens、可读图例、零值与超额反馈；没有复制上游源码、CSS、模板或资源。
+
+### Rating · 2026-09-07
+
+能力范围核对 Nuxt UI [InputRating 发布说明](https://github.com/nuxt/ui/releases) 的步长、长度、清除、悬停预览和自定义图标，以及 PrimeVue 5 [Rating](https://primevue.dev/rating/) 的半星、受控值、级数、只读/禁用、表单与原生 radio 键盘模型。Reito UI 采用独立 React 受控/非受控状态、隐藏原生 radio 选项、Graphite 三档尺寸和语义色；没有复制上游源码、CSS、模板或资源。横向评分是组件契约，纵向展示由宿主布局组合。

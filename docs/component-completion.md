@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**30 项完成，1 项进行中，72 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02` 与 `METERGROUP-01` 已完成，当前推进 `RATING-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**31 项完成，1 项进行中，71 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01` 与 `RATING-01` 已完成，当前推进 `KNOB-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、PASSWORD-01、MASK-01、LISTBOX-01～02 与 METERGROUP-01 已完成，当前推进 RATING-01；其后按依赖补齐旋钮、范围时间组合与其他选择器增强。
+SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01 与 RATING-01 已完成，当前推进 KNOB-01；其后按依赖补齐范围时间组合与其他选择器增强。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -56,8 +56,8 @@ SELECT-01、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、PASSWORD-01�
 | LISTBOX-01 | 常驻 Listbox：单/多选、分组/搜索、富选项、禁用、范围选择与焦点语义；与弹出 Select 区分 | — | ✅ 完成 | 基础-listbox--playground；本族 25 个 Story，基础阶段见独立预设 | [Listbox 验收](validation-listbox.md)：20 项交互、68 次基础 Story 组合、四主题密度窄屏；[用法](components/listbox.md) |
 | LISTBOX-02 | Listbox 虚拟化：活动项导航、选中项定位、筛选后焦点、非可见选项与加载错误的契约 | LISTBOX-01、VIRT-01 | ✅ 完成 | 基础-listbox--virtual-large / --virtual-selected-position / --virtual-search / --loading-empty / --load-error / --playground | [虚拟 Listbox 验收](validation-listbox-virtual.md)：12 项新增与 20 项回归、100 次全族 Story 组合、5 万项 DOM 有界；check/build 通过；[用法](components/listbox.md#虚拟化与加载边界) |
 | METERGROUP-01 | MeterGroup / ProgressGroup：多段占比、图例/标签、总量/越界/零值语义、可读文本；测量量与任务进度明确区分 | — | ✅ 完成 | 基础-metergroup--playground；本族 15 个 Story | [验收](validation-meter-group.md)：13 项交互/语义测试、60 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/meter-group.md) |
-| RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | 进行中 | 待关联 | 待记录 |
-| KNOB-01 | Knob：圆形数字交互、min/max/step、读数、键盘、只读/禁用与受控值；明确相对 Slider/NumberField 的场景价值 | FORM-01 | 待完成 | 待关联 | 待记录 |
+| RATING-01 | Rating：展示/编辑、清除、支持精度/级数、只读/禁用、键盘和反馈语义；不把赞踩直接当评分 | FORM-01 | ✅ 完成 | 基础-rating--playground；本族 16 个 Story | [验收](validation-rating.md)：15 项交互/语义测试、64 次 Story 组合、四主题密度窄屏；check/build 通过；[用法](components/rating.md) |
+| KNOB-01 | Knob：圆形数字交互、min/max/step、读数、键盘、只读/禁用与受控值；明确相对 Slider/NumberField 的场景价值 | FORM-01 | 进行中 | 待关联 | 待记录 |
 | SELECT-01 | Combobox / MultiSelect 异步配方：输入与查询受控、loading/error/empty/retry、过期结果、选项缓存/选中标签保留；不宣称内置外部搜索 | — | ✅ 完成 | 基础-asynccombobox--playground、基础-asyncmultiselect--playground；两族合计 23 个 Story | [最终验收](validation-async-multi-select.md)：16 项多选交互、13 项单选回归、48 次多选 Story 组合；check/build 通过；[单选阶段](validation-async-combobox.md)、[多选用法](components/async-multi-select.md) |
 | SELECT-02 | 选择增强：创建新项、分组、全选范围/部分选中、禁用项、批量操作；统一高层 API 而非仅示例内临时状态 | SELECT-01 | 待完成 | 待关联 | 待记录 |
 | SELECT-03 | 选择器虚拟化：键盘活动项与 popup 定位、远程加载、已有选择保持、选项尺寸变化 | SELECT-01、VIRT-01 | 待完成 | 待关联 | 待记录 |

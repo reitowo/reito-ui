@@ -1,11 +1,11 @@
 {
   "counts": {
-    "basic": 65,
+    "basic": 66,
     "complex": 22,
     "ai": 19
   },
-  "total": 106,
-  "stories": 866,
+  "total": 107,
+  "stories": 882,
   "entries": [
     {
       "layer": "basic",
@@ -656,6 +656,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "MeterGroupDemo",
       "stories": 15
+    },
+    {
+      "layer": "basic",
+      "id": "rating",
+      "name": "Rating",
+      "description": "可读、可编辑且支持精度的评分输入。",
+      "storyId": "基础-rating--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "RatingDemo",
+      "stories": 16
     },
     {
       "layer": "complex",

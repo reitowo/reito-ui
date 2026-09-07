@@ -8,6 +8,7 @@ import { MultiSelect } from './multi-select.js';
 import { NumberField } from './number-field.js';
 import { Meter } from './meter.js';
 import { MeterGroup } from './meter-group.js';
+import { Rating } from './rating.js';
 import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
@@ -1740,6 +1741,7 @@ export const basicCatalog: BasicCatalogEntry[] = [
   { id: 'number-field', name: 'NumberField', description: '本地化数值输入、步进、边界与空值。', component: NumberFieldDemo },
   { id: 'meter', name: 'Meter', description: '容量、预算与质量的有界测量值。', component: MeterDemo },
   { id: 'meter-group', name: 'MeterGroup / ProgressGroup', description: '多段容量构成与任务进度。', component: MeterGroupDemo },
+  { id: 'rating', name: 'Rating', description: '可读、可编辑且支持精度的评分输入。', component: RatingDemo },
 ];
 
 export function ToastDemo({ mode = 'default' }: { mode?: 'default' | 'undo' | 'async' | 'error' } = {}) {
@@ -1799,4 +1801,9 @@ export function MeterGroupDemo({ state = 'default' }: { state?: 'default' | 'zer
     { id: 'cache', label: '缓存', value: 12, tone: 'muted' as const },
   ];
   return <Stack><MeterGroup label="工作区存储构成" items={items} max={state === 'overflow' ? 96 : 128} formatValue={value => `${value} GB`} description="分段显示容量构成；任务执行状态应使用 ProgressGroup。" /></Stack>;
+}
+
+export function RatingDemo({ state = 'default' }: { state?: 'default' | 'half' | 'readonly' | 'error' } = {}) {
+  const [value, setValue] = React.useState<number | null>(state === 'half' ? 3.5 : 4);
+  return <Stack><Rating label="本次回答质量" value={value} onValueChange={setValue} step={state === 'half' ? 0.5 : 1} readOnly={state === 'readonly'} error={state === 'error' ? '请选择评分后再提交。' : undefined} description="方向键移动，空格选择；可用清除按钮恢复未评分。" /><output>当前评分：{value ?? '未评分'}</output></Stack>;
 }
