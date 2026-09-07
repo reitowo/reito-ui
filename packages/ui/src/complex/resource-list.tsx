@@ -51,6 +51,8 @@ export interface ResourceListProps {
   onRetry?: () => void;
   emptyMessage?: string;
   disabled?: boolean;
+  /** Hide the search, sort and selection summary when a parent collection surface supplies them. */
+  showControls?: boolean;
   className?: string;
 }
 
@@ -60,6 +62,17 @@ const sortOptions = [
   { value: 'updated-desc', label: '最近更新' },
 ];
 function dateValue(value?: string) { const parsed = value ? Date.parse(value) : NaN; return Number.isFinite(parsed) ? parsed : -Infinity; }
+
+export function projectResourceItems(items: ResourceItem[], query: string, sort: ResourceSort) {
+  const result = items.filter(item => `${item.name} ${item.description ?? ''} ${item.kind ?? ''}`.toLowerCase().includes(query.toLowerCase()));
+  return result.sort((a, b) => {
+    if (sort === 'updated-desc') {
+      const difference = dateValue(b.updatedAt) - dateValue(a.updatedAt);
+      if (!Number.isNaN(difference) && difference !== 0) return difference;
+    }
+    return sort === 'name-desc' ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
+  });
+}
 
 interface ResourceRowProps {
   item: ResourceItem;
@@ -94,7 +107,7 @@ export function ResourceList({
   query, onQueryChange, sort, onSortChange, dataMode = 'local', totalCount,
   virtualized = false, overscan = 4, viewportClassName, onVisibleRangeChange,
   hasMore = false, loadingMore = false, loadMoreError, loadMoreMode = 'manual', loadMoreThreshold = 3, onLoadMore,
-  actions = [], loading = false, error, onRetry, emptyMessage = '没有资源', disabled = false, className,
+  actions = [], loading = false, error, onRetry, emptyMessage = '没有资源', disabled = false, showControls = true, className,
 }: ResourceListProps) {
   const [internalQuery, setInternalQuery] = useState('');
   const [internalSort, setInternalSort] = useState<ResourceSort>('name-asc');
@@ -107,14 +120,7 @@ export function ResourceList({
   const locked = disabled || loading;
   const visible = useMemo(() => {
     if (dataMode === 'remote') return items;
-    const result = items.filter(item => `${item.name} ${item.description ?? ''} ${item.kind ?? ''}`.toLowerCase().includes(search.toLowerCase()));
-    return result.sort((a, b) => {
-      if (activeSort === 'updated-desc') {
-        const difference = dateValue(b.updatedAt) - dateValue(a.updatedAt);
-        if (!Number.isNaN(difference) && difference !== 0) return difference;
-      }
-      return activeSort === 'name-desc' ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
-    });
+    return projectResourceItems(items, search, activeSort);
   }, [activeSort, dataMode, items, search]);
   const selectable = visible.filter(item => !item.disabled);
   const allSelected = selectable.length > 0 && selectable.every(item => selection.includes(item.id));
@@ -150,7 +156,7 @@ export function ResourceList({
   const row = (item: ResourceItem) => <ResourceRow item={item} selectionMode={selectionMode} selected={selection.includes(item.id)} locked={locked} actions={actions} onToggle={() => toggle(item.id)} />;
 
   return <section aria-label={label} aria-busy={loading || loadingMore} data-slot="resource-list" className={cx('min-w-0 space-y-[var(--rui-content-gap)] font-sans text-sm text-foreground', className)}>
-    <div className="flex flex-wrap items-center gap-[var(--rui-content-gap-sm)]">
+    {showControls && <div className="flex flex-wrap items-center gap-[var(--rui-content-gap-sm)]">
       <div className="relative min-w-40 flex-1">
         <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input aria-label={`搜索${label}`} placeholder="搜索名称、类型或说明…" value={search} disabled={locked} className="pl-9" onChange={event => {
@@ -169,8 +175,8 @@ export function ResourceList({
         <SelectTrigger size="sm" aria-label="资源排序"><SelectValue /></SelectTrigger>
         <SelectContent align="end" alignItemWithTrigger={false}>{sortOptions.map(option => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectContent>
       </Select>
-    </div>
-    <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)]">
+    </div>}
+    {showControls && <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)]">
       {selectionMode === 'multiple' && <div className="flex items-center gap-2 text-xs">
         <Checkbox aria-label={`选择${dataMode === 'remote' ? '已加载结果' : '筛选结果'}`} checked={allSelected} indeterminate={!allSelected && someSelected} disabled={locked || !selectable.length} onCheckedChange={() => {
           const shouldSelect = !allSelected;
@@ -181,7 +187,7 @@ export function ResourceList({
       </div>}
       <p role="status" className="text-xs text-muted-foreground">{dataMode === 'remote' ? `已加载 ${visible.length} / ${normalizedTotal} 项` : `显示 ${visible.length} / ${items.length} 项`}{selectionMode !== 'none' && ` · 已选择 ${selectedCount} 项`}</p>
       {selectionMode !== 'none' && selectedCount > 0 && <Button variant="ghost" size="sm" disabled={locked} onClick={() => changeSelection([])}>清除选择</Button>}
-    </div>
+    </div>}
     {error && <div role="alert" className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)] text-destructive"><p>{error}</p>{onRetry && <Button variant="outline" size="sm" onClick={onRetry}>重试加载资源</Button>}</div>}
     {loading ? <p className="p-[var(--rui-content-padding)] text-muted-foreground">正在加载资源…</p>
       : !visible.length ? <p className="p-[var(--rui-content-padding)] text-muted-foreground">{search ? '没有匹配的资源' : emptyMessage}</p>

@@ -14,6 +14,7 @@ export * from './diff-viewer.js';
 export * from './log-viewer.js';
 export * from './key-value-editor.js';
 export * from './resource-list.js';
+export * from './resource-view.js';
 export * from './form.js';
 export * from './async-form.js';
 export * from './virtual-list.js';

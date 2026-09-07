@@ -40,6 +40,7 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
 | `selectionMode / selectedIds` | `none / single / multiple`。稳定 ID 不因查询替换、虚拟行卸载或当前数据窗口变化而被组件清除；宿主删除真实资源时应同步移除对应 ID。 |
 | 批量选择 | 本地模式只影响当前筛选结果；远程模式只影响当前已加载结果，不假定未加载资源的 ID。禁用项始终跳过。 |
 | `actions` | 行操作由宿主提供，组件不读写磁盘或网络。禁用、首次加载或资源自身禁用时阻止动作。 |
+| `showControls` | 默认显示搜索、排序和选择摘要；设为 `false` 时由 ResourceView 等父级集合表面提供统一控件，列表只负责行与状态。 |
 
 远程模式的查询或排序变化应替换当前加载窗口并更新 `totalCount`。若宿主需要取消旧请求或隔离过期响应，应在数据层使用 AbortSignal 或请求身份；ResourceList 不推断远程协议。自动加载适合连续滚动，必须由 `loadingMore` 和宿主请求状态阻止并发请求；手动模式更适合昂贵或需要明确控制的数据源。
 

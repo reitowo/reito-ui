@@ -10,6 +10,7 @@ import { DiffViewer, type DiffHunk } from './diff-viewer.js';
 import { LogViewer, type LogEntry } from './log-viewer.js';
 import { KeyValueEditor, type KeyValueEntry } from './key-value-editor.js';
 import { ResourceList, type ResourceItem } from './resource-list.js';
+import { ResourceView } from './resource-view.js';
 import { FormDemo } from './form-demo.js';
 import { AsyncFormDemo } from './async-form-demo.js';
 import { VirtualListDemo } from './virtual-list-demo.js';
@@ -313,6 +314,16 @@ export function ResourceListDemo() {
   </div>;
 }
 
+export function ResourceViewDemo() {
+  const [selected, setSelected] = useState(['specs']);
+  const [opened, setOpened] = useState('');
+  return <div className="space-y-[var(--rui-content-gap)]">
+    <ResourceView items={catalogResources} label="组件资源" pageSize={9} selectionMode="multiple" selectedIds={selected} onSelectionChange={setSelected}
+      actions={[{ id: 'open', label: '打开', onAction: item => setOpened(item.name) }]} />
+    <p role="status" className="text-xs text-muted-foreground">{opened ? `已打开 ${opened}（本地预览）` : '列表与网格共享查询、分页、选择和行操作。'}</p>
+  </div>;
+}
+
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'form', name: 'Form 表单管理', description: 'Schema、跨字段与异步校验、提交重置、嵌套字段和数组。', component: FormDemo },
@@ -343,4 +354,5 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'log-viewer', name: 'LogViewer 日志查看', description: '搜索、级别筛选、滚动暂停与跟随，以及宿主清除回调。', component: LogViewerDemo },
   { id: 'key-value-editor', name: 'KeyValueEditor 键值编辑', description: '增删键值、重复和必填验证、可选敏感值遮罩。', component: KeyValueEditorDemo },
   { id: 'resource-list', name: 'ResourceList 资源列表', description: '本地/远程查询、虚拟窗口、增量加载与跨窗口稳定选择。', component: ResourceListDemo },
+  { id: 'resource-view', name: 'ResourceView 资源视图', description: '同一集合状态的列表/网格切换、搜索、分页、选择与动作。', component: ResourceViewDemo },
 ];

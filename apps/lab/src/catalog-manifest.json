@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 67,
-    "complex": 28,
+    "complex": 29,
     "ai": 19
   },
-  "total": 114,
-  "stories": 1024,
+  "total": 115,
+  "stories": 1040,
   "entries": [
     {
       "layer": "basic",
@@ -956,6 +956,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "ResourceListDemo",
       "stories": 15
+    },
+    {
+      "layer": "complex",
+      "id": "resource-view",
+      "name": "ResourceView 资源视图",
+      "description": "同一集合状态的列表/网格切换、搜索、分页、选择与动作。",
+      "storyId": "复杂-resourceview-资源视图--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ResourceViewDemo",
+      "stories": 16
     },
     {
       "layer": "ai",
