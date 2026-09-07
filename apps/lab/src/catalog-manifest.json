@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 30,
+    "complex": 31,
     "ai": 19
   },
-  "total": 119,
-  "stories": 1132,
+  "total": 120,
+  "stories": 1150,
   "entries": [
     {
       "layer": "basic",
@@ -836,6 +836,16 @@
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "OrganizationChartDemo",
       "stories": 12
+    },
+    {
+      "layer": "complex",
+      "id": "terminal-prompt",
+      "name": "TerminalPrompt 命令交互",
+      "description": "宿主响应列表、历史浏览、提交取消与中文输入法保护。",
+      "storyId": "复杂-terminalprompt-命令交互--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "TerminalPromptDemo",
+      "stories": 18
     },
     {
       "layer": "complex",

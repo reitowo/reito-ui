@@ -97,6 +97,8 @@ DiffViewer 的代码、行号和增删符号统一使用等宽字体及 `--rui-l
 
 OrganizationChart 使用 160px 紧凑节点、共享行高与内容间距，连接线只使用 `border-border`。宽层级在组件容器内横向滚动，不扩大页面；节点名称单行截断、说明最多两行，完整文本继续通过 `title` 和可访问名称提供。节点模板只能替换卡片内容，不能绕开统一焦点、选择与禁用状态。
 
+TerminalPrompt 默认输出区高度为 `--rui-terminal-height`（256px），标题栏使用 SM、输入使用 XS 控件高度，命令与响应行使用 cell padding。命令、输出和提示符使用统一等宽字体；状态、错误、边界和焦点仍使用语义 token。长输出只在输出区滚动，底部提示符保持可见；消费应用需要更高面板时通过 `viewportClassName` 组合已有尺寸 token。
+
 主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间
