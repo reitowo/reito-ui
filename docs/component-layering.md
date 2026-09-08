@@ -87,6 +87,10 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、40 个复�
 
 公共布局组件适合编辑器、设置页和数据页共同复用。文件目录选择哪个文件、检查器何时打开、页面路由、数据请求与保存失败后的恢复，属于产品逻辑。将这些状态留在宿主，避免把一个聊天页的布局固定成整个组件库的默认结构。
 
+### 应用配方
+
+[Dashboard 工作面配方](recipes/dashboard-workspace.md) 在 Storybook 中组合 Sidebar、AppShell、WorkspacePreset、DataTable、Form 与 ApplicationSearch，覆盖真实本地交互、偏好恢复和窄布局。配方属于示例层，不新增公共 Dashboard 原语，也不改变复杂层 40 个组件族的计数。
+
 ## AI 层：20 个组件族
 
 公共导出见 [`ai/index.ts`](../packages/ui/src/ai/index.ts)，演示入口见 [`ai/catalog.tsx`](../packages/ui/src/ai/catalog.tsx)。这层没有模型客户端或后台 Agent；组件通过宿主传入的数据和回调工作。

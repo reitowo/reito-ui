@@ -145,6 +145,12 @@ CONTENT-NAV-01 实际查看 Nuxt UI 4.11.1 当前 [ContentNavigation](https://ui
 
 Reito UI 使用自己的 React `ContentNavigationSection` 数据契约、Graphite tokens、TreeView 与 WorkspacePreset，增加受控路由/滚动原因、程序化滚动隔离、底部章节判定、目录显隐和窄布局。没有复制 Nuxt Content 模块、Vue API、源码、CSS、品牌色、字体、图标或资源；Markdown 解析、路由历史、内容加载和搜索仍由宿主负责。
 
+## Dashboard 应用配方（2026-09-08 工作区增量）
+
+DASHBOARD-RECIPE-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardGroup](https://ui.nuxt.com/docs/components/dashboard-group)、[DashboardPanel](https://ui.nuxt.com/docs/components/dashboard-panel)、[DashboardSidebar](https://ui.nuxt.com/docs/components/dashboard-sidebar)、[DashboardSearch](https://ui.nuxt.com/docs/components/dashboard-search) 与 [DashboardToolbar](https://ui.nuxt.com/docs/components/dashboard-toolbar)。参考只用于核对应用导航、短工具栏、主任务面、辅助检查器、搜索入口与响应式收口。官方 DashboardGroup 截图为 `.logs/references/nuxt-ui-dashboard-group-4.11.1-2026-09-08.png`；本地组合截图为 `.logs/dashboard-recipe/dark-compact.png`、`.logs/dashboard-recipe/light-comfortable.png` 与 `.logs/dashboard-recipe/narrow-dark-compact.png`。
+
+Reito UI 使用自己的 Storybook React 配方、Graphite tokens 和现有公共组件，所有任务、动作和偏好均为本地示例。没有复制 Nuxt UI 的 Vue context、源码、CSS、品牌色、字体、图标或资源；后端数据、账号偏好同步与路由仍由宿主负责。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。
