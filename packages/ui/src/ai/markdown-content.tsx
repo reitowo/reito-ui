@@ -1,5 +1,6 @@
-import { Children, isValidElement, useMemo, type HTMLAttributes, type MouseEventHandler, type ReactNode } from 'react';
+import { Children, isValidElement, useMemo, type HTMLAttributes, type Key, type MouseEventHandler, type ReactNode } from 'react';
 import ReactMarkdown, { type AllowElement, type Components, type Options as ReactMarkdownOptions, type UrlTransform } from 'react-markdown';
+import remend, { type RemendOptions } from 'remend';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './code-block.js';
 import { Message, type MessageProps } from './conversation.js';
@@ -8,6 +9,7 @@ import { classes } from './shared.js';
 export type MarkdownContentComponents = Components;
 export type MarkdownContentUrlTransform = UrlTransform;
 export type MarkdownContentElementFilter = AllowElement;
+export type MarkdownStreamingOptions = RemendOptions;
 
 export interface MarkdownCodeBlock {
   code: string;
@@ -18,6 +20,10 @@ export interface MarkdownContentProps extends Omit<HTMLAttributes<HTMLDivElement
   value: string;
   empty?: ReactNode;
   htmlPolicy?: 'escape' | 'remove';
+  streaming?: boolean;
+  streamKey?: Key;
+  completeIncompleteMarkdown?: boolean;
+  streamingOptions?: MarkdownStreamingOptions;
   externalLinkTarget?: '_blank' | '_self';
   onLinkClick?: MouseEventHandler<HTMLAnchorElement>;
   codeCopyable?: boolean;
@@ -52,6 +58,10 @@ export function MarkdownContent({
   value,
   empty,
   htmlPolicy = 'escape',
+  streaming = false,
+  streamKey,
+  completeIncompleteMarkdown = true,
+  streamingOptions,
   externalLinkTarget = '_blank',
   onLinkClick,
   codeCopyable = true,
@@ -66,6 +76,7 @@ export function MarkdownContent({
   remarkPlugins,
   rehypePlugins,
   className,
+  'aria-busy': ariaBusy,
   ...props
 }: MarkdownContentProps) {
   const renderer = useMemo<MarkdownContentComponents>(() => ({
@@ -88,10 +99,16 @@ export function MarkdownContent({
   }), [codeCopyable, components, externalLinkTarget, onCodeCopy, onLinkClick, renderCodeBlock]);
   const plugins = useMemo(() => [remarkGfm, ...(remarkPlugins ?? [])], [remarkPlugins]);
   const isEmpty = value.trim().length === 0;
+  const renderedValue = useMemo(() => streaming && completeIncompleteMarkdown
+    ? remend(value, { linkMode: 'text-only', ...streamingOptions })
+    : value, [completeIncompleteMarkdown, streaming, streamingOptions, value]);
 
   return <div
     data-slot="markdown-content"
     data-empty={isEmpty ? 'true' : undefined}
+    data-streaming={streaming ? 'true' : undefined}
+    data-stream-completed-syntax={renderedValue !== value ? 'true' : undefined}
+    aria-busy={(ariaBusy ?? streaming) || undefined}
     className={classes(
       'min-w-0 whitespace-normal break-words text-[length:var(--rui-font-interface)] leading-6 text-foreground [overflow-wrap:anywhere]',
       '[&>:first-child]:mt-0 [&>:last-child]:mb-0',
@@ -122,6 +139,7 @@ export function MarkdownContent({
     {...props}
   >
     {isEmpty ? empty : <ReactMarkdown
+      key={streamKey}
       components={renderer}
       remarkPlugins={plugins}
       rehypePlugins={rehypePlugins}
@@ -131,7 +149,7 @@ export function MarkdownContent({
       allowElement={allowElement}
       unwrapDisallowed={unwrapDisallowed}
       urlTransform={urlTransform}
-    >{value}</ReactMarkdown>}
+    >{renderedValue}</ReactMarkdown>}
   </div>;
 }
 
@@ -143,5 +161,5 @@ export interface RichMessageProps extends Omit<MessageProps, 'children'> {
 
 /** Message role, streaming state and actions composed with MarkdownContent. */
 export function RichMessage({ content, markdownProps, children, ...messageProps }: RichMessageProps) {
-  return <Message {...messageProps}><MarkdownContent {...markdownProps} value={content} />{children}</Message>;
+  return <Message {...messageProps}><MarkdownContent streaming={messageProps.streaming} {...markdownProps} value={content} />{children}</Message>;
 }

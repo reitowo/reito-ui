@@ -28,12 +28,7 @@ export const Disabled: Story = { name: '全部禁用', render: () => <PropertyLi
 function PropertyExample({ initial }: { initial: PropertyItem[] }) { const [items, setItems] = useState(initial); return <PropertyList items={items} onValueChange={(key, value) => setItems(previous => previous.map(item => item.key === key ? { ...item, value } : item))} />; }
 export const Default: Story = { name: '文本属性', render: () => <PropertyExample initial={[{ key: 'name', label: '工作区名称', value: 'Graphite 工作区' }]} /> };
 export const NumberProperty: Story = { name: '数字属性', render: () => <PropertyExample initial={[{ key: 'retention', label: '保留天数', value: 30, kind: 'number', description: '以天为单位' }]} /> };
-export const ReadOnly: Story = { name: '只读属性', render: () => <PropertyList items={[
-  { key: 'id', label: '工作区 ID', value: 'workspace-local-01', readOnly: true },
-  { key: 'supplierType', label: '供应商类型', value: '渠道商', readOnly: true },
-  { key: 'description', label: '说明', value: '用于检查较长的属性内容换行时，第一行仍与左侧属性名称对齐。', readOnly: true },
-  { key: 'longLabel', label: '较长的属性名称在窄列中自然换行', value: '标签与内容按第一行对齐', readOnly: true },
-]} onValueChange={() => {}} /> };
+export const ReadOnly: Story = { name: '只读属性', render: () => <PropertyList items={[{ key: 'id', label: '工作区 ID', value: 'workspace-local-01', readOnly: true }]} onValueChange={() => {}} /> };
 
 export const BooleanProperty: Story = { name: '布尔属性', render: () => <PropertyExample initial={[{ key: 'autosave', label: '自动保存', value: true, kind: 'boolean', trueLabel: '已启用', falseLabel: '已关闭' }]} /> };
 export const SelectProperty: Story = { name: '选项属性', render: () => <PropertyExample initial={[{ key: 'density', label: '界面密度', value: 'compact', kind: 'select', options: [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] }]} /> };

@@ -19,6 +19,7 @@ export interface TreeViewItemInteraction {
 export interface TreeViewProps {
   nodes: TreeViewNode[];
   value?: string;
+  currentId?: string;
   defaultValue?: string;
   onValueChange?: (id: string) => void;
   expanded?: string[];
@@ -43,7 +44,7 @@ interface FlatNode { node: TreeViewNode; parentId?: string; level: number; posIn
 type CheckState = boolean | 'mixed';
 
 /** ARIA tree with single selection or tri-state checkbox selection and a roving keyboard focus. */
-export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
+export function TreeView({ nodes, value, currentId, defaultValue, onValueChange, expanded, defaultExpanded = [], onExpandedChange,
   selectionMode = 'single', checked, defaultChecked = [], onCheckedChange, checkPropagation = 'cascade', rangeSelection = true,
   bulkSelection = true, renderTrailing, getItemInteraction, visibleNodeIds, label = '树形导航', emptyMessage = '没有节点', className }: TreeViewProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
@@ -182,15 +183,16 @@ export function TreeView({ nodes, value, defaultValue, onValueChange, expanded, 
     const interaction = getItemInteraction?.(node);
     return <li key={node.id} ref={element => { if (element) itemRefs.current.set(node.id, element); else itemRefs.current.delete(node.id); }}
       role="treeitem" aria-level={level} aria-posinset={index + 1} aria-setsize={filtered.length} aria-expanded={branch ? isOpen : undefined}
+      aria-current={currentId === node.id ? 'location' : undefined}
       aria-selected={selectionMode === 'single' && !node.disabled ? selected === node.id : undefined}
       aria-checked={selectionMode === 'checkbox' && !node.disabled ? state : undefined} aria-disabled={node.disabled || undefined} aria-busy={node.busy || undefined} tabIndex={activeId === node.id ? 0 : -1}
-      className="min-w-0 outline-none [&:focus-visible>[data-slot=tree-item-row]]:ring-[length:var(--rui-outline-width)] [&:focus-visible>[data-slot=tree-item-row]]:ring-ring" draggable={interaction?.draggable} onDragStart={interaction?.onDragStart} onDragOver={interaction?.onDragOver}
+      className="group/treeitem min-w-0 outline-none" draggable={interaction?.draggable} onDragStart={interaction?.onDragStart} onDragOver={interaction?.onDragOver}
       onDragLeave={interaction?.onDragLeave} onDrop={interaction?.onDrop} onDragEnd={interaction?.onDragEnd}
       onFocus={event => { if (event.target !== event.currentTarget) return; focusOwned.current = true; setActiveId(node.id); }} onKeyDown={event => { interaction?.onKeyDown?.(event); if (!event.defaultPrevented) keyDown(event, item); }}>
       <div data-slot="tree-item-row" data-selected={selectionMode === 'single' && selected === node.id || undefined}
         data-checked={selectionMode === 'checkbox' ? state : undefined} data-disabled={node.disabled || undefined} data-drop-position={interaction?.dropPosition}
         title={[node.label, node.description].filter(Boolean).join('\n')}
-        className={cx('flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1 rounded-sm border-y border-transparent px-1 text-sm leading-5 hover:bg-muted data-[selected=true]:bg-muted data-[selected=true]:font-medium data-[checked=true]:bg-muted data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[drop-position=before]:border-t-primary data-[drop-position=inside]:bg-muted data-[drop-position=inside]:ring-[length:var(--rui-outline-width)] data-[drop-position=inside]:ring-ring data-[drop-position=after]:border-b-primary')}
+        className={cx('flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1 rounded-sm border-y border-transparent px-1 text-sm leading-5 hover:bg-muted group-focus/treeitem:ring-[length:var(--rui-outline-width)] group-focus/treeitem:ring-ring data-[selected=true]:bg-muted data-[selected=true]:font-medium data-[checked=true]:bg-muted data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[drop-position=before]:border-t-primary data-[drop-position=inside]:bg-muted data-[drop-position=inside]:ring-[length:var(--rui-outline-width)] data-[drop-position=inside]:ring-ring data-[drop-position=after]:border-b-primary')}
         onClick={event => activate(event, node)} onDoubleClick={() => { if (branch && !node.disabled) toggle(node.id); }}>
         {branch ? <span data-slot="tree-toggle" aria-hidden="true" className="flex size-4 shrink-0 cursor-pointer items-center justify-center" onClick={event => { event.stopPropagation(); if (!node.disabled) toggle(node.id); }}><ChevronRight className={cx('size-3 text-muted-foreground', isOpen && 'rotate-90')} /></span> : <span className="size-4 shrink-0" aria-hidden="true" />}
         {selectionMode === 'checkbox' && <span aria-hidden="true" data-state={state}

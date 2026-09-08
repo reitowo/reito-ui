@@ -1,7 +1,7 @@
 import { useId, useMemo, useState, type ComponentType } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { DateRange } from 'react-day-picker';
-import { FileText, FolderOpen, Search, Settings, Terminal } from 'lucide-react';
+import { Bold, Download, Eye, FileText, FolderOpen, GitBranch, Italic, Mail, MoreHorizontal, PanelRightOpen, Search, Settings, Terminal, Trash2, Undo2 } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Badge } from '../primitives/badge.js';
 import { Input } from '../primitives/input.js';
@@ -21,10 +21,17 @@ import { ReorderableTreeView, moveTreeNode } from './reorderable-tree-view.js';
 import { OrganizationChart, type OrganizationChartNode } from './organization-chart.js';
 import { TerminalPrompt, type TerminalPromptEntry } from './terminal-prompt.js';
 import { RichTextEditor } from './rich-text-editor.js';
+import { SplitButton, type SplitButtonItem } from './split-button.js';
+import { ConfirmPopover } from './confirm-popover.js';
+import { UserInfo } from './user-info.js';
+import { Banner } from './banner.js';
+import { Toolbar, type ToolbarGroup } from './toolbar.js';
+import { InlineEdit } from './inline-edit.js';
+import { OverlayProvider, useOverlay } from './overlay-provider.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell, Cascader, CommandSearch, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, SortableList, Transfer, TreeSelect, TreeTable,
+  AppShell, Cascader, CommandSearch, ContentNavigation, DataTable, DateRangePicker, DateTimeRangePicker, DisclosureTree, FileUpload, PropertyList, SortableList, Transfer, TreeSelect, TreeTable,
   ResizableWorkspace, SearchFilterBar, SettingsRow, SettingsSection, Stepper, Timeline, WorkspacePane,
   serializeDateTimeRange, type CommandGroupDefinition, type DateTimeRangeValue, type DisclosureNode, type PropertyItem, type PropertyValue, type TimelineEvent,
 } from './index.js';
@@ -107,6 +114,121 @@ const richTextDemoValue = '# 组件说明\n\n这是一份由 **Tiptap 文档模�
 export function RichTextEditorDemo() {
   const [value, setValue] = useState(richTextDemoValue);
   return <div className="space-y-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="组件说明" description="本地受控 Markdown；输入 / 或 @，悬停块可重排，也可插入图片地址。" mentionItems={[{ id: 'reito', label: 'Reito', description: '设计系统维护者' }, { id: 'lin', label: 'Lin', description: '组件工程' }]} /><p role="status" className="text-xs text-muted-foreground">宿主值：{value.length} 个字符</p></div>;
+}
+
+const splitButtonDemoItems: SplitButtonItem[] = [
+  { id: 'save-copy', label: '保存副本', icon: <Download aria-hidden="true" />, shortcut: 'Ctrl+Shift+S' },
+  { id: 'create-branch', label: '保存并创建分支', icon: <GitBranch aria-hidden="true" />, shortcut: 'Ctrl+Alt+S' },
+  { id: 'publish', label: '发布到远端', disabled: true },
+];
+export function SplitButtonDemo() {
+  const [message, setMessage] = useState('选择主操作或展开相关操作。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <SplitButton
+      label="保存"
+      groupLabel="保存操作"
+      menuLabel="更多保存操作"
+      actionShortcut="Ctrl+S"
+      items={splitButtonDemoItems}
+      onAction={() => setMessage('已运行主操作：保存（本地示例）')}
+      onItemSelect={item => setMessage(`已选择：${String(item.label)}（本地示例）`)}
+    />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function ConfirmPopoverDemo() {
+  const [message, setMessage] = useState('尚未删除本地草稿。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <ConfirmPopover
+      trigger={<Button type="button" variant="outline" size="sm"><Trash2 aria-hidden="true" />删除草稿</Button>}
+      title="删除这份草稿？"
+      description="删除后无法从当前本地示例恢复。"
+      destructive
+      confirmLabel="删除"
+      onConfirm={() => setMessage('已删除本地示例草稿。')}
+    />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function UserInfoDemo() {
+  const [message, setMessage] = useState('这是本地示例用户。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <UserInfo
+      name="Reito"
+      description="组件系统维护者"
+      fallback="R"
+      status="在线"
+      statusTone="success"
+      variant="muted"
+      actions={[
+        { id: 'message', label: '发送本地示例消息', icon: <Mail aria-hidden="true" />, onSelect: () => setMessage('已触发消息操作（本地示例）。') },
+        { id: 'more', label: '更多用户操作', icon: <MoreHorizontal aria-hidden="true" />, disabled: true, onSelect: () => undefined },
+      ]}
+    />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function BannerDemo() {
+  const [message, setMessage] = useState('本地通知尚未处理。');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <Banner title="组件索引可以更新" description="这是本地示例，不会请求远端服务。" tone="info" action={{ label: '查看', onSelect: () => setMessage('已触发查看操作（本地示例）。') }} onDismiss={() => setMessage('已关闭本地通知。')} />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function ToolbarDemo() {
+  const [bold, setBold] = useState(true);
+  const [message, setMessage] = useState('等待本地操作。');
+  const groups: ToolbarGroup[] = [
+    { id: 'history', label: '历史', items: [{ id: 'undo', label: '撤销', icon: <Undo2 aria-hidden="true" />, shortcut: 'Control+Z', onSelect: () => setMessage('已触发撤销（本地示例）。') }] },
+    { id: 'format', label: '格式', items: [
+      { id: 'bold', label: '加粗', icon: <Bold aria-hidden="true" />, kind: 'toggle', pressed: bold, onPressedChange: setBold },
+      { id: 'italic', label: '斜体', icon: <Italic aria-hidden="true" />, kind: 'toggle', pressed: false, onPressedChange: pressed => setMessage(pressed ? '已打开斜体。' : '已关闭斜体。') },
+    ] },
+    { id: 'view', label: '视图', items: [
+      { id: 'preview', label: '预览', icon: <Eye aria-hidden="true" />, overflow: 'always', onSelect: () => setMessage('已打开本地预览。') },
+      { id: 'inspector', label: '检查器', icon: <PanelRightOpen aria-hidden="true" />, overflow: 'always', onSelect: () => setMessage('已打开本地检查器。') },
+    ] },
+  ];
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <Toolbar label="编辑操作" groups={groups} overflow="menu" maxVisibleItems={3} status="本地草稿" onItemSelect={item => item.kind === 'toggle' && setMessage(`${String(item.label)}：${item.pressed ? '关闭' : '打开'}`)} />
+    <p role="status" className="text-xs text-muted-foreground">{message}</p>
+  </div>;
+}
+
+export function InlineEditDemo() {
+  const [value, setValue] = useState('Graphite 工作区');
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <InlineEdit label="工作区名称" value={value} onValueChange={next => setValue(String(next))} required validate={next => String(next).length < 2 ? '名称至少需要 2 个字符' : undefined} />
+    <p role="status" className="text-xs text-muted-foreground">当前名称：{value}</p>
+  </div>;
+}
+
+function OverlayProviderDemoLauncher() {
+  const overlay = useOverlay();
+  const [status, setStatus] = useState('尚未打开浮层');
+  async function open() {
+    const handle = overlay.open<boolean>({
+      title: '应用本地设置？',
+      description: '这个示例只更新下方状态，不会写入外部服务。',
+      content: '命令式入口与声明式 Dialog、Sheet、AlertDialog 使用同一套基础组件。',
+      confirmLabel: '应用',
+      confirmValue: true,
+    });
+    const outcome = await handle.result;
+    setStatus(outcome.status === 'closed' ? '已应用本地设置' : `已关闭：${outcome.reason}`);
+  }
+  return <div className="grid gap-[var(--rui-content-gap-sm)]">
+    <Button type="button" size="sm" variant="outline" onClick={open}>打开设置浮层</Button>
+    <p role="status" className="text-xs text-muted-foreground">{status}</p>
+  </div>;
+}
+
+export function OverlayProviderDemo() {
+  return <OverlayProvider><OverlayProviderDemoLauncher /></OverlayProvider>;
 }
 
 export function TreeSelectDemo() {
@@ -244,8 +366,8 @@ export function WorkspaceDemo() {
 
 export const demoCommands: CommandGroupDefinition[] = [
   { id: 'workspace', label: '工作区', commands: [
-    { id: 'open-project', label: '打开项目', description: '选择本地示例项目', keywords: ['open', 'project'], icon: <FolderOpen aria-hidden="true" />, shortcut: '⌘ O' },
-    { id: 'search-files', label: '搜索文件', description: '查找工作区中的文件', keywords: ['search', 'find'], icon: <Search aria-hidden="true" />, shortcut: '⌘ P' },
+    { id: 'open-project', label: '打开项目', description: '选择本地示例项目', keywords: ['open', 'project'], icon: <FolderOpen aria-hidden="true" />, shortcut: '⌘ O', actionLabel: '打开' },
+    { id: 'search-files', label: '搜索文件', description: '查找工作区中的文件', keywords: ['search', 'find'], icon: <Search aria-hidden="true" />, shortcut: '⌘ P', actionLabel: '搜索' },
   ] },
   { id: 'tools', label: '工具', commands: [
     { id: 'settings', label: '偏好设置', keywords: ['settings'], icon: <Settings aria-hidden="true" /> },
@@ -254,7 +376,19 @@ export const demoCommands: CommandGroupDefinition[] = [
 ];
 export function CommandSearchDemo() {
   const [selected, setSelected] = useState('');
-  return <div className="space-y-[var(--rui-content-gap)]"><CommandSearch groups={demoCommands} onSelect={command => setSelected(command.label)} /><p role="status" className="text-xs text-muted-foreground">{selected ? `已选择：${selected}（本地演示）` : '选择命令以预览结果'}</p></div>;
+  return <div className="space-y-[var(--rui-content-gap)]"><CommandSearch groups={demoCommands} context="Reito UI / 当前工作区" onSelect={command => setSelected(command.label)} /><p role="status" className="text-xs text-muted-foreground">{selected ? `已选择：${selected}（本地演示）` : '选择命令以预览结果'}</p></div>;
+}
+
+export const demoContentSections = [
+  { id: 'overview', title: '概览', content: <p>文档目录与正文共享一个受控当前位置。</p> },
+  { id: 'usage', title: '使用方式', content: <p>选择目录项目会滚动正文；阅读正文也会更新目录。</p>, children: [
+    { id: 'keyboard', title: '键盘操作', content: <p>目录沿用 TreeView 的方向键、Home、End 与 Enter。</p> },
+  ] },
+  { id: 'boundary', title: '宿主边界', content: <p>路由、Markdown 解析和远程内容仍由宿主提供。</p> },
+];
+export function ContentNavigationDemo() {
+  const [current, setCurrent] = useState('overview');
+  return <ContentNavigation className="h-[var(--rui-container-lg)]" sections={demoContentSections} value={current} onValueChange={setCurrent} title="组件指南" contentTitle="设计语言" />;
 }
 
 export const demoDiffHunks: DiffHunk[] = [{
@@ -355,6 +489,13 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'overlay-provider', name: 'OverlayProvider 命令式浮层', description: 'Dialog、Sheet 与 AlertDialog 的命令式打开、结果、关闭、并发栈和卸载收口。', component: OverlayProviderDemo },
+  { id: 'inline-edit', name: 'InlineEdit 行内编辑', description: '显示与编辑槽、草稿提交取消、异步错误、只读和焦点恢复。', component: InlineEditDemo },
+  { id: 'toolbar', name: 'Toolbar 工具栏', description: '操作分组、切换状态、可达溢出菜单与方向键漫游焦点。', component: ToolbarDemo },
+  { id: 'banner', name: 'Banner 通知条', description: '信息、动作、关闭、长内容和可控 live region 的紧凑通知。', component: BannerDemo },
+  { id: 'user-info', name: 'User 信息行', description: '头像、主辅文字、状态和独立宿主操作的紧凑组合。', component: UserInfoDemo },
+  { id: 'confirm-popover', name: 'ConfirmPopover 锚点确认', description: '贴近触发器的确认、取消、异步进度、错误与焦点恢复。', component: ConfirmPopoverDemo },
+  { id: 'split-button', name: 'SplitButton 拆分按钮', description: '主操作与相关菜单共享边缘，独立控制忙碌、禁用、标签和快捷键。', component: SplitButtonDemo },
   { id: 'form', name: 'Form 表单管理', description: 'Schema、跨字段与异步校验、提交重置、嵌套字段和数组。', component: FormDemo },
   { id: 'async-form', name: 'AsyncForm 异步表单', description: '可取消的异步校验、过期响应隔离、记录切换和提交恢复。', component: AsyncFormDemo },
   { id: 'virtual-list', name: 'VirtualList 虚拟列表', description: '窗口化行、稳定 key、滚动定位、可见范围和按需加载。', component: VirtualListDemo },
@@ -380,8 +521,9 @@ export const complexCatalog: ComplexCatalogEntry[] = [
   { id: 'timeline', name: 'Timeline 时间线', description: '按时间呈现完成、进行、失败和等待状态。', component: TimelineDemo },
   { id: 'stepper', name: 'Stepper 分步流程', description: '可导航步骤、必填门槛与本地确认流程。', component: StepperDemo },
   { id: 'settings-section', name: 'SettingsSection 设置分组', description: '标题、说明、行布局与真实受控表单。', component: SettingsSectionDemo },
-  { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、独立滚动面板、指针与键盘分栏。', component: WorkspaceDemo },
-  { id: 'command-search', name: 'CommandSearch 命令搜索', description: '分组、关键词筛选、空态与中文输入法保护。', component: CommandSearchDemo },
+  { id: 'workspace', name: 'Workspace 工作区布局', description: '应用外壳、基础分栏、响应式三槽预设与版本化视图持久化。', component: WorkspaceDemo },
+  { id: 'command-search', name: 'CommandSearch 命令搜索', description: '跨资源分组、应用 Dialog、异步状态、快捷键与上下文。', component: CommandSearchDemo },
+  { id: 'content-navigation', name: 'ContentNavigation 文档导航', description: '目录与阅读位置联动、受控路由、窄布局、长标题和空章节。', component: ContentNavigationDemo },
   { id: 'diff-viewer', name: 'DiffViewer 差异查看', description: '显式结构化行与宿主配对，统一/并排切换与长行处理。', component: DiffViewerDemo },
   { id: 'log-viewer', name: 'LogViewer 日志查看', description: '动态虚拟日志、查询、稳定增量加载、暂停跟随与受控视图偏好。', component: LogViewerDemo },
   { id: 'key-value-editor', name: 'KeyValueEditor 键值编辑', description: '稳定 ID 的受控草稿，支持富类型值、嵌套路径、逐项状态、校验、遮罩与提交。', component: KeyValueEditorDemo },

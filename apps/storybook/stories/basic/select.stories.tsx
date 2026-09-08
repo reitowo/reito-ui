@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "可控单选、分组与禁用选项。 使用官方 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
+          "产品界面的默认单选组件，展开菜单由 Reito UI 自绘并完整继承 Graphite 主题。支持可控单选、分组、禁用选项和键盘导航。",
       },
     },
   },

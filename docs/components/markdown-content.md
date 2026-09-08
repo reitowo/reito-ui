@@ -53,6 +53,31 @@ Workbench 例工程直接使用这个公共组件。`RichMessage` 不拥有消�
 
 `onCodeCopy` 收到未高亮、未变形的 fenced code 原文及归一化语言名。若传入 `renderCodeBlock`，复制行为也由自定义渲染器负责。
 
+## 流式 Markdown
+
+宿主把已经累积的完整 source 持续传给 `value`，并在仍会追加内容时设置 `streaming`。组件不会连接传输层，也不接收 token 事件：
+
+```tsx
+<RichMessage
+  from="assistant"
+  content={accumulatedSource}
+  streaming={run.status === 'streaming'}
+  markdownProps={{
+    streamKey: run.id,
+    completeIncompleteMarkdown: true,
+  }}
+/>
+```
+
+- `streaming` 会设置 `aria-busy`，并对尾部未闭合的强调、斜体、删除线、行内代码和链接做仅用于当前渲染的临时补全。传入的 `value` 不会被修改，回调和持久化仍应使用宿主原文。
+- 半成品链接只显示链接文字，不生成可点击的临时 URL；不完整图片默认暂不渲染。完整 URL 仍经过静态模式相同的 URL 转换与协议过滤。
+- CommonMark 会把未闭合 fenced code 当作代码块；`CodeBlock` 因此能持续显示、高亮并复制当前 fence 内的准确源码。复制不会包含 opening fence，也不会包含临时合成的闭合标记。
+- 表格必须等分隔行完整后才获得 table 语义，因此尾部会在这一刻从普通文字替换成表格。前面已经稳定的标题和段落保持原节点身份；表格和代码的尺寸变化只发生在各自局部容器。
+- `completeIncompleteMarkdown={false}` 关闭临时补全，适合调试或必须逐字展示标记的界面。`streamingOptions` 细调 remend 规则；自定义 handler 也属于宿主审查范围。
+- 同一轮生成保持相同 `streamKey`，让追加内容沿用已稳定节点；重新生成、切换分支或以非追加 source 替换当前回答时更换 key，明确卸载旧节点及其局部状态。
+
+`RichMessage` 会把自己的 `streaming` 状态自动传给 `MarkdownContent`；`markdownProps.streaming` 仍可显式覆盖。逐 token 使用 `aria-live` 会让屏幕阅读器重复朗读，所以组件只暴露 busy 状态，完成通知由会话宿主在合适粒度提供。
+
 ## 范围
 
-当前提供同步 CommonMark + GFM 阅读渲染。MDX、数学公式、图表语法、任意原始 HTML、异步插件 Suspense 和富文本编辑不在 MARKDOWN-01 范围；编辑使用 `RichTextEditor`。未闭合语法、增量文本、代码/表格在流式过程中的节点稳定和原文复制属于后续 `MARKDOWN-02`，现有 `streaming` 只表达消息状态。
+当前提供同步 CommonMark + GFM 阅读渲染和追加式流的尾部恢复。MDX、数学公式、图表语法、任意原始 HTML、异步插件 Suspense 和富文本编辑不在范围；编辑使用 `RichTextEditor`。任意位置补丁、服务端 token 顺序修复、跨消息节点迁移和流式虚拟长列表由宿主或后续专门组件处理。

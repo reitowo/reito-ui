@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "使用平台原生选择行为。 使用官方 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
+          "仅在明确需要浏览器或操作系统原生选择行为时使用；展开菜单不保证继承 Graphite 主题。常规产品界面请使用 Select。",
       },
     },
   },

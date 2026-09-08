@@ -7,7 +7,7 @@ authentication, timers, secrets and clipboard access stay in the consuming app.
 - `npm ci --no-audit --no-fund`: passed after restoring the two missing optional
   `@emnapi/core` and `@emnapi/runtime` lock entries. No package versions were bumped.
 - `npm run check`: passed (tokens, catalog, design checks, token audit and all
-  workspace typechecks). Catalog: 123 families, including 71 basic families.
+  workspace typechecks). Catalog: 131 families, including 71 basic families.
 - `npm run build`: passed for UI, Lab, Storybook and Workbench. Existing large chunk
   warnings remain. Full output is in `.logs/one-time-code/build.log` locally.
 - `npx playwright test tests/one-time-code.spec.ts`: 10 passed in Microsoft Edge.
@@ -26,3 +26,8 @@ separate from this visual comparison.
 
 The fixture callback never writes a real clipboard. No native vault, OTP provider,
 authentication flow or production service was exercised by these library tests.
+
+The PR branch incorporates upstream `9b83970`; its updated catalog keeps all 40
+complex families. The build, checks and 10 interaction tests were repeated after
+resolving the generated catalog and component guide conflicts. Unpublished local
+property-row and tree-focus edits are excluded from the PR diff.

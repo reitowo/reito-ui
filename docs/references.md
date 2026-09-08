@@ -85,6 +85,66 @@ MARKDOWN-01 使用固定版本 [`react-markdown@10.1.0`](https://github.com/rema
 
 Reito UI 使用自己的 React API、Graphite tokens、紧凑排版、表格滚动、CodeBlock 组合与 Story。默认原始 HTML 只显示为文本或显式移除，危险 URL 由 react-markdown 默认转换过滤；宿主一旦提供自定义 `urlTransform`、rehype 插件或节点渲染器，就同时接管相应的安全与可访问性责任。没有安装原始 HTML 执行插件，没有复制 Nuxt UI 的 Vue 源码、样式、模板、品牌资源或外部产品消息布局。
 
+MARKDOWN-02 增加固定版本 [`remend@1.3.1`](https://github.com/vercel/streamdown/tree/main/packages/remend)，安装包标注 Apache-2.0。能力边界核对 Streamdown 官方 [流式/静态模式与 Remend 说明](https://github.com/vercel/streamdown/blob/main/skills/streamdown/references/features.md) 以及 remend README：流式渲染会临时闭合未完成的强调、行内代码、删除线和链接；块级渲染仍由 Markdown 解析器负责。Reito UI 只引入小型预处理包，没有引入 Streamdown 的样式、代码高亮、数学、图表或交互控件，并使用 `linkMode="text-only"` 防止半成品 URL 变成可点击链接。表格阶段、fenced code 当前源码、React 节点身份与新流重置由本库自己的组件契约和测试定义。
+
+## SplitButton 组合（2026-09-07 工作区增量）
+
+COMBO-SPLIT-01 实际查看 PrimeVue 当前 [SplitButton](https://primevue.org/splitbutton/) 浅色桌面文档示例，并核对其“默认命令 + 相关命令弹层”、两个原生按钮、显式菜单按钮标签、方向键与 Escape 支持。菜单行为同时核对当前安装 Base UI 1.8 的 [Menu](https://base-ui.com/react/components/menu) 文档和本地类型：Menu 提供方向键、Home / End、类型查找、关闭与焦点管理，Trigger 支持自定义 Button 组合。
+
+Reito UI 只采用共享外轮廓和两个独立焦点按钮的通用结构。实现复用自己的 ButtonGroup、Graphite tokens 和 Base UI Menu，增加主操作/菜单/单条目的独立 loading 与 disabled、受控弹层、空状态、复合标签 typeahead 文字和宿主快捷键声明。没有复制 PrimeVue 的 Vue 源码、MenuModel、CSS、品牌色、字体、模板或资源。
+
+## ConfirmPopover 组合（2026-09-07 工作区增量）
+
+COMBO-CONFIRM-01 实际查看 PrimeVue 当前 [ConfirmPopup](https://primevue.org/confirmpopup/) 浅色桌面文档示例：确认面相对触发器定位，使用短说明和取消/确认两项操作；截图保存在 `.logs/references/primevue-confirm-popup-2026-09-07.png`。焦点与弹层契约同时核对当前安装 Base UI 1.8 的 [Popover](https://base-ui.com/react/components/popover) 文档：modal 弹层包含 Close、默认聚焦首个可操作项，并在关闭时恢复触发器焦点。
+
+Reito UI 使用自己的声明式异步状态、无箭头 Graphite 浮层和原创 tokens，增加外部 pending/error、Promise 成功关闭、失败 alert 与重试、重复提交保护。没有复制 PrimeVue 服务 API、Vue 源码、CSS、品牌颜色、图标、字体、模板或资源。
+
+## User 信息行组合（2026-09-07 工作区增量）
+
+COMBO-USER-01 实际查看 Nuxt UI 4.1.1 当前 [User](https://ui.nuxt.com/docs/components/user) 浅色桌面文档，视口 1280 × 900。官方示例将 name、description 与 Avatar 组合为紧凑信息行，并列出 chip、size、orientation 和 link 配方；截图保存在 `.logs/references/nuxt-ui-user-2026-09-07.png` 与 `.logs/references/nuxt-ui-user-avatar-2026-09-07.png`。头像基础能力同时核对 PrimeVue 当前 [Avatar](https://primevue.org/avatar/) 的图片、文本、图标、尺寸和可访问名称边界。
+
+Reito UI 采用同类信息层级，但使用自己的静态 React 容器、Graphite Avatar/Button 和语义 tokens，增加可读状态、独立动作 loading/disabled、整行禁用与长文本 title。没有复制 Nuxt UI / PrimeVue 的 Vue API、源码、CSS、品牌色、字体、chip、链接、纵向模板或示例资源。
+
+## Banner 组合（2026-09-07 工作区增量）
+
+COMBO-BANNER-01 实际查看 Nuxt UI 4.1.1 当前 [Banner](https://ui.nuxt.com/docs/components/banner) 浅色桌面文档，核对 title、icon、color、actions 与 close 的组合，截图为 `.logs/references/nuxt-ui-banner-2026-09-07.png`。Reito UI 复用自己的 Alert/Button 和语义 tokens，补充明确的 live region 边界与受控关闭；未复制 Vue API、源码、CSS、品牌色、动画或资源。
+
+## Toolbar 组合（2026-09-07 工作区增量）
+
+COMBO-TOOLBAR-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardToolbar](https://ui.nuxt.com/docs/components/dashboard-toolbar) 与 PrimeVue 5.0.1 当前 [Toolbar](https://primevue.org/toolbar/) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/nuxt-ui-dashboard-toolbar-2026-09-07.png` 与 `.logs/references/primevue-toolbar-2026-09-07.png`。参考只用于核对短横向操作容器、Dashboard header 位置和 start/center/end 分区。Reito UI 使用自己的 React 数据契约、Graphite tokens 与 Button/Separator/DropdownMenu，增加 action/toggle、never/auto/always 溢出优先级、滚动策略和 roving focus；未复制 Vue API、源码、CSS、品牌色、字体、图标或资源。
+
+## InlineEdit 组合（2026-09-07 工作区增量）
+
+COMBO-INLINE-01 实际查看 PrimeVue 5.0.1 当前 [Inplace](https://primevue.org/inplace/) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/primevue-inplace-2026-09-07.png`。参考只用于核对 display/content 两态、受控 active、显示按钮键盘入口与关闭入口。Reito UI 使用自己的 React 单值事务与 Graphite Input/Button/Field，增加显式保存/取消、文本/数字校验、可取消异步提交、失败保留草稿、中文输入法保护和焦点恢复；未复制 Vue API、默认 live region、源码、CSS、品牌色、字体、图标或资源。
+
+## OverlayProvider 组合（2026-09-08 工作区增量）
+
+COMBO-OVERLAY-01 实际查看 Nuxt UI 4.11.1 当前 [useOverlay](https://ui.nuxt.com/docs/composables/use-overlay)、PrimeVue 当前 [DynamicDialog](https://primevue.dev/dynamicdialog/) 与 Base UI 当前 [Dialog](https://base-ui.com/react/components/dialog) 浅色桌面文档，视口 1280 × 900；截图为 `.logs/references/nuxt-ui-use-overlay-2026-09-08.png`、`.logs/references/primevue-dynamic-dialog-2026-09-08.png` 与 `.logs/references/base-ui-dialog-2026-09-08.png`。参考只用于核对共享服务、实例句柄、Promise 结果、动态内容、patch/closeAll、受控状态、焦点与嵌套语义。Reito UI 使用自己的 React Provider、判别结果联合和 Graphite Dialog/Sheet/AlertDialog，增加父层关闭与 Provider 卸载的明确收口；未复制 Vue 插件 API、源码、CSS、品牌色、字体、图标或资源。
+
+## Workspace / Sidebar 状态（2026-09-08 工作区增量）
+
+SHELL-STATE-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardPanel](https://ui.nuxt.com/docs/components/dashboard-panel) 与 [DashboardSidebar](https://ui.nuxt.com/docs/components/dashboard-sidebar)，并核对固定依赖 `react-resizable-panels@4.12.3` 对应的 [Group / Panel / Separator API](https://github.com/bvaughn/react-resizable-panels)。截图为 `.logs/references/nuxt-ui-dashboard-panel-4.11.1-2026-09-08.png`、`.logs/references/nuxt-ui-dashboard-sidebar-4.11.1-2026-09-08.png` 与 `.logs/references/react-resizable-panels-4.12.3-2026-09-08.png`。参考只用于核对保存位置、百分比尺寸、折叠、最终布局回调、用户输入来源和键盘分隔线。
+
+Reito UI 使用自己的版本化 React 状态记录、Graphite tokens 与现有 Base UI / shadcn Sidebar，统一保存侧栏和分栏并显式处理旧配置、非法尺寸与不可用存储。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源。服务端首屏读取和账号偏好同步仍由宿主负责。
+
+## Workspace 布局预设（2026-09-08 工作区增量）
+
+SHELL-PRESET-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardGroup](https://ui.nuxt.com/docs/components/dashboard-group)、[DashboardPanel](https://ui.nuxt.com/docs/components/dashboard-panel)、[DashboardSidebar](https://ui.nuxt.com/docs/components/dashboard-sidebar) 与 [DashboardSidebarToggle](https://ui.nuxt.com/docs/components/dashboard-sidebar-toggle)。DashboardGroup 文档明确把固定溢出容器、Sidebar/Panel 组合、响应式界面和尺寸持久化放在同一 dashboard 上下文中。截图为 `.logs/references/nuxt-ui-dashboard-group-4.11.1-2026-09-08.png`，本地宽布局与窄布局截图为 `.logs/workspace-preset/wide-dark-compact.png`、`.logs/workspace-preset/dark-compact.png` 和 `.logs/workspace-preset/light-comfortable.png`。
+
+Reito UI 使用自己的 React 三槽数据契约、Graphite tokens、Base UI Button 与现有 WorkspacePane，按组件容器切换宽/窄结构，并把视图状态和基础分栏状态分开保存。没有复制 Nuxt UI 的 Vue context、源码、CSS、品牌色、字体、图标或资源；路由、业务内容、账号同步和任意 docking 仍由宿主负责。
+
+## 应用搜索（2026-09-08 工作区增量）
+
+SHELL-SEARCH-01 实际查看 Nuxt UI 4.11.1 当前 [DashboardSearch](https://ui.nuxt.com/docs/components/dashboard-search) 与 [CommandPalette](https://ui.nuxt.com/docs/components/command-palette) 深色桌面文档。截图为 `.logs/references/nuxt-ui-dashboard-search-4.11.1-2026-09-08.png`、`.logs/references/nuxt-ui-command-palette-4.11.1-2026-09-08.png` 和 `.logs/references/nuxt-ui-dashboard-search-open-4.11.1-2026-09-08.png`。参考只用于核对顶部搜索入口、全局快捷键、分组结果、行尾快捷键、异步状态与受控打开方式。
+
+Reito UI 使用自己的 React `CommandSearch` / `ApplicationSearch` 契约、Graphite tokens 与现有 Base UI / shadcn Command/Dialog，增加当前工作范围、动作标签、中文 IME 保护、异步动作失败恢复和焦点归还。没有复制 Nuxt UI 的 Vue API、源码、CSS、品牌色、字体、图标或资源；搜索索引、远程请求和命令效果仍由宿主负责。
+
+## 文档导航联动（2026-09-08 工作区增量）
+
+CONTENT-NAV-01 实际查看 Nuxt UI 4.11.1 当前 [ContentNavigation](https://ui.nuxt.com/docs/components/content-navigation) 与 [ContentToc](https://ui.nuxt.com/docs/components/content-toc) 深色桌面文档。前者提供层级折叠导航，后者提供随当前锚点变化的页内目录。截图为 `.logs/references/nuxt-ui-content-navigation-2026-09-08.png` 与 `.logs/references/nuxt-ui-content-toc-2026-09-08.png`。参考只用于核对层级目录、当前锚点、长页面滚动和内容工作面中的导航位置。
+
+Reito UI 使用自己的 React `ContentNavigationSection` 数据契约、Graphite tokens、TreeView 与 WorkspacePreset，增加受控路由/滚动原因、程序化滚动隔离、底部章节判定、目录显隐和窄布局。没有复制 Nuxt Content 模块、Vue API、源码、CSS、品牌色、字体、图标或资源；Markdown 解析、路由历史、内容加载和搜索仍由宿主负责。
+
 ## Tokens：格式与架构分开
 
 **已核实：**DTCG 的首个稳定版本是 2025.10，发布于 2025-10-28；格式模块定义跨工具交换 tokens 的 JSON 表达，包括类型、值、描述、组和引用。规范自己明确声明它不是 W3C Standard。

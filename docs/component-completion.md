@@ -1,8 +1,8 @@
 # 组件补齐进度账本
 
-基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-07。
+基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-08。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**62 项完成，0 项进行中，41 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06` 与 `MARKDOWN-01` 已完成，下一项为 `MARKDOWN-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**74 项完成，0 项进行中，29 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01`、`COMBO-INLINE-01`、`COMBO-OVERLAY-01`、`SHELL-STATE-01`、`SHELL-SEARCH-01`、`SHELL-PRESET-01` 与 `CONTENT-NAV-01` 已完成，下一项为 `DASHBOARD-RECIPE-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06 与 MARKDOWN-01 已完成，下一项为 MARKDOWN-02。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01、COMBO-INLINE-01、COMBO-OVERLAY-01、SHELL-STATE-01、SHELL-SEARCH-01、SHELL-PRESET-01 与 CONTENT-NAV-01 已完成，下一项为 DASHBOARD-RECIPE-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | EDIT-05 | 块操作：受控块拖拽/键盘移动、转换与删除、历史恢复、选择/焦点和序列化保持 | EDIT-02 | ✅ 完成 | 复杂-richtexteditor-富文本编辑--block-actions-controlled / --block-single / --block-actions-empty / --block-controls-off / --block-read-only / --block-narrow / --playground；本族共 41 个 Story | [块操作验收](validation-rich-text-editor-blocks.md)：63 项交互/回归、164 次静态 Story 组合、17 项 Controls、四主题密度窄屏；check/build 通过；[用法](components/rich-text-editor.md#块操作) |
 | EDIT-06 | 编辑器媒体与宿主扩展配方：图片插入/上传状态、AI 补全等回调接点、取消/失败恢复；模拟结果与真实后端明确区分 | EDIT-02、UPLOAD-01 | ✅ 完成 | 复杂-richtexteditor-富文本编辑--image-serialization / --image-upload-cancel / --image-upload-recovery / --image-invalid / --image-read-only / --completion-review / --completion-literal-text / --completion-cancel / --completion-recovery / --completion-stale / --media-narrow / --playground；本族共 52 个 Story | [媒体与补全验收](validation-rich-text-editor-media.md)：86 项交互/回归、208 次静态 Story 组合、19 项 Controls、四主题密度窄屏；check/build 通过；[用法](components/rich-text-editor.md#图片与宿主补全) |
 | MARKDOWN-01 | MarkdownContent / RichMessage：标题、列表、表格、链接、fenced code、自定义节点入口与内容处理策略；语法高亮不等于文档渲染 | — | ✅ 完成 | ai-markdowncontent-richmessage--playground / --default / --rich-assistant-message / --table / --task-list / --fenced-code / --custom-renderers / --html-escaped / --unsafe-url / --narrow；本族共 17 个 Story | [验收](validation-markdown-content.md)：24 项组件回归、14 项 Workbench 回归、68 次静态 Story 组合、8 项 Controls、四主题密度窄屏；check/build 通过；[用法](components/markdown-content.md) |
-| MARKDOWN-02 | 流式 Markdown：未闭合语法、增量文本、代码/表格变形、复制保持原文、节点替换和布局稳定 | MARKDOWN-01 | 待完成 | 待关联 | 待记录 |
+| MARKDOWN-02 | 流式 Markdown：未闭合语法、增量文本、代码/表格变形、复制保持原文、节点替换和布局稳定 | MARKDOWN-01 | ✅ 完成 | ai-markdowncontent-richmessage--streaming-playground / --incomplete-inline / --incomplete-link / --incomplete-fence / --completion-disabled / --streaming-table / --stream-replacement-key / --streaming-rich-message；本族共 25 个 Story | [验收](validation-streaming-markdown.md)：13 项流式能力/视觉、24 项 MARKDOWN-01 回归、14 项 Workbench 回归、100 次静态 Story 组合、两组可调 Controls；check/build 通过；[用法](components/markdown-content.md#流式-markdown) |
 
 ## 阶段 5：可复用组合与应用外壳配方
 
@@ -107,17 +107,17 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
-| COMBO-SPLIT-01 | SplitButton：主操作与菜单动作、各自 loading/disabled、标签、快捷键/焦点与共享边缘 | — | 待完成 | 待关联 | 待记录 |
-| COMBO-CONFIRM-01 | ConfirmPopover：锚点确认、危险/取消动作、异步 pending/error、关闭及焦点回到触发器 | — | 待完成 | 待关联 | 待记录 |
-| COMBO-USER-01 | User 信息行：Avatar/文字/辅助状态/操作组合、长名称、缺头像与禁用动作；示例数据明确为本地 | — | 待完成 | 待关联 | 待记录 |
-| COMBO-BANNER-01 | Banner：信息/动作/关闭、长内容和窄布局、live region 使用边界；复用 Alert，不增加装饰性统计条 | — | 待完成 | 待关联 | 待记录 |
-| COMBO-TOOLBAR-01 | Toolbar：操作分组、状态控件、溢出策略和适用的键盘导航，窄工作面不隐藏不可达操作 | — | 待完成 | 待关联 | 待记录 |
-| COMBO-INLINE-01 | 通用 InlineEdit：显示/编辑插槽、草稿/提交/取消、异步错误、焦点与只读；由 PropertyList 文本/数字场景抽取 | FORM-02 | 待完成 | 待关联 | 待记录 |
-| COMBO-OVERLAY-01 | 命令式 Overlay 配方：Dialog/Sheet/AlertDialog 的打开/结果/关闭服务、并发/嵌套与卸载边界，保留声明式控制 | — | 待完成 | 待关联 | 待记录 |
-| SHELL-STATE-01 | Workspace / Sidebar 持久化：尺寸/展开状态受控、保存恢复、不可用尺寸/旧配置回退、键盘分栏不退化 | — | 待完成 | 待关联 | 待记录 |
-| SHELL-SEARCH-01 | 统一应用搜索：CommandSearch 组合、跨资源结果/动作、异步状态、快捷键/IME与当前工作上下文；搜索源为宿主注入 | SELECT-01 | 待完成 | 待关联 | 待记录 |
-| SHELL-PRESET-01 | 布局预设：Workspace 槽位、独立滚动、窄屏/面板隐藏、状态切换与持久化；不得覆盖基础分栏的公共契约 | SHELL-STATE-01 | 待完成 | 待关联 | 待记录 |
-| CONTENT-NAV-01 | 文档导航联动：DisclosureTree/目录组合、当前位置、滚动/路由同步、长标题、键盘与空章节 | MARKDOWN-01 | 待完成 | 待关联 | 待记录 |
+| COMBO-SPLIT-01 | SplitButton：主操作与菜单动作、各自 loading/disabled、标签、快捷键/焦点与共享边缘 | — | ✅ 完成 | 复杂-splitbutton-拆分按钮--playground / --default / --menu-with-shortcuts / --independent-disabled / --main-loading / --menu-loading / --item-loading / --empty / --keyboard-navigation；本族共 9 个 Story | [验收](validation-split-button.md)：13 项交互/视觉、36 次静态 Story 组合、可调 Controls、四主题密度；check/build 通过；[用法](components/split-button.md) |
+| COMBO-CONFIRM-01 | ConfirmPopover：锚点确认、危险/取消动作、异步 pending/error、关闭及焦点回到触发器 | — | ✅ 完成 | 复杂-confirmpopover-锚点确认--playground / --default / --destructive / --with-details / --external-pending / --host-error / --async-success / --async-failure / --disabled / --keyboard-focus；本族共 10 个 Story | [验收](validation-confirm-popover.md)：13 项交互/视觉、40 次静态 Story 组合、可调 Controls、四主题密度；check/build 通过；[用法](components/confirm-popover.md) |
+| COMBO-USER-01 | User 信息行：Avatar/文字/辅助状态/操作组合、长名称、缺头像与禁用动作；示例数据明确为本地 | — | ✅ 完成 | 复杂-user-信息行--playground / --default / --long-content / --missing-avatar / --status-tones / --visible-actions / --disabled-action / --loading-action / --disabled-row / --custom-trailing-content；本族共 10 个 Story | [验收](validation-user-info.md)：13 项交互/视觉、40 次静态 Story 组合、可调 Controls、四主题密度；check/build 通过；[用法](components/user-info.md) |
+| COMBO-BANNER-01 | Banner：信息/动作/关闭、长内容和窄布局、live region 使用边界；复用 Alert，不增加装饰性统计条 | — | ✅ 完成 | 复杂-banner-通知条--playground 等 11 个 Story | [验收](validation-banner.md)：11 项交互/视觉、44 次 Story 组合、四主题密度；check/build 通过；[用法](components/banner.md) |
+| COMBO-TOOLBAR-01 | Toolbar：操作分组、状态控件、溢出策略和适用的键盘导航，窄工作面不隐藏不可达操作 | — | ✅ 完成 | 复杂-toolbar-工具栏--playground 等 11 个 Story | [验收](validation-toolbar.md)：11 项交互/视觉、44 次 Story 组合、四主题密度；check/build 通过；[用法](components/toolbar.md) |
+| COMBO-INLINE-01 | 通用 InlineEdit：显示/编辑插槽、草稿/提交/取消、异步错误、焦点与只读；由 PropertyList 文本/数字场景抽取 | FORM-02 | ✅ 完成 | 复杂-inlineedit-行内编辑--playground 等 12 个 Story | [验收](validation-inline-edit.md)：12 项交互/视觉、48 次 Story 组合、四主题密度；check/build 通过；[用法](components/inline-edit.md) |
+| COMBO-OVERLAY-01 | 命令式 Overlay 配方：Dialog/Sheet/AlertDialog 的打开/结果/关闭服务、并发/嵌套与卸载边界，保留声明式控制 | — | ✅ 完成 | 复杂-overlayprovider-命令式浮层--playground 等 13 个 Story | [验收](validation-overlay-provider.md)：18 项交互/视觉、52 次 Story 组合、四主题密度；check/build 通过；[用法](components/overlay-provider.md) |
+| SHELL-STATE-01 | Workspace / Sidebar 持久化：尺寸/展开状态受控、保存恢复、不可用尺寸/旧配置回退、键盘分栏不退化 | — | ✅ 完成 | 复杂-workspace-工作区布局--playground / --persisted-layout / --legacy-layout / --invalid-layout-fallback / --storage-unavailable；本族共 10 个 Story；Sidebar Playground 公开 persistOpen | [验收](validation-workspace-state.md)：13 项交互/视觉、40 次 Story 组合、刷新恢复与四主题密度；check/build 通过；[用法](components/workspace.md) |
+| SHELL-SEARCH-01 | 统一应用搜索：CommandSearch 组合、跨资源结果/动作、异步状态、快捷键/IME与当前工作上下文；搜索源为宿主注入 | SELECT-01 | ✅ 完成 | 复杂-commandsearch-命令搜索--playground / --application-dialog / --shortcut-and-focus / --action-failure / --async-sources；本族共 13 个 Story | [验收](validation-application-search.md)：11 项交互/视觉、52 次 Story 组合、四主题密度；check/build 通过；[用法](components/application-search.md) |
+| SHELL-PRESET-01 | 布局预设：Workspace 槽位、独立滚动、窄屏/面板隐藏、状态切换与持久化；不得覆盖基础分栏的公共契约 | SHELL-STATE-01 | ✅ 完成 | 复杂-workspace-工作区布局--playground / --preset-desktop / --preset-narrow / --preset-auto / --preset-independent-scroll / --preset-optional-panels / --preset-persisted / --preset-legacy / --preset-storage-unavailable；本族共 18 个 Story | [验收](validation-workspace-preset.md)：16 项新增、13 项基础回归、72 次 Story 组合、四主题密度；check/build 通过；[用法](components/workspace.md#三槽布局预设) |
+| CONTENT-NAV-01 | 文档导航联动：DisclosureTree/目录组合、当前位置、滚动/路由同步、长标题、键盘与空章节 | MARKDOWN-01 | ✅ 完成 | 复杂-contentnavigation-文档导航--playground / --default / --nested / --controlled-route / --scroll-synchronization / --long-title / --empty-section / --empty-document / --disabled-section / --narrow-layout / --navigation-hidden / --interactive；本族共 12 个 Story | [验收](validation-content-navigation.md)：15 项新增、24 项相关回归、48 次 Story 组合、四主题密度；check/build 通过；[用法](components/content-navigation.md) |
 | DASHBOARD-RECIPE-01 | Dashboard 工作面配方：AppShell/Workspace/Sidebar/Table/Form/Search 的真实本地交互、偏好与窄布局；不作为单一原子组件计数 | SHELL-PRESET-01、SHELL-SEARCH-01、TABLE-01、FORM-01 | 待完成 | 待关联 | 待记录 |
 | CONTENT-RECIPE-01 | Content 工作面配方：文档列表/导航/阅读/相关操作统一组合、空/加载/失败与视图状态；专用阅读器另行验收 | CONTENT-NAV-01、RESOURCE-02 | 待完成 | 待关联 | 待记录 |
 

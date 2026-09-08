@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 71,
-    "complex": 32,
+    "complex": 40,
     "ai": 20
   },
-  "total": 123,
-  "stories": 1226,
+  "total": 131,
+  "stories": 1340,
   "entries": [
     {
       "layer": "basic",
@@ -719,6 +719,76 @@
     },
     {
       "layer": "complex",
+      "id": "overlay-provider",
+      "name": "OverlayProvider 命令式浮层",
+      "description": "Dialog、Sheet 与 AlertDialog 的命令式打开、结果、关闭、并发栈和卸载收口。",
+      "storyId": "复杂-overlayprovider-命令式浮层--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "OverlayProviderDemo",
+      "stories": 13
+    },
+    {
+      "layer": "complex",
+      "id": "inline-edit",
+      "name": "InlineEdit 行内编辑",
+      "description": "显示与编辑槽、草稿提交取消、异步错误、只读和焦点恢复。",
+      "storyId": "复杂-inlineedit-行内编辑--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "InlineEditDemo",
+      "stories": 12
+    },
+    {
+      "layer": "complex",
+      "id": "toolbar",
+      "name": "Toolbar 工具栏",
+      "description": "操作分组、切换状态、可达溢出菜单与方向键漫游焦点。",
+      "storyId": "复杂-toolbar-工具栏--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ToolbarDemo",
+      "stories": 11
+    },
+    {
+      "layer": "complex",
+      "id": "banner",
+      "name": "Banner 通知条",
+      "description": "信息、动作、关闭、长内容和可控 live region 的紧凑通知。",
+      "storyId": "复杂-banner-通知条--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "BannerDemo",
+      "stories": 11
+    },
+    {
+      "layer": "complex",
+      "id": "user-info",
+      "name": "User 信息行",
+      "description": "头像、主辅文字、状态和独立宿主操作的紧凑组合。",
+      "storyId": "复杂-user-信息行--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "UserInfoDemo",
+      "stories": 10
+    },
+    {
+      "layer": "complex",
+      "id": "confirm-popover",
+      "name": "ConfirmPopover 锚点确认",
+      "description": "贴近触发器的确认、取消、异步进度、错误与焦点恢复。",
+      "storyId": "复杂-confirmpopover-锚点确认--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ConfirmPopoverDemo",
+      "stories": 10
+    },
+    {
+      "layer": "complex",
+      "id": "split-button",
+      "name": "SplitButton 拆分按钮",
+      "description": "主操作与相关菜单共享边缘，独立控制忙碌、禁用、标签和快捷键。",
+      "storyId": "复杂-splitbutton-拆分按钮--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "SplitButtonDemo",
+      "stories": 9
+    },
+    {
+      "layer": "complex",
       "id": "form",
       "name": "Form 表单管理",
       "description": "Schema、跨字段与异步校验、提交重置、嵌套字段和数组。",
@@ -971,21 +1041,31 @@
       "layer": "complex",
       "id": "workspace",
       "name": "Workspace 工作区布局",
-      "description": "应用外壳、独立滚动面板、指针与键盘分栏。",
+      "description": "应用外壳、基础分栏、响应式三槽预设与版本化视图持久化。",
       "storyId": "复杂-workspace-工作区布局--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "WorkspaceDemo",
-      "stories": 6
+      "stories": 18
     },
     {
       "layer": "complex",
       "id": "command-search",
       "name": "CommandSearch 命令搜索",
-      "description": "分组、关键词筛选、空态与中文输入法保护。",
+      "description": "跨资源分组、应用 Dialog、异步状态、快捷键与上下文。",
       "storyId": "复杂-commandsearch-命令搜索--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "CommandSearchDemo",
-      "stories": 7
+      "stories": 13
+    },
+    {
+      "layer": "complex",
+      "id": "content-navigation",
+      "name": "ContentNavigation 文档导航",
+      "description": "目录与阅读位置联动、受控路由、窄布局、长标题和空章节。",
+      "storyId": "复杂-contentnavigation-文档导航--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ContentNavigationDemo",
+      "stories": 12
     },
     {
       "layer": "complex",
@@ -1175,7 +1255,7 @@
       "storyId": "ai-markdowncontent-richmessage--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "MarkdownContentDemo",
-      "stories": 17
+      "stories": 25
     },
     {
       "layer": "ai",
