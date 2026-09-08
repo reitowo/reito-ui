@@ -135,21 +135,22 @@ test('workbench settings validate drafts, step numbers and apply key/value entri
   await expect(page.getByRole('region', { name: '本地操作日志', exact: true })).toContainText('还没有日志记录');
 });
 
-test('workbench theme and density persist through reload', async ({ page }) => {
+test('workbench theme persists with compact density and no density switch', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: '切换工作台主题' }).click();
-  await page.getByRole('button', { name: '切换工作台密度' }).click();
+  await expect(page.getByRole('button', { name: '切换工作台密度' })).toHaveCount(0);
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('html')).toHaveAttribute('data-density', 'comfortable');
-  await expect(page.getByRole('button', { name: '查看任务队列' })).toHaveCSS('height', '36px');
+  await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
+  await expect(page.getByRole('button', { name: '查看任务队列' })).toHaveCSS('height', '28px');
+  await page.screenshot({ path: '.logs/density-controls/workbench-light-compact.png' });
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
   test(`workbench three views are accessible in ${theme}/${density}`, async ({ page }) => {
+    await page.addInitScript(value => localStorage.setItem('reito-workbench-density', value), density);
     await page.goto('/');
     if (theme === 'light') await page.getByRole('button', { name: '切换工作台主题' }).click();
-    if (density === 'comfortable') await page.getByRole('button', { name: '切换工作台密度' }).click();
     for (const view of ['Agent', '文件与差异', '设置'] as const) { await navigate(page, view); await accessible(page); }
   });
 }

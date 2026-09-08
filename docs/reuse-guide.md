@@ -30,6 +30,8 @@ export function Example() {
 
 CSS 已编译，包含 Tailwind Preflight、共享密度与 Inter Variable 字体。包内控件不依赖消费项目扫描 class；中文使用系统字体。代码字体由系统等宽字体回退。全局 Preflight 会规范原生元素，请在接入已有站点时检查其布局；不要通过页面改写 `[data-slot]` 修复共享组件。
 
+默认设置 `data-density="compact"` 即可，不要因为组件库支持两种密度就自动添加「紧凑 / 舒适」切换。仅在用户明确要求时提供密度选择入口；不要把 Lab / Storybook 的检查工具复制到产品标题栏、工具栏或设置页。
+
 ## 三层入口
 
 ```tsx
