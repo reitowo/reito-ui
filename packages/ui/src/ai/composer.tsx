@@ -3,6 +3,7 @@ import { ArrowUp, File, LoaderCircle, Square, UserRound } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Textarea } from '../primitives/textarea.js';
 import { ContextPill } from './context.js';
+import { FileUpload, type FileUploadHandle, type FileUploadProps, type QueuedFile } from '../complex/file-upload.js';
 import { classes } from './shared.js';
 
 export type ComposerMentionKind = 'file' | 'person';
@@ -46,9 +47,12 @@ export interface ComposerDraft {
   text: string;
   mentions: ComposerMentionValue[];
   contextIds: string[];
+  attachments?: QueuedFile[];
 }
 
 export interface ComposerProps {
+  /** Enables local file selection, paste and drop. Upload transport is supplied by the host. */
+  attachmentOptions?: Pick<FileUploadProps, 'accept' | 'maxSize' | 'maxFiles' | 'preview' | 'transport'>;
   value?: string;
   defaultValue?: string;
   draft?: ComposerDraft;
@@ -117,6 +121,11 @@ function searchable(item: { label: string; description?: string; keywords?: read
 
 function sameDraft(left: ComposerDraft, right: ComposerDraft) {
   return left.text === right.text
+    && (left.attachments?.length ?? 0) === (right.attachments?.length ?? 0)
+    && (left.attachments ?? []).every((file, index) => {
+      const other = right.attachments?.[index];
+      return other && file.id === other.id && file.file === other.file && file.status === other.status;
+    })
     && left.contextIds.join('\u0000') === right.contextIds.join('\u0000')
     && left.mentions.length === right.mentions.length
     && left.mentions.every((mention, index) => {
@@ -126,7 +135,7 @@ function sameDraft(left: ComposerDraft, right: ComposerDraft) {
 }
 
 /** Clears only a successfully submitted, unchanged draft. Rejected submissions remain editable. */
-export function Composer({ value, defaultValue = '', draft, defaultDraft, onValueChange, onDraftChange, onSubmit, onSubmitDraft, commandItems = [], mentionItems = [], contextItems: suppliedContextItems, onCommandSelect, onMentionSelect, onContextRemove, onStop, running = false, disabled = false, placeholder = '描述你的下一步…', label = '消息草稿', submitLabel = '发送消息', stopLabel = '停止生成', toolbar, context, hint = 'Enter 发送 · Shift + Enter 换行', error, className }: ComposerProps) {
+export function Composer({ attachmentOptions, value, defaultValue = '', draft, defaultDraft, onValueChange, onDraftChange, onSubmit, onSubmitDraft, commandItems = [], mentionItems = [], contextItems: suppliedContextItems, onCommandSelect, onMentionSelect, onContextRemove, onStop, running = false, disabled = false, placeholder = '描述你的下一步…', label = '消息草稿', submitLabel = '发送消息', stopLabel = '停止生成', toolbar, context, hint = 'Enter 发送 · Shift + Enter 换行', error, className }: ComposerProps) {
   const [internalDraft, setInternalDraft] = useState<ComposerDraft>(() => defaultDraft ?? { text: defaultValue, mentions: [], contextIds: [] });
   const contextItems = suppliedContextItems ?? (draft?.contextIds ?? internalDraft.contextIds).map(id => ({ id, label: id } as ComposerContextItem));
   const [submitting, setSubmitting] = useState(false);
@@ -136,19 +145,24 @@ export function Composer({ value, defaultValue = '', draft, defaultDraft, onValu
   const mentionSequence = useRef(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const selectedOptionRef = useRef<HTMLButtonElement>(null);
+  const uploadRef = useRef<FileUploadHandle>(null);
   const text = draft?.text ?? value ?? internalDraft.text;
+  const draftAttachments = draft === undefined ? internalDraft.attachments : draft.attachments;
   const currentDraft = useRef<ComposerDraft>({
     text,
     mentions: validMentions(text, draft?.mentions ?? internalDraft.mentions),
     contextIds: contextItems.map(item => item.id),
   });
-  currentDraft.current = { text, mentions: validMentions(text, draft?.mentions ?? internalDraft.mentions), contextIds: contextItems.map(item => item.id) };
+  currentDraft.current = { text, mentions: validMentions(text, draft?.mentions ?? internalDraft.mentions), contextIds: contextItems.map(item => item.id), ...(draftAttachments ? { attachments: draftAttachments } : {}) };
   const inFlight = useRef(false);
   const composing = useRef(false);
   const hintId = useId();
   const errorId = useId();
   const suggestionId = useId();
   const errorMessage = error ?? submissionError;
+  const attachments = currentDraft.current.attachments ?? [];
+  const attachmentsBlocked = attachments.length > 0 && (!onSubmitDraft || attachments.some(item => attachmentOptions?.transport ? item.status !== 'success' : item.status === 'uploading' || item.status === 'error' || item.status === 'canceled'));
+  const canSubmit = Boolean(text.trim() || attachments.length) && !attachmentsBlocked;
   const trigger = !disabled && !submitting && candidateTrigger &&
     text.slice(candidateTrigger.start, candidateTrigger.end) === `${candidateTrigger.kind === 'command' ? '/' : '@'}${candidateTrigger.query}` &&
     (candidateTrigger.kind === 'command' ? commandItems.length : mentionItems.length) ? candidateTrigger : undefined;
@@ -237,7 +251,7 @@ export function Composer({ value, defaultValue = '', draft, defaultDraft, onValu
   }
 
   async function submit() {
-    if (disabled || running || inFlight.current || !currentDraft.current.text.trim()) return;
+    if (disabled || running || inFlight.current || !canSubmit) return;
     const submittedDraft = currentDraft.current;
     inFlight.current = true;
     setSubmitting(true);
@@ -254,7 +268,18 @@ export function Composer({ value, defaultValue = '', draft, defaultDraft, onValu
     }
   }
 
-  return <form className={classes('grid min-w-0 gap-2', className)} onSubmit={event => { event.preventDefault(); void submit(); }} aria-label={`${label}输入区`}>
+  return <form className={classes('grid min-w-0 gap-2', className)} onSubmit={event => { event.preventDefault(); void submit(); }} aria-label={`${label}输入区`}
+    onPaste={event => {
+      if (!attachmentOptions || !event.clipboardData.files.length) return;
+      event.preventDefault();
+      if (!disabled && !submitting) uploadRef.current?.addFiles(Array.from(event.clipboardData.files));
+    }}
+    onDragOver={event => { if (attachmentOptions && event.dataTransfer.types.includes('Files')) event.preventDefault(); }}
+    onDrop={event => {
+      if (!attachmentOptions || !event.dataTransfer.files.length) return;
+      event.preventDefault();
+      if (!disabled && !submitting) uploadRef.current?.addFiles(Array.from(event.dataTransfer.files));
+    }}>
     <div className="overflow-hidden rounded-[var(--rui-radius-composer)] border border-input bg-[var(--rui-composer-bg)] shadow-xs focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring/30">
       {Boolean(context || contextItems.length || currentDraft.current.mentions.length) && <div role="group" aria-label="草稿上下文与提及" className="flex min-w-0 flex-wrap gap-1.5 px-[var(--rui-content-padding)] pt-[var(--rui-content-gap-sm)]">
         {context}
@@ -313,6 +338,10 @@ export function Composer({ value, defaultValue = '', draft, defaultDraft, onValu
           }
         }}
       />
+      {attachmentOptions && <div className="px-[var(--rui-content-padding)] pb-[var(--rui-content-gap-sm)]">
+        <FileUpload {...attachmentOptions} ref={uploadRef} variant="compact" value={attachments} onValueChange={next => update({ ...currentDraft.current, attachments: next })} disabled={disabled || submitting} label="添加附件" />
+        {attachmentsBlocked && <p role="status" className="mt-1 text-xs text-muted-foreground">{!onSubmitDraft ? '请配置结构化提交以发送附件' : '请完成附件上传，或移除未就绪的附件'}</p>}
+      </div>}
       {trigger && <div id={suggestionId} role="listbox" aria-label={trigger.kind === 'command' ? '斜杠命令' : '提及建议'} className="max-h-[var(--rui-container-md)] min-w-0 overflow-y-auto border-t border-border bg-popover p-[var(--rui-content-gap-sm)]">
         {suggestions.length ? <div className="grid gap-1">{suggestions.map(suggestion => {
           const usableIndex = usableSuggestions.findIndex(item => item.key === suggestion.key);
@@ -335,7 +364,7 @@ export function Composer({ value, defaultValue = '', draft, defaultDraft, onValu
       <div className="flex min-w-0 flex-wrap items-center gap-2 px-[var(--rui-content-gap-sm)] pb-[var(--rui-content-gap-sm)]">
         {toolbar && <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">{toolbar}</div>}
         {running ? <Button type="button" size="sm" variant="outline" className="ml-auto" aria-label={stopLabel} disabled={disabled || !onStop} onClick={event => { event.preventDefault(); onStop?.(); }}><Square className="size-3.5" aria-hidden="true" />停止</Button>
-          : <Button type="submit" size="sm" className="ml-auto" aria-label={submitting ? '正在提交' : submitLabel} disabled={disabled || submitting || !text.trim()}>{submitting ? <LoaderCircle className="size-4 motion-safe:animate-spin" aria-hidden="true" /> : <ArrowUp className="size-4" aria-hidden="true" />}</Button>}
+          : <Button type="submit" size="sm" className="ml-auto" aria-label={submitting ? '正在提交' : submitLabel} disabled={disabled || submitting || !canSubmit}>{submitting ? <LoaderCircle className="size-4 motion-safe:animate-spin" aria-hidden="true" /> : <ArrowUp className="size-4" aria-hidden="true" />}</Button>}
       </div>
     </div>
     {errorMessage && <p id={errorId} role="alert" className="text-sm text-destructive">{errorMessage}</p>}

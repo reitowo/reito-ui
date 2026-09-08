@@ -215,3 +215,62 @@ export const ReplacePendingDraft: Story = {
     </>;
   },
 };
+
+export const LocalAttachments: Story = {
+  name: '附件：选择、粘贴与拖入',
+  render: function LocalAttachmentsExample() {
+    const [receipt, setReceipt] = useState('');
+    return <><Composer attachmentOptions={{ accept: '.txt,.md,image/*', maxFiles: 2, maxSize: 1024 }} onSubmit={() => undefined} onSubmitDraft={next => setReceipt(JSON.stringify({ text: next.text, files: next.attachments?.map(item => item.file.name) }))} /><output aria-label="附件提交结果">{receipt}</output></>;
+  },
+};
+export const AttachmentUpload: Story = {
+  name: '附件：上传、取消与重试',
+  render: function AttachmentUploadExample() {
+    const [receipt, setReceipt] = useState('');
+    const attempts = useRef(new Set<string>());
+    return <><Composer attachmentOptions={{ transport: async (item, { signal, onProgress }) => {
+      onProgress(40);
+      await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(resolve, 500);
+        signal.addEventListener('abort', () => { clearTimeout(timer); reject(new Error('已取消')); }, { once: true });
+      });
+      if (!attempts.current.has(item.id)) { attempts.current.add(item.id); throw new Error('本地上传失败，请重试'); }
+      onProgress(100);
+    } }} onSubmit={() => undefined} onSubmitDraft={next => setReceipt(next.attachments?.map(item => item.file.name).join(',') ?? '')} /><output aria-label="附件提交结果">{receipt}</output></>;
+  },
+};
+
+type AttachmentPlaygroundArgs = { accept: string; maxFiles: number; maxSize: number; preview: boolean; disabled: boolean; failSubmit: boolean };
+function AttachmentPlaygroundExample(args: AttachmentPlaygroundArgs) {
+  const [receipt, setReceipt] = useState('');
+  return <><Composer
+    attachmentOptions={{ accept: args.accept, maxFiles: args.maxFiles, maxSize: args.maxSize, preview: args.preview }}
+    disabled={args.disabled}
+    onSubmit={() => undefined}
+    onSubmitDraft={next => {
+      if (args.failSubmit) throw new Error('本地发送失败，附件已保留');
+      setReceipt(JSON.stringify({ text: next.text, files: next.attachments?.map(item => item.file.name) }));
+    }}
+  /><output aria-label="附件提交结果">{receipt}</output></>;
+}
+export const AttachmentPlayground: StoryObj<AttachmentPlaygroundArgs> = {
+  name: '附件参数调试',
+  args: { accept: '.txt,.md,image/*', maxFiles: 3, maxSize: 1048576, preview: true, disabled: false, failSubmit: false },
+  argTypes: { accept: textControl, maxFiles: { control: { type: 'number', min: 1 } }, maxSize: { control: { type: 'number', min: 1 } }, preview: booleanControl, disabled: booleanControl, failSubmit: booleanControl },
+  parameters: { controls: { include: ['accept', 'maxFiles', 'maxSize', 'preview', 'disabled', 'failSubmit'] } },
+  render: args => <AttachmentPlaygroundExample {...args} />,
+};
+
+export const ReplaceUploadingAttachment: Story = {
+  name: '附件：宿主替换并中止旧上传',
+  render: function ReplaceUploadingAttachmentExample() {
+    const [draft, setDraft] = useState<ComposerDraft>({ text: '保留正文', mentions: [], contextIds: [] });
+    const [aborted, setAborted] = useState(false);
+    return <><Composer draft={draft} onDraftChange={setDraft} attachmentOptions={{ transport: (_item, { signal }) => new Promise<void>((_resolve, reject) => {
+      signal.addEventListener('abort', () => { setAborted(true); reject(new Error('旧上传已中止')); }, { once: true });
+    }) }} onSubmit={() => undefined} onSubmitDraft={() => undefined} />
+      <Button type="button" variant="outline" size="sm" onClick={() => setDraft({ text: '新草稿', mentions: [], contextIds: [] })}>替换附件草稿</Button>
+      <output aria-label="旧上传状态">{aborted ? '已中止' : '未中止'}</output>
+    </>;
+  },
+};

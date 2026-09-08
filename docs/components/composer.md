@@ -33,3 +33,11 @@ const [draft, setDraft] = useState<ComposerDraft>({
 上下键跳过禁用项并循环，活动项自动滚入可视区域，焦点保留在输入框。Enter 选择候选；空结果时阻止误发。Escape 关闭，Tab 继续焦点导航，Shift+Enter 换行。组合输入期间的 Enter 不选择或发送；自动化测试使用合成 composition 事件，不代表真实系统 IME 已验证。
 
 Storybook 的 Playground 同页调整命令、提及、上下文开关及基础输入参数。另有结构化提交、失败恢复、移除、禁用、空候选和长候选列表场景。附件粘贴和上传仍由 `AI-COMPOSER-02` 跟踪。
+
+## 附件输入
+
+提供 `attachmentOptions` 启用文件选择、粘贴和拖入；可配置 FileUpload 的 `accept/maxSize/maxFiles/preview/transport`。队列存于 `ComposerDraft.attachments`，包含本地 File 对象与上传状态，不能直接 JSON 序列化成远程文件内容。
+
+必须提供 `onSubmitDraft` 才允许带附件提交，避免旧字符串回调静默丢弃附件。未配置 transport 时提交本地文件；配置后所有文件必须上传成功。失败、取消或尚未上传的项阻止发送，用户可重试或移除。成功发送清除原草稿及附件，宿主替换的新草稿应保留。只带附件也可以发送。
+
+文件粘贴会阻止浏览器默认粘贴以避免重复图片内容；没有文件的普通文本粘贴仍使用原生 textarea 行为。对象 URL 的创建和释放由共享 FileUpload 缩略图管理。专项记录见 [附件验收](../validation-composer-attachments.md)。

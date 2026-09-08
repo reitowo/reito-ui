@@ -5,7 +5,7 @@
     "ai": 21
   },
   "total": 131,
-  "stories": 1359,
+  "stories": 1363,
   "entries": [
     {
       "layer": "basic",
@@ -1115,7 +1115,7 @@
       "storyId": "ai-composer--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "ComposerDemo",
-      "stories": 20
+      "stories": 24
     },
     {
       "layer": "ai",

@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-08。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**78 项完成，0 项进行中，25 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01`、`COMBO-INLINE-01`、`COMBO-OVERLAY-01`、`SHELL-STATE-01`、`SHELL-SEARCH-01`、`SHELL-PRESET-01`、`CONTENT-NAV-01`、`DASHBOARD-RECIPE-01`、`CONTENT-RECIPE-01` 与 `AI-PARTS-01` 已完成，下一项为 `AI-COMPOSER-02`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**79 项完成，0 项进行中，24 项待完成**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01`、`COMBO-INLINE-01`、`COMBO-OVERLAY-01`、`SHELL-STATE-01`、`SHELL-SEARCH-01`、`SHELL-PRESET-01`、`CONTENT-NAV-01`、`DASHBOARD-RECIPE-01`、`CONTENT-RECIPE-01` 与 `AI-PARTS-01` 已完成，下一项为 `AI-OVERLAY-01`。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01、COMBO-INLINE-01、COMBO-OVERLAY-01、SHELL-STATE-01、SHELL-SEARCH-01、SHELL-PRESET-01、CONTENT-NAV-01、DASHBOARD-RECIPE-01、CONTENT-RECIPE-01 与 AI-PARTS-01 已完成，下一项为 AI-COMPOSER-02。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01、COMBO-INLINE-01、COMBO-OVERLAY-01、SHELL-STATE-01、SHELL-SEARCH-01、SHELL-PRESET-01、CONTENT-NAV-01、DASHBOARD-RECIPE-01、CONTENT-RECIPE-01 与 AI-PARTS-01 已完成，下一项为 AI-OVERLAY-01。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -127,7 +127,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | --- | --- | --- | --- | --- | --- |
 | AI-PARTS-01 | 结构化消息适配：文本/工具/引用/附件/产物 parts 映射，稳定 part ID、流式/错误/未知类型、宿主状态控制；不绑定某一真实请求服务 | MARKDOWN-02 | ✅ 完成 | ai-messageparts--playground；本族共 18 个 Story | [验收](validation-message-parts.md)：16 项新增、37 项 Markdown 回归、72 次 Story 组合、12 项同页 Controls、四主题密度窄屏；check/build 通过；[用法](components/message-parts.md) |
 | AI-COMPOSER-01 | 富 Composer：结构化草稿、`/` 命令、`@` 文件/人员、ContextPill 与提及值、键盘/IME/提交约定；保留字符串输入兼容边界 | EDIT-04、AI-PARTS-01 | ✅ 完成 | ai-composer--playground；20 个 Story，包括结构化草稿、命令、提及与异步替换 | [验收](validation-composer.md)：15 项交互、80 组 Story、同页 Controls、四种主题密度窄屏；check/build 通过；[用法](components/composer.md) |
-| AI-COMPOSER-02 | Composer 粘贴附件：clipboard/拖入、上下文引用、数量/大小/格式反馈、宿主上传状态、移除/取消/重试与草稿一致 | AI-COMPOSER-01、UPLOAD-01 | 待完成 | 待关联 | 待记录 |
+| AI-COMPOSER-02 | Composer 粘贴附件：clipboard/拖入、上下文引用、数量/大小/格式反馈、宿主上传状态、移除/取消/重试与草稿一致 | AI-COMPOSER-01、UPLOAD-01 | ✅ 完成 | ai-composer--attachment-playground；本地附件、上传重试、受控替换 | [验收](validation-composer-attachments.md)：8 项专项、17 项上传回归、15 项 Composer 回归、168 组 Story；check/build 通过 |
 | AI-OVERLAY-01 | ChatOverlay 组合：Dialog/Conversation/Composer 复用、开关与焦点恢复、停止/错误/重试/空态演示；请求仍由宿主控制 | AI-PARTS-01 | 待完成 | 待关联 | 待记录 |
 | AI-PALETTE-01 | ChatPalette 组合：紧凑弹层、命令/会话切换、快捷键边界、焦点、停止与错误恢复；不重造消息组件 | AI-OVERLAY-01、SHELL-SEARCH-01 | 待完成 | 待关联 | 待记录 |
 | AI-VIRTUAL-01 | Conversation 长列表：动态高度、流式 part 更新、历史向前加载、回到底部、用户暂停跟随、焦点/选择保持；用真实增长的示例验收 | VIRT-02、AI-PARTS-01 | 待完成 | 待关联 | 待记录 |

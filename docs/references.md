@@ -395,3 +395,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## Composer 结构化草稿参考（2026-09-08）
 
 本轮查看 Nuxt UI v4.11.1 [ChatPrompt](https://ui.nuxt.com/docs/components/chat-prompt) 的 With an Editor 示例：输入、命令/提及与工具区组合提供能力参考。Nuxt UI 页面注明 MIT；本项目未复制其 Vue/Tiptap 实现或品牌资源，采用现有 React 原生 Textarea 和原创 Graphite tokens。实现边界及视觉差异见 [Composer 验收](validation-composer.md)。
+
+## Composer 附件组合（2026-09-08）
+
+继续以 [Nuxt UI ChatPrompt / With an Editor](https://ui.nuxt.com/docs/components/chat-prompt#with-an-editor) 的输入、附件与工具同容器结构为参考。截图 `.logs/composer-reference.png` 在本轮 Composer 工作中实际查看。Reito 的附件复用本库 FileUpload，不复制 Nuxt 的 Vue/Tiptap 实现；本地文件和宿主上传状态分开。360px 的四种主题密度截图见 `.logs/composer-attachments-*.png`，实际查看深色紧凑、浅色舒适：附件名称可截断并保留 title，移除动作保持可见。相比参考的附件预览布局，本实现采用文件行、明确校验提示与受控队列，待验收记录汇总。
