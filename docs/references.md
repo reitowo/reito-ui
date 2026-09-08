@@ -85,6 +85,12 @@ MARKDOWN-01 使用固定版本 [`react-markdown@10.1.0`](https://github.com/rema
 
 Reito UI 使用自己的 React API、Graphite tokens、紧凑排版、表格滚动、CodeBlock 组合与 Story。默认原始 HTML 只显示为文本或显式移除，危险 URL 由 react-markdown 默认转换过滤；宿主一旦提供自定义 `urlTransform`、rehype 插件或节点渲染器，就同时接管相应的安全与可访问性责任。没有安装原始 HTML 执行插件，没有复制 Nuxt UI 的 Vue 源码、样式、模板、品牌资源或外部产品消息布局。
 
+## MessageParts / StructuredMessage（2026-09-08 工作区增量）
+
+AI-PARTS-01 实际查看 Nuxt UI 4.11.1 当前 [ChatMessage](https://ui.nuxt.com/docs/components/chat-message) 深色桌面文档，视口 1265 × 712。页面用 `article` 承载角色消息，推荐以稳定 ID 的 `parts` 渲染内容；助手默认保持裸正文，用户消息使用轻量背景，parts 之间只留内容间距。能力与数据边界同时核对 Vercel AI SDK 当前 [UIMessage](https://ai-sdk.dev/docs/reference/ai-sdk-core/ui-message)、[Reading UIMessage Streams](https://ai-sdk.dev/docs/ai-sdk-ui/reading-ui-message-streams)、[Stream Protocol](https://ai-sdk.dev/docs/ai-sdk-ui/stream-protocol) 与 [Streaming Custom Data](https://ai-sdk.dev/docs/ai-sdk-ui/streaming-data)：UI 消息以 parts 渲染，文本流有 start/delta/end ID，同 ID 的自定义 data part 用于更新已有内容。
+
+Reito UI 使用自己的 `MessagePart` 判别联合、Graphite tokens 和现有 `Message` / `MarkdownContent` / `ToolCall` / `Sources` / `AttachmentList` / `ArtifactPanel`。对比官方页面，Reito 保留同样的自然助手正文与轻量用户消息，但在一个本地 Story 中同时展示更多桌面工作信息，因此纵向内容更长；没有采用头像、品牌色、Provider 泛型、Vue API、源码、CSS 或资源。宿主适配层负责把任意 SDK part 映射到公共联合，未知 payload 默认不展示。
+
 MARKDOWN-02 增加固定版本 [`remend@1.3.1`](https://github.com/vercel/streamdown/tree/main/packages/remend)，安装包标注 Apache-2.0。能力边界核对 Streamdown 官方 [流式/静态模式与 Remend 说明](https://github.com/vercel/streamdown/blob/main/skills/streamdown/references/features.md) 以及 remend README：流式渲染会临时闭合未完成的强调、行内代码、删除线和链接；块级渲染仍由 Markdown 解析器负责。Reito UI 只引入小型预处理包，没有引入 Streamdown 的样式、代码高亮、数学、图表或交互控件，并使用 `linkMode="text-only"` 防止半成品 URL 变成可点击链接。表格阶段、fenced code 当前源码、React 节点身份与新流重置由本库自己的组件契约和测试定义。
 
 ## SplitButton 组合（2026-09-07 工作区增量）

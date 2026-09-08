@@ -127,6 +127,8 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 流式 Markdown 继续渲染完整文档树，只对文本尾部未闭合的强调、行内代码、删除线、链接等做临时补全。已稳定的前置节点依靠追加式 source 和相同 `streamKey` 保持身份；开始新的生成或用非追加内容替换当前流时，宿主更换 `streamKey`。表格分隔行完成时允许尾部从段落变成 table，未闭合 fenced code 直接使用当前源码的 CodeBlock；这些局部变化不能引入第二层边界、页面横向溢出或复制合成的闭合标记。流式状态使用 `aria-busy` 和 Message 的“正在输出”文本，不用逐 token 的 live region 朗读。
 
+结构化消息按稳定 part ID 组织正文、工具、来源、附件与产物。正文继续自然流动，工具与产物只使用自身已有表面，不给每个 part 再包一层卡片。`pending / streaming / complete / error` 是展示层统一状态；请求、工具执行、重试与持久化由宿主持有。错误保留已接收内容，未知类型使用轻量可读占位并允许宿主替换渲染器，不能把不透明 payload 直接显示给用户。Provider 专用类型先在应用适配层转换，不进入 Graphite 公共 API。
+
 SplitButton 由共享 ButtonGroup、Button 与 DropdownMenu 组合。主操作和菜单触发器使用同一尺寸与外轮廓，只保留一条轻接缝；整组、两个按钮和单个条目的 disabled/loading 分别表达，不用局部高度或颜色修补。菜单 loading 时仍可打开查看状态，空菜单说明原因。标签、`aria-keyshortcuts` 与可见快捷键只描述宿主绑定，实际全局快捷键由应用处理；菜单继续使用 Base UI 的方向键、类型查找、Escape 与焦点恢复。
 
 ConfirmPopover 使用 modal Popover 在局部触发器旁完成短确认。取消、Escape 与成功提交关闭后恢复触发器焦点；取消按钮先取得默认焦点。异步 pending 期间同时禁用确认与取消，并阻止重复提交和意外关闭；失败留在原位，通过 alert 说明并允许重试。宽度、内距、间隙、边界和动作尺寸来自 Graphite tokens；长条款或需要输入确认文字的流程继续使用 AlertDialog。

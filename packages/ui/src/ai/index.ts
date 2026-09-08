@@ -7,6 +7,7 @@ export { PermissionRequest, TokenUsage, AgentTaskCard, type PermissionDecision, 
 export { ArtifactPanel, type ArtifactVersion, type ArtifactPanelProps } from './artifact.js';
 export { CodeBlock, type CodeBlockProps } from './code-block.js';
 export { MarkdownContent, RichMessage, type MarkdownCodeBlock, type MarkdownContentComponents, type MarkdownContentElementFilter, type MarkdownContentProps, type MarkdownContentUrlTransform, type MarkdownStreamingOptions, type RichMessageProps } from './markdown-content.js';
+export { MessageParts, StructuredMessage, type MessagePartStatus, type MessagePartBase, type TextMessagePart, type ToolMessagePart, type SourceMessagePart, type AttachmentMessagePart, type ArtifactMessagePart, type UnknownMessagePart, type MessagePart, type MessagePartsProps, type StructuredMessageProps } from './message-parts.js';
 export type { ExecutionStatus } from './shared.js';
 export { MessageActions, type MessageActionsProps, type MessageFeedback } from './message-actions.js';
 export { MessageBranch, type MessageBranchProps } from './message-branch.js';

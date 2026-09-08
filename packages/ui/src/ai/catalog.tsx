@@ -5,6 +5,7 @@ import { Input } from '../primitives/input.js';
 import { ArtifactPanel, type ArtifactVersion } from './artifact.js';
 import { CodeBlock } from './code-block.js';
 import { MarkdownContent } from './markdown-content.js';
+import { StructuredMessage, type MessagePart } from './message-parts.js';
 import { Composer } from './composer.js';
 import { AttachmentList, Citation, ContextPill, PromptSuggestions, Sources, type AttachmentItem, type SourceItem } from './context.js';
 import { Conversation, Message } from './conversation.js';
@@ -109,6 +110,32 @@ export function ArtifactPanelDemo() {
 
 export function CodeBlockDemo() { return <AiDemoFrame note="代码展示示例 · 复制使用系统剪贴板"><CodeBlock filename="workspace.ts" language="typescript" code={'export const workspace = {\n  name: "个人工作区",\n  density: "compact",\n};'} /></AiDemoFrame>; }
 export function MarkdownContentDemo() { return <AiDemoFrame note="Markdown 渲染示例 · 内容与链接由调用方提供"><MarkdownContent value={'## 组件验收\n\n使用 **Graphite tokens** 统一消息和文档。\n\n- 检查窄宽度\n- 保留语义结构\n\n```ts\nexport const density = "compact";\n```'} /></AiDemoFrame>; }
+export const demoMessageParts: MessagePart[] = [
+  { id: 'answer', type: 'text', format: 'markdown', text: '已读取 **Graphite** 规范，下面是本地结构化消息示例。' },
+  { id: 'tool', type: 'tool', title: '检查设计令牌', status: 'error', variant: 'inline', open: true, content: '本地错误示例：等待宿主重试。' },
+  { id: 'sources', type: 'source', items: demoSources },
+  { id: 'attachment', type: 'attachment', items: [{ id: 'guide', name: 'design-language.md', sizeLabel: '12 KB', status: 'ready' }, { id: 'preview', name: 'workspace-preview.png', kind: 'image', status: 'error', error: '本地附件错误示例' }] },
+  { id: 'artifact', type: 'artifact', title: 'workspace.ts', version: 'v1', view: 'preview', versions: [{ id: 'v1', label: '版本 1', status: 'ready', preview: <p className="text-sm">紧凑工作区预览</p>, code: 'export const density = "compact";', language: 'typescript' }, { id: 'v2', label: '版本 2', status: 'draft', preview: <p className="text-sm">舒适工作区草稿</p>, code: 'export const density = "comfortable";', language: 'typescript' }] },
+];
+export function MessagePartsDemo() {
+  const [parts, setParts] = useState(demoMessageParts);
+  const updatePart = (id: string, update: (part: MessagePart) => MessagePart) => setParts(current => current.map(part => part.id === id ? update(part) : part));
+  return <AiDemoFrame note="结构化消息本地示例 · parts 与状态由宿主持有">
+    <StructuredMessage
+      from="assistant"
+      local
+      parts={parts}
+      onRetryPart={id => updatePart(id, part => ({ ...part, status: 'complete', error: undefined, ...(part.type === 'tool' ? { content: '本地状态已恢复，没有执行真实工具。' } : {}) }))}
+      onToolOpenChange={(id, open) => updatePart(id, part => part.type === 'tool' ? { ...part, open } : part)}
+      onAttachmentRemove={(partId, attachmentId) => updatePart(partId, part => part.type === 'attachment' ? { ...part, items: part.items.filter(item => item.id !== attachmentId) } : part)}
+      onAttachmentRetry={(partId, attachmentId) => updatePart(partId, part => part.type === 'attachment' ? { ...part, items: part.items.map(item => item.id === attachmentId ? { ...item, status: 'ready', sizeLabel: '48 KB', error: undefined } : item) } : part)}
+      onArtifactVersionChange={(id, version) => updatePart(id, part => part.type === 'artifact' ? { ...part, version } : part)}
+      onArtifactViewChange={(id, view) => updatePart(id, part => part.type === 'artifact' ? { ...part, view } : part)}
+      onArtifactClose={id => setParts(current => current.filter(part => part.id !== id))}
+    />
+    <Button type="button" size="sm" variant="ghost" className="justify-self-start" onClick={() => setParts(demoMessageParts)}>重置结构化消息</Button>
+  </AiDemoFrame>;
+}
 export function TokenUsageDemo() { return <AiDemoFrame note="静态数值示例 · 不根据文本估算用量"><TokenUsage input={1280} output={346} contextUsed={8120} contextLimit={32000} sourceLabel="手动提供的示例数据" /></AiDemoFrame>; }
 export function AgentTaskCardDemo() {
   const [opened, setOpened] = useState(false);
@@ -164,6 +191,7 @@ export const aiCatalog: AiCatalogEntry[] = [
   { id: 'artifact', name: 'ArtifactPanel', description: '代码、交互预览与版本切换', component: ArtifactPanelDemo },
   { id: 'code-block', name: 'CodeBlock', description: '语法高亮、滚动代码与原文复制', component: CodeBlockDemo },
   { id: 'markdown-content', name: 'MarkdownContent / RichMessage', description: 'CommonMark/GFM 文档、安全内容策略与消息组合', component: MarkdownContentDemo },
+  { id: 'message-parts', name: 'MessageParts / StructuredMessage', description: '文本、工具、引用、附件与产物的宿主受控映射', component: MessagePartsDemo },
   { id: 'token-usage', name: 'TokenUsage', description: '展示调用方提供的用量与来源', component: TokenUsageDemo },
   { id: 'agent-task', name: 'AgentTaskCard', description: '任务状态、需处理状态与操作', component: AgentTaskCardDemo },
   { id: 'message-actions', name: 'MessageActions', description: '消息复制、重试、编辑与反馈操作', component: MessageActionsDemo },

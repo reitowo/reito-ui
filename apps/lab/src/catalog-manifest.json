@@ -2,10 +2,10 @@
   "counts": {
     "basic": 70,
     "complex": 40,
-    "ai": 20
+    "ai": 21
   },
-  "total": 130,
-  "stories": 1333,
+  "total": 131,
+  "stories": 1351,
   "entries": [
     {
       "layer": "basic",
@@ -1246,6 +1246,16 @@
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "MarkdownContentDemo",
       "stories": 25
+    },
+    {
+      "layer": "ai",
+      "id": "message-parts",
+      "name": "MessageParts / StructuredMessage",
+      "description": "文本、工具、引用、附件与产物的宿主受控映射",
+      "storyId": "ai-messageparts--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "MessagePartsDemo",
+      "stories": 18
     },
     {
       "layer": "ai",
