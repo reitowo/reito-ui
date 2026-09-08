@@ -89,7 +89,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、40 个复�
 
 ### 应用配方
 
-[Dashboard 工作面配方](recipes/dashboard-workspace.md) 在 Storybook 中组合 Sidebar、AppShell、WorkspacePreset、DataTable、Form 与 ApplicationSearch，覆盖真实本地交互、偏好恢复和窄布局。配方属于示例层，不新增公共 Dashboard 原语，也不改变复杂层 40 个组件族的计数。
+[Dashboard 工作面配方](recipes/dashboard-workspace.md) 在 Storybook 中组合 Sidebar、AppShell、WorkspacePreset、DataTable、Form 与 ApplicationSearch，覆盖真实本地交互、偏好恢复和窄布局。[Content 工作面配方](recipes/content-workspace.md) 组合 ResourceView、ContentNavigation、MarkdownContent、Toolbar 与应用搜索，连接文档集合、目录、阅读和相邻操作。两者属于示例层，不新增公共 Dashboard / Content 原语，也不改变复杂层 40 个组件族的计数。
 
 ## AI 层：20 个组件族
 
