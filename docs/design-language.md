@@ -190,3 +190,7 @@ Docs 聚焦默认示例、说明与 API，不自动把所有变体再次挂载�
 8. 视觉变更至少比较一次所选工作场景的完整页面与已查看参考，记录参考 URL、截图或官网演示的类别、检查主题与视口，以及结构、灰阶、边界、字重、输入区和阅读空间仍有的差异。参考有意不采用的品牌资产或布局也需说明；不可把测试通过计数当作视觉相似度。
 
 执行与跨项目复用见 [reuse-guide.md](reuse-guide.md)。
+
+### Composer 结构化输入
+
+Composer 在原生 textarea 上维护文字与提及区间，复用 ContextPill 展示引用，候选列表与发送操作属于同一输入容器。上下键保持输入焦点并滚动活动候选；Enter 优先选择候选，Shift+Enter 换行。`draft/onDraftChange` 和 `onSubmitDraft` 提供结构化契约；字符串调用继续兼容。宿主负责命令执行、上下文解析与请求，见 [Composer 使用说明](components/composer.md)。

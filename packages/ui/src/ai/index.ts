@@ -1,4 +1,4 @@
-export { Composer, type ComposerProps } from './composer.js';
+export { Composer, type ComposerMentionKind, type ComposerMentionItem, type ComposerMentionValue, type ComposerCommandItem, type ComposerContextItem, type ComposerDraft, type ComposerProps } from './composer.js';
 export { Conversation, Message, type ConversationProps, type MessageProps } from './conversation.js';
 export { Reasoning, ToolCall, PlanSteps, type ReasoningProps, type ToolCallProps, type PlanStep } from './execution.js';
 export { AttachmentList, ContextPill, PromptSuggestions, Citation, Sources, type AttachmentItem, type AttachmentListProps, type ContextPillProps, type PromptSuggestion, type SourceItem } from './context.js';

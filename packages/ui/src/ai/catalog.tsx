@@ -6,7 +6,7 @@ import { ArtifactPanel, type ArtifactVersion } from './artifact.js';
 import { CodeBlock } from './code-block.js';
 import { MarkdownContent } from './markdown-content.js';
 import { StructuredMessage, type MessagePart } from './message-parts.js';
-import { Composer } from './composer.js';
+import { Composer, type ComposerCommandItem, type ComposerDraft, type ComposerMentionItem } from './composer.js';
 import { AttachmentList, Citation, ContextPill, PromptSuggestions, Sources, type AttachmentItem, type SourceItem } from './context.js';
 import { Conversation, Message } from './conversation.js';
 import { AgentTaskCard, PermissionRequest, TokenUsage, type PermissionDecision } from './decisions.js';
@@ -24,12 +24,33 @@ export const demoModels: ModelOption[] = [
   { id: 'unavailable', name: '未配置模型', description: '需要由宿主配置', disabled: true },
 ];
 
+export const demoComposerCommands: ComposerCommandItem[] = [
+  { id: 'review', label: 'review', description: '插入本地审查请求', insertText: '请审查当前改动：' },
+  { id: 'explain', label: 'explain', description: '插入解释请求', insertText: '请解释当前文件：' },
+  { id: 'remote', label: 'remote', description: '外部命令尚未配置', disabled: true },
+];
+export const demoComposerMentions: ComposerMentionItem[] = [
+  { id: 'design', label: 'design-language.md', kind: 'file', description: '本地设计规范', keywords: ['规范'] },
+  { id: 'composer', label: 'composer.tsx', kind: 'file', description: '当前输入组件' },
+  { id: 'reito', label: 'Reito', kind: 'person', description: '本地示例成员' },
+];
+
 export function ComposerDemo() {
-  const [value, setValue] = useState('');
+  const [draft, setDraft] = useState<ComposerDraft>({ text: '', mentions: [], contextIds: [] });
   const [model, setModel] = useState('auto');
   const [context, setContext] = useState(true);
   const [sent, setSent] = useState('');
-  return <AiDemoFrame><Composer value={value} onValueChange={setValue} onSubmit={text => setSent(text)} context={context ? <ContextPill label="design-language.md" icon={<FileText />} onRemove={() => setContext(false)}>design-language.md</ContextPill> : undefined} toolbar={<><Button type="button" variant="ghost" size="icon-sm" aria-label="添加示例上下文" disabled={context} onClick={() => setContext(true)}><Plus /></Button><ModelSelector options={demoModels} value={model} onValueChange={setModel} compact /></>} /><p role="status" className="text-sm text-muted-foreground">{sent ? `本地已记录：${sent}` : '写下请求，检查多行输入与工具栏。'}</p></AiDemoFrame>;
+  return <AiDemoFrame><Composer
+    draft={draft}
+    onDraftChange={setDraft}
+    onSubmit={setSent} onSubmitDraft={submitted => setSent(`${submitted.text} · ${submitted.mentions.length} 个提及`)}
+    commandItems={demoComposerCommands}
+    mentionItems={demoComposerMentions}
+    contextItems={context ? [{ id: 'workspace', label: '当前工作区', icon: <Folder /> }] : []}
+    onContextRemove={() => setContext(false)}
+    toolbar={<><Button type="button" variant="ghost" size="icon-sm" aria-label="添加示例上下文" disabled={context} onClick={() => setContext(true)}><Plus /></Button><ModelSelector options={demoModels} value={model} onValueChange={setModel} compact /></>}
+    hint="Enter 发送 · Shift + Enter 换行 · / 命令 · @ 提及"
+  /><p role="status" className="text-sm text-muted-foreground">{sent ? `本地已记录：${sent}` : '输入 / 或 @ 检查结构化草稿。'}</p></AiDemoFrame>;
 }
 
 const localResponse = '先统一工作面的阅读宽度与分隔线，再用同一套控件构建设置、工具调用和代码预览。正文保持自然流动；辅助信息在需要时展开。';

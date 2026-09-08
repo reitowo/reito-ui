@@ -391,3 +391,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ### Knob · 2026-09-07
 
 能力范围核对 PrimeVue 5 [Knob](https://primevue.dev/knob/) 的受控值、min/max/step、格式化、尺寸、轨道、颜色、外部控制、只读/禁用、表单和 slider 键盘模型。Reito UI 实现独立 React 环形指针映射与 270° SVG 轨道，提供 Graphite 三档尺寸/线宽和语义色；没有复制上游源码、CSS、模板或资源。Slider 继续负责线性单值/范围，NumberField 负责精确文本编辑。
+
+## Composer 结构化草稿参考（2026-09-08）
+
+本轮查看 Nuxt UI v4.11.1 [ChatPrompt](https://ui.nuxt.com/docs/components/chat-prompt) 的 With an Editor 示例：输入、命令/提及与工具区组合提供能力参考。Nuxt UI 页面注明 MIT；本项目未复制其 Vue/Tiptap 实现或品牌资源，采用现有 React 原生 Textarea 和原创 Graphite tokens。实现边界及视觉差异见 [Composer 验收](validation-composer.md)。

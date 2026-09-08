@@ -97,7 +97,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、40 个复�
 
 | 组件族及实际导出 | 关键契约与边界 |
 | --- | --- |
-| [`Composer`](../packages/ui/src/ai/composer.tsx) | `value` / `onValueChange` 可受控，未受控时支持 `defaultValue`；必填 `onSubmit(text): void \| Promise<void>`。成功后只清除未被宿主改写的原草稿；拒绝 Promise 时保留草稿并显示错误。提交期间阻止重复发送。`running` / `onStop` 由宿主管理生成与停止，`context` / `toolbar` / `hint` 接受 ReactNode。Enter 发送、Shift + Enter 换行，IME 候选确认不发送。 |
+| [`Composer`](../packages/ui/src/ai/composer.tsx) | `value` / `onValueChange` 可受控，未受控时支持 `defaultValue`；必填 `onSubmit(text): void \| Promise<void>`。成功后只清除未被宿主改写的原草稿；拒绝 Promise 时保留草稿并显示错误。提交期间阻止重复发送。`running` / `onStop` 由宿主管理生成与停止，`context` / `toolbar` / `hint` 接受 ReactNode。另提供 `draft/onDraftChange`、`onSubmitDraft`、命令和提及候选；见 [结构化输入契约](components/composer.md)。Enter 发送、Shift + Enter 换行，IME 候选确认不发送。 |
 | [`Conversation / Message`](../packages/ui/src/ai/conversation.tsx) | `Conversation` 接收 `children`、`follow`、`label`、`empty`；读者停留在底部时跟随新增内容，上滚后暂停跟随并出现“回到最新”。宿主提供容器高度和消息序列。`Message.from` 为 `user / assistant / system`，支持 `streaming`、`actions` 和 `local`；正文是 ReactNode，不自动解析 Markdown 或连接流式接口。 |
 | [`Reasoning`](../packages/ui/src/ai/execution.tsx) | 展示宿主提供的过程说明，支持 `idle / running / complete`、`elapsedSeconds`、受控 `open / onOpenChange`。未传计时值时可对当前 running 状态本地计时。它不生成或获取模型内部推理。 |
 | [`ToolCall`](../packages/ui/src/ai/execution.tsx) | 必填 `title` 和 `status`，状态为 `pending / running / success / error`。`variant` 为 `inline / card`，展开可受控；错误态的 `onRetry` 只调用宿主函数，不运行工具。 |
