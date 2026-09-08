@@ -146,11 +146,26 @@ test('workbench theme persists with compact density and no density switch', asyn
   await page.screenshot({ path: '.logs/density-controls/workbench-light-compact.png' });
 });
 
+test('workbench ignores the removed density preference and keeps the saved theme', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('reito-workbench-theme', 'light');
+    localStorage.setItem('reito-workbench-density', 'comfortable');
+  });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
+  await expect(page.getByRole('button', { name: '切换工作台密度' })).toHaveCount(0);
+  await navigate(page, '设置');
+  await expect(page.getByText('主题和密度保存在此浏览器', { exact: false })).toHaveCount(0);
+  await expect(page.getByText('主题偏好保存在此浏览器', { exact: false })).toBeVisible();
+});
+
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
   test(`workbench three views are accessible in ${theme}/${density}`, async ({ page }) => {
-    await page.addInitScript(value => localStorage.setItem('reito-workbench-density', value), density);
     await page.goto('/');
+    await page.evaluate(value => { document.documentElement.dataset.density = value; }, density);
     if (theme === 'light') await page.getByRole('button', { name: '切换工作台主题' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-density', density);
     for (const view of ['Agent', '文件与差异', '设置'] as const) { await navigate(page, view); await accessible(page); }
   });
 }
