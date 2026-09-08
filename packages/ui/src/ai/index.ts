@@ -13,3 +13,4 @@ export { MessageActions, type MessageActionsProps, type MessageFeedback } from '
 export { MessageBranch, type MessageBranchProps } from './message-branch.js';
 export { TaskQueue, type TaskQueueProps, type QueueTask, type QueueTaskStatus, type TaskQueueFilter } from './task-queue.js';
 export { Checkpoint, type CheckpointProps, type CheckpointFile, type CheckpointStatus } from './checkpoint.js';
+export { ChatOverlay, type ChatOverlayProps } from './chat-overlay.js';

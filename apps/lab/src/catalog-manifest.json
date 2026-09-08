@@ -2,10 +2,10 @@
   "counts": {
     "basic": 70,
     "complex": 40,
-    "ai": 21
+    "ai": 22
   },
-  "total": 131,
-  "stories": 1363,
+  "total": 132,
+  "stories": 1370,
   "entries": [
     {
       "layer": "basic",
@@ -1246,6 +1246,16 @@
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "MarkdownContentDemo",
       "stories": 25
+    },
+    {
+      "layer": "ai",
+      "id": "chat-overlay",
+      "name": "ChatOverlay",
+      "description": "保留草稿的对话弹层与焦点恢复",
+      "storyId": "ai-chatoverlay--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ChatOverlayDemo",
+      "stories": 7
     },
     {
       "layer": "ai",

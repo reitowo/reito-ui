@@ -399,3 +399,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## Composer 附件组合（2026-09-08）
 
 继续以 [Nuxt UI ChatPrompt / With an Editor](https://ui.nuxt.com/docs/components/chat-prompt#with-an-editor) 的输入、附件与工具同容器结构为参考。截图 `.logs/composer-reference.png` 在本轮 Composer 工作中实际查看。Reito 的附件复用本库 FileUpload，不复制 Nuxt 的 Vue/Tiptap 实现；本地文件和宿主上传状态分开。360px 的四种主题密度截图见 `.logs/composer-attachments-*.png`，实际查看深色紧凑、浅色舒适：附件名称可截断并保留 title，移除动作保持可见。相比参考的附件预览布局，本实现采用文件行、明确校验提示与受控队列，待验收记录汇总。
+
+## ChatOverlay（2026-09-08）
+
+参考 [Nuxt UI ChatPalette / Within a Modal](https://ui.nuxt.com/docs/components/chat-palette#within-a-modal) 的消息滚动区与底部输入组合。查看 v4.11.1 深色文档示例，并与本地四种主题密度小窗口截图比较；具体边界见 [验收](validation-chat-overlay.md)。原创 React 组合复用本库组件，没有复制 Vue 实现或参考品牌素材。

@@ -8,6 +8,7 @@ import { MarkdownContent } from './markdown-content.js';
 import { StructuredMessage, type MessagePart } from './message-parts.js';
 import { Composer, type ComposerCommandItem, type ComposerDraft, type ComposerMentionItem } from './composer.js';
 import { AttachmentList, Citation, ContextPill, PromptSuggestions, Sources, type AttachmentItem, type SourceItem } from './context.js';
+import { ChatOverlay } from './chat-overlay.js';
 import { Conversation, Message } from './conversation.js';
 import { AgentTaskCard, PermissionRequest, TokenUsage, type PermissionDecision } from './decisions.js';
 import { PlanSteps, Reasoning, ToolCall } from './execution.js';
@@ -34,6 +35,8 @@ export const demoComposerMentions: ComposerMentionItem[] = [
   { id: 'composer', label: 'composer.tsx', kind: 'file', description: '当前输入组件' },
   { id: 'reito', label: 'Reito', kind: 'person', description: '本地示例成员' },
 ];
+
+export function ChatOverlayDemo() { return <ChatOverlay description='本地示例，未连接模型' composer={{ onSubmit: () => undefined }}><Message from='assistant' local>在当前工作区继续提问。</Message></ChatOverlay>; }
 
 export function ComposerDemo() {
   const [draft, setDraft] = useState<ComposerDraft>({ text: '', mentions: [], contextIds: [] });
@@ -212,6 +215,7 @@ export const aiCatalog: AiCatalogEntry[] = [
   { id: 'artifact', name: 'ArtifactPanel', description: '代码、交互预览与版本切换', component: ArtifactPanelDemo },
   { id: 'code-block', name: 'CodeBlock', description: '语法高亮、滚动代码与原文复制', component: CodeBlockDemo },
   { id: 'markdown-content', name: 'MarkdownContent / RichMessage', description: 'CommonMark/GFM 文档、安全内容策略与消息组合', component: MarkdownContentDemo },
+  { id: 'chat-overlay', name: 'ChatOverlay', description: '保留草稿的对话弹层与焦点恢复', component: ChatOverlayDemo },
   { id: 'message-parts', name: 'MessageParts / StructuredMessage', description: '文本、工具、引用、附件与产物的宿主受控映射', component: MessagePartsDemo },
   { id: 'token-usage', name: 'TokenUsage', description: '展示调用方提供的用量与来源', component: TokenUsageDemo },
   { id: 'agent-task', name: 'AgentTaskCard', description: '任务状态、需处理状态与操作', component: AgentTaskCardDemo },
