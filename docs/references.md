@@ -415,3 +415,9 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## Scheduler（2026-09-09）
 
 采用 FullCalendar Standard 7.1.0（MIT）的日网格、时间网格、交互引擎及结构 CSS。Graphite slot classes、工具栏和表单为本库实现；不引入 Premium 资源时间线。行为来源：https://fullcalendar.io/docs/eventDrop 、https://fullcalendar.io/docs/eventResize ；视觉参考：https://fullcalendar.io/docs/timegrid-standard-view-demo 。
+
+## 剩余组件评估（2026-09-09）
+
+[逐项决策](research/remaining-component-decisions-2026-09-09.md) 记录 15 项评估及官方链接。本次仅阅读公开文档，没有引入 Nuxt、PrimeVue 或 PrimeUI PRO 源码、样式、字体和品牌素材。
+
+[PrimeUI PRO 官网](https://primeuipro.dev/) 已声明 React 版可用，修正 2026-09-06 报告中“React 仍在开发”的时点结论；这不证明五项 roadmap 能力已有具体 React 发布包。当前 [PrimeVue 导航](https://primevue.dev/iftalabel/) 仍列 DataGrid、Sheet、Gantt Chart、Diagram、PDF Viewer 为 Roadmap。未核实这些未来组件的包版本及具体授权合同，本轮不采购或选入依赖。
