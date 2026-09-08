@@ -38,3 +38,4 @@ export * from './banner.js';
 export * from './toolbar.js';
 export * from './inline-edit.js';
 export * from './overlay-provider.js';
+export * from './chart.js';

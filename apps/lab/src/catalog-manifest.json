@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 40,
+    "complex": 41,
     "ai": 24
   },
-  "total": 134,
-  "stories": 1383,
+  "total": 135,
+  "stories": 1395,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "chart",
+      "name": "Chart 图表",
+      "description": "趋势、对比与占比，键盘访问及替代数据表",
+      "storyId": "复杂-chart-图表--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "ChartDemo",
+      "stories": 12
     },
     {
       "layer": "complex",

@@ -407,3 +407,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## ChatPalette（2026-09-08）
 
 复用此前查看的 [Nuxt UI ChatPalette](https://ui.nuxt.com/docs/components/chat-palette) 对话组合结构，并加入本库 CommandSearch 作为命令和会话入口。命令视图为 Reito 原创组合，不声称来自参考产品的同名功能。具体视觉差异、紧凑尺寸和验证边界见 [验收](validation-chat-palette.md)。
+
+## Chart（2026-09-08）
+
+使用 Recharts 3.10.1（MIT）作为 React 图表渲染依赖；键盘与读屏契约参考 https://github.com/recharts/recharts/blob/main/storybook/stories/API/Accessibility.mdx ，图形范围参考 https://primevue.dev/chart/ 。Graphite 颜色和控件组合为本库实现；首批五种图形已验收，不声称完整对齐 PrimeVue 的全部图形。
