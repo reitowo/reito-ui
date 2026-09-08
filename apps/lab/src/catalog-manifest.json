@@ -2,10 +2,10 @@
   "counts": {
     "basic": 70,
     "complex": 40,
-    "ai": 22
+    "ai": 23
   },
-  "total": 132,
-  "stories": 1370,
+  "total": 133,
+  "stories": 1377,
   "entries": [
     {
       "layer": "basic",
@@ -1246,6 +1246,16 @@
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "MarkdownContentDemo",
       "stories": 25
+    },
+    {
+      "layer": "ai",
+      "id": "chat-palette",
+      "name": "ChatPalette",
+      "description": "命令、会话选择与对话组合",
+      "storyId": "ai-chatpalette--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "ChatPaletteDemo",
+      "stories": 7
     },
     {
       "layer": "ai",

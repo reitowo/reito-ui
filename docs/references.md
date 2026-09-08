@@ -403,3 +403,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## ChatOverlay（2026-09-08）
 
 参考 [Nuxt UI ChatPalette / Within a Modal](https://ui.nuxt.com/docs/components/chat-palette#within-a-modal) 的消息滚动区与底部输入组合。查看 v4.11.1 深色文档示例，并与本地四种主题密度小窗口截图比较；具体边界见 [验收](validation-chat-overlay.md)。原创 React 组合复用本库组件，没有复制 Vue 实现或参考品牌素材。
+
+## ChatPalette（2026-09-08）
+
+复用此前查看的 [Nuxt UI ChatPalette](https://ui.nuxt.com/docs/components/chat-palette) 对话组合结构，并加入本库 CommandSearch 作为命令和会话入口。命令视图为 Reito 原创组合，不声称来自参考产品的同名功能。具体视觉差异、紧凑尺寸和验证边界见 [验收](validation-chat-palette.md)。

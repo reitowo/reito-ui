@@ -16,11 +16,14 @@ export interface ChatOverlayProps {
   children?: ReactNode;
   empty?: ReactNode;
   follow?: boolean;
+  navigation?: ReactNode;
+  size?: 'default' | 'compact';
+  composerVisible?: boolean;
   composer: ComposerProps;
 }
 
 /** Closing hides the workspace; it does not discard drafts or stop host execution. */
-export function ChatOverlay({ open, defaultOpen = false, onOpenChange, title = '工作区助手', description = '围绕当前工作继续对话', triggerLabel = '打开助手', disabled = false, children, empty = '还没有消息，输入问题开始对话。', follow = true, composer }: ChatOverlayProps) {
+export function ChatOverlay({ open, defaultOpen = false, onOpenChange, title = '工作区助手', description = '围绕当前工作继续对话', triggerLabel = '打开助手', disabled = false, children, empty = '还没有消息，输入问题开始对话。', follow = true, size = 'default', navigation, composerVisible = true, composer }: ChatOverlayProps) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   return <Dialog open={open ?? internalOpen} onOpenChange={next => { if (open === undefined) setInternalOpen(next); onOpenChange?.(next); }}>
     <DialogTrigger render={<Button type="button" variant="outline" disabled={disabled} />}>{triggerLabel}</DialogTrigger>
@@ -29,8 +32,9 @@ export function ChatOverlay({ open, defaultOpen = false, onOpenChange, title = '
         <div className="min-w-0 flex-1"><DialogTitle className="break-words">{title}</DialogTitle><DialogDescription className="mt-1">{description}</DialogDescription></div>
         <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" aria-label="关闭助手" />}><X aria-hidden="true" /></DialogClose>
       </header>
-      <Conversation className="h-[var(--rui-container-xl)] shrink" follow={follow} empty={<p className="text-sm text-muted-foreground">{empty}</p>}>{children}</Conversation>
-      <div className="min-h-0 shrink-0 overflow-y-auto border-t border-border p-[var(--rui-content-padding)]"><Composer {...composer} /></div>
+      {navigation && <div className="border-b border-border px-[var(--rui-content-padding)] py-[var(--rui-content-gap-sm)]">{navigation}</div>}
+      <Conversation className={size === 'compact' ? 'max-h-[var(--rui-container-sm)] shrink' : 'h-[var(--rui-container-xl)] shrink'} follow={follow} empty={<p className="text-sm text-muted-foreground">{empty}</p>}>{children}</Conversation>
+      <div hidden={!composerVisible} className="min-h-0 shrink-0 overflow-y-auto border-t border-border p-[var(--rui-content-padding)]"><Composer {...composer} /></div>
     </DialogContent>
   </Dialog>;
 }
