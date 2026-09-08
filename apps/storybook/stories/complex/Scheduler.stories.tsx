@@ -1,0 +1,12 @@
+import type {Meta,StoryObj} from '@storybook/react-vite';
+import {SchedulerDemo} from '../../../../packages/ui/src/complex/scheduler-demo.js';
+const meta={title:'复杂/Scheduler 排程',component:SchedulerDemo} satisfies Meta<typeof SchedulerDemo>;
+export default meta;
+type Story=StoryObj<typeof meta>;
+export const Playground:Story={args:{initialView:'week',readOnly:false,failSave:false,loading:false,empty:false},argTypes:{initialView:{control:'select',options:['day','week','month']},readOnly:{control:'boolean'},failSave:{control:'boolean'},loading:{control:'boolean'},empty:{control:'boolean'}},parameters:{controls:{include:['initialView','readOnly','failSave','loading','empty']}}};
+export const Day:Story={args:{initialView:'day'}};
+export const Month:Story={args:{initialView:'month'}};
+export const ReadOnly:Story={args:{readOnly:true}};
+export const SaveFailure:Story={args:{failSave:true}};
+export const Empty:Story={args:{empty:true}};
+export const Loading:Story={args:{loading:true}};

@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 70,
-    "complex": 41,
+    "complex": 42,
     "ai": 24
   },
-  "total": 135,
-  "stories": 1395,
+  "total": 136,
+  "stories": 1402,
   "entries": [
     {
       "layer": "basic",
@@ -706,6 +706,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "scheduler",
+      "name": "Scheduler 排程",
+      "description": "日周月排程、受控编辑和保存恢复",
+      "storyId": "复杂-scheduler-排程--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "SchedulerDemo",
+      "stories": 7
     },
     {
       "layer": "complex",

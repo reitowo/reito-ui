@@ -411,3 +411,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## Chart（2026-09-08）
 
 使用 Recharts 3.10.1（MIT）作为 React 图表渲染依赖；键盘与读屏契约参考 https://github.com/recharts/recharts/blob/main/storybook/stories/API/Accessibility.mdx ，图形范围参考 https://primevue.dev/chart/ 。Graphite 颜色和控件组合为本库实现；首批五种图形已验收，不声称完整对齐 PrimeVue 的全部图形。
+
+## Scheduler（2026-09-09）
+
+采用 FullCalendar Standard 7.1.0（MIT）的日网格、时间网格、交互引擎及结构 CSS。Graphite slot classes、工具栏和表单为本库实现；不引入 Premium 资源时间线。行为来源：https://fullcalendar.io/docs/eventDrop 、https://fullcalendar.io/docs/eventResize ；视觉参考：https://fullcalendar.io/docs/timegrid-standard-view-demo 。

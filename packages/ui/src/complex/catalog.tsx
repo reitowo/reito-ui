@@ -13,6 +13,7 @@ import { ResourceList, type ResourceItem } from './resource-list.js';
 import { ResourceView } from './resource-view.js';
 import { FormDemo } from './form-demo.js';
 import { ChartDemo } from './chart-demo.js';
+import { SchedulerDemo } from './scheduler-demo.js';
 import { AsyncFormDemo } from './async-form-demo.js';
 import { VirtualListDemo } from './virtual-list-demo.js';
 import { VirtualGridDemo } from './virtual-grid-demo.js';
@@ -490,6 +491,7 @@ export function ResourceViewDemo() {
 
 export interface ComplexCatalogEntry { id: string; name: string; description: string; component: ComponentType; }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  { id: 'scheduler', name: 'Scheduler 排程', description: '日周月排程、受控编辑和保存恢复', component: SchedulerDemo },
   { id: 'chart', name: 'Chart 图表', description: '趋势、对比与占比，键盘访问及替代数据表', component: ChartDemo },
   { id: 'overlay-provider', name: 'OverlayProvider 命令式浮层', description: 'Dialog、Sheet 与 AlertDialog 的命令式打开、结果、关闭、并发栈和卸载收口。', component: OverlayProviderDemo },
   { id: 'inline-edit', name: 'InlineEdit 行内编辑', description: '显示与编辑槽、草稿提交取消、异步错误、只读和焦点恢复。', component: InlineEditDemo },
