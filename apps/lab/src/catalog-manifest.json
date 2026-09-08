@@ -1,12 +1,22 @@
 {
   "counts": {
-    "basic": 70,
+    "basic": 71,
     "complex": 32,
     "ai": 20
   },
-  "total": 122,
-  "stories": 1219,
+  "total": 123,
+  "stories": 1226,
   "entries": [
+    {
+      "layer": "basic",
+      "id": "one-time-code",
+      "name": "OneTimeCode",
+      "description": "受宿主管理的验证码展示、锁定、有效期与异步复制。",
+      "storyId": "基础-onetimecode--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "OneTimeCodeDemo",
+      "stories": 7
+    },
     {
       "layer": "basic",
       "id": "button",

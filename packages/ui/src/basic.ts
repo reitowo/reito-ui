@@ -1,5 +1,6 @@
 export * from './primitives/index.js';
 export * from './basic/feedback.js';
+export * from './basic/one-time-code.js';
 export * from './basic/input-tags.js';
 export * from './basic/async-combobox.js';
 export * from './basic/async-multi-select.js';
