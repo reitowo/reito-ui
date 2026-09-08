@@ -54,7 +54,7 @@ test('append follows only from the end and live density remeasures without dropp
   const before = await relativeTop(record81);
   await page.locator('.reito-root').evaluate(element => element.setAttribute('data-density', 'comfortable'));
   await expect.poll(() => record81.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(36);
-  expect(Math.abs((await relativeTop(record81)) - before)).toBeLessThanOrEqual(1);
+  await expect.poll(async () => Math.abs((await relativeTop(record81)) - before)).toBeLessThanOrEqual(1);
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: measured rows, keyboard and narrow surface`, async ({ page }) => {

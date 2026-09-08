@@ -2,10 +2,10 @@
   "counts": {
     "basic": 70,
     "complex": 40,
-    "ai": 23
+    "ai": 24
   },
-  "total": 133,
-  "stories": 1377,
+  "total": 134,
+  "stories": 1383,
   "entries": [
     {
       "layer": "basic",
@@ -1246,6 +1246,16 @@
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "MarkdownContentDemo",
       "stories": 25
+    },
+    {
+      "layer": "ai",
+      "id": "virtual-conversation",
+      "name": "VirtualConversation",
+      "description": "动态高度长会话、历史加载与底部跟随",
+      "storyId": "ai-virtualconversation--playground",
+      "sourceFile": "packages/ui/src/ai/catalog.tsx",
+      "demo": "VirtualConversationDemo",
+      "stories": 6
     },
     {
       "layer": "ai",

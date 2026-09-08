@@ -8,6 +8,7 @@ import { MarkdownContent } from './markdown-content.js';
 import { StructuredMessage, type MessagePart } from './message-parts.js';
 import { Composer, type ComposerCommandItem, type ComposerDraft, type ComposerMentionItem } from './composer.js';
 import { AttachmentList, Citation, ContextPill, PromptSuggestions, Sources, type AttachmentItem, type SourceItem } from './context.js';
+import { VirtualConversation } from './virtual-conversation.js';
 import { ChatPalette } from './chat-palette.js';
 import { ChatOverlay } from './chat-overlay.js';
 import { Conversation, Message } from './conversation.js';
@@ -36,6 +37,8 @@ export const demoComposerMentions: ComposerMentionItem[] = [
   { id: 'composer', label: 'composer.tsx', kind: 'file', description: '当前输入组件' },
   { id: 'reito', label: 'Reito', kind: 'person', description: '本地示例成员' },
 ];
+
+export function VirtualConversationDemo() { return <VirtualConversation items={Array.from({length:1000},(_,id)=>({id,text:'本地消息 '+id}))} getKey={item=>item.id} renderMessage={item=><Message from='assistant' local>{item.text}</Message>} />; }
 
 export function ChatPaletteDemo() { return <ChatPalette groups={[{ id: 'local', label: '本地命令', commands: [{ id: 'review', label: '审查文件' }] }]} onCommand={() => undefined} composer={{ onSubmit: () => undefined }}><Message from='assistant' local>仅演示本地视图切换。</Message></ChatPalette>; }
 
@@ -218,6 +221,7 @@ export const aiCatalog: AiCatalogEntry[] = [
   { id: 'artifact', name: 'ArtifactPanel', description: '代码、交互预览与版本切换', component: ArtifactPanelDemo },
   { id: 'code-block', name: 'CodeBlock', description: '语法高亮、滚动代码与原文复制', component: CodeBlockDemo },
   { id: 'markdown-content', name: 'MarkdownContent / RichMessage', description: 'CommonMark/GFM 文档、安全内容策略与消息组合', component: MarkdownContentDemo },
+  { id: 'virtual-conversation', name: 'VirtualConversation', description: '动态高度长会话、历史加载与底部跟随', component: VirtualConversationDemo },
   { id: 'chat-palette', name: 'ChatPalette', description: '命令、会话选择与对话组合', component: ChatPaletteDemo },
   { id: 'chat-overlay', name: 'ChatOverlay', description: '保留草稿的对话弹层与焦点恢复', component: ChatOverlayDemo },
   { id: 'message-parts', name: 'MessageParts / StructuredMessage', description: '文本、工具、引用、附件与产物的宿主受控映射', component: MessagePartsDemo },

@@ -16,6 +16,8 @@ export interface VirtualListProps<T> {
   renderItem: (item: T, index: number) => ReactNode;
   renderPlaceholder?: (index: number) => ReactNode;
   onRangeChange?: (range: VirtualListRange) => void;
+  onAtEndChange?: (atEnd: boolean) => void;
+  preserveSelection?: boolean;
   overscan?: number;
   label: string;
   loading?: boolean;
@@ -24,6 +26,7 @@ export interface VirtualListProps<T> {
   emptyMessage?: string;
   className?: string;
   viewportClassName?: string;
+  rowClassName?: string;
   /** Measure rendered rows and retain their stable-key anchor across data changes. */
   dynamic?: boolean;
   /** Stay at the end only when the viewport was already at the end before an append. */
@@ -35,7 +38,7 @@ export interface VirtualListProps<T> {
 
 /** Fixed token-height or measured rows. The host owns data fetching and stable item keys. */
 export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderPlaceholder, onRangeChange, overscan = 4, label,
-  loading = false, error, onRetry, emptyMessage = '暂无项目', className, viewportClassName, dynamic = false, followOnAppend = false, initialPosition = 'start', ref }: VirtualListProps<T>) {
+  loading = false, error, onRetry, emptyMessage = '暂无项目', className, viewportClassName, rowClassName, dynamic = false, followOnAppend = false, initialPosition = 'start', preserveSelection = false, onAtEndChange, ref }: VirtualListProps<T>) {
   const viewport = useRef<HTMLDivElement>(null);
   const probe = useRef<HTMLDivElement>(null);
   const densityAnchor = useRef<{ key: Key; relativeTop: number } | null>(null);
@@ -44,8 +47,31 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
   const previousEdges = useRef<{ count: number; first: Key | null; last: Key | null } | null>(null);
   const wasAtEnd = useRef(false);
   const [rowHeight, setRowHeight] = useState(0);
+  const measuredRowHeight = useRef(0);
   const itemCount = Math.max(0, Math.floor(Number.isFinite(count) ? count : 0));
   const [focusedKey, setFocusedKey] = useState<Key | null>(null);
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
+  const selectedIndexes = useMemo(() => {
+    const keys = new Set(selectedKeys);
+    const indexes: number[] = [];
+    if (keys.size) for (let index = 0; index < itemCount; index++) if (keys.has(getItemKey(index))) indexes.push(index);
+    return indexes;
+  }, [selectedKeys, getItemKey, itemCount]);
+  useEffect(() => {
+    if (!preserveSelection) { setSelectedKeys(current => current.length ? [] : current); return; }
+    const capture = () => {
+      const selection = document.getSelection();
+      const element = viewport.current;
+      const keys: Key[] = [];
+      if (element && selection && !selection.isCollapsed && selection.rangeCount && element.contains(selection.anchorNode) && element.contains(selection.focusNode)) {
+        const range = selection.getRangeAt(0);
+        for (const row of element.querySelectorAll<HTMLElement>('[data-index]')) if (range.intersectsNode(row)) keys.push(getItemKey(Number(row.dataset.index)));
+      }
+      setSelectedKeys(current => current.length === keys.length && current.every((key, index) => key === keys[index]) ? current : keys);
+    };
+    document.addEventListener('selectionchange', capture);
+    return () => document.removeEventListener('selectionchange', capture);
+  }, [preserveSelection, getItemKey]);
   const focusedIndex = useMemo(() => {
     if (focusedKey === null) return -1;
     for (let index = 0; index < itemCount; index++) if (getItemKey(index) === focusedKey) return index;
@@ -77,20 +103,50 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
     if (dataAnchorIndex >= itemCount) dataAnchorIndex = -1;
   }
   const virtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>({
+    // Row measurements can notify during React's commit; avoid nested flushSync.
+    useFlushSync: false,
     count: itemCount, getScrollElement: () => viewport.current,
     estimateSize: useCallback(() => rowHeight || 1, [rowHeight]),
     getItemKey, overscan: Math.max(0, Math.floor(Number.isFinite(overscan) ? overscan : 0)), enabled: rowHeight > 0 && !error,
-    anchorTo: 'end', followOnAppend, initialOffset: initialPosition === 'end' ? () => Number.MAX_SAFE_INTEGER : 0,
+    anchorTo: followOnAppend ? 'end' : 'start', followOnAppend, initialOffset: initialPosition === 'end' ? () => Number.MAX_SAFE_INTEGER : 0,
     rangeExtractor: useCallback((range: Range) => {
       const indexes = defaultRangeExtractor(range);
-      const retained = [focusedIndex, dataAnchorIndex].filter(index => index >= 0 && !indexes.includes(index));
+      const retained = [...new Set([focusedIndex, dataAnchorIndex, ...selectedIndexes])].filter(index => index >= 0 && !indexes.includes(index));
       return retained.length ? [...indexes, ...retained].sort((a, b) => a - b) : indexes;
-    }, [dataAnchorIndex, focusedIndex]),
+    }, [dataAnchorIndex, focusedIndex, selectedIndexes]),
   });
   virtualizer.shouldAdjustScrollPositionOnItemSizeChange = item => {
+    if (followOnAppend && wasAtEnd.current) return true;
     const scrollOffset = virtualizer.scrollOffset ?? 0;
     return scrollOffset > 1 && item.start < scrollOffset + 1;
   };
+  const initiallyAligned = useRef(false);
+  useLayoutEffect(() => {
+    if (initiallyAligned.current || initialPosition !== 'end' || !rowHeight || !itemCount) return;
+    let frame = 0;
+    let attempts = 0;
+    const element = viewport.current;
+    const stop = () => { initiallyAligned.current = true; cancelAnimationFrame(frame); };
+    element?.addEventListener('wheel', stop, { passive: true });
+    element?.addEventListener('touchstart', stop, { passive: true });
+    element?.addEventListener('keydown', stop);
+    element?.addEventListener('pointerdown', stop);
+    const align = () => {
+      if (initiallyAligned.current) return;
+      virtualizer.scrollToEnd({ behavior: 'auto' });
+      attempts++;
+      if (attempts < 8) frame = requestAnimationFrame(align);
+      else initiallyAligned.current = true;
+    };
+    frame = requestAnimationFrame(align);
+    return () => {
+      cancelAnimationFrame(frame);
+      element?.removeEventListener('wheel', stop);
+      element?.removeEventListener('touchstart', stop);
+      element?.removeEventListener('keydown', stop);
+      element?.removeEventListener('pointerdown', stop);
+    };
+  }, [initialPosition, rowHeight, itemCount, virtualizer]);
   useLayoutEffect(() => {
     const element = probe.current;
     if (!element) return;
@@ -104,13 +160,21 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
     update();
     const observer = new ResizeObserver(update); observer.observe(element);
     const densityRoot = viewport.current?.closest('[data-density]') ?? document.documentElement;
-    const densityObserver = new MutationObserver(() => { densityAnchor.current = captureViewportAnchor(); });
+    const densityObserver = new MutationObserver(() => {
+      // The attribute mutation has already changed CSS geometry; use the last
+      // reading position rather than capturing the resized row's displacement.
+      densityAnchor.current = readingAnchor.current ?? captureViewportAnchor();
+    });
     densityObserver.observe(densityRoot, { attributes: true, attributeFilter: ['data-density'] });
     return () => { observer.disconnect(); densityObserver.disconnect(); };
   }, [captureViewportAnchor, virtualizer]);
   useLayoutEffect(() => {
-    if (!rowHeight) return;
+    if (!rowHeight || measuredRowHeight.current === rowHeight) return;
+    measuredRowHeight.current = rowHeight;
     const anchor = densityAnchor.current;
+    // Keep the density anchor mounted while the new measurements commit.
+    // React may batch the range update, so immediate scrolling alone is insufficient.
+    if (anchor) dataAnchor.current = anchor;
     virtualizer.measure();
     if (!anchor) return;
     densityAnchor.current = null;
@@ -126,7 +190,6 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
     const pending = dataAnchor.current;
     if (!pending) {
       readingAnchor.current = captureViewportAnchor();
-      wasAtEnd.current = element.scrollHeight - element.clientHeight - element.scrollTop <= 1;
       return;
     }
     let frame = 0;
@@ -141,7 +204,9 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
         const currentTop = anchoredRow.getBoundingClientRect().top - element.getBoundingClientRect().top;
         const difference = currentTop - pending.relativeTop;
         if (Math.abs(difference) > 0.5) element.scrollTop += difference;
-        if (Math.abs(difference) <= 0.5 || attempts >= 7) {
+        // ResizeObserver may deliver more measurements after the first aligned
+        // frame. Retain the anchor through the bounded settling window.
+        if (attempts >= 7) {
           dataAnchor.current = null;
           readingAnchor.current = captureViewportAnchor();
           wasAtEnd.current = element.scrollHeight - element.clientHeight - element.scrollTop <= 1;
@@ -186,6 +251,7 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
             const element = event.currentTarget;
             readingAnchor.current = captureViewportAnchor();
             wasAtEnd.current = element.scrollHeight - element.clientHeight - element.scrollTop <= 1;
+            onAtEndChange?.(wasAtEnd.current);
           }}
           onFocusCapture={event => { const row = (event.target as HTMLElement).closest<HTMLElement>('[data-index]'); if (row) setFocusedKey(getItemKey(Number(row.dataset.index))); }}
           onBlurCapture={event => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) setFocusedKey(null); }}
@@ -197,7 +263,7 @@ export function VirtualList<T>({ count, getItem, getItemKey, renderItem, renderP
             {rows.map(row => {
               const item = getItem(row.index);
               return <div key={row.key} ref={dynamic ? virtualizer.measureElement : undefined} role="listitem" aria-posinset={row.index + 1} aria-setsize={itemCount} data-index={row.index}
-                className={cn('absolute top-0 left-0 flex w-full min-w-0 items-center border-b border-border px-[var(--rui-cell-padding-x)]', dynamic && 'min-h-[var(--rui-row-height)] py-[var(--rui-cell-padding-y)]')}
+                className={cn('absolute top-0 left-0 flex w-full min-w-0 items-center border-b border-border px-[var(--rui-cell-padding-x)]', dynamic && 'min-h-[var(--rui-row-height)] py-[var(--rui-cell-padding-y)]', rowClassName)}
                 style={{ height: dynamic ? undefined : row.size, transform: `translateY(${row.start}px)` }}>
                 {item === undefined ? renderPlaceholder?.(row.index) ?? <span className="text-muted-foreground">加载第 {row.index + 1} 项…</span> : renderItem(item, row.index)}
               </div>;

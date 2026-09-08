@@ -15,3 +15,4 @@ export { TaskQueue, type TaskQueueProps, type QueueTask, type QueueTaskStatus, t
 export { Checkpoint, type CheckpointProps, type CheckpointFile, type CheckpointStatus } from './checkpoint.js';
 export { ChatOverlay, type ChatOverlayProps } from './chat-overlay.js';
 export { ChatPalette, type ChatPaletteProps, type ChatPaletteSession } from './chat-palette.js';
+export { VirtualConversation, type VirtualConversationProps } from './virtual-conversation.js';
