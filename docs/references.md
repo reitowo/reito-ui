@@ -421,3 +421,7 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 [逐项决策](research/remaining-component-decisions-2026-09-09.md) 记录 15 项评估及官方链接。本次仅阅读公开文档，没有引入 Nuxt、PrimeVue 或 PrimeUI PRO 源码、样式、字体和品牌素材。
 
 [PrimeUI PRO 官网](https://primeuipro.dev/) 已声明 React 版可用，修正 2026-09-06 报告中“React 仍在开发”的时点结论；这不证明五项 roadmap 能力已有具体 React 发布包。当前 [PrimeVue 导航](https://primevue.dev/iftalabel/) 仍列 DataGrid、Sheet、Gantt Chart、Diagram、PDF Viewer 为 Roadmap。未核实这些未来组件的包版本及具体授权合同，本轮不采购或选入依赖。
+
+## 组件库首页（2026-09-09）
+
+根据用户要求参考 [PrimeVue 官网首页](https://primevue.dev/) 的主标题、双入口、交互工作台、快速开始与主题介绍结构，实际查看浅色桌面截图。Reito 使用自己的 Graphite tokens、中文文案与现有组件，未复制上游源码、品牌、客户标志或商业数据。布局差异及本地验证见 [首页说明](homepage.md)。

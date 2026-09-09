@@ -11,7 +11,7 @@ async function accessible(page: Page) {
 }
 
 test('three layers expose the complete catalog and search reaches a working AI demo',async({page})=>{
-  await page.goto('/');
+  await page.goto('/?layer=basic&component=button');
   await expect(page.getByText(`${catalog.total} 个组件族`)).toBeVisible();
   await expect(page.locator('.lab-nav-item')).toHaveCount(catalog.counts.basic);
   await expect(page.getByRole('heading',{level:1,name:'Button',exact:true})).toBeVisible();
@@ -45,7 +45,7 @@ test('theme and density persist; shared controls change to 40px',async({page})=>
 });
 
 test('review dialog saves local notes and confirmation then restores focus',async({page})=>{
-  await page.goto('/');
+  await page.goto('/?layer=basic&component=button');
   await page.getByRole('button',{name:'确认样式',exact:true}).click();
   const dialog=page.getByRole('dialog',{name:'确认 Button 的样式'});
   await dialog.getByLabel('修改意见').fill('按钮密度已检查');
@@ -87,7 +87,7 @@ for(const theme of ['dark','light']) for(const density of ['compact','comfortabl
 
 for(const viewport of [{width:1280,height:800},{width:960,height:720},{width:640,height:400},{width:390,height:844}]) {
   test(`responsive ${viewport.width}x${viewport.height}: every layer remains reachable`,async({page})=>{
-    await page.setViewportSize(viewport);await page.goto('/');
+    await page.setViewportSize(viewport);await page.goto('/?layer=basic&component=button');
     for(const name of ['基础','复杂','AI']) {
       await page.locator('.lab-layer-tabs').getByRole('button',{name:new RegExp(name)}).click();
       await expect(page.getByTestId('component-preview')).toBeVisible();

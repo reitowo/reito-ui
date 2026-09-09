@@ -37,21 +37,22 @@ export function App() {
   const filtered = useMemo(() => all.filter(entry => (query.trim() || entry.layer === selection.layer) && `${entry.id} ${entry.name} ${entry.description} ${entry.layerName}`.toLowerCase().includes(query.toLowerCase())), [query, selection.layer]);
   useEffect(() => { document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; saveSetting('reito-theme', theme); }, [theme]);
   useEffect(() => { document.documentElement.dataset.density = density; saveSetting('reito-density', density); }, [density]);
-  useEffect(() => { const url = new URL(location.href); url.searchParams.set('layer', selection.layer); url.searchParams.set('component', selection.id); history.replaceState(null, '', url); }, [selection]);
+  useEffect(() => { document.title = `${selection.name} · Reito UI`; const url = new URL(location.href); url.searchParams.set('layer', selection.layer); url.searchParams.set('component', selection.id); history.replaceState(null, '', url); }, [selection]);
   const selectLayer = (id: LayerId) => { setQuery(''); setSelection(all.find(entry => entry.layer === id)!); };
   const updateReview = (patch: Partial<Review>) => setReviews(previous => { const updated = { ...previous, [key]: { ...review, ...patch } }; saveSetting('reito-v3-reviews', JSON.stringify(updated)); return updated; });
   const storyId = catalogManifest.entries.find(entry => entry.layer === selection.layer && entry.id === selection.id)!.storyId;
-  const storybookUrl = `http://127.0.0.1:6006/?path=/story/${encodeURIComponent(storyId)}&globals=theme:${theme};density:${density}`;
+  const storybookBase = import.meta.env.VITE_STORYBOOK_URL || 'http://127.0.0.1:6007';
+  const storybookUrl = `${storybookBase}/?path=/story/${encodeURIComponent(storyId)}&globals=theme:${theme};density:${density}`;
   return <TooltipProvider><div className="reito-root lab-shell">
     <header className="lab-titlebar">
-      <div className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></div>
+      <a href="/" className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></a>
       <span className="lab-project">Graphite / Component library</span>
       <div className="lab-tools">
         <Button variant="ghost" size="sm" onClick={() => setTokensOpen(true)}>Tokens</Button>
         <Button variant="ghost" size="icon-sm" aria-label="显示组件目录" className="lab-mobile-menu" onClick={() => setNavigationOpen(!navigationOpen)}><Menu /></Button>
         <Button variant="ghost" size="sm" onClick={() => setDensity(density === 'compact' ? 'comfortable' : 'compact')} aria-label="切换组件密度"><SlidersHorizontal />{density === 'compact' ? '紧凑' : '舒适'}</Button>
         <Button variant="ghost" size="icon-sm" aria-label="切换明暗主题" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun /> : <Moon />}</Button>
-        <a className="lab-storybook-link" href="http://127.0.0.1:6006/" target="_blank" rel="noreferrer">Storybook <ExternalLink className="size-3" /></a>
+        <a className="lab-storybook-link" href={storybookBase} target="_blank" rel="noreferrer">Storybook <ExternalLink className="size-3" /></a>
       </div>
     </header>
     <div className="lab-body">
