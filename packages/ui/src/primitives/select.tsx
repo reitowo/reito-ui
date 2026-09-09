@@ -61,9 +61,9 @@ function SelectContent({
   children,
   side = "bottom",
   sideOffset = tokenMetrics["space-1"],
-  align = "center",
+  align = "start",
   alignOffset = 0,
-  alignItemWithTrigger = true,
+  alignItemWithTrigger = false,
   ...props
 }: SelectPrimitive.Popup.Props &
   Pick<

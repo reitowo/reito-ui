@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "可控单选、分组与禁用选项。 使用官方 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
+          "产品界面的默认单选组件，菜单默认从触发器下方展开并左对齐，空间不足时自动避让。需要已选项覆盖触发器的原生菜单风格时，可显式设置 alignItemWithTrigger。支持可控单选、分组、禁用选项和键盘导航。",
       },
     },
   },
