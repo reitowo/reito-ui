@@ -43,6 +43,8 @@ Default controls and dividers have soft boundaries. Use a stronger edge only whe
 
 Density changes dimensions and spacing, not the user's zoom level. Set theme and density on the document root. Popovers and dialogs portal outside ordinary component wrappers, so a local wrapper alone cannot guarantee theme consistency.
 
+Use compact density by default. Density is a styling capability, not a required product preference: do not add a compact/comfortable switch to a header, toolbar or settings page unless the user explicitly requests one. Keep both densities available for host configuration and validation. Lab and Storybook may expose inspection controls; consuming applications and Workbench examples should not inherit those controls by default.
+
 ## Choose existing components by meaning
 
 This is a selection aid, not an exhaustive API reference. Verify each component in installed types.
