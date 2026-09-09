@@ -1,12 +1,22 @@
 {
   "counts": {
-    "basic": 71,
+    "basic": 72,
     "complex": 42,
     "ai": 24
   },
-  "total": 137,
-  "stories": 1409,
+  "total": 138,
+  "stories": 1415,
   "entries": [
+    {
+      "layer": "basic",
+      "id": "scroll-top",
+      "name": "ScrollTop",
+      "description": "独立滚动目标、阈值、返回顶部与焦点恢复。",
+      "storyId": "基础-scrolltop--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "ScrollTopDemo",
+      "stories": 6
+    },
     {
       "layer": "basic",
       "id": "one-time-code",

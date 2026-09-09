@@ -1,3 +1,4 @@
+import { ScrollTopDemo } from './scroll-top-demo.js';
 import { tokenMetrics } from "@reito/tokens/metrics";
 import { OneTimeCodeDemo } from './one-time-code-demo.js';
 import * as React from "react";
@@ -1404,6 +1405,7 @@ export interface BasicCatalogEntry {
   component: React.ComponentType;
 }
 export const basicCatalog: BasicCatalogEntry[] = [
+  { id: 'scroll-top', name: 'ScrollTop', description: '独立滚动目标、阈值、返回顶部与焦点恢复。', component: ScrollTopDemo },
   { id: 'one-time-code', name: 'OneTimeCode', description: '受宿主管理的验证码展示、锁定、有效期与异步复制。', component: OneTimeCodeDemo },
   {
     id: "button",

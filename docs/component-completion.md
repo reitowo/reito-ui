@@ -2,7 +2,7 @@
 
 基线：[2026-09-06 组件能力对照](research/component-gap-audit-2026-09-06.md)。本账本跟踪该报告的新增组件、已有增强、AI 适配、组合与应用候选；不按组件宣传数量计覆盖率。更新日期：2026-09-09。
 
-共 **103 个稳定验收/评估项**：88 个建设验收项、15 个后续评估项；**84 项建设完成，15 项评估完成，4 项建设延期**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01`、`COMBO-INLINE-01`、`COMBO-OVERLAY-01`、`SHELL-STATE-01`、`SHELL-SEARCH-01`、`SHELL-PRESET-01`、`CONTENT-NAV-01`、`DASHBOARD-RECIPE-01`、`CONTENT-RECIPE-01` 与 `AI-PARTS-01` 已完成，四项剩余专业工作面按用户要求延期，下一项建议为 ScrollTop 建设（尚未开始）。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
+共 **104 个稳定验收/评估项**：89 个建设验收项、15 个后续评估项；**85 项建设完成，15 项评估完成，4 项建设延期**。这些项不是组件数量，单个组件的高级能力会分项验收。`FORM-01`–`FORM-04`、`VIRT-01`–`VIRT-03`、`TREE-01`–`TREE-04`、`TABLE-01`–`TABLE-07`、`TAGS-01`–`TAGS-02`、`SELECT-01`–`SELECT-03`、`COLOR-01`、`DATE-01`、`TIME-01`、`DATETIME-01`、`DATERANGE-01`–`DATERANGE-02`、`PASSWORD-01`、`MASK-01`、`LISTBOX-01`–`LISTBOX-02`、`METERGROUP-01`、`RATING-01`、`KNOB-01`、`TREESELECT-01`、`CASCADER-01`、`TREETABLE-01`–`TREETABLE-02`、`TRANSFER-01`、`SORTABLE-01`、`RESOURCE-01`–`RESOURCE-02`、`LOG-01`、`UPLOAD-01`–`UPLOAD-02`、`PROPERTIES-01`–`PROPERTIES-02`、`GALLERY-01`–`GALLERY-02`、`CAROUSEL-01`、`COMPARE-01`、`ORGCHART-01`、`TERMINAL-01`、`EDIT-01`–`EDIT-06`、`MARKDOWN-01`–`MARKDOWN-02`、`COMBO-SPLIT-01`、`COMBO-CONFIRM-01`、`COMBO-USER-01`、`COMBO-BANNER-01`、`COMBO-TOOLBAR-01`、`COMBO-INLINE-01`、`COMBO-OVERLAY-01`、`SHELL-STATE-01`、`SHELL-SEARCH-01`、`SHELL-PRESET-01`、`CONTENT-NAV-01`、`DASHBOARD-RECIPE-01`、`CONTENT-RECIPE-01` 与 `AI-PARTS-01` 已完成，四项剩余专业工作面按用户要求延期，ScrollTop 新增建设已验收完成。阶段表示依赖顺序，不表示已承诺的发布日期；应用级与后续评估项需形成明确范围后再实施。
 
 ## 维护与完成规则
 
@@ -41,7 +41,7 @@ Form 为第一项；虚拟化、Tree 和表格状态可在 Form 基础稳定后�
 
 ## 阶段 2：高频输入与选择
 
-SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01、COMBO-INLINE-01、COMBO-OVERLAY-01、SHELL-STATE-01、SHELL-SEARCH-01、SHELL-PRESET-01、CONTENT-NAV-01、DASHBOARD-RECIPE-01、CONTENT-RECIPE-01 与 AI-PARTS-01 已完成，四项剩余专业工作面按用户要求延期，下一项建议为 ScrollTop 建设（尚未开始）。
+SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANGE-01～02、PASSWORD-01、MASK-01、LISTBOX-01～02、METERGROUP-01、RATING-01、KNOB-01、TREESELECT-01、CASCADER-01、TREETABLE-01～02、TRANSFER-01、SORTABLE-01、RESOURCE-01～02、LOG-01、UPLOAD-01～02、PROPERTIES-01～02、GALLERY-01～02、CAROUSEL-01、COMPARE-01、ORGCHART-01、TERMINAL-01、EDIT-01～06、MARKDOWN-01～02、COMBO-SPLIT-01、COMBO-CONFIRM-01、COMBO-USER-01、COMBO-BANNER-01、COMBO-TOOLBAR-01、COMBO-INLINE-01、COMBO-OVERLAY-01、SHELL-STATE-01、SHELL-SEARCH-01、SHELL-PRESET-01、CONTENT-NAV-01、DASHBOARD-RECIPE-01、CONTENT-RECIPE-01 与 AI-PARTS-01 已完成，四项剩余专业工作面按用户要求延期，ScrollTop 新增建设已验收完成。
 
 | ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -147,7 +147,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 
 ## 阶段 8：后续评估，不是已交付对标
 
-这 15 项已完成书面采用/延期/不采用评估；评估状态独立于建设交付。有明确场景才转入建设阶段，ScrollTop 建议作为下一项建设，当前尚未实现。PRO roadmap 行用于追踪可用性，不能以名称、宣传、计划日期或其他框架实现作为已发布证据。与阶段 7 的能力重叠不另计一次组件交付。
+这 15 项已完成书面采用/延期/不采用评估；评估状态独立于建设交付。有明确场景才转入建设阶段，ScrollTop 的独立建设项 BASIC-SCROLLTOP-01 已验收完成。PRO roadmap 行用于追踪可用性，不能以名称、宣传、计划日期或其他框架实现作为已发布证据。与阶段 7 的能力重叠不另计一次组件交付。
 
 | ID | 评估项 / 决策边界 | 依赖 | 状态 | Story | 证据 |
 | --- | --- | --- | --- | --- | --- |
@@ -156,7 +156,7 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | EVAL-SPEEDDIAL-01 | SpeedDial：仅针对集中快捷操作场景评估键盘、触摸与低发现性；不是通用桌面默认布局 | — | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-DOCK-01 | Dock：明确应用导航价值及与 Sidebar/Toolbar 重叠，评估触摸/键盘和空间占用 | SHELL-PRESET-01 | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-MARQUEE-01 | Marquee：确认需要持续滚动内容的场景、暂停/reduced-motion 与阅读可达性，否则延期 | — | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
-| EVAL-SCROLLTOP-01 | ScrollTop：评估长内容定位需求与现有滚动容器/返回底部区别，明确触发阈值与焦点行为 | CONTENT-RECIPE-01 | ✅ 评估完成 | 建议采用；建设尚未开始 | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
+| EVAL-SCROLLTOP-01 | ScrollTop：评估长内容定位需求与现有滚动容器/返回底部区别，明确触发阈值与焦点行为 | CONTENT-RECIPE-01 | ✅ 评估完成 | 采用；见 BASIC-SCROLLTOP-01 | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-BLOG-01 | Blog 营销组合：有发布内容场景后定义列表/文章/作者组合，明确与 Content 配方复用 | CONTENT-RECIPE-01 | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-PRICING-01 | Pricing 营销组合：真实定价展示需求、套餐比较/周期交互与数据边界；不把营销模板计核心组件 | — | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-HERO-01 | PageHero 营销组合：评估落地页用途、内容/动作/媒体插槽；不泛化为桌面页面眉头 | — | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
@@ -166,6 +166,12 @@ SELECT-01～03、TAGS-02、COLOR-01、DATE-01、TIME-01、DATETIME-01、DATERANG
 | EVAL-PRO-GANTT-01 | PRO Gantt Chart roadmap：核实发布、任务依赖/时间轴/资源等需求与成本，不能用 Scheduler 代替验收 | APP-SCHEDULER-01 | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-PRO-DIAGRAM-01 | PRO Diagram roadmap：核实可用性/许可/交互后作为 APP-DIAGRAM-01 的选型证据；不重复记交付 | APP-DIAGRAM-01 范围确定 | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
 | EVAL-PRO-PDF-01 | PRO PDF Viewer roadmap：核实可用性/许可/文档能力后作为 APP-PDF-01 的选型证据；不以 roadmap 页面视为成熟产品 | APP-PDF-01 范围确定 | ✅ 评估完成 | 本次不新增 Story | [逐项决策、来源与重启条件](research/remaining-component-decisions-2026-09-09.md)；评估完成不等于组件交付 |
+
+## 评估后采用的新增建设
+
+| ID | 验收项 / 边界 | 依赖 | 状态 | Story | 证据 |
+| --- | --- | --- | --- | --- | --- |
+| BASIC-SCROLLTOP-01 | ScrollTop：元素/窗口目标、阈值、减少运动、焦点和同页 Controls | EVAL-SCROLLTOP-01 | ✅ 完成 | 基础-scrolltop--playground；6 个 Story | [验收](validation-scroll-top.md)：9 项交互、24 组主题密度审计；check/build 通过；[用法](components/scroll-top.md) |
 
 ## 证据记录模板
 

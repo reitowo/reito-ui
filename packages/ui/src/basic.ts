@@ -21,3 +21,4 @@ export * from './basic/listbox.js';
 export * from './basic/image-gallery.js';
 export * from './basic/carousel.js';
 export * from './basic/image-compare.js';
+export * from './basic/scroll-top.js';
