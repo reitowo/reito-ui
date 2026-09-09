@@ -1,20 +1,20 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、40 个复杂组件族、21 个 AI 组件族**，共 131 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`MessageParts / StructuredMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace / WorkspacePreset` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复杂组件族、24 个 AI 组件族**，共 137 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`MessageParts / StructuredMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace / WorkspacePreset` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
-| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 70 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 20 个本地组合族；统一主题、尺寸和必要修复。 |
-| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 40 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
-| 草稿、消息、结构化 parts、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 21 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
+| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 71 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 21 个本地组合族；统一主题、尺寸和必要修复。 |
+| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 42 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
+| 草稿、消息、结构化 parts、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 24 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
 `@reito/ui` 根入口同时导出三层。新页面可以按上表选择子入口，让依赖用途清晰。`basic/catalog.tsx`、`complex/catalog.tsx` 和 `ai/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
 
 所有层都消费同一份语义主题。颜色、字体和密度的主源是 [`packages/tokens/src/tokens.json`](../packages/tokens/src/tokens.json)，基础组件不再使用旧版 `components.tsx` API。常规控件保留实际 Base UI 的 `render`、受控值和组合结构；日历、命令搜索、分栏分别依赖 React DayPicker、cmdk、react-resizable-panels，静态展示组件使用普通语义元素。不能把全部基础组件都描述成 Base UI 包装器。
 
-## 基础层：70 个组件族
+## 基础层：71 个组件族
 
-基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 20 个本地组合族，不能将它们标为 CLI 生成源码。
+基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 21 个本地组合族，不能将它们标为 CLI 生成源码。
 
 | 用途 | 组件族 |
 | --- | --- |
@@ -29,6 +29,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、40 个复�
 | 本地 Base UI 组合族及实际导出 | 关键契约与边界 |
 | --- | --- |
 | [`ToastProvider / useToastManager / createToastManager`](../packages/ui/src/basic/feedback.tsx) | 用 Provider 声明通知区域，在其范围内通过 manager 新增、更新和关闭通知。Provider 支持 `viewportLabel / viewportClassName / closeLabel`，保留 Base UI 管理器、计时和焦点语义。通知中的实际业务操作由宿主提供。 |
+| [`OneTimeCode`](../packages/ui/src/basic/one-time-code.tsx) | 展示宿主提供的验证码和剩余秒数；锁定、刷新和过期时隐藏原值，复制回调支持等待、失败反馈、重复请求和旧结果抑制。生成、认证、计时及剪贴板由宿主负责。 |
 | [`MultiSelect`](../packages/ui/src/basic/multi-select.tsx) | 必填 `label / options`，选项使用 `value / label / disabled`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。基于 Combobox 的多值选择、过滤和 chip 移除，支持 `loading / error / description / disabled`。 |
 | [`InputTags`](../packages/ui/src/basic/input-tags.tsx) | 必填 `label`；`value / onValueChange` 可受控，未受控时支持 `defaultValue`。支持分隔输入、批量粘贴、IME、本地/异步建议、异步创建、重复/数量规则、原位编辑、标签级禁用/错误、键盘 chip 导航和原生重复表单值。只允许选择既有 options 时使用 MultiSelect。 |
 | [`AsyncCombobox`](../packages/ui/src/basic/async-combobox.tsx) | 必填 `label / loadOptions`；`query / onQueryChange` 与 `value / onValueChange` 分别可受控。宿主 loader 接收 AbortSignal；组件防止过期结果覆盖、呈现 idle/loading/error/empty/retry，并缓存单选标签。它不内置网络端点或业务搜索。 |
@@ -48,7 +49,7 @@ Reito UI 0.4 工作区按应用场景提供 **70 个基础组件族、40 个复�
 
 需要按钮尺寸、输入焦点、菜单键盘行为或主题修复时，先改共享 token 或对应基础组件。新增产品页面应组合已有 API；选择器的 `onValueChange`、复选框的 `onCheckedChange` 等必须按实际类型使用，不能沿用旧 API 名称。
 
-## 复杂层：40 个组件族
+## 复杂层：42 个组件族
 
 公共导出见 [`complex/index.ts`](../packages/ui/src/complex/index.ts)，可交互演示见 [`complex/catalog.tsx`](../packages/ui/src/complex/catalog.tsx)。
 
