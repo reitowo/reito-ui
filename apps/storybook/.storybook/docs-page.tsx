@@ -31,7 +31,7 @@ export function ComponentDocs() {
     <Title />
     <Subtitle />
     <Description />
-    <p>打开“参数调试”，在 Controls 中直接调整 props，预览会实时更新。左侧变体是预设，便于对照和分享。</p>
+    <p>打开“参数调试”，在 Controls（参数面板）中直接调整组件属性（props），预览会实时更新。左侧示例是预设，便于对照和分享。</p>
     {isolated ? <><IsolatedExample /><ArgTypes /></> : <><Primary /><Controls /></>}
   </>;
 }

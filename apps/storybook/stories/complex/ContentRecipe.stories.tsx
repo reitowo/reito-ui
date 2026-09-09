@@ -282,8 +282,8 @@ function LocalContentRecipe({ initialLibraryState = 'ready', initialReaderState 
 }
 
 const defaultView: WorkspacePresetView = { navigationOpen: true, inspectorOpen: false, activePanel: 'workspace' };
-const meta = {
-  title: '复杂/ContentRecipe 内容工作面配方',
+const meta = { id: "复杂-contentrecipe-内容工作面配方",
+  title: "复杂/ContentRecipe 内容工作面配方",
   component: ContentWorkspaceRecipe,
   args: {
     libraryState: 'ready',
@@ -330,7 +330,7 @@ type PlaygroundArgs = {
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { title: 'Reito 文档', libraryState: 'ready', readerState: 'ready', documentId: 'guide-start', sectionId: 'start-install', query: '', libraryLayout: 'list', layoutMode: 'wide', readerMode: 'wide', outerPanel: 'workspace', readerPanel: 'workspace', searchOpen: false, saved: false, emptyMessage: '文档库中还没有内容。' },
   argTypes: {
     title: textControl,
@@ -357,17 +357,17 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '内容阅读工作面', render: () => <LocalContentRecipe /> };
-export const Narrow: Story = { name: '窄屏文档选择与阅读', render: () => <LocalContentRecipe mode="narrow" readerMode="narrow" initialOuterPanel="navigation" /> };
-export const GridLibrary: Story = { name: '网格文档库', render: function Render() { const [layout, setLayout] = useState<ResourceLayout>('grid'); const [documentId, setDocumentId] = useState('guide-tokens'); const [sectionId, setSectionId] = useState('tokens-source'); const [query, setQuery] = useState(''); const [outerView, setOuterView] = useState(defaultView); const [readerView, setReaderView] = useState(defaultView); return <ContentWorkspaceRecipe title="网格文档库" libraryState="ready" readerState="ready" documentId={documentId} onDocumentIdChange={setDocumentId} sectionId={sectionId} onSectionIdChange={setSectionId} query={query} onQueryChange={setQuery} libraryLayout={layout} onLibraryLayoutChange={setLayout} layoutMode="wide" readerMode="wide" outerView={outerView} onOuterViewChange={setOuterView} readerView={readerView} onReaderViewChange={setReaderView} searchOpen={false} onSearchOpenChange={() => {}} saved={false} onSavedChange={() => {}} />; } };
-export const EmptyLibrary: Story = { name: '空文档库', render: () => <LocalContentRecipe initialLibraryState="empty" initialDocumentId="" /> };
-export const LoadingLibrary: Story = { name: '文档库加载中', render: () => <LocalContentRecipe initialLibraryState="loading" initialDocumentId="" /> };
-export const ErrorLibrary: Story = { name: '文档索引失败与恢复', render: () => <LocalContentRecipe initialLibraryState="error" /> };
-export const EmptyDocument: Story = { name: '空正文', render: () => <LocalContentRecipe initialReaderState="empty" /> };
-export const LoadingDocument: Story = { name: '正文加载中', render: () => <LocalContentRecipe initialReaderState="loading" /> };
-export const ErrorDocument: Story = { name: '正文失败与恢复', render: () => <LocalContentRecipe initialReaderState="error" /> };
+export const Default: Story = { name: "内容阅读工作面", render: () => <LocalContentRecipe /> };
+export const Narrow: Story = { name: "窄屏文档选择与阅读", render: () => <LocalContentRecipe mode="narrow" readerMode="narrow" initialOuterPanel="navigation" /> };
+export const GridLibrary: Story = { name: "网格文档库", render: function Render() { const [layout, setLayout] = useState<ResourceLayout>('grid'); const [documentId, setDocumentId] = useState('guide-tokens'); const [sectionId, setSectionId] = useState('tokens-source'); const [query, setQuery] = useState(''); const [outerView, setOuterView] = useState(defaultView); const [readerView, setReaderView] = useState(defaultView); return <ContentWorkspaceRecipe title="网格文档库" libraryState="ready" readerState="ready" documentId={documentId} onDocumentIdChange={setDocumentId} sectionId={sectionId} onSectionIdChange={setSectionId} query={query} onQueryChange={setQuery} libraryLayout={layout} onLibraryLayoutChange={setLayout} layoutMode="wide" readerMode="wide" outerView={outerView} onOuterViewChange={setOuterView} readerView={readerView} onReaderViewChange={setReaderView} searchOpen={false} onSearchOpenChange={() => {}} saved={false} onSavedChange={() => {}} />; } };
+export const EmptyLibrary: Story = { name: "空文档库", render: () => <LocalContentRecipe initialLibraryState="empty" initialDocumentId="" /> };
+export const LoadingLibrary: Story = { name: "文档库加载中", render: () => <LocalContentRecipe initialLibraryState="loading" initialDocumentId="" /> };
+export const ErrorLibrary: Story = { name: "文档索引失败与恢复", render: () => <LocalContentRecipe initialLibraryState="error" /> };
+export const EmptyDocument: Story = { name: "空正文", render: () => <LocalContentRecipe initialReaderState="empty" /> };
+export const LoadingDocument: Story = { name: "正文加载中", render: () => <LocalContentRecipe initialReaderState="loading" /> };
+export const ErrorDocument: Story = { name: "正文失败与恢复", render: () => <LocalContentRecipe initialReaderState="error" /> };
 export const Interactive: Story = {
-  name: '交互场景：选择、定位与收藏',
+  name: "交互 · 选择、定位与收藏",
   render: () => <LocalContentRecipe mode="narrow" readerMode="narrow" initialOuterPanel="navigation" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

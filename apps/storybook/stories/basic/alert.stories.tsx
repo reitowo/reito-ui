@@ -3,8 +3,8 @@ import { Info } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AlertDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Alert",
+const meta = { id: "基础-alert",
+  title: "基础/Alert 提示",
   component: P.Alert,
 
   tags: ["autodocs"],
@@ -26,7 +26,7 @@ export const Overview: Story = {
 };
 
 export const Default: Story = {
-  name: "样式 / 普通提示",
+  name: "样式 · 普通提示",
   render: () => (
     <P.Alert className="max-w-xl">
       <Info />
@@ -38,7 +38,7 @@ export const Default: Story = {
   ),
 };
 export const Destructive: Story = {
-  name: "样式 / 错误提示",
+  name: "样式 · 错误提示",
   render: () => (
     <P.Alert variant="destructive" className="max-w-xl">
       <Info />
@@ -50,7 +50,7 @@ export const Destructive: Story = {
   ),
 };
 export const TitleOnly: Story = {
-  name: "内容 / 仅标题",
+  name: "内容 · 仅标题",
   render: () => (
     <P.Alert className="max-w-xl">
       <P.AlertTitle>本地草稿已保存</P.AlertTitle>

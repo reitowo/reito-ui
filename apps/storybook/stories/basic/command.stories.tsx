@@ -6,8 +6,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { CommandDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Command",
+const meta = { id: "基础-command",
+  title: "基础/Command 命令面板",
   component: CommandDemo,
   tags: ["autodocs"],
   parameters: {
@@ -23,7 +23,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <CommandDemo />,
 };
 
@@ -71,15 +71,15 @@ function CommandListExample({
   );
 }
 export const Default: Story = {
-  name: "内容 / 命令与快捷键",
+  name: "内容 · 命令与快捷键",
   render: () => <CommandListExample />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用命令",
+  name: "状态 · 禁用命令",
   render: () => <CommandListExample disabled />,
 };
 export const Empty: Story = {
-  name: "状态 / 无匹配命令",
+  name: "状态 · 无匹配命令",
   render: () => <CommandListExample empty />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

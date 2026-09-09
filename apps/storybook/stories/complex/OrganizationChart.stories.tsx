@@ -8,8 +8,8 @@ import { OrganizationChart, type OrganizationChartNode } from '../../../../packa
 import { OrganizationChartDemo, organizationDemoNodes } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, textControl } from '../feature-controls.js';
 
-const meta = {
-  title: '复杂/OrganizationChart 组织结构图',
+const meta = { id: "复杂-organizationchart-组织结构图",
+  title: "复杂/OrganizationChart 组织结构图",
   component: OrganizationChart,
   parameters: { docs: { description: { component: '紧凑层级关系图，支持受控折叠与单选、内容模板、局部横向滚动，以及 ARIA tree 方向键导航。' } } },
 } satisfies Meta<typeof OrganizationChart>;
@@ -26,7 +26,7 @@ type PlaygroundArgs = {
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { selectedId: 'lead', collapsedIds: [], collapsible: true, disabled: false, label: '组件团队结构', emptyLabel: '没有可展示的团队结构' },
   argTypes: {
     selectedId: { control: 'select', options: ['lead', 'design', 'tokens', 'stories', 'engineering', 'runtime', 'quality', null] },
@@ -58,7 +58,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '默认结构', args: { nodes: organizationDemoNodes }, render: () => <OrganizationChartDemo /> };
+export const Default: Story = { name: "默认结构", args: { nodes: organizationDemoNodes }, render: () => <OrganizationChartDemo /> };
 
 function ControlledExample() {
   const [selectedId, setSelectedId] = useState<string | null>('design');
@@ -73,10 +73,10 @@ function ControlledExample() {
   </div>;
 }
 
-export const Controlled: Story = { name: '受控选择与折叠', args: { nodes: organizationDemoNodes }, render: () => <ControlledExample /> };
+export const Controlled: Story = { name: "受控选择与折叠", args: { nodes: organizationDemoNodes }, render: () => <ControlledExample /> };
 
 export const CustomTemplate: Story = {
-  name: '节点内容模板',
+  name: "节点内容模板",
   args: { nodes: organizationDemoNodes },
   render: () => <OrganizationChart
     nodes={organizationDemoNodes}
@@ -92,11 +92,11 @@ export const CustomTemplate: Story = {
   />,
 };
 
-export const InitiallyCollapsed: Story = { name: '初始折叠', args: { nodes: organizationDemoNodes, defaultCollapsedIds: ['design', 'engineering'], defaultSelectedId: 'lead', label: '初始折叠团队结构' } };
-export const NonCollapsible: Story = { name: '固定展开', args: { nodes: organizationDemoNodes, collapsible: false, defaultSelectedId: 'lead', label: '固定展开团队结构' } };
-export const Disabled: Story = { name: '整体禁用', args: { nodes: organizationDemoNodes, disabled: true, defaultSelectedId: 'lead', label: '禁用团队结构' } };
-export const DisabledNode: Story = { name: '禁用节点', args: { nodes: [{ id: 'root', label: '工作区', children: [{ id: 'public', label: '公开组件' }, { id: 'private', label: '受保护模块', description: '可浏览但不可选择或折叠', disabled: true, children: [{ id: 'secret', label: '内部实现' }] }] }], defaultSelectedId: 'public', label: '包含禁用节点的结构' } };
-export const MultipleRoots: Story = { name: '多个根节点', args: { nodes: [{ id: 'product', label: '产品', children: [{ id: 'research', label: '研究' }] }, { id: 'platform', label: '平台', children: [{ id: 'runtime', label: '运行时' }] }], label: '多根结构' } };
-export const LongContent: Story = { name: '长内容与局部滚动', args: { nodes: [{ id: 'root', label: '跨桌面端与浏览器端复用的组件系统负责人', description: '负责主题、密度、可访问行为和发布边界', children: Array.from({ length: 5 }, (_, index) => ({ id: `long-${index}`, label: `第 ${index + 1} 个具有特别长名称的工作小组`, description: '说明会在节点内截断，完整内容保留在 title 和可访问名称中' })) }], label: '长内容团队结构' }, render: args => <div className="max-w-[var(--rui-container-sm)]"><OrganizationChart {...args} /></div> };
-export const Narrow: Story = { name: '窄工作面', args: { nodes: organizationDemoNodes, defaultCollapsedIds: ['design', 'engineering'], label: '窄工作面团队结构' }, render: args => <div className="max-w-[var(--rui-container-3xs)]"><OrganizationChart {...args} /></div> };
-export const Empty: Story = { name: '空状态', args: { nodes: [], label: '空团队结构', emptyLabel: '当前没有组织关系' } };
+export const InitiallyCollapsed: Story = { name: "初始折叠", args: { nodes: organizationDemoNodes, defaultCollapsedIds: ['design', 'engineering'], defaultSelectedId: 'lead', label: '初始折叠团队结构' } };
+export const NonCollapsible: Story = { name: "固定展开", args: { nodes: organizationDemoNodes, collapsible: false, defaultSelectedId: 'lead', label: '固定展开团队结构' } };
+export const Disabled: Story = { name: "整体禁用", args: { nodes: organizationDemoNodes, disabled: true, defaultSelectedId: 'lead', label: '禁用团队结构' } };
+export const DisabledNode: Story = { name: "禁用节点", args: { nodes: [{ id: 'root', label: '工作区', children: [{ id: 'public', label: '公开组件' }, { id: 'private', label: '受保护模块', description: '可浏览但不可选择或折叠', disabled: true, children: [{ id: 'secret', label: '内部实现' }] }] }], defaultSelectedId: 'public', label: '包含禁用节点的结构' } };
+export const MultipleRoots: Story = { name: "多个根节点", args: { nodes: [{ id: 'product', label: '产品', children: [{ id: 'research', label: '研究' }] }, { id: 'platform', label: '平台', children: [{ id: 'runtime', label: '运行时' }] }], label: '多根结构' } };
+export const LongContent: Story = { name: "长内容与局部滚动", args: { nodes: [{ id: 'root', label: '跨桌面端与浏览器端复用的组件系统负责人', description: '负责主题、密度、可访问行为和发布边界', children: Array.from({ length: 5 }, (_, index) => ({ id: `long-${index}`, label: `第 ${index + 1} 个具有特别长名称的工作小组`, description: '说明会在节点内截断，完整内容保留在 title 和可访问名称中' })) }], label: '长内容团队结构' }, render: args => <div className="max-w-[var(--rui-container-sm)]"><OrganizationChart {...args} /></div> };
+export const Narrow: Story = { name: "窄工作面", args: { nodes: organizationDemoNodes, defaultCollapsedIds: ['design', 'engineering'], label: '窄工作面团队结构' }, render: args => <div className="max-w-[var(--rui-container-3xs)]"><OrganizationChart {...args} /></div> };
+export const Empty: Story = { name: "状态 · 空内容", args: { nodes: [], label: '空团队结构', emptyLabel: '当前没有组织关系' } };

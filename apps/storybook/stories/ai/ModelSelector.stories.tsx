@@ -6,10 +6,10 @@ import { ModelSelector } from '../../../../packages/ui/src/ai/model-selector.js'
 import { demoModels, ModelSelectorDemo } from '../../../../packages/ui/src/ai/catalog.js';
 import { StoryFrame } from './story-frame.js';
 
-const meta = { title: 'AI/ModelSelector', component: ModelSelector, args: { options: demoModels, value: 'auto', onValueChange: fn() }, decorators: [Story => <StoryFrame><Story /></StoryFrame>], parameters: { docs: { description: { component: '基于官方 Base UI Select 组合；选项、可用性和选中值由调用方提供。本示例没有连接模型服务。' } } } } satisfies Meta<typeof ModelSelector>;
+const meta = { id: "ai-modelselector", title: "AI/ModelSelector 模型选择", component: ModelSelector, args: { options: demoModels, value: 'auto', onValueChange: fn() }, decorators: [Story => <StoryFrame><Story /></StoryFrame>], parameters: { docs: { description: { component: '基于官方 Base UI Select 组合；选项、可用性和选中值由调用方提供。本示例没有连接模型服务。' } } } } satisfies Meta<typeof ModelSelector>;
 export default meta;
 type Story = StoryObj<typeof meta>;
-export const Guidelines: Story = { name: '交互场景：模型键盘选择',
+export const Guidelines: Story = { name: "交互 · 模型键盘选择",
   render: () => <ModelSelectorDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -25,15 +25,15 @@ export const Guidelines: Story = { name: '交互场景：模型键盘选择',
     await waitFor(() => expect(trigger).toHaveFocus());
   },
 };
-export const Compact: Story = { name: '紧凑显示', args: { compact: true } };
-export const Disabled: Story = { name: '禁用', args: { disabled: true } };
-export const Unselected: Story = { name: '未选择', args: { value: null } };
-export const Empty: Story = { name: '没有可用模型', args: { value: null, options: [], disabled: true } };
+export const Compact: Story = { name: "紧凑显示", args: { compact: true } };
+export const Disabled: Story = { name: "状态 · 禁用", args: { disabled: true } };
+export const Unselected: Story = { name: "未选择", args: { value: null } };
+export const Empty: Story = { name: "没有可用模型", args: { value: null, options: [], disabled: true } };
 
-export const Default: Story = { name: '默认显示' };
+export const Default: Story = { name: "默认显示" };
 
 export const Playground: Story = {
-  name: '参数调试', args: { value: 'auto', compact: false, disabled: false, label: '选择模型' },
+  name: "参数调试", args: { value: 'auto', compact: false, disabled: false, label: '选择模型' },
   argTypes: { value: choiceControl([null, ...demoModels.filter(option => !option.disabled).map(option => option.id)]), compact: booleanControl, disabled: booleanControl, label: textControl },
   parameters: { controls: { include: ['value', 'compact', 'disabled', 'label'] } },
   render: function PlaygroundRender(args) { const [, updateArgs] = useArgs(); return <ModelSelector {...args} onValueChange={value => updateArgs({ value })} />; },

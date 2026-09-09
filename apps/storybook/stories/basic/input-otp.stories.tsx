@@ -5,8 +5,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InputOTPDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Input OTP",
+const meta = { id: "基础-input-otp",
+  title: "基础/InputOTP 验证码输入",
   component: InputOTPDemo,
   tags: ["autodocs"],
   parameters: {
@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <InputOTPDemo />,
 };
 
@@ -79,23 +79,23 @@ function VerificationCode({
   );
 }
 export const Default: Story = {
-  name: "布局 / 分组输入",
+  name: "布局 · 分组输入",
   render: () => <VerificationCode />,
 };
 export const Continuous: Story = {
-  name: "布局 / 连续输入",
+  name: "布局 · 连续输入",
   render: () => <VerificationCode grouped={false} />,
 };
 export const Complete: Story = {
-  name: "状态 / 已填满",
+  name: "状态 · 已填满",
   render: () => <VerificationCode initial="123456" />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用",
+  name: "状态 · 禁用",
   render: () => <VerificationCode disabled initial="123456" />,
 };
 export const Invalid: Story = {
-  name: "状态 / 校验错误",
+  name: "状态 · 校验错误",
   render: () => <VerificationCode invalid initial="123456" />,
 };
 

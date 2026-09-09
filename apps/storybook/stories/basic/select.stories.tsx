@@ -4,8 +4,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { SelectDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Select",
+const meta = { id: "基础-select",
+  title: "基础/Select 选择器",
   component: SelectDemo,
   tags: ["autodocs"],
   parameters: {
@@ -41,15 +41,15 @@ const executionOptions = [{ value: 'local', label: '本地工作区' }, { value:
 function ExecutionSelect({ size = 'default', disabled = false, placeholder = false, invalid = false, disabledOption = false }: { size?: 'sm' | 'default'; disabled?: boolean; placeholder?: boolean; invalid?: boolean; disabledOption?: boolean }) {
  return <Select items={executionOptions} defaultValue={placeholder ? null : 'local'} disabled={disabled}><SelectTrigger aria-label="选择执行位置" aria-invalid={invalid} size={size} className="w-60"><SelectValue placeholder="选择位置" /></SelectTrigger><SelectContent><SelectGroup><SelectLabel>执行位置</SelectLabel>{executionOptions.map(option => <SelectItem key={option.value} value={option.value} disabled={disabledOption && option.value === 'cloud'}>{option.label}</SelectItem>)}</SelectGroup></SelectContent></Select>;
 }
-export const Default: Story = { name: '默认', render: () => <ExecutionSelect /> };
-export const Placeholder: Story = { name: '未选择', render: () => <ExecutionSelect placeholder /> };
-export const Small: Story = { name: '小尺寸', render: () => <ExecutionSelect size="sm" /> };
-export const Disabled: Story = { name: '禁用', render: () => <ExecutionSelect disabled /> };
-export const DisabledOption: Story = { name: '含禁用选项', render: () => <ExecutionSelect disabledOption /> };
-export const Invalid: Story = { name: '错误', render: () => <div className="grid gap-2"><ExecutionSelect invalid /><p className="text-xs text-destructive" role="alert">所选位置已失效，请重新选择。</p></div> };
+export const Default: Story = { name: "默认示例", render: () => <ExecutionSelect /> };
+export const Placeholder: Story = { name: "未选择", render: () => <ExecutionSelect placeholder /> };
+export const Small: Story = { name: "小尺寸", render: () => <ExecutionSelect size="sm" /> };
+export const Disabled: Story = { name: "状态 · 禁用", render: () => <ExecutionSelect disabled /> };
+export const DisabledOption: Story = { name: "含禁用选项", render: () => <ExecutionSelect disabledOption /> };
+export const Invalid: Story = { name: "状态 · 错误", render: () => <div className="grid gap-2"><ExecutionSelect invalid /><p className="text-xs text-destructive" role="alert">所选位置已失效，请重新选择。</p></div> };
 
 export const Playground: StoryObj<{ value: string | null; size: 'default' | 'sm'; disabled: boolean; invalid: boolean; placeholder: string }> = {
-  name: '参数调试', args: { value: 'local', size: 'default', disabled: false, invalid: false, placeholder: '选择位置' },
+  name: "参数调试", args: { value: 'local', size: 'default', disabled: false, invalid: false, placeholder: '选择位置' },
   argTypes: { value: { control: 'select', options: [null, 'local', 'worktree', 'cloud'] }, size: { control: 'select', options: ['default', 'sm'], table: { category: 'SelectTrigger' } }, disabled: { control: 'boolean' }, invalid: { control: 'boolean', table: { category: '组合示例' }, description: '映射 SelectTrigger 的 aria-invalid。' }, placeholder: { control: 'text', table: { category: 'SelectValue' } } },
   parameters: { controls: { include: ['value', 'size', 'disabled', 'invalid', 'placeholder'] } },
   render: function Render(args) { const [, updateArgs] = useArgs(); return <Select items={executionOptions} value={args.value} onValueChange={value => updateArgs({ value })} disabled={args.disabled}><SelectTrigger aria-label="选择执行位置" aria-invalid={args.invalid} size={args.size} className="w-60"><SelectValue placeholder={args.placeholder} /></SelectTrigger><SelectContent><SelectGroup><SelectLabel>执行位置</SelectLabel>{executionOptions.map(option => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectGroup></SelectContent></Select>; },

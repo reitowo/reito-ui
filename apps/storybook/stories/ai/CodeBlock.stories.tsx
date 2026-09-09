@@ -6,8 +6,8 @@ import { CodeBlock, type CodeBlockProps } from '../../../../packages/ui/src/ai/c
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
 import { StoryFrame } from './story-frame.js';
 
-const meta = {
-  title: 'AI/CodeBlock', component: CodeBlock,
+const meta = { id: "ai-codeblock",
+  title: "AI/CodeBlock 代码块", component: CodeBlock,
   args: { filename: 'workspace.ts', language: 'typescript', code: 'export const density = "compact";', onCopy: fn() },
   decorators: [Story => <StoryFrame><Story /></StoryFrame>],
   parameters: { docs: { description: { component: '按 language 解析源码并应用共享语法颜色，支持深浅主题。默认文本、未知语言或超出高亮长度限制时保留纯文本。显示和复制保持原始源码；onCopy 可由宿主替换，默认调用系统剪贴板。' } } },
@@ -15,7 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Guidelines: Story = { name: '交互场景：高亮与复制',
+export const Guidelines: Story = { name: "交互 · 高亮与复制",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const code = canvasElement.querySelector('[data-slot="code-content"]');
@@ -28,12 +28,12 @@ export const Guidelines: Story = { name: '交互场景：高亮与复制',
     await expect(canvas.getByRole('button', { name: '代码已复制' })).toBeVisible();
   },
 };
-export const Clipboard: Story = { name: '系统剪贴板', args: { onCopy: undefined } };
-export const CopyError: Story = { name: '复制失败', args: { onCopy: fn(async () => { throw new Error('Denied'); }) }, play: async ({ canvasElement }) => { const canvas = within(canvasElement); await userEvent.click(canvas.getByRole('button', { name: '复制代码' })); await expect(await canvas.findByRole('alert')).toHaveTextContent('复制失败，请选择代码手动复制。'); } };
-export const ReadOnly: Story = { name: '隐藏复制操作', args: { copyable: false } };
-export const Embedded: Story = { name: '嵌入容器', args: { variant: 'embedded' }, decorators: [Story => <section aria-label="嵌入产物" className="overflow-hidden rounded-lg border"><Story /></section>], parameters: { docs: { description: { story: '嵌入已有产物容器时去掉第二层边框与内距。宿主不再为代码区额外添加 padding。' } } } };
-export const Empty: Story = { name: '空代码', args: { code: '' } };
-export const LongLines: Story = { name: '长行局部滚动',
+export const Clipboard: Story = { name: "系统剪贴板", args: { onCopy: undefined } };
+export const CopyError: Story = { name: "复制失败", args: { onCopy: fn(async () => { throw new Error('Denied'); }) }, play: async ({ canvasElement }) => { const canvas = within(canvasElement); await userEvent.click(canvas.getByRole('button', { name: '复制代码' })); await expect(await canvas.findByRole('alert')).toHaveTextContent('复制失败，请选择代码手动复制。'); } };
+export const ReadOnly: Story = { name: "隐藏复制操作", args: { copyable: false } };
+export const Embedded: Story = { name: "嵌入容器", args: { variant: 'embedded' }, decorators: [Story => <section aria-label="嵌入产物" className="overflow-hidden rounded-lg border"><Story /></section>], parameters: { docs: { description: { story: '嵌入已有产物容器时去掉第二层边框与内距。宿主不再为代码区额外添加 padding。' } } } };
+export const Empty: Story = { name: "空代码", args: { code: '' } };
+export const LongLines: Story = { name: "长行局部滚动",
   args: { code: 'export const nestedPath = "packages/ui/src/components/workspace/very-long-module-name-with-a-readable-code-scroll-region/settings.tsx";\n'.repeat(10) },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -72,7 +72,7 @@ function LanguageExamples() {
     <CodeBlock language={sample.language} code={sample.code} copyable={false} />
   </>;
 }
-export const Languages: Story = { name: '交互场景：切换语言',
+export const Languages: Story = { name: "交互 · 切换语言",
   render: () => <LanguageExamples />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -98,7 +98,7 @@ function FallbackExamples() {
   const [selected, setSelected] = useState(0);
   return <><div aria-label="纯文本回退示例" className="flex flex-wrap gap-2">{fallbackSamples.map((sample, index) => <Button key={sample.filename} type="button" size="sm" variant={selected === index ? 'secondary' : 'ghost'} aria-pressed={selected === index} onClick={() => setSelected(index)}>{sample.filename}</Button>)}</div><CodeBlock {...fallbackSamples[selected]} copyable={false} /></>;
 }
-export const PlainTextFallbacks: Story = { name: '交互场景：纯文本回退',
+export const PlainTextFallbacks: Story = { name: "交互 · 纯文本回退",
   render: () => <FallbackExamples />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -115,7 +115,7 @@ export const PlainTextFallbacks: Story = { name: '交互场景：纯文本回退
 };
 
 const markupSource = '<!-- 源码中的标签只作为文本展示 -->\n<img src="missing.png" onerror="alert(1)">\n<script>throw new Error("must stay text")</script>\n<p title="a & b">&lt;workspace&gt;</p>\n';
-export const MarkupEscaping: Story = { name: 'HTML 安全文本',
+export const MarkupEscaping: Story = { name: "HTML 安全文本",
   args: { filename: 'source.html', language: 'html', code: markupSource },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -142,7 +142,7 @@ function UpdatingCode({ onCopy }: Pick<CodeBlockProps, 'onCopy'>) {
     <CodeBlock filename="live.ts" code={code} language={language} onCopy={onCopy} />
   </>;
 }
-export const LiveUpdates: Story = { name: '交互场景：更新源码与语言',
+export const LiveUpdates: Story = { name: "交互 · 更新源码与语言",
   render: args => <UpdatingCode onCopy={args.onCopy} />,
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -162,27 +162,27 @@ export const LiveUpdates: Story = { name: '交互场景：更新源码与语言'
   },
 };
 
-export const Default: Story = { name: '默认 TypeScript' };
-export const JavaScript: Story = { name: 'JavaScript', args: { filename: 'JavaScript 示例', language: languageSamples[1].language, code: languageSamples[1].code } };
-export const TSX: Story = { name: 'TSX', args: { filename: 'TSX 示例', language: languageSamples[2].language, code: languageSamples[2].code } };
-export const JSX: Story = { name: 'JSX', args: { filename: 'JSX 示例', language: languageSamples[3].language, code: languageSamples[3].code } };
-export const JSON: Story = { name: 'JSON', args: { filename: 'JSON 示例', language: languageSamples[4].language, code: languageSamples[4].code } };
-export const HTML: Story = { name: 'HTML', args: { filename: 'HTML 示例', language: languageSamples[5].language, code: languageSamples[5].code } };
-export const CSS: Story = { name: 'CSS', args: { filename: 'CSS 示例', language: languageSamples[6].language, code: languageSamples[6].code } };
-export const Bash: Story = { name: 'Bash', args: { filename: 'Bash 示例', language: languageSamples[7].language, code: languageSamples[7].code } };
-export const PowerShell: Story = { name: 'PowerShell', args: { filename: 'PowerShell 示例', language: languageSamples[8].language, code: languageSamples[8].code } };
-export const Python: Story = { name: 'Python', args: { filename: 'Python 示例', language: languageSamples[9].language, code: languageSamples[9].code } };
-export const SQL: Story = { name: 'SQL', args: { filename: 'SQL 示例', language: languageSamples[10].language, code: languageSamples[10].code } };
-export const YAML: Story = { name: 'YAML', args: { filename: 'YAML 示例', language: languageSamples[11].language, code: languageSamples[11].code } };
-export const Markdown: Story = { name: 'Markdown', args: { filename: 'Markdown 示例', language: languageSamples[12].language, code: languageSamples[12].code } };
-export const Go: Story = { name: 'Go', args: { filename: 'Go 示例', language: languageSamples[13].language, code: languageSamples[13].code } };
-export const Rust: Story = { name: 'Rust', args: { filename: 'Rust 示例', language: languageSamples[14].language, code: languageSamples[14].code } };
-export const PlainText: Story = { name: '纯文本', args: { filename: '纯文本', language: 'text', code: fallbackSamples[0].code } };
-export const UnknownLanguage: Story = { name: '未知语言回退', args: { filename: fallbackSamples[1].filename, language: fallbackSamples[1].language, code: fallbackSamples[1].code } };
-export const OversizedSource: Story = { name: '超长源码回退', args: { filename: '超长 TypeScript', language: 'typescript', code: largeSource, copyable: false } };
+export const Default: Story = { name: "默认 TypeScript" };
+export const JavaScript: Story = { name: "语言 · JavaScript", args: { filename: 'JavaScript 示例', language: languageSamples[1].language, code: languageSamples[1].code } };
+export const TSX: Story = { name: "语言 · TSX", args: { filename: 'TSX 示例', language: languageSamples[2].language, code: languageSamples[2].code } };
+export const JSX: Story = { name: "语言 · JSX", args: { filename: 'JSX 示例', language: languageSamples[3].language, code: languageSamples[3].code } };
+export const JSON: Story = { name: "语言 · JSON", args: { filename: 'JSON 示例', language: languageSamples[4].language, code: languageSamples[4].code } };
+export const HTML: Story = { name: "语言 · HTML", args: { filename: 'HTML 示例', language: languageSamples[5].language, code: languageSamples[5].code } };
+export const CSS: Story = { name: "语言 · CSS", args: { filename: 'CSS 示例', language: languageSamples[6].language, code: languageSamples[6].code } };
+export const Bash: Story = { name: "语言 · Bash", args: { filename: 'Bash 示例', language: languageSamples[7].language, code: languageSamples[7].code } };
+export const PowerShell: Story = { name: "语言 · PowerShell", args: { filename: 'PowerShell 示例', language: languageSamples[8].language, code: languageSamples[8].code } };
+export const Python: Story = { name: "语言 · Python", args: { filename: 'Python 示例', language: languageSamples[9].language, code: languageSamples[9].code } };
+export const SQL: Story = { name: "语言 · SQL", args: { filename: 'SQL 示例', language: languageSamples[10].language, code: languageSamples[10].code } };
+export const YAML: Story = { name: "语言 · YAML", args: { filename: 'YAML 示例', language: languageSamples[11].language, code: languageSamples[11].code } };
+export const Markdown: Story = { name: "语言 · Markdown", args: { filename: 'Markdown 示例', language: languageSamples[12].language, code: languageSamples[12].code } };
+export const Go: Story = { name: "语言 · Go", args: { filename: 'Go 示例', language: languageSamples[13].language, code: languageSamples[13].code } };
+export const Rust: Story = { name: "语言 · Rust", args: { filename: 'Rust 示例', language: languageSamples[14].language, code: languageSamples[14].code } };
+export const PlainText: Story = { name: "纯文本", args: { filename: '纯文本', language: 'text', code: fallbackSamples[0].code } };
+export const UnknownLanguage: Story = { name: "未知语言回退", args: { filename: fallbackSamples[1].filename, language: fallbackSamples[1].language, code: fallbackSamples[1].code } };
+export const OversizedSource: Story = { name: "超长源码回退", args: { filename: '超长 TypeScript', language: 'typescript', code: largeSource, copyable: false } };
 
 export const Playground: Story = {
-  name: '参数调试', args: { variant: 'default', copyable: true, language: 'typescript', filename: 'workspace.ts', code: 'export const density = "compact";', onCopy: undefined },
+  name: "参数调试", args: { variant: 'default', copyable: true, language: 'typescript', filename: 'workspace.ts', code: 'export const density = "compact";', onCopy: undefined },
   argTypes: { variant: choiceControl(['default', 'embedded']), copyable: booleanControl, language: choiceControl(['text', 'typescript', 'javascript', 'tsx', 'jsx', 'json', 'html', 'css', 'bash', 'powershell', 'python', 'sql', 'yaml', 'markdown', 'go', 'rust']), filename: textControl, code: textControl },
   parameters: { controls: { include: ['variant', 'copyable', 'language', 'filename', 'code'] } }, render: args => <CodeBlock {...args} />,
 };

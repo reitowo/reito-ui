@@ -4,8 +4,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AspectRatioDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Aspect Ratio",
+const meta = { id: "基础-aspect-ratio",
+  title: "基础/AspectRatio 宽高比",
   component: AspectRatioDemo,
   tags: ["autodocs"],
   parameters: {
@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <AspectRatioDemo />,
 };
 
@@ -38,15 +38,15 @@ function RatioPreview(props: React.ComponentProps<typeof P.AspectRatio>) {
   );
 }
 export const Default: Story = {
-  name: "比例 / 16 比 9",
+  name: "比例 · 16 比 9",
   render: () => <RatioPreview ratio={16 / 9} />,
 };
 export const Standard: Story = {
-  name: "比例 / 4 比 3",
+  name: "比例 · 4 比 3",
   render: () => <RatioPreview ratio={4 / 3} />,
 };
 export const Square: Story = {
-  name: "比例 / 正方形",
+  name: "比例 · 正方形",
   render: () => <RatioPreview ratio={1} />,
 };
 

@@ -5,7 +5,7 @@ import { ChatOverlay } from '../../../../packages/ui/src/ai/chat-overlay.js';
 import { Message } from '../../../../packages/ui/src/ai/conversation.js';
 import { booleanControl, textControl } from '../feature-controls.js';
 
-const meta = { title: 'AI/ChatOverlay', component: ChatOverlay } satisfies Meta<typeof ChatOverlay>;
+const meta = { id: "ai-chatoverlay", title: "AI/ChatOverlay 对话浮层", component: ChatOverlay } satisfies Meta<typeof ChatOverlay>;
 export default meta;
 type Args = { title: string; description: string; open: boolean; disabled: boolean; running: boolean; error: string; empty: boolean };
 function Demo({ args, updateArgs }: { args: Args; updateArgs: (next: Partial<Args>) => void }) {
@@ -16,19 +16,19 @@ function Demo({ args, updateArgs }: { args: Args; updateArgs: (next: Partial<Arg
     {messages.map((text, index) => <Message key={index} from="user" local>{text}</Message>)}
   </ChatOverlay>;
 }
-export const Playground: StoryObj<Args> = {
+export const Playground: StoryObj<Args> = { name: "参数调试",
   args: { title: '工作区助手', description: '本地示例，未连接模型', open: false, disabled: false, running: false, error: '', empty: false },
   argTypes: { title: textControl, description: textControl, open: booleanControl, disabled: booleanControl, running: booleanControl, error: textControl, empty: booleanControl },
   parameters: { controls: { include: ['title', 'description', 'open', 'disabled', 'running', 'error', 'empty'] } },
   render: function Render(args) { const [, updateArgs] = useArgs(); return <Demo args={args} updateArgs={updateArgs} />; },
 };
-export const Open = { ...Playground, args: { ...Playground.args, open: true } };
-export const Empty = { ...Playground, args: { ...Playground.args, open: true, empty: true } };
-export const Running = { ...Playground, args: { ...Playground.args, open: true, running: true } };
-export const Error = { ...Playground, args: { ...Playground.args, open: true, error: '本地请求失败，草稿已保留' } };
-export const Disabled = { ...Playground, args: { ...Playground.args, disabled: true } };
+export const Open = { name: "状态 · 已打开", ...Playground, args: { ...Playground.args, open: true } };
+export const Empty = { name: "状态 · 空内容", ...Playground, args: { ...Playground.args, open: true, empty: true } };
+export const Running = { name: "状态 · 运行中", ...Playground, args: { ...Playground.args, open: true, running: true } };
+export const Error = { name: "状态 · 错误", ...Playground, args: { ...Playground.args, open: true, error: '本地请求失败，草稿已保留' } };
+export const Disabled = { name: "状态 · 禁用", ...Playground, args: { ...Playground.args, disabled: true } };
 
-export const FailureRecovery: StoryObj<typeof meta> = {
+export const FailureRecovery: StoryObj<typeof meta> = { name: "交互 · 失败恢复",
   args: { composer: { onSubmit: () => undefined } },
   render: function FailureRecoveryExample() {
     const [attempts, setAttempts] = useState(0);

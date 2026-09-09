@@ -14,8 +14,8 @@ import {
 import { OverlayProviderDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, choiceControl, textControl } from '../feature-controls.js';
 
-const meta = {
-  title: '复杂/OverlayProvider 命令式浮层',
+const meta = { id: "复杂-overlayprovider-命令式浮层",
+  title: "复杂/OverlayProvider 命令式浮层",
   component: OverlayProvider,
   args: { children: null },
   tags: ['autodocs'],
@@ -94,7 +94,7 @@ function PlaygroundLauncher({ update, ...args }: PlaygroundArgs & { update: (nex
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: {
     kind: 'dialog',
     title: '应用工作区设置？',
@@ -130,10 +130,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '默认本地示例', render: () => <OverlayProviderDemo /> };
+export const Default: Story = { name: "默认本地示例", render: () => <OverlayProviderDemo /> };
 
 export const DialogResult: Story = {
-  name: 'Dialog 返回结果',
+  name: "Dialog 返回结果",
   render: () => <ResultStory label="选择布局" options={{ title: '选择工作区布局', description: '结果通过句柄的 Promise 返回。', content: '当前选择：紧凑布局', confirmLabel: '使用紧凑布局', confirmValue: 'compact' }} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -144,7 +144,7 @@ export const DialogResult: Story = {
 };
 
 export const SheetResult: Story = {
-  name: 'Sheet 侧边详情',
+  name: "Sheet 侧边详情",
   render: () => <ResultStory label="打开任务详情" options={{ kind: 'sheet', sheetSide: 'right', title: '任务详情', description: '辅助详情从右侧进入。', content: '检查 tokens、Storybook 与四种主题密度组合。', confirmLabel: '完成', confirmValue: 'done', showCancel: false }} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -155,7 +155,7 @@ export const SheetResult: Story = {
 };
 
 export const AlertDialogResult: Story = {
-  name: 'AlertDialog 危险确认',
+  name: "AlertDialog 危险确认",
   render: () => <ResultStory label="移除本地草稿" options={{ kind: 'alert-dialog', title: '移除这份草稿？', description: '移除后无法从当前工作区恢复。', destructive: true, confirmLabel: '移除', confirmValue: true }} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -166,7 +166,7 @@ export const AlertDialogResult: Story = {
 };
 
 export const NonDismissible: Story = {
-  name: '阻止 Escape 与外部关闭',
+  name: "阻止 Escape 与外部关闭",
   render: () => <ResultStory label="打开关键步骤" options={{ title: '关键步骤仍在进行', description: 'Escape 与点击外部不会结束事务。', content: '使用明确按钮完成或取消。', dismissible: false, confirmLabel: '完成', confirmValue: true }} />,
 };
 
@@ -193,7 +193,7 @@ function NestedLauncher() {
   </div>;
 }
 
-export const Nested: Story = { name: '嵌套确认与焦点', render: () => <OverlayProvider><NestedLauncher /></OverlayProvider> };
+export const Nested: Story = { name: "嵌套确认与焦点", render: () => <OverlayProvider><NestedLauncher /></OverlayProvider> };
 
 function ConcurrentLauncher() {
   const overlay = useOverlay();
@@ -210,7 +210,7 @@ function ConcurrentLauncher() {
   </div>;
 }
 
-export const ConcurrentStack: Story = { name: '并发栈', render: () => <OverlayProvider><ConcurrentLauncher /></OverlayProvider> };
+export const ConcurrentStack: Story = { name: "并发栈", render: () => <OverlayProvider><ConcurrentLauncher /></OverlayProvider> };
 
 function PatchLauncher() {
   const overlay = useOverlay();
@@ -226,7 +226,7 @@ function PatchLauncher() {
   </div>;
 }
 
-export const PatchOpenOverlay: Story = { name: '更新已打开浮层', render: () => <OverlayProvider><PatchLauncher /></OverlayProvider> };
+export const PatchOpenOverlay: Story = { name: "更新已打开浮层", render: () => <OverlayProvider><PatchLauncher /></OverlayProvider> };
 
 function CloseAllLauncher() {
   const overlay = useOverlay();
@@ -243,7 +243,7 @@ function CloseAllLauncher() {
   </div>;
 }
 
-export const CloseAll: Story = { name: '关闭全部', render: () => <OverlayProvider><CloseAllLauncher /></OverlayProvider> };
+export const CloseAll: Story = { name: "关闭全部", render: () => <OverlayProvider><CloseAllLauncher /></OverlayProvider> };
 
 function AncestorCloseLauncher() {
   const overlay = useOverlay();
@@ -260,7 +260,7 @@ function AncestorCloseLauncher() {
   </div>;
 }
 
-export const AncestorClose: Story = { name: '父层关闭子层收口', render: () => <OverlayProvider><AncestorCloseLauncher /></OverlayProvider> };
+export const AncestorClose: Story = { name: "父层关闭子层收口", render: () => <OverlayProvider><AncestorCloseLauncher /></OverlayProvider> };
 
 function UnmountLauncher({ onUnmount, onResult }: { onUnmount: () => void; onResult: (value: string) => void }) {
   const overlay = useOverlay();
@@ -280,7 +280,7 @@ function ProviderUnmountExample() {
   </div>;
 }
 
-export const ProviderUnmount: Story = { name: '卸载收口', render: () => <ProviderUnmountExample /> };
+export const ProviderUnmount: Story = { name: "卸载收口", render: () => <ProviderUnmountExample /> };
 
 function HandleDismissLauncher() {
   const overlay = useOverlay();
@@ -298,4 +298,4 @@ function HandleDismissLauncher() {
   </div>;
 }
 
-export const HandleDismiss: Story = { name: '句柄关闭', render: () => <OverlayProvider><HandleDismissLauncher /></OverlayProvider> };
+export const HandleDismiss: Story = { name: "句柄关闭", render: () => <OverlayProvider><HandleDismissLauncher /></OverlayProvider> };

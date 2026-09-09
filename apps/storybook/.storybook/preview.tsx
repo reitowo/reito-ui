@@ -19,15 +19,15 @@ const preview: Preview = {
   tags: ['autodocs'],
   globalTypes: {
     theme: {
-      description: 'Shared semantic color theme, including portaled surfaces.',
-      toolbar: { title: 'Theme', icon: 'circlehollow', dynamicTitle: true, items: [
-        { value: 'dark', title: 'Dark graphite' }, { value: 'light', title: 'Light graphite' },
+      description: '共享语义主题，包含浮层。',
+      toolbar: { title: '主题', icon: 'circlehollow', dynamicTitle: true, items: [
+        { value: 'dark', title: '深色' }, { value: 'light', title: '浅色' },
       ] },
     },
     density: {
-      description: 'Shared control heights and spacing. Typography stays readable.',
-      toolbar: { title: 'Density', icon: 'component', dynamicTitle: true, items: [
-        { value: 'compact', title: 'Compact' }, { value: 'comfortable', title: 'Comfortable' },
+      description: '共享控件高度与间距，保持文字可读。',
+      toolbar: { title: '密度', icon: 'component', dynamicTitle: true, items: [
+        { value: 'compact', title: '紧凑' }, { value: 'comfortable', title: '舒适' },
       ] },
     },
   },

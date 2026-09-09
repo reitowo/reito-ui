@@ -3,8 +3,8 @@ import { ChevronDown } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ButtonGroupDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Button Group",
+const meta = { id: "基础-button-group",
+  title: "基础/ButtonGroup 按钮组",
   component: P.ButtonGroup,
 
   tags: ["autodocs"],
@@ -21,12 +21,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <ButtonGroupDemo />,
 };
 
 export const Default: Story = {
-  name: "方向 / 横向",
+  name: "方向 · 横向",
   render: () => (
     <P.ButtonGroup aria-label="文件操作">
       <P.Button variant="outline">复制</P.Button>
@@ -35,7 +35,7 @@ export const Default: Story = {
   ),
 };
 export const Vertical: Story = {
-  name: "方向 / 纵向",
+  name: "方向 · 纵向",
   render: () => (
     <P.ButtonGroup orientation="vertical" aria-label="文件操作">
       <P.Button variant="outline">复制</P.Button>
@@ -44,7 +44,7 @@ export const Vertical: Story = {
   ),
 };
 export const WithText: Story = {
-  name: "组合 / 状态文字",
+  name: "组合 · 状态文字",
   render: () => (
     <P.ButtonGroup aria-label="分页">
       <P.Button variant="outline" disabled>
@@ -56,7 +56,7 @@ export const WithText: Story = {
   ),
 };
 export const WithSeparator: Story = {
-  name: "组合 / 分隔操作",
+  name: "组合 · 分隔操作",
   render: () => (
     <P.ButtonGroup aria-label="保存操作">
       <P.Button variant="secondary">保存</P.Button>

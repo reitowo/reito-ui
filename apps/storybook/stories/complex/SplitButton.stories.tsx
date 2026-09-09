@@ -18,8 +18,8 @@ const defaultItems: SplitButtonItem[] = [
   { id: 'remote', label: '发布到远端', disabled: true },
 ];
 
-const meta = {
-  title: '复杂/SplitButton 拆分按钮',
+const meta = { id: "复杂-splitbutton-拆分按钮",
+  title: "复杂/SplitButton 拆分按钮",
   component: SplitButton,
   args: { label: '保存', items: defaultItems, onAction: () => undefined },
   tags: ['autodocs'],
@@ -64,7 +64,7 @@ function playgroundItems(state: ItemState): SplitButtonItem[] {
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: {
     label: '保存',
     variant: 'default',
@@ -116,10 +116,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '默认本地示例', render: () => <SplitButtonDemo /> };
+export const Default: Story = { name: "默认本地示例", render: () => <SplitButtonDemo /> };
 
 export const MenuWithShortcuts: Story = {
-  name: '图标、快捷键与禁用条目',
+  name: "图标、快捷键与禁用条目",
   args: {
     label: <><Save aria-hidden="true" />保存</>,
     items: defaultItems,
@@ -132,7 +132,7 @@ export const MenuWithShortcuts: Story = {
 };
 
 export const IndependentDisabled: Story = {
-  name: '独立禁用状态',
+  name: "独立禁用状态",
   render: () => <div className="flex flex-wrap gap-[var(--rui-content-gap)]">
     <SplitButton label="仅菜单可用" items={defaultItems} actionDisabled onAction={() => undefined} menuLabel="仅菜单可用的相关操作" />
     <SplitButton label="仅主操作可用" items={defaultItems} menuDisabled onAction={() => undefined} menuLabel="已禁用的相关操作" />
@@ -141,22 +141,22 @@ export const IndependentDisabled: Story = {
 };
 
 export const MainLoading: Story = {
-  name: '主操作忙碌',
+  name: "主操作忙碌",
   args: { label: '正在保存', items: defaultItems, loading: true, onAction: () => undefined, menuLabel: '保存期间仍可用的相关操作' },
 };
 
 export const MenuLoading: Story = {
-  name: '菜单内容加载中',
+  name: "菜单内容加载中",
   args: { label: '保存', items: [], menuLoading: true, defaultOpen: true, onAction: () => undefined, menuLabel: '查看正在加载的操作' },
 };
 
 export const ItemLoading: Story = {
-  name: '单个菜单操作忙碌',
+  name: "单个菜单操作忙碌",
   args: { label: '保存', items: [{ ...defaultItems[0]!, loading: true }, defaultItems[1]!], defaultOpen: true, onAction: () => undefined, menuLabel: '更多保存操作' },
 };
 
 export const Empty: Story = {
-  name: '空菜单',
+  name: "空菜单",
   args: { label: '保存', items: [], defaultOpen: true, emptyLabel: '当前没有其他保存方式', onAction: () => undefined, menuLabel: '更多保存操作' },
 };
 
@@ -175,7 +175,7 @@ function KeyboardExample() {
 }
 
 export const KeyboardNavigation: Story = {
-  name: '键盘与焦点恢复',
+  name: "键盘与焦点恢复",
   render: () => <KeyboardExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

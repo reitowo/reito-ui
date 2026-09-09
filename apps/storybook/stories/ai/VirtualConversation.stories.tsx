@@ -5,9 +5,9 @@ import { VirtualConversation } from '../../../../packages/ui/src/ai/virtual-conv
 import { StructuredMessage } from '../../../../packages/ui/src/ai/message-parts.js';
 import { Message } from '../../../../packages/ui/src/ai/conversation.js';
 
-const meta = { title: 'AI/VirtualConversation', component: VirtualConversation } satisfies Meta<typeof VirtualConversation>;
+const meta = { id: "ai-virtualconversation", title: "AI/VirtualConversation 虚拟会话", component: VirtualConversation } satisfies Meta<typeof VirtualConversation>;
 export default meta;
-export const Playground: StoryObj<{ follow: boolean; overscan: number; failHistory: boolean }> = {
+export const Playground: StoryObj<{ follow: boolean; overscan: number; failHistory: boolean }> = { name: "参数调试",
   args: { follow: true, overscan: 4, failHistory: false },
   argTypes: { follow: { control: 'boolean' }, overscan: { control: { type: 'number', min: 0 } }, failHistory: { control: 'boolean' } },
   parameters: { controls: { include: ['follow','overscan','failHistory'] } },
@@ -20,7 +20,7 @@ export const Playground: StoryObj<{ follow: boolean; overscan: number; failHisto
   },
 };
 
-export const StreamingParts: StoryObj = {
+export const StreamingParts: StoryObj = { name: "内容 · 流式片段",
   render: function StreamingPartsDemo() {
     const [text,setText]=useState('本地流式示例。');
     const [streaming,setStreaming]=useState(false);
@@ -37,20 +37,20 @@ export const StreamingParts: StoryObj = {
   },
 };
 
-export const Empty: StoryObj = {
+export const Empty: StoryObj = { name: "状态 · 空内容",
   render: () => <VirtualConversation items={[]} getKey={(item: {id: number}) => item.id} renderMessage={() => null} />,
 };
 
-export const LoadingHistory: StoryObj = {
+export const LoadingHistory: StoryObj = { name: "状态 · 历史加载中",
   render: () => <VirtualConversation items={[{id: 1, text: '加载历史时保留当前消息。'}]} getKey={item => item.id} renderMessage={item => <Message from="assistant" local>{item.text}</Message>} hasEarlier loadingEarlier />,
 };
 
-export const HistoryFailure: typeof Playground = {
+export const HistoryFailure: typeof Playground = { name: "状态 · 历史加载失败",
   ...Playground,
   args: { follow: true, overscan: 4, failHistory: true },
 };
 
-export const FollowDisabled: typeof Playground = {
+export const FollowDisabled: typeof Playground = { name: "行为 · 暂停跟随",
   ...Playground,
   args: { follow: false, overscan: 4, failHistory: false },
 };

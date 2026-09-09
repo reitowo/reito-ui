@@ -6,8 +6,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { CheckboxDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Checkbox",
+const meta = { id: "基础-checkbox",
+  title: "基础/Checkbox 复选框",
   component: P.Checkbox,
 
   tags: ["autodocs"],
@@ -48,32 +48,32 @@ function LabeledCheckbox(props: React.ComponentProps<typeof P.Checkbox>) {
   );
 }
 export const Default: Story = {
-  name: "状态 / 未选中",
+  name: "状态 · 未选中",
   args: { defaultChecked: false },
   render: (args) => <LabeledCheckbox {...args} />,
 };
 export const Checked: Story = {
-  name: "状态 / 已选中",
+  name: "状态 · 已选中",
   args: { defaultChecked: true },
   render: (args) => <LabeledCheckbox {...args} />,
 };
 export const Indeterminate: Story = {
-  name: "状态 / 部分选中",
+  name: "状态 · 部分选中",
   args: { indeterminate: true },
   render: (args) => <LabeledCheckbox {...args} />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用未选中",
+  name: "状态 · 禁用未选中",
   args: { disabled: true },
   render: (args) => <LabeledCheckbox {...args} />,
 };
 export const DisabledChecked: Story = {
-  name: "状态 / 禁用已选中",
+  name: "状态 · 禁用已选中",
   args: { disabled: true, defaultChecked: true },
   render: (args) => <LabeledCheckbox {...args} />,
 };
 export const Invalid: Story = {
-  name: "状态 / 校验错误",
+  name: "状态 · 校验错误",
   args: { "aria-invalid": true },
   render: (args) => <LabeledCheckbox {...args} />,
 };

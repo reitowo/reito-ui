@@ -6,8 +6,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { CollapsibleDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Collapsible",
+const meta = { id: "基础-collapsible",
+  title: "基础/Collapsible 折叠区域",
   component: P.Collapsible,
 
   tags: ["autodocs"],
@@ -24,7 +24,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <CollapsibleDemo />,
 };
 
@@ -47,7 +47,7 @@ function FileDisclosure(props: React.ComponentProps<typeof P.Collapsible>) {
   );
 }
 export const Default: Story = {
-  name: "状态 / 默认收起",
+  name: "状态 · 默认收起",
   args: { defaultOpen: false },
   render: (args) => <FileDisclosure {...args} />,
   play: async ({ canvasElement }) => {
@@ -65,12 +65,12 @@ export const Default: Story = {
   },
 };
 export const Expanded: Story = {
-  name: "状态 / 默认展开",
+  name: "状态 · 默认展开",
   args: { defaultOpen: true },
   render: (args) => <FileDisclosure {...args} />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用",
+  name: "状态 · 禁用",
   args: { disabled: true },
   render: (args) => <FileDisclosure {...args} />,
 };

@@ -236,8 +236,8 @@ function PersistentDashboard() {
   return <DashboardWorkspaceRecipe section={section} onSectionChange={setSection} sidebarOpen={layout.state.sidebarOpen} onSidebarOpenChange={layout.setSidebarOpen} view={preset.state} onViewChange={preset.setView} searchOpen={searchOpen} onSearchOpenChange={setSearchOpen} preferenceSource={`${layout.source}/${preset.source}`} />;
 }
 
-const meta = {
-  title: '复杂/DashboardRecipe 工作面配方',
+const meta = { id: "复杂-dashboardrecipe-工作面配方",
+  title: "复杂/DashboardRecipe 工作面配方",
   component: DashboardWorkspaceRecipe,
   args: {
     section: 'tasks',
@@ -266,7 +266,7 @@ type PlaygroundArgs = {
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { title: 'Reito 工作台', workspaceTitle: '本地任务', layoutMode: 'auto', section: 'tasks', sidebarOpen: true, inspectorOpen: true, activePanel: 'workspace', dataState: 'ready', searchOpen: false, emptyMessage: '当前没有任务，可以从检查器添加一项。' },
   argTypes: {
     title: textControl,
@@ -288,14 +288,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '任务工作面', render: () => <LocalDashboard /> };
-export const Narrow: Story = { name: '窄屏工作面', render: () => <LocalDashboard mode="narrow" /> };
-export const PersistedPreferences: Story = { name: '布局偏好保存与恢复', render: () => <PersistentDashboard /> };
-export const EmptyTasks: Story = { name: '空任务', render: () => <LocalDashboard initialDataState="empty" /> };
-export const LoadingTasks: Story = { name: '任务加载中', render: () => <LocalDashboard initialDataState="loading" /> };
-export const ErrorTasks: Story = { name: '任务失败与重试', render: () => <LocalDashboard initialDataState="error" /> };
+export const Default: Story = { name: "任务工作面", render: () => <LocalDashboard /> };
+export const Narrow: Story = { name: "窄屏工作面", render: () => <LocalDashboard mode="narrow" /> };
+export const PersistedPreferences: Story = { name: "布局偏好保存与恢复", render: () => <PersistentDashboard /> };
+export const EmptyTasks: Story = { name: "空任务", render: () => <LocalDashboard initialDataState="empty" /> };
+export const LoadingTasks: Story = { name: "任务加载中", render: () => <LocalDashboard initialDataState="loading" /> };
+export const ErrorTasks: Story = { name: "任务失败与重试", render: () => <LocalDashboard initialDataState="error" /> };
 export const Interactive: Story = {
-  name: '交互场景：新建、完成与搜索',
+  name: "交互 · 新建、完成与搜索",
   render: () => <LocalDashboard />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

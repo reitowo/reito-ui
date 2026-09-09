@@ -4,8 +4,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CalendarDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Calendar",
+const meta = { id: "基础-calendar",
+  title: "基础/Calendar 日历",
   component: CalendarDemo,
   tags: ["autodocs"],
   parameters: {
@@ -21,13 +21,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <CalendarDemo />,
 };
 
 const month = new Date(2026, 8, 1);
 export const Default: Story = {
-  name: "选择 / 单日",
+  name: "选择 · 单日",
   render: function SingleDate() {
     const [selected, setSelected] = React.useState<Date | undefined>(
       new Date(2026, 8, 6),
@@ -43,7 +43,7 @@ export const Default: Story = {
   },
 };
 export const Multiple: Story = {
-  name: "选择 / 多日",
+  name: "选择 · 多日",
   render: function MultipleDates() {
     const [selected, setSelected] = React.useState<Date[] | undefined>([
       new Date(2026, 8, 6),
@@ -60,7 +60,7 @@ export const Multiple: Story = {
   },
 };
 export const Range: Story = {
-  name: "选择 / 日期范围",
+  name: "选择 · 日期范围",
   render: function DateRange() {
     const [selected, setSelected] = React.useState<{
       from: Date | undefined;
@@ -77,7 +77,7 @@ export const Range: Story = {
   },
 };
 export const DisabledDates: Story = {
-  name: "状态 / 禁用周末",
+  name: "状态 · 禁用周末",
   render: () => (
     <P.Calendar
       mode="single"
@@ -87,7 +87,7 @@ export const DisabledDates: Story = {
   ),
 };
 export const DropdownCaption: Story = {
-  name: "导航 / 月年选择器",
+  name: "导航 · 月年选择器",
   render: () => (
     <P.Calendar mode="single" defaultMonth={month} captionLayout="dropdown" />
   ),

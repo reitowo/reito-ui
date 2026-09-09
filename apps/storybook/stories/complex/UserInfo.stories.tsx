@@ -12,8 +12,8 @@ import {
 import { UserInfoDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, textControl } from '../feature-controls.js';
 
-const meta = {
-  title: '复杂/User 信息行',
+const meta = { id: "复杂-user-信息行",
+  title: "复杂/User 用户信息行",
   component: UserInfo,
   args: { name: 'Reito' },
   tags: ['autodocs'],
@@ -64,7 +64,7 @@ function InteractiveUser({
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: {
     name: 'Reito',
     description: '组件系统维护者',
@@ -96,10 +96,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   </div>,
 };
 
-export const Default: Story = { name: '默认本地示例', render: () => <div className="w-[var(--rui-container-md)] max-w-full"><UserInfoDemo /></div> };
+export const Default: Story = { name: "默认本地示例", render: () => <div className="w-[var(--rui-container-md)] max-w-full"><UserInfoDemo /></div> };
 
 export const LongContent: Story = {
-  name: '长名称与说明',
+  name: "长名称与说明",
   render: () => <div className="w-[var(--rui-container-2xs)]">
     <UserInfo
       name="Reito UI 组件系统本地工作区的长期维护者"
@@ -114,12 +114,12 @@ export const LongContent: Story = {
 };
 
 export const MissingAvatar: Story = {
-  name: '缺少头像与自动缩写',
+  name: "缺少头像与自动缩写",
   args: { name: 'Lin Ming', description: '本地协作者', status: '离线', fallback: undefined },
 };
 
 export const StatusTones: Story = {
-  name: '可读状态',
+  name: "可读状态",
   render: () => <div className="grid w-[var(--rui-container-md)] max-w-full gap-[var(--rui-space-1)]">
     <UserInfo name="默认状态" status="未知" statusTone="neutral" fallback="?" />
     <UserInfo name="可用成员" status="在线" statusTone="success" fallback="A" />
@@ -129,26 +129,26 @@ export const StatusTones: Story = {
 };
 
 export const VisibleActions: Story = {
-  name: '文字操作',
+  name: "文字操作",
   render: () => <div className="w-[var(--rui-container-md)] max-w-full"><InteractiveUser name="Reito" description="本地协作者" fallback="R" showActionLabels /></div>,
 };
 
 export const DisabledAction: Story = {
-  name: '单项操作禁用',
+  name: "单项操作禁用",
   render: () => <div className="w-[var(--rui-container-md)] max-w-full"><InteractiveUser name="Reito" description="更多操作当前不可用" fallback="R" actionDisabled /></div>,
 };
 
 export const LoadingAction: Story = {
-  name: '单项操作忙碌',
+  name: "单项操作忙碌",
   render: () => <div className="w-[var(--rui-container-md)] max-w-full"><InteractiveUser name="Reito" description="正在发送本地示例消息" fallback="R" actionLoading /></div>,
 };
 
 export const DisabledRow: Story = {
-  name: '整行禁用',
+  name: "整行禁用",
   render: () => <div className="w-[var(--rui-container-md)] max-w-full"><InteractiveUser name="锁定成员" description="宿主已禁用全部操作" fallback="L" disabled /></div>,
 };
 
 export const CustomTrailingContent: Story = {
-  name: '独立宿主内容',
+  name: "独立宿主内容",
   render: () => <div className="w-[var(--rui-container-md)] max-w-full"><UserInfo name="管理员" description="本地工作区" fallback="A" actions={[{ id: 'verify', label: '查看权限', icon: <ShieldCheck aria-hidden="true" />, onSelect: () => undefined }]} /><div className="mt-[var(--rui-space-2)]"><Button size="xs" variant="ghost">行外宿主操作</Button></div></div>,
 };

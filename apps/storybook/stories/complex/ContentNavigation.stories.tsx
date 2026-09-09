@@ -20,8 +20,8 @@ const sections: ContentNavigationSection[] = [
   { id: 'boundary', title: '宿主集成边界', content: <Paragraphs label="宿主边界" /> },
 ];
 
-const meta = {
-  title: '复杂/ContentNavigation 文档导航',
+const meta = { id: "复杂-contentnavigation-文档导航",
+  title: "复杂/ContentNavigation 文档导航",
   component: ContentNavigation,
   args: { sections },
   parameters: { docs: { description: { component: 'ContentNavigation 组合 TreeView 与 WorkspacePreset，使目录选择、正文滚动和受控路由值保持一致。正文节点由宿主提供，组件不绑定 Markdown 解析器或路由库。' } } },
@@ -47,19 +47,19 @@ function NavigationVisibilityExample() {
   return <ContentNavigation className="h-[var(--rui-container-lg)]" sections={sections} layoutMode="wide" layoutView={view} onLayoutViewChange={setView} title="专注阅读" />;
 }
 
-export const Default: Story = { name: '默认文档工作面', render: () => <ControlledExample /> };
-export const Nested: Story = { name: '嵌套目录', render: () => <ControlledExample initial="keyboard" /> };
-export const ControlledRoute: Story = { name: '受控路由定位', render: () => <ControlledExample /> };
-export const ScrollSynchronization: Story = { name: '正文滚动同步目录', render: () => <ControlledExample /> };
-export const LongTitle: Story = { name: '长标题与截断', render: () => <ControlledExample source={[...sections, { id: 'long', title: '这是一个非常长的章节标题，用于验证紧凑导航列中的截断与正文工作面中的自然换行行为', description: '完整标题保留在可访问名称与 title 中', content: <Paragraphs label="长标题" /> }]} /> };
-export const EmptySection: Story = { name: '空章节', render: () => <ControlledExample source={[...sections.slice(0, 1), { id: 'empty', title: '暂未编写的章节' }]} initial="empty" /> };
-export const EmptyDocument: Story = { name: '空文档', render: () => <ContentNavigation className="h-80" sections={[]} title="空白指南" /> };
-export const DisabledSection: Story = { name: '禁用目录项', render: () => <ControlledExample source={[sections[0]!, { ...sections[1]!, disabled: true }]} /> };
-export const NarrowLayout: Story = { name: '窄屏目录与正文切换', render: () => <div className="max-w-[var(--rui-container-sm)]"><ControlledExample mode="narrow" /></div> };
-export const NavigationHidden: Story = { name: '宽布局隐藏目录', render: () => <NavigationVisibilityExample /> };
+export const Default: Story = { name: "默认文档工作面", render: () => <ControlledExample /> };
+export const Nested: Story = { name: "嵌套目录", render: () => <ControlledExample initial="keyboard" /> };
+export const ControlledRoute: Story = { name: "受控路由定位", render: () => <ControlledExample /> };
+export const ScrollSynchronization: Story = { name: "正文滚动同步目录", render: () => <ControlledExample /> };
+export const LongTitle: Story = { name: "长标题与截断", render: () => <ControlledExample source={[...sections, { id: 'long', title: '这是一个非常长的章节标题，用于验证紧凑导航列中的截断与正文工作面中的自然换行行为', description: '完整标题保留在可访问名称与 title 中', content: <Paragraphs label="长标题" /> }]} /> };
+export const EmptySection: Story = { name: "空章节", render: () => <ControlledExample source={[...sections.slice(0, 1), { id: 'empty', title: '暂未编写的章节' }]} initial="empty" /> };
+export const EmptyDocument: Story = { name: "空文档", render: () => <ContentNavigation className="h-80" sections={[]} title="空白指南" /> };
+export const DisabledSection: Story = { name: "禁用目录项", render: () => <ControlledExample source={[sections[0]!, { ...sections[1]!, disabled: true }]} /> };
+export const NarrowLayout: Story = { name: "窄屏目录与正文切换", render: () => <div className="max-w-[var(--rui-container-sm)]"><ControlledExample mode="narrow" /></div> };
+export const NavigationHidden: Story = { name: "宽布局隐藏目录", render: () => <NavigationVisibilityExample /> };
 
 export const Interactive: Story = {
-  name: '交互场景：键盘选择与滚动联动',
+  name: "交互 · 键盘选择与滚动联动",
   render: () => <ControlledExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -93,7 +93,7 @@ type PlaygroundArgs = {
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { layoutMode: 'auto', current: 'overview', navigationOpen: true, activePanel: 'workspace', scrollBehavior: 'auto', title: 'Reito UI 指南', navigationTitle: '目录', contentTitle: '组件设计', emptyMessage: '没有可显示的章节', emptySectionMessage: '此章节暂无内容', longTitle: false, emptyDocument: false, emptySection: false, disabledSection: false },
   argTypes: {
     layoutMode: choiceControl(['auto', 'wide', 'narrow']),

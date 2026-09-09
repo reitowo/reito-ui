@@ -8,11 +8,11 @@ import { createDataTableViewSnapshot, DataTable, matchesDataTableColumnFilter, s
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
 import { DataTableDemo, demoColumns, demoRecords, type DemoRecord } from '../../../../packages/ui/src/complex/catalog.js';
 
-const meta = { title: '复杂/DataTable 数据表格', component: DataTableDemo, parameters: { docs: { description: { component: 'TanStack Table v8：本地与 manual 远程模式共享受控查询状态；表头筛选菜单覆盖文本、枚举、数值与日期，列间按 AND 组合并可序列化给服务端。' } } } } satisfies Meta<typeof DataTableDemo>;
+const meta = { id: "复杂-datatable-数据表格", title: "复杂/DataTable 数据表格", component: DataTableDemo, parameters: { docs: { description: { component: 'TanStack Table v8：本地与 manual 远程模式共享受控查询状态；表头筛选菜单覆盖文本、枚举、数值与日期，列间按 AND 组合并可序列化给服务端。' } } } } satisfies Meta<typeof DataTableDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Interactive: Story = {
-  name: '交互场景：排序、跨页选中与筛选',
+  name: "交互 · 排序、跨页选中与筛选",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: '负责人' }));
@@ -30,12 +30,12 @@ export const Interactive: Story = {
     expect(canvas.getByRole('checkbox', { name: '选择记录 TASK-02' })).toBeChecked();
   },
 };
-export const Empty: Story = { name: '空数据', render: () => <DataTable data={[]} columns={demoColumns} getRowId={row => row.id} caption="本地任务" /> };
-export const Loading: Story = { name: '加载中', render: () => <DataTable data={[]} columns={demoColumns} getRowId={row => row.id} caption="本地任务" loading /> };
-export const Error: Story = { name: '错误与已缓存记录', render: () => <DataTable data={demoRecords} columns={demoColumns} getRowId={row => row.id} caption="本地任务" error="本地数据校验失败，以下保留上次有效记录。" /> };
+export const Empty: Story = { name: "空数据", render: () => <DataTable data={[]} columns={demoColumns} getRowId={row => row.id} caption="本地任务" /> };
+export const Loading: Story = { name: "状态 · 加载中", render: () => <DataTable data={[]} columns={demoColumns} getRowId={row => row.id} caption="本地任务" loading /> };
+export const Error: Story = { name: "错误与已缓存记录", render: () => <DataTable data={demoRecords} columns={demoColumns} getRowId={row => row.id} caption="本地任务" error="本地数据校验失败，以下保留上次有效记录。" /> };
 
-export const Default: Story = { name: '默认可选表格', render: () => <DataTable data={demoRecords} columns={demoColumns} getRowId={row => row.id} caption="本地任务" /> };
-export const WithoutSelection: Story = { name: '隐藏行选择', render: () => <DataTable data={demoRecords} columns={demoColumns} getRowId={row => row.id} caption="本地任务" selectable={false} /> };
+export const Default: Story = { name: "默认可选表格", render: () => <DataTable data={demoRecords} columns={demoColumns} getRowId={row => row.id} caption="本地任务" /> };
+export const WithoutSelection: Story = { name: "隐藏行选择", render: () => <DataTable data={demoRecords} columns={demoColumns} getRowId={row => row.id} caption="本地任务" selectable={false} /> };
 
 type FilterRecord = DemoRecord & { score: number };
 const remoteRecords: FilterRecord[] = Array.from({ length: 23 }, (_, index) => ({ id: `REMOTE-${String(index + 1).padStart(2, '0')}`, name: `远程任务 ${index + 1}`, owner: ['Reito', 'Lin', 'Ming'][index % 3], status: index % 2 ? '进行中' : '待开始', updated: `2026-09-${String(index + 1).padStart(2, '0')}`, score: (index * 17 + 12) % 101 }));
@@ -58,7 +58,7 @@ const managedColumns: ColumnDef<FilterRecord>[] = [
   { header: '任务信息', columns: [{ accessorKey: 'name', header: '任务', size: 180, minSize: 120 }, { accessorKey: 'owner', header: '负责人', size: 120 }, { accessorKey: 'status', header: '状态', size: 110 }] },
   { header: '任务指标', columns: [{ accessorKey: 'score', header: '评分', size: 90, minSize: 70 }, { accessorKey: 'updated', header: '更新日期', size: 140 }] },
 ];
-export const RemoteControlled: Story = { name: '受控远程分页', render: function Render() {
+export const RemoteControlled: Story = { name: "受控远程分页", render: function Render() {
   const [sorting, setSorting] = useState<SortingState>([]); const [globalFilter, setGlobalFilter] = useState(''); const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 }); const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const filtered = useMemo(() => remoteRecords.filter(row => `${row.name} ${row.owner} ${row.status}`.toLowerCase().includes(globalFilter.toLowerCase())), [globalFilter]);
   const sorted = useMemo(() => { const sort = sorting[0]; if (!sort) return filtered; return [...filtered].sort((a, b) => String(a[sort.id as keyof DemoRecord]).localeCompare(String(b[sort.id as keyof DemoRecord])) * (sort.desc ? -1 : 1)); }, [filtered, sorting]);
@@ -66,9 +66,9 @@ export const RemoteControlled: Story = { name: '受控远程分页', render: fun
   return <div className="grid gap-[var(--rui-content-gap-sm)]"><DataTable manual data={page} rowCount={filtered.length} columns={demoColumns} getRowId={row => row.id} caption="远程任务" sorting={sorting} onSortingChange={setSorting} globalFilter={globalFilter} onGlobalFilterChange={setGlobalFilter} pagination={pagination} onPaginationChange={setPagination} rowSelection={rowSelection} onRowSelectionChange={setRowSelection} /><output className="text-xs text-muted-foreground">query={globalFilter || '∅'} · page={pagination.pageIndex + 1} · selected={Object.values(rowSelection).filter(Boolean).length}</output></div>;
 } };
 
-export const ColumnFilters: Story = { name: '文本、枚举、数值与日期列筛选', render: () => <DataTable data={remoteRecords} columns={filterColumns} filterDefinitions={filterDefinitions} getRowId={row => row.id} caption="可筛选任务" pageSize={10} /> };
+export const ColumnFilters: Story = { name: "文本、枚举、数值与日期列筛选", render: () => <DataTable data={remoteRecords} columns={filterColumns} filterDefinitions={filterDefinitions} getRowId={row => row.id} caption="可筛选任务" pageSize={10} /> };
 
-export const RemoteColumnFilters: Story = { name: '远程列筛选与查询序列化', render: function Render() {
+export const RemoteColumnFilters: Story = { name: "远程列筛选与查询序列化", render: function Render() {
   const [filters, setFilters] = useState<DataTableColumnFiltersState>([{ id: 'owner', value: { kind: 'select', operator: 'in', values: ['Reito'] } }]);
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 });
   const filtered = useMemo(() => remoteRecords.filter(row => filters.every(filter => matchesDataTableColumnFilter(row[filter.id as keyof FilterRecord], filter.value))), [filters]);
@@ -76,7 +76,7 @@ export const RemoteColumnFilters: Story = { name: '远程列筛选与查询序�
   return <div className="grid gap-[var(--rui-content-gap-sm)]"><DataTable manual data={page} rowCount={filtered.length} columns={filterColumns} filterDefinitions={filterDefinitions} getRowId={row => row.id} caption="远程筛选任务" columnFilters={filters} onColumnFiltersChange={setFilters} pagination={pagination} onPaginationChange={setPagination} /><output aria-label="远程筛选查询" className="break-all font-mono text-xs text-muted-foreground">{serializeDataTableColumnFilters(filters)}</output></div>;
 } };
 
-export const ColumnManagement: Story = { name: '列显隐、排序、宽度与固定', render: () => <div className="max-w-2xl"><DataTable data={remoteRecords} columns={managedColumns} getRowId={row => row.id} caption="可管理任务" manageColumns defaultColumnVisibility={{ status: false }} defaultColumnPinning={{ left: ['name'], right: ['updated'] }} columnLabels={{ name: '任务', owner: '负责人', status: '状态', score: '评分', updated: '更新日期' }} pageSize={10} /></div> };
+export const ColumnManagement: Story = { name: "列显隐、排序、宽度与固定", render: () => <div className="max-w-2xl"><DataTable data={remoteRecords} columns={managedColumns} getRowId={row => row.id} caption="可管理任务" manageColumns defaultColumnVisibility={{ status: false }} defaultColumnPinning={{ left: ['name'], right: ['updated'] }} columnLabels={{ name: '任务', owner: '负责人', status: '状态', score: '评分', updated: '更新日期' }} pageSize={10} /></div> };
 
 type TaskNode = DemoRecord & { detail?: string; children?: TaskNode[] };
 const nestedRecords: TaskNode[] = [
@@ -89,7 +89,7 @@ const nestedRecords: TaskNode[] = [
   ] },
 ];
 
-export const RowExpansion: Story = { name: '层级子行与详情展开', render: () => <DataTable data={nestedRecords} columns={demoColumns as ColumnDef<TaskNode>[]} getRowId={row => row.id} getSubRows={row => row.children} getRowCanExpand={row => Boolean(row.original.children?.length || row.original.detail)} defaultExpanded={{ 'EPIC-01': true }} renderExpandedRow={row => row.original.detail ? <div className="grid gap-1 text-sm"><span className="font-medium">任务说明</span><span className="text-muted-foreground">{row.original.detail}</span></div> : null} caption="层级任务" pageSize={10} /> };
+export const RowExpansion: Story = { name: "层级子行与详情展开", render: () => <DataTable data={nestedRecords} columns={demoColumns as ColumnDef<TaskNode>[]} getRowId={row => row.id} getSubRows={row => row.children} getRowCanExpand={row => Boolean(row.original.children?.length || row.original.detail)} defaultExpanded={{ 'EPIC-01': true }} renderExpandedRow={row => row.original.detail ? <div className="grid gap-1 text-sm"><span className="font-medium">任务说明</span><span className="text-muted-foreground">{row.original.detail}</span></div> : null} caption="层级任务" pageSize={10} /> };
 
 const groupedColumns: ColumnDef<FilterRecord>[] = [
   { accessorKey: 'name', header: '任务', cell: info => <span className="font-medium">{String(info.getValue())}</span> },
@@ -98,7 +98,7 @@ const groupedColumns: ColumnDef<FilterRecord>[] = [
   { accessorKey: 'score', header: '评分', aggregationFn: 'mean', aggregatedCell: info => `平均 ${Math.round(Number(info.getValue()))}` },
   { accessorKey: 'updated', header: '更新日期' },
 ];
-export const RowGrouping: Story = { name: '数据行分组与聚合', render: () => <DataTable data={remoteRecords.slice(0, 12)} columns={groupedColumns} getRowId={row => row.id} caption="分组任务" groupingDefinitions={[{ id: 'owner', label: '负责人' }, { id: 'status', label: '状态' }]} defaultGrouping={['owner']} defaultExpanded renderGroupHeader={row => <span>{String(row.groupingValue)} <span className="font-normal text-muted-foreground">· {row.getLeafRows().length} 项</span></span>} renderGroupSummary={row => `分组汇总：${row.getLeafRows().length} 项任务`} pageSize={20} /> };
+export const RowGrouping: Story = { name: "数据行分组与聚合", render: () => <DataTable data={remoteRecords.slice(0, 12)} columns={groupedColumns} getRowId={row => row.id} caption="分组任务" groupingDefinitions={[{ id: 'owner', label: '负责人' }, { id: 'status', label: '状态' }]} defaultGrouping={['owner']} defaultExpanded renderGroupHeader={row => <span>{String(row.groupingValue)} <span className="font-normal text-muted-foreground">· {row.getLeafRows().length} 项</span></span>} renderGroupSummary={row => `分组汇总：${row.getLeafRows().length} 项任务`} pageSize={20} /> };
 
 const editableColumns: DataTableEditableColumn<DemoRecord>[] = [
   { id: 'name', label: '任务', required: true, placeholder: '任务名称', validate: value => String(value).trim().length < 3 ? '任务名称至少需要 3 个字符' : undefined },
@@ -121,10 +121,10 @@ function EditableDataTable({ mode, failFirst = false, controlled = false }: { mo
   return <div className="grid gap-[var(--rui-content-gap-sm)]"><DataTable data={records} columns={demoColumns} getRowId={row => row.id} caption={controlled ? '受控编辑任务' : mode === 'row' ? failFirst ? '失败重试任务' : '行编辑任务' : '单元格编辑任务'} editMode={mode} editableColumns={editableColumns} editingState={controlled ? editing : undefined} onEditingStateChange={controlled ? setEditing : undefined} onEditCommit={save} pageSize={10} /><output className="text-xs text-muted-foreground">{result}{controlled && ` · draft=${editing?.values.name ?? '∅'}`}</output></div>;
 }
 
-export const RowEditing: Story = { name: '行编辑与宿主更新', render: () => <EditableDataTable mode="row" /> };
-export const CellEditing: Story = { name: '单元格编辑', render: () => <EditableDataTable mode="cell" /> };
-export const EditingFailure: Story = { name: '异步失败、草稿保留与重试', render: () => <EditableDataTable mode="row" failFirst /> };
-export const ControlledEditing: Story = { name: '受控编辑草稿', render: () => <EditableDataTable mode="row" controlled /> };
+export const RowEditing: Story = { name: "行编辑与宿主更新", render: () => <EditableDataTable mode="row" /> };
+export const CellEditing: Story = { name: "单元格编辑", render: () => <EditableDataTable mode="cell" /> };
+export const EditingFailure: Story = { name: "异步失败、草稿保留与重试", render: () => <EditableDataTable mode="row" failFirst /> };
+export const ControlledEditing: Story = { name: "受控编辑草稿", render: () => <EditableDataTable mode="row" controlled /> };
 
 function ExportDataTable({ manual = false }: { manual?: boolean }) {
   const [result, setResult] = useState('尚未请求导出');
@@ -133,13 +133,13 @@ function ExportDataTable({ manual = false }: { manual?: boolean }) {
   return <div className="grid gap-[var(--rui-content-gap-sm)]"><DataTable manual={manual} rowCount={manual ? remoteRecords.length : undefined} data={rows} columns={filterColumns} filterDefinitions={filterDefinitions} getRowId={row => row.id} caption={manual ? '远程导出任务' : '本地导出任务'} pageSize={5} onExport={exported} /><output className="text-xs text-muted-foreground">{result}</output></div>;
 }
 
-export const ExportScopes: Story = { name: '本地导出范围与格式', render: () => <ExportDataTable /> };
-export const RemoteExport: Story = { name: '远程导出委托宿主', render: () => <ExportDataTable manual /> };
+export const ExportScopes: Story = { name: "本地导出范围与格式", render: () => <ExportDataTable /> };
+export const RemoteExport: Story = { name: "远程导出委托宿主", render: () => <ExportDataTable manual /> };
 
 const reviewView = createDataTableViewSnapshot('tasks-v2', { sorting: [{ id: 'updated', desc: true }], globalFilter: '远程任务 1', columnFilters: [], columnVisibility: { score: false }, columnOrder: ['name', 'owner', 'status', 'score', 'updated'], columnSizing: {}, columnPinning: { left: ['name'], right: [] }, grouping: [], pageSize: 10 });
 const staleView = createDataTableViewSnapshot('tasks-v1', { ...reviewView.state, globalFilter: '' });
 
-export const SavedViews: Story = { name: '视图保存、恢复与失效', render: function Render() {
+export const SavedViews: Story = { name: "视图保存、恢复与失效", render: function Render() {
   const [views, setViews] = useState<DataTableSavedView[]>([{ id: 'review', label: '最近待审', snapshot: reviewView }, { id: 'stale', label: '旧版布局', snapshot: staleView }]);
   const [active, setActive] = useState<string>();
   const nextId = useRef(1);
@@ -148,28 +148,28 @@ export const SavedViews: Story = { name: '视图保存、恢复与失效', rende
 
 function virtualRecords(offset: number, count: number): FilterRecord[] { return Array.from({ length: count }, (_, index) => { const value = offset + index + 1; return { id: `VIRTUAL-${String(value).padStart(6, '0')}`, name: `虚拟任务 ${value}`, owner: ['Reito', 'Lin', 'Ming'][value % 3], status: value % 3 === 0 ? '已完成' : value % 2 ? '进行中' : '待开始', score: value % 101, updated: `2026-09-${String(value % 28 + 1).padStart(2, '0')}` }; }); }
 
-export const VirtualRows: Story = { name: '五万行窗口与滚动定位', render: function Render() {
+export const VirtualRows: Story = { name: "五万行窗口与滚动定位", render: function Render() {
   const rows = useMemo(() => virtualRecords(0, 50000), []);
   const [target, setTarget] = useState<string>();
   const [range, setRange] = useState<DataTableVirtualRange>();
   return <div className="grid gap-[var(--rui-content-gap-sm)]"><div className="flex gap-[var(--rui-content-gap-sm)]"><Button size="sm" onClick={() => setTarget('VIRTUAL-000001')}>回到第 1 行</Button><Button size="sm" onClick={() => setTarget('VIRTUAL-040001')}>定位第 40001 行</Button><span className="text-xs text-muted-foreground">DOM 仅保留可见窗口</span></div><DataTable data={rows} columns={managedColumns} getRowId={row => row.id} caption="五万行虚拟任务" selectable pageSize={50000} defaultColumnPinning={{ left: ['name'], right: ['updated'] }} columnLabels={{ name: '任务', owner: '负责人', status: '状态', score: '评分', updated: '更新日期' }} virtualRows={{ viewportHeight: 360, overscan: 6, scrollToRowId: target, onRangeChange: next => setRange(current => current?.startIndex === next.startIndex && current.endIndex === next.endIndex ? current : next) }} /><output className="text-xs text-muted-foreground">range={range ? `${range.startIndex}-${range.endIndex}` : '测量中'} · visible={range?.startRowId ?? '—'}…{range?.endRowId ?? '—'}</output></div>;
 } };
 
-export const VirtualRemotePage: Story = { name: '远程分页与加载边界', render: function Render() {
+export const VirtualRemotePage: Story = { name: "远程分页与加载边界", render: function Render() {
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 1000 });
   const rows = useMemo(() => virtualRecords(pagination.pageIndex * pagination.pageSize, pagination.pageSize), [pagination]);
   const [boundary, setBoundary] = useState('尚未到达页面末端');
   return <div className="grid gap-[var(--rui-content-gap-sm)]"><DataTable manual data={rows} rowCount={100000} columns={filterColumns} getRowId={row => row.id} caption="远程虚拟任务" pagination={pagination} onPaginationChange={setPagination} virtualRows={{ viewportHeight: 320, overscan: 5, onRangeChange: range => { if (range.atEnd) setBoundary(current => current === `第 ${pagination.pageIndex + 1} 页末端` ? current : `第 ${pagination.pageIndex + 1} 页末端`); } }} /><output className="text-xs text-muted-foreground">{boundary} · 宿主按 pageIndex 请求下一页</output></div>;
 } };
 
-export const VirtualPinnedExpansion: Story = { name: '固定列、选择与展开兼容', render: function Render() {
+export const VirtualPinnedExpansion: Story = { name: "固定列、选择与展开兼容", render: function Render() {
   const rows = useMemo(() => virtualRecords(0, 300), []);
   return <DataTable data={rows} columns={managedColumns} getRowId={row => row.id} caption="可展开虚拟任务" selectable pageSize={300} defaultColumnPinning={{ left: ['name'], right: ['updated'] }} getRowCanExpand={() => true} renderExpandedRow={row => <div className="text-sm text-muted-foreground">{row.original.name} 的虚拟化详情；展开行作为独立测量项。</div>} virtualRows={{ viewportHeight: 360, overscan: 6 }} />;
 } };
 
 type PlaygroundArgs = { manual: boolean; rowCount: number; pageIndex: number; query: string; columnFiltersEnabled: boolean; ownerFilter: string; manageColumns: boolean; resizableColumns: boolean; groupByOwner: boolean; expandableRows: boolean; editing: 'off' | DataTableEditMode; saveBehavior: 'success' | 'error'; toolbarActions: boolean; virtualized: boolean; loading: boolean; selectable: boolean; pageSize: number; caption: string; searchPlaceholder: string; error: string; empty: boolean };
 export const Playground: StoryObj<PlaygroundArgs> = {
- name: '参数调试', args: { manual: false, rowCount: 23, pageIndex: 0, query: '', columnFiltersEnabled: true, ownerFilter: '', manageColumns: false, resizableColumns: false, groupByOwner: false, expandableRows: false, editing: 'off', saveBehavior: 'success', toolbarActions: false, virtualized: false, loading: false, selectable: true, pageSize: 5, caption: '本地任务', searchPlaceholder: '筛选所有列…', error: '', empty: false },
+ name: "参数调试", args: { manual: false, rowCount: 23, pageIndex: 0, query: '', columnFiltersEnabled: true, ownerFilter: '', manageColumns: false, resizableColumns: false, groupByOwner: false, expandableRows: false, editing: 'off', saveBehavior: 'success', toolbarActions: false, virtualized: false, loading: false, selectable: true, pageSize: 5, caption: '本地任务', searchPlaceholder: '筛选所有列…', error: '', empty: false },
  argTypes: { manual: booleanControl, rowCount: { control: { type: 'number', min: 0 } }, pageIndex: { control: { type: 'number', min: 0 } }, query: textControl, columnFiltersEnabled: booleanControl, ownerFilter: choiceControl(['', 'Reito', 'Lin', 'Ming']), manageColumns: booleanControl, resizableColumns: booleanControl, groupByOwner: booleanControl, expandableRows: booleanControl, editing: choiceControl(['off', 'cell', 'row']), saveBehavior: choiceControl(['success', 'error']), toolbarActions: booleanControl, virtualized: booleanControl, loading: booleanControl, selectable: booleanControl, pageSize: choiceControl([3, 5, 10, 20]), caption: textControl, searchPlaceholder: textControl, error: textControl, empty: recipeControl(booleanControl, '传入空 data；列定义仍由调用方提供。') },
  parameters: { controls: { include: ['manual', 'rowCount', 'pageIndex', 'query', 'columnFiltersEnabled', 'ownerFilter', 'manageColumns', 'resizableColumns', 'groupByOwner', 'expandableRows', 'editing', 'saveBehavior', 'toolbarActions', 'virtualized', 'loading', 'selectable', 'pageSize', 'caption', 'searchPlaceholder', 'error', 'empty'] } },
  render: function Render(args) { const [, update] = useArgs(); const [localRecords, setLocalRecords] = useState<DemoRecord[]>(demoRecords); const [remoteDraft, setRemoteDraft] = useState<DemoRecord[]>(remoteRecords); const [toolbarResult, setToolbarResult] = useState(''); const records = args.manual ? remoteDraft.slice(args.pageIndex * args.pageSize, (args.pageIndex + 1) * args.pageSize) : localRecords; const filters: DataTableColumnFiltersState = args.ownerFilter ? [{ id: 'owner', value: { kind: 'select', operator: 'in', values: [args.ownerFilter] } }] : []; const groupingProps = args.groupByOwner ? { groupingDefinitions: ownerGroupingDefinitions, grouping: ownerGrouping, expanded: true as const } : {}; const expansionProps = args.expandableRows ? { expanded: true as const, getRowCanExpand: () => true, renderExpandedRow: (row: { original: DemoRecord }) => <span className="text-sm text-muted-foreground">{row.original.name} 的本地详情预览。</span> } : {}; const toolbarProps = args.toolbarActions ? { onExport: (request: DataTableExportRequest<DemoRecord>) => setToolbarResult(`export=${request.scope}; host=${request.requiresHostData}`), viewVersion: 'playground-v1', onSaveView: ({ label }: { label: string }) => setToolbarResult(`view=${label}`) } : {}; async function save(change: DataTableEditCommit<DemoRecord>) { await new Promise(resolve => setTimeout(resolve, 120)); if (args.saveBehavior === 'error') throw new globalThis.Error('本地保存模拟失败，草稿已保留。'); const apply = (items: DemoRecord[]) => items.map(record => record.id === change.rowId ? { ...record, ...change.changedValues } as DemoRecord : record); if (args.manual) setRemoteDraft(apply); else setLocalRecords(apply); } return <div className="grid gap-[var(--rui-content-gap-sm)]"><DataTable data={args.empty ? [] : records} columns={demoColumns} getRowId={row => row.id} manual={args.manual} rowCount={args.manual ? args.rowCount : undefined} globalFilter={args.query} onGlobalFilterChange={query => update({ query })} filterDefinitions={args.columnFiltersEnabled ? [filterDefinitions[1]] : []} columnFilters={filters} onColumnFiltersChange={next => update({ ownerFilter: next[0]?.value.kind === 'select' ? next[0].value.values[0] ?? '' : '' })} manageColumns={args.manageColumns} resizableColumns={args.resizableColumns} columnLabels={{ name: '任务', owner: '负责人', status: '状态', updated: '更新日期' }} {...groupingProps} {...expansionProps} {...toolbarProps} editMode={args.editing === 'off' ? undefined : args.editing} editableColumns={args.editing === 'off' ? [] : editableColumns} onEditCommit={save} virtualRows={args.virtualized ? { viewportHeight: 320, overscan: 4 } : undefined} pagination={{ pageIndex: args.pageIndex, pageSize: args.pageSize }} onPaginationChange={pagination => update({ pageIndex: pagination.pageIndex, pageSize: pagination.pageSize })} loading={args.loading} selectable={args.selectable} caption={args.caption} searchPlaceholder={args.searchPlaceholder} error={args.error} />{toolbarResult && <output className="text-xs text-muted-foreground">{toolbarResult}</output>}</div>; },

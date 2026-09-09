@@ -1,6 +1,7 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import ts from 'typescript';
 import { toId } from 'storybook/internal/csf';
+import './check-storybook-names.mjs';
 
 const parse = (file, text) => ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 function unwrap(node) { while(node && (ts.isSatisfiesExpression(node) || ts.isAsExpression(node) || ts.isParenthesizedExpression(node))) node=node.expression; return node; }
@@ -19,7 +20,8 @@ for(const layer of ['basic','complex','ai']) {
     const isComparison = name => /总览|对比/.test(string(property(variable(source, name), 'name')) || '');
     const primary=['Playground','Default','Guidelines','Overview','Interactive'].find(name=>exports.includes(name) && !isComparison(name)) || exports.find(name=>!isComparison(name)) || exports[0];
     if(!primary)throw new Error(`No stories in ${path}`);
-    stories.push({layer,title,id:toId(title,primary),file:path,storyCount:exports.length});
+    const stableId=string(property(variable(source,'meta'),'id')) || title;
+    stories.push({layer,title,id:toId(stableId,primary),file:path,storyCount:exports.length});
   }
 }
 const entries=[];

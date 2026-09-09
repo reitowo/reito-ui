@@ -26,8 +26,8 @@ function makeLogs(count: number, start = 0): LogEntry[] {
 const largeLogs = makeLogs(10_000);
 const makeStreamLogs = (count: number, start = 0) => makeLogs(count, start).map((entry, offset) => ({ ...entry, message: `流式任务 ${start + offset} 已写入本地日志。` }));
 
-const meta = {
-  title: '复杂/LogViewer 日志查看', component: LogViewerDemo,
+const meta = { id: "复杂-logviewer-日志查看",
+  title: "复杂/LogViewer 日志查看", component: LogViewerDemo,
   parameters: { docs: { description: { component: '宿主持有日志和加载过程。组件提供动态虚拟窗口、稳定追加/前插锚点、等级与文本查询、暂停跟随、可配置视图，以及显式加载边界；它不读取终端或持久化偏好。' } } },
 } satisfies Meta<typeof LogViewerDemo>;
 export default meta;
@@ -42,7 +42,7 @@ type PlaygroundArgs = Pick<ComponentProps<typeof LogViewer>, 'query' | 'levels' 
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: {
     query: '', levels: ['debug', 'info', 'warning', 'error'], follow: true, loading: false, disabled: false,
     label: '日志', error: '', virtualized: true, overscan: 6, totalCount: 25, hasOlder: false, loadingOlder: false, loadOlderError: '', empty: false,
@@ -69,7 +69,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Overview: Story = { name: '总览', render: () => <LogViewerDemo /> };
+export const Overview: Story = { name: "总览对比", render: () => <LogViewerDemo /> };
 
 function InteractiveDemo() {
   const [entries, setEntries] = useState(demoLogEntries);
@@ -81,7 +81,7 @@ function InteractiveDemo() {
 }
 
 export const Interactive: Story = {
-  name: '交互场景：查询、级别、跟随与清除', render: () => <InteractiveDemo />,
+  name: "交互 · 查询、级别、跟随与清除", render: () => <InteractiveDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const search = canvas.getByRole('textbox', { name: '搜索日志' });
@@ -116,19 +116,19 @@ function OlderLogsDemo({ fail = false }: { fail?: boolean }) {
     onLoadOlder={() => setStart(current => Math.max(0, current - 20))} defaultFollow={false} viewportClassName="h-52" />;
 }
 
-export const VirtualLarge: Story = { name: '一万条动态虚拟日志', render: () => <LogViewer entries={largeLogs} viewportClassName="h-72" /> };
-export const AppendFollowing: Story = { name: '跟随时增量追加', render: () => <StreamDemo /> };
-export const AppendPaused: Story = { name: '暂停时增量追加', render: () => <StreamDemo paused /> };
-export const LoadOlder: Story = { name: '前插加载更早日志', render: () => <OlderLogsDemo /> };
-export const LoadOlderPending: Story = { name: '正在加载更早日志', render: () => <LogViewer entries={makeLogs(40, 160)} totalCount={200} hasOlder loadingOlder onLoadOlder={() => undefined} defaultFollow={false} /> };
-export const LoadOlderError: Story = { name: '更早日志失败与重试', render: () => <OlderLogsDemo fail /> };
-export const LongWrapped: Story = { name: '动态长行换行', render: () => <LogViewer entries={makeLogs(80)} defaultFollow={false} viewportClassName="h-64" /> };
-export const LongUnwrapped: Story = { name: '长行横向滚动', render: () => <LogViewer entries={makeLogs(80)} defaultFollow={false} defaultViewPreferences={{ wrapLines: false }} viewportClassName="h-64" /> };
-export const MinimalView: Story = { name: '精简视图偏好', render: () => <LogViewer entries={demoLogEntries} defaultViewPreferences={{ showTimestamp: false, showLevel: false, showSource: false }} /> };
-export const Filtered: Story = { name: '等级与来源查询', render: () => <LogViewer entries={makeLogs(180)} levels={['warning', 'error']} query="sync/service" defaultFollow={false} /> };
-export const InitialLoading: Story = { name: '首次加载', render: () => <LogViewer entries={[]} loading /> };
-export const ErrorWithCache: Story = { name: '错误与已缓存日志', render: () => <LogViewer entries={demoLogEntries} error="日志来源连接失败，保留上次记录。" /> };
-export const Empty: Story = { name: '空日志', render: () => <LogViewer entries={[]} /> };
-export const Disabled: Story = { name: '禁用操作', render: () => <LogViewer entries={demoLogEntries} disabled onClear={() => undefined} /> };
-export const NonVirtual: Story = { name: '小集合非虚拟模式', render: () => <LogViewer entries={demoLogEntries.slice(0, 8)} virtualized={false} viewportClassName="h-52" /> };
-export const Narrow: Story = { name: '窄宽度', render: () => <div className="max-w-80"><LogViewer entries={makeLogs(80)} defaultFollow={false} defaultViewPreferences={{ wrapLines: true }} viewportClassName="h-60" /></div> };
+export const VirtualLarge: Story = { name: "一万条动态虚拟日志", render: () => <LogViewer entries={largeLogs} viewportClassName="h-72" /> };
+export const AppendFollowing: Story = { name: "跟随时增量追加", render: () => <StreamDemo /> };
+export const AppendPaused: Story = { name: "暂停时增量追加", render: () => <StreamDemo paused /> };
+export const LoadOlder: Story = { name: "前插加载更早日志", render: () => <OlderLogsDemo /> };
+export const LoadOlderPending: Story = { name: "正在加载更早日志", render: () => <LogViewer entries={makeLogs(40, 160)} totalCount={200} hasOlder loadingOlder onLoadOlder={() => undefined} defaultFollow={false} /> };
+export const LoadOlderError: Story = { name: "更早日志失败与重试", render: () => <OlderLogsDemo fail /> };
+export const LongWrapped: Story = { name: "动态长行换行", render: () => <LogViewer entries={makeLogs(80)} defaultFollow={false} viewportClassName="h-64" /> };
+export const LongUnwrapped: Story = { name: "长行横向滚动", render: () => <LogViewer entries={makeLogs(80)} defaultFollow={false} defaultViewPreferences={{ wrapLines: false }} viewportClassName="h-64" /> };
+export const MinimalView: Story = { name: "精简视图偏好", render: () => <LogViewer entries={demoLogEntries} defaultViewPreferences={{ showTimestamp: false, showLevel: false, showSource: false }} /> };
+export const Filtered: Story = { name: "等级与来源查询", render: () => <LogViewer entries={makeLogs(180)} levels={['warning', 'error']} query="sync/service" defaultFollow={false} /> };
+export const InitialLoading: Story = { name: "首次加载", render: () => <LogViewer entries={[]} loading /> };
+export const ErrorWithCache: Story = { name: "错误与已缓存日志", render: () => <LogViewer entries={demoLogEntries} error="日志来源连接失败，保留上次记录。" /> };
+export const Empty: Story = { name: "空日志", render: () => <LogViewer entries={[]} /> };
+export const Disabled: Story = { name: "禁用操作", render: () => <LogViewer entries={demoLogEntries} disabled onClear={() => undefined} /> };
+export const NonVirtual: Story = { name: "小集合非虚拟模式", render: () => <LogViewer entries={demoLogEntries.slice(0, 8)} virtualized={false} viewportClassName="h-52" /> };
+export const Narrow: Story = { name: "窄宽度", render: () => <div className="max-w-80"><LogViewer entries={makeLogs(80)} defaultFollow={false} defaultViewPreferences={{ wrapLines: true }} viewportClassName="h-60" /></div> };

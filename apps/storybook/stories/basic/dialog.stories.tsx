@@ -6,8 +6,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { DialogDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Dialog",
+const meta = { id: "基础-dialog",
+  title: "基础/Dialog 对话框",
   component: DialogDemo,
   tags: ["autodocs"],
   parameters: {
@@ -24,7 +24,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <DialogDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -87,15 +87,15 @@ function ProjectDialog({
   );
 }
 export const Default: Story = {
-  name: "状态 / 已打开",
+  name: "状态 · 已打开",
   render: () => <ProjectDialog />,
 };
 export const FooterClose: Story = {
-  name: "布局 / 页脚关闭操作",
+  name: "布局 · 页脚关闭操作",
   render: () => <ProjectDialog footerClose />,
 };
 export const Loading: Story = {
-  name: "状态 / 保存中",
+  name: "状态 · 保存中",
   render: () => <ProjectDialog busy />,
 };
 

@@ -7,11 +7,11 @@ import { DateRangePicker, type DateRangePickerProps } from '../../../../packages
 import { DateRangePickerDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { enUS, zhCN } from 'react-day-picker/locale';
 const fixedToday = new Date(2026, 8, 15);
-const meta = { title: '复杂/DateRangePicker 日期范围', component: DateRangePickerDemo, parameters: { docs: { description: { component: '受控本地日期范围。预设、日历和日期输入只修改草稿，“应用范围”才提交；支持 locale、自定义格式与上下界。' } } } } satisfies Meta<typeof DateRangePickerDemo>;
+const meta = { id: "复杂-daterangepicker-日期范围", title: "复杂/DateRangePicker 日期范围", component: DateRangePickerDemo, parameters: { docs: { description: { component: '受控本地日期范围。预设、日历和日期输入只修改草稿，“应用范围”才提交；支持 locale、自定义格式与上下界。' } } } } satisfies Meta<typeof DateRangePickerDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Interactive: Story = {
-  name: '交互场景：校验、应用与取消',
+  name: "交互 · 校验、应用与取消",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement); const body = within(canvasElement.ownerDocument.body);
     await userEvent.click(canvas.getByRole('button', { name: /^日期范围：/ }));
@@ -27,26 +27,26 @@ export const Interactive: Story = {
     expect(canvas.getByRole('status')).toHaveTextContent('已应用 9 月 10 日至 9 月 20 日');
   },
 };
-export const Disabled: Story = { name: '禁用', render: () => <DateRangePicker value={undefined} onValueChange={() => {}} disabled /> };
+export const Disabled: Story = { name: "状态 · 禁用", render: () => <DateRangePicker value={undefined} onValueChange={() => {}} disabled /> };
 
 function RangeExample({ initial, bounded = false }: { initial?: DateRangePickerProps['value']; bounded?: boolean }) {
   const [range, setRange] = useState(initial);
   return <DateRangePicker value={range} onValueChange={setRange} minDate={bounded ? new Date(2026, 8, 1) : undefined} maxDate={bounded ? new Date(2026, 8, 30) : undefined} />;
 }
-export const Default: Story = { name: '已选择日期范围', render: () => <RangeExample initial={{ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }} /> };
-export const Unselected: Story = { name: '未选择日期范围', render: () => <RangeExample /> };
-export const Bounded: Story = { name: '限制可选日期', render: () => <RangeExample initial={{ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }} bounded /> };
-export const PresetDraft: Story = { name: '常用范围草稿', render: function Render() { const [range, setRange] = useState<DateRangePickerProps['value']>({ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }); return <div className="grid gap-[var(--rui-content-gap-sm)]"><DateRangePicker value={range} onValueChange={setRange} today={fixedToday} /><output data-testid="preset-value" className="text-xs text-muted-foreground">{playgroundDateText(range?.from)} / {playgroundDateText(range?.to)}</output></div>; } };
-export const EnglishLocale: Story = { name: '英文 locale 与格式', render: () => <DateRangePicker label="Reporting period" value={{ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }} onValueChange={() => {}} locale={enUS} formatDate={(date, locale) => new Intl.DateTimeFormat(locale.code, { month: 'short', day: 'numeric', year: 'numeric' }).format(date)} today={fixedToday} clearLabel="Clear" cancelLabel="Cancel" applyLabel="Apply" /> };
-export const PresetBounds: Story = { name: '预设与上下界', render: () => <DateRangePicker value={{ from: new Date(2026, 8, 12), to: new Date(2026, 8, 15) }} onValueChange={() => {}} minDate={new Date(2026, 8, 10)} maxDate={new Date(2026, 8, 20)} today={fixedToday} /> };
-export const CustomPresets: Story = { name: '自定义预设', render: () => <DateRangePicker value={undefined} onValueChange={() => {}} today={fixedToday} presets={[{ id: 'release-window', label: '发布窗口', range: ({ today }) => ({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2), to: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2) }) }]} /> };
-export const WithoutPresets: Story = { name: '隐藏预设', render: () => <DateRangePicker value={undefined} onValueChange={() => {}} presets={false} today={fixedToday} /> };
+export const Default: Story = { name: "已选择日期范围", render: () => <RangeExample initial={{ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }} /> };
+export const Unselected: Story = { name: "未选择日期范围", render: () => <RangeExample /> };
+export const Bounded: Story = { name: "限制可选日期", render: () => <RangeExample initial={{ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }} bounded /> };
+export const PresetDraft: Story = { name: "常用范围草稿", render: function Render() { const [range, setRange] = useState<DateRangePickerProps['value']>({ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }); return <div className="grid gap-[var(--rui-content-gap-sm)]"><DateRangePicker value={range} onValueChange={setRange} today={fixedToday} /><output data-testid="preset-value" className="text-xs text-muted-foreground">{playgroundDateText(range?.from)} / {playgroundDateText(range?.to)}</output></div>; } };
+export const EnglishLocale: Story = { name: "英文 locale 与格式", render: () => <DateRangePicker label="Reporting period" value={{ from: new Date(2026, 8, 1), to: new Date(2026, 8, 7) }} onValueChange={() => {}} locale={enUS} formatDate={(date, locale) => new Intl.DateTimeFormat(locale.code, { month: 'short', day: 'numeric', year: 'numeric' }).format(date)} today={fixedToday} clearLabel="Clear" cancelLabel="Cancel" applyLabel="Apply" /> };
+export const PresetBounds: Story = { name: "预设与上下界", render: () => <DateRangePicker value={{ from: new Date(2026, 8, 12), to: new Date(2026, 8, 15) }} onValueChange={() => {}} minDate={new Date(2026, 8, 10)} maxDate={new Date(2026, 8, 20)} today={fixedToday} /> };
+export const CustomPresets: Story = { name: "自定义预设", render: () => <DateRangePicker value={undefined} onValueChange={() => {}} today={fixedToday} presets={[{ id: 'release-window', label: '发布窗口', range: ({ today }) => ({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2), to: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2) }) }]} /> };
+export const WithoutPresets: Story = { name: "隐藏预设", render: () => <DateRangePicker value={undefined} onValueChange={() => {}} presets={false} today={fixedToday} /> };
 
 type PlaygroundArgs = { from: string; to: string; label: string; disabled: boolean; bounded: boolean; showPresets: boolean; locale: 'zh-CN' | 'en-US'; dateStyle: 'numeric' | 'short' };
 function playgroundDate(value: string) { if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined; const [year, month, day] = value.split('-').map(Number); const date = new Date(year, month - 1, day); return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : undefined; }
 function playgroundDateText(value?: Date) { return value ? [value.getFullYear(), String(value.getMonth() + 1).padStart(2, '0'), String(value.getDate()).padStart(2, '0')].join('-') : ''; }
 export const Playground: StoryObj<PlaygroundArgs> = {
- name: '参数调试', args: { from: '2026-09-01', to: '2026-09-07', label: '日期范围', disabled: false, bounded: false, showPresets: true, locale: 'zh-CN', dateStyle: 'numeric' },
+ name: "参数调试", args: { from: '2026-09-01', to: '2026-09-07', label: '日期范围', disabled: false, bounded: false, showPresets: true, locale: 'zh-CN', dateStyle: 'numeric' },
  argTypes: { from: recipeControl(textControl, 'value.from，输入 YYYY-MM-DD；无效日期视为空值。'), to: recipeControl(textControl, 'value.to，输入 YYYY-MM-DD；无效日期视为空值。'), label: textControl, disabled: booleanControl, bounded: recipeControl(booleanControl, '提供 2026-09-01 至 2026-09-30 的 minDate/maxDate。'), showPresets: booleanControl, locale: { control: 'inline-radio', options: ['zh-CN', 'en-US'] }, dateStyle: { control: 'inline-radio', options: ['numeric', 'short'] } },
  parameters: { controls: { include: ['from', 'to', 'disabled', 'bounded', 'showPresets', 'locale', 'dateStyle', 'label'] } },
  render: function PlaygroundRender(args) { const [, updateArgs] = useArgs(); const from = playgroundDate(args.from); const to = playgroundDate(args.to); const activeLocale = args.locale === 'en-US' ? enUS : zhCN; return <DateRangePicker value={from ? { from, to } : undefined} onValueChange={value => updateArgs({ from: playgroundDateText(value?.from), to: playgroundDateText(value?.to) })} disabled={args.disabled} label={args.label} minDate={args.bounded ? new Date(2026, 8, 1) : undefined} maxDate={args.bounded ? new Date(2026, 8, 30) : undefined} presets={args.showPresets ? undefined : false} locale={activeLocale} today={fixedToday} formatDate={(date, locale) => new Intl.DateTimeFormat(locale.code, { year: 'numeric', month: args.dateStyle === 'short' ? 'short' : '2-digit', day: '2-digit' }).format(date)} />; },

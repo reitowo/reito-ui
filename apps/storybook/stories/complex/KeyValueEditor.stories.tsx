@@ -6,15 +6,15 @@ import { expect, userEvent, within } from 'storybook/test';
 import { KeyValueEditor, type KeyValueEntry, type KeyValueKind } from '../../../../packages/ui/src/complex/key-value-editor.js';
 import { KeyValueEditorDemo } from '../../../../packages/ui/src/complex/catalog.js';
 
-const meta = {
-  title: '复杂/KeyValueEditor 键值编辑', component: KeyValueEditorDemo,
+const meta = { id: "复杂-keyvalueeditor-键值编辑",
+  title: "复杂/KeyValueEditor 键值编辑", component: KeyValueEditorDemo,
   parameters: { docs: { description: { component: '受控数组保留稳定行 ID 和无效草稿。支持文本、数字、布尔、选项和日期值，嵌套路径、逐项禁用/只读、草稿通知、重复键校验，以及跨行校验、批量提交、取消/重置和异步错误定位。密码输入只提供视觉遮罩。' } } },
 } satisfies Meta<typeof KeyValueEditorDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Interactive: Story = {
-  name: '交互场景：增删、校验、遮罩与应用',
+  name: "交互 · 增删、校验、遮罩与应用",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     expect(canvas.getByLabelText('值 2（敏感）')).toHaveAttribute('type', 'password');
@@ -35,27 +35,27 @@ export const Interactive: Story = {
   },
 };
 export const Empty: Story = {
-  name: '从空配置开始',
+  name: "从空配置开始",
   render: function EmptyEditor() {
     const [value, setValue] = useState<KeyValueEntry[]>([]);
     return <KeyValueEditor value={value} onValueChange={setValue} />;
   },
 };
 export const Invalid: Story = {
-  name: '状态对比：重复键与必填错误',
+  name: "状态对比 · 重复键与必填错误",
   render: function InvalidEditor() {
     const [value, setValue] = useState<KeyValueEntry[]>([{ id: 'a', key: 'MODE', value: '' }, { id: 'b', key: 'MODE', value: 'local' }]);
     return <KeyValueEditor value={value} onValueChange={setValue} requireValues />;
   },
 };
-export const Disabled: Story = { name: '禁用', render: () => <KeyValueEditor value={[{ id: 'fixed', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} onValueChange={() => {}} disabled /> };
+export const Disabled: Story = { name: "状态 · 禁用", render: () => <KeyValueEditor value={[{ id: 'fixed', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} onValueChange={() => {}} disabled /> };
 
 function EntryExample({ initial, requireValues = false }: { initial: KeyValueEntry[]; requireValues?: boolean }) { const [value, setValue] = useState(initial); return <KeyValueEditor value={value} onValueChange={setValue} requireValues={requireValues} />; }
-export const Default: Story = { name: '默认键值', render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE', value: 'local' }]} /> };
-export const Secret: Story = { name: '敏感值遮罩', render: () => <EntryExample initial={[{ id: 'example', key: 'EXAMPLE_SECRET', value: 'local-demo-value', secret: true }]} /> };
-export const ReadOnly: Story = { name: '只读条目', render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} /> };
-export const RequiredValue: Story = { name: '必填值错误', render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE', value: '' }]} requireValues /> };
-export const DuplicateKeys: Story = { name: '重复键错误', render: () => <EntryExample initial={[{ id: 'first', key: 'MODE', value: 'local' }, { id: 'second', key: 'MODE', value: 'preview' }]} /> };
+export const Default: Story = { name: "默认键值", render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE', value: 'local' }]} /> };
+export const Secret: Story = { name: "敏感值遮罩", render: () => <EntryExample initial={[{ id: 'example', key: 'EXAMPLE_SECRET', value: 'local-demo-value', secret: true }]} /> };
+export const ReadOnly: Story = { name: "只读条目", render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} /> };
+export const RequiredValue: Story = { name: "必填值错误", render: () => <EntryExample initial={[{ id: 'workspace', key: 'WORKSPACE', value: '' }]} requireValues /> };
+export const DuplicateKeys: Story = { name: "重复键错误", render: () => <EntryExample initial={[{ id: 'first', key: 'MODE', value: 'local' }, { id: 'second', key: 'MODE', value: 'preview' }]} /> };
 
 const typedEntries: KeyValueEntry[] = [
   { id: 'port', key: 'PORT', value: '5173', kind: 'number', min: 1, max: 65535 },
@@ -63,10 +63,10 @@ const typedEntries: KeyValueEntry[] = [
   { id: 'density', key: 'DENSITY', value: 'compact', kind: 'select', options: [{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }] },
   { id: 'archive', key: 'ARCHIVE_DATE', value: '2026-09-30', kind: 'date', min: '2026-09-01', max: '2026-12-31' },
 ];
-export const TypedValues: Story = { name: '富类型值编辑', render: () => <EntryExample initial={typedEntries} requireValues /> };
-export const NestedPaths: Story = { name: '嵌套路径与草稿', render: function NestedPathEditor() { const [value, setValue] = useState<KeyValueEntry[]>([{ id: 'font', key: 'FONT_SIZE', value: '14', kind: 'number', path: ['editor', 'appearance', 'fontSize'] }]); const [draft, setDraft] = useState('尚未修改'); return <div className="space-y-[var(--rui-content-gap)]"><KeyValueEditor value={value} onValueChange={setValue} onDraftValueChange={(_id, patch, path) => setDraft(`${path.join('.')} = ${patch.value ?? patch.key}`)} /><p role="status" className="text-xs text-muted-foreground">{draft}</p></div>; } };
-export const PerEntryDisabled: Story = { name: '逐项禁用与只读', render: () => <EntryExample initial={[{ id: 'open', key: 'EDITABLE', value: 'local' }, { id: 'disabled', key: 'POLICY', value: 'managed', disabled: true }, { id: 'readonly', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} /> };
-export const Narrow: Story = { name: '窄宽度', render: () => <div className="max-w-80"><EntryExample initial={typedEntries} requireValues /></div> };
+export const TypedValues: Story = { name: "富类型值编辑", render: () => <EntryExample initial={typedEntries} requireValues /> };
+export const NestedPaths: Story = { name: "嵌套路径与草稿", render: function NestedPathEditor() { const [value, setValue] = useState<KeyValueEntry[]>([{ id: 'font', key: 'FONT_SIZE', value: '14', kind: 'number', path: ['editor', 'appearance', 'fontSize'] }]); const [draft, setDraft] = useState('尚未修改'); return <div className="space-y-[var(--rui-content-gap)]"><KeyValueEditor value={value} onValueChange={setValue} onDraftValueChange={(_id, patch, path) => setDraft(`${path.join('.')} = ${patch.value ?? patch.key}`)} /><p role="status" className="text-xs text-muted-foreground">{draft}</p></div>; } };
+export const PerEntryDisabled: Story = { name: "逐项禁用与只读", render: () => <EntryExample initial={[{ id: 'open', key: 'EDITABLE', value: 'local' }, { id: 'disabled', key: 'POLICY', value: 'managed', disabled: true }, { id: 'readonly', key: 'WORKSPACE_ID', value: 'local-01', readOnly: true }]} /> };
+export const Narrow: Story = { name: "窄宽度", render: () => <div className="max-w-80"><EntryExample initial={typedEntries} requireValues /></div> };
 
 const transactionInitial: KeyValueEntry[] = [
   { id: 'mode', key: 'MODE', value: 'local', kind: 'select', options: [{ value: 'local', label: '本地' }, { value: 'production', label: '生产' }, { value: 'reserved', label: '保留值' }] },
@@ -102,8 +102,8 @@ function TransactionExample({ failure = false }: { failure?: boolean }) {
   </div>;
 }
 
-export const Transactional: Story = { name: '批量事务与跨行校验', render: () => <TransactionExample /> };
-export const SubmitFailure: Story = { name: '提交失败并保留草稿', render: () => <TransactionExample failure /> };
+export const Transactional: Story = { name: "批量事务与跨行校验", render: () => <TransactionExample /> };
+export const SubmitFailure: Story = { name: "提交失败并保留草稿", render: () => <TransactionExample failure /> };
 
 type PlaygroundArgs = Pick<ComponentProps<typeof KeyValueEditor>, 'label' | 'requireValues' | 'maxRows' | 'disabled' | 'submitLabel'> & { kind: KeyValueKind; entryDisabled: boolean; secret: boolean; nestedPath: boolean; fieldKey: string; fieldValue: string; transactional: boolean; submitBehavior: 'success' | 'field-error' | 'error' };
 function KeyValuePlayground(args: PlaygroundArgs) {
@@ -112,7 +112,7 @@ function KeyValuePlayground(args: PlaygroundArgs) {
  return <KeyValueEditor label={args.label} requireValues={args.requireValues} maxRows={args.maxRows} disabled={args.disabled} submitLabel={args.submitLabel} value={value} defaultValue={[{ id: 'example', key: 'WORKSPACE_NAME', value: 'Graphite' }]} onValueChange={setValue} onSubmit={args.transactional ? async () => args.submitBehavior === 'error' ? { error: '示例提交失败，草稿已保留。' } : args.submitBehavior === 'field-error' ? { entryErrors: { example: { value: '示例字段错误' } } } : undefined : undefined} />;
 }
 export const Playground: StoryObj<PlaygroundArgs> = {
- name: '参数调试', args: { label: '键值配置', requireValues: false, maxRows: 5, disabled: false, submitLabel: '应用配置', kind: 'text', entryDisabled: false, secret: false, nestedPath: false, fieldKey: 'WORKSPACE_NAME', fieldValue: 'Graphite', transactional: true, submitBehavior: 'success' },
+ name: "参数调试", args: { label: '键值配置', requireValues: false, maxRows: 5, disabled: false, submitLabel: '应用配置', kind: 'text', entryDisabled: false, secret: false, nestedPath: false, fieldKey: 'WORKSPACE_NAME', fieldValue: 'Graphite', transactional: true, submitBehavior: 'success' },
  argTypes: { label: textControl, requireValues: booleanControl, maxRows: rangeControl(1, 10), disabled: booleanControl, submitLabel: textControl, kind: recipeControl(choiceControl(['text', 'number', 'boolean', 'select', 'date']), 'value[0].kind'), entryDisabled: recipeControl(booleanControl, 'value[0].disabled'), secret: recipeControl(booleanControl, 'value[0].secret'), nestedPath: recipeControl(booleanControl, 'value[0].path'), fieldKey: recipeControl(textControl, 'value[0].key'), fieldValue: recipeControl(textControl, 'value[0].value'), transactional: recipeControl(booleanControl, '启用提交、取消与重置。'), submitBehavior: recipeControl(choiceControl(['success', 'field-error', 'error']), 'onSubmit 返回结果。') },
  parameters: { controls: { include: ['kind', 'entryDisabled', 'secret', 'nestedPath', 'transactional', 'submitBehavior', 'fieldKey', 'fieldValue', 'requireValues', 'maxRows', 'disabled', 'label', 'submitLabel'] } }, render: args => <KeyValuePlayground {...args} />,
 };

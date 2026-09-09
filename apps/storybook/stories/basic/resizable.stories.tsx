@@ -3,8 +3,8 @@ import { Button, ResizablePanelGroup, ResizablePanel, ResizableHandle } from '..
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ResizableDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Resizable",
+const meta = { id: "基础-resizable",
+  title: "基础/Resizable 可调整分栏",
   component: ResizableDemo,
   tags: ["autodocs"],
   parameters: {
@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
 };
 
 function WorkspacePanels({ vertical = false, handle = true }: { vertical?: boolean; handle?: boolean }) {
@@ -45,12 +45,12 @@ function WorkspacePanels({ vertical = false, handle = true }: { vertical?: boole
     </div>
   );
 }
-export const Default: Story = { name: '横向分栏', render: () => <WorkspacePanels /> };
-export const Vertical: Story = { name: '纵向分栏', render: () => <WorkspacePanels vertical /> };
-export const PlainDivider: Story = { name: '无把手分隔线', render: () => <WorkspacePanels handle={false} /> };
+export const Default: Story = { name: "横向分栏", render: () => <WorkspacePanels /> };
+export const Vertical: Story = { name: "纵向分栏", render: () => <WorkspacePanels vertical /> };
+export const PlainDivider: Story = { name: "无把手分隔线", render: () => <WorkspacePanels handle={false} /> };
 
 export const Playground: StoryObj<{ orientation: 'horizontal' | 'vertical'; withHandle: boolean }> = {
-  name: '参数调试', args: { orientation: 'horizontal', withHandle: true },
+  name: "参数调试", args: { orientation: 'horizontal', withHandle: true },
   argTypes: { orientation: { control: 'select', options: ['horizontal', 'vertical'], table: { category: 'ResizablePanelGroup' } }, withHandle: { control: 'boolean', table: { category: 'ResizableHandle' } } },
   parameters: { controls: { include: ['orientation', 'withHandle'] } },
   render: args => <WorkspacePanels vertical={args.orientation === 'vertical'} handle={args.withHandle} />,

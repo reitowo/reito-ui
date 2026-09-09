@@ -4,8 +4,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FieldDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Field",
+const meta = { id: "基础-field",
+  title: "基础/Field 表单字段",
   component: FieldDemo,
   tags: ["autodocs"],
   parameters: {
@@ -64,23 +64,23 @@ function NamedField({
   );
 }
 export const Default: Story = {
-  name: "布局 / 纵向",
+  name: "布局 · 纵向",
   render: () => <NamedField />,
 };
 export const Horizontal: Story = {
-  name: "布局 / 横向",
+  name: "布局 · 横向",
   render: () => <NamedField orientation="horizontal" />,
 };
 export const Responsive: Story = {
-  name: "布局 / 响应式",
+  name: "布局 · 响应式",
   render: () => <NamedField orientation="responsive" />,
 };
 export const Invalid: Story = {
-  name: "状态 / 校验错误",
+  name: "状态 · 校验错误",
   render: () => <NamedField invalid />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用",
+  name: "状态 · 禁用",
   render: () => <NamedField disabled />,
 };
 

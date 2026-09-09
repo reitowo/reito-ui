@@ -3,8 +3,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BreadcrumbDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Breadcrumb",
+const meta = { id: "基础-breadcrumb",
+  title: "基础/Breadcrumb 面包屑",
   component: BreadcrumbDemo,
   tags: ["autodocs"],
   parameters: {
@@ -20,12 +20,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <BreadcrumbDemo />,
 };
 
 export const Default: Story = {
-  name: "布局 / 层级路径",
+  name: "布局 · 层级路径",
   render: () => (
     <P.Breadcrumb>
       <P.BreadcrumbList>
@@ -46,7 +46,7 @@ export const Default: Story = {
   ),
 };
 export const CurrentPage: Story = {
-  name: "内容 / 仅当前页",
+  name: "内容 · 仅当前页",
   render: () => (
     <P.Breadcrumb>
       <P.BreadcrumbList>
@@ -58,7 +58,7 @@ export const CurrentPage: Story = {
   ),
 };
 export const CustomSeparator: Story = {
-  name: "样式 / 斜线分隔",
+  name: "样式 · 斜线分隔",
   render: () => (
     <P.Breadcrumb>
       <P.BreadcrumbList>

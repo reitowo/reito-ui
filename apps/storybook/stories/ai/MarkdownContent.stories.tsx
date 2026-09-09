@@ -89,8 +89,8 @@ function StreamingHarness({ source, chunkSize, intervalMs, autoStart, asMessage,
   </div>;
 }
 
-const meta = {
-  title: 'AI/MarkdownContent / RichMessage',
+const meta = { id: "ai-markdowncontent-richmessage",
+  title: "AI/MarkdownContent 富文本内容",
   component: MarkdownContent,
   args: { value: '' },
   decorators: [Story => <StoryFrame><Story /></StoryFrame>],
@@ -108,7 +108,7 @@ type PlaygroundArgs = Pick<MarkdownContentProps, 'value' | 'htmlPolicy' | 'exter
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { value: fullDocument, htmlPolicy: 'escape', externalLinkTarget: '_blank', codeCopyable: true, asMessage: false, from: 'assistant', streaming: false, completeIncompleteMarkdown: true, emptyText: '没有可显示的 Markdown 内容' },
   argTypes: {
     value: textControl,
@@ -129,7 +129,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
 
 type StreamingPlaygroundArgs = StreamingHarnessProps;
 export const StreamingPlayground: StoryObj<StreamingPlaygroundArgs> = {
-  name: '流式参数调试',
+  name: "流式参数调试",
   args: { source: streamDocument, chunkSize: 24, intervalMs: 80, autoStart: false, asMessage: true, completeIncompleteMarkdown: true },
   argTypes: {
     source: textControl,
@@ -143,10 +143,10 @@ export const StreamingPlayground: StoryObj<StreamingPlaygroundArgs> = {
   render: args => <StreamingHarness {...args} />,
 };
 
-export const IncompleteInline: Story = { name: '未闭合行内语法', args: { value: '正在生成 **尚未闭合的强调', streaming: true } };
-export const IncompleteLink: Story = { name: '未闭合链接', args: { value: '打开 [设计规范](https://example.com/des', streaming: true } };
-export const IncompleteFence: Story = { name: '未闭合 fenced code', args: { value: '```typescript\nexport const chunk = "保持原文";', streaming: true } };
-export const CompletionDisabled: Story = { name: '关闭未闭合语法补全', args: { value: '正在生成 **保持原始标记', streaming: true, completeIncompleteMarkdown: false } };
+export const IncompleteInline: Story = { name: "未闭合行内语法", args: { value: '正在生成 **尚未闭合的强调', streaming: true } };
+export const IncompleteLink: Story = { name: "未闭合链接", args: { value: '打开 [设计规范](https://example.com/des', streaming: true } };
+export const IncompleteFence: Story = { name: "未闭合 fenced code", args: { value: '```typescript\nexport const chunk = "保持原文";', streaming: true } };
+export const CompletionDisabled: Story = { name: "关闭未闭合语法补全", args: { value: '正在生成 **保持原始标记', streaming: true, completeIncompleteMarkdown: false } };
 
 const tableStages = [
   '## 已稳定标题\n\n| 阶段 | 状态 |',
@@ -160,37 +160,37 @@ function StreamingTableStages() {
     <MarkdownContent value={tableStages[stage]} streaming={stage < tableStages.length - 1} streamKey="table-stream" />
   </div>;
 }
-export const StreamingTable: Story = { name: '表格增量变形', render: () => <StreamingTableStages /> };
+export const StreamingTable: Story = { name: "表格增量变形", render: () => <StreamingTableStages /> };
 
 function StreamReplacement() {
   const [generation, setGeneration] = useState<'first' | 'second'>('first');
   const value = generation === 'first' ? '## 第一段流\n\n正在生成 **旧内容' : '## 第二段流\n\n正在生成 `新内容';
   return <div className="grid gap-[var(--rui-content-gap)]"><Button size="sm" variant="outline" className="justify-self-start" onClick={() => setGeneration(current => current === 'first' ? 'second' : 'first')}>替换流标识</Button><MarkdownContent value={value} streaming streamKey={generation} /></div>;
 }
-export const StreamReplacementKey: Story = { name: '新流节点替换', render: () => <StreamReplacement /> };
+export const StreamReplacementKey: Story = { name: "新流节点替换", render: () => <StreamReplacement /> };
 
-export const StreamingRichMessage: Story = { name: '流式富文本消息', render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={'正在整理 **消息正文与代码**\n\n```ts\nconst stable = true;'} streaming local /></Conversation> };
+export const StreamingRichMessage: Story = { name: "流式富文本消息", render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={'正在整理 **消息正文与代码**\n\n```ts\nconst stable = true;'} streaming local /></Conversation> };
 
-export const Default: Story = { name: '完整 GFM 文档', args: { value: fullDocument } };
-export const RichAssistantMessage: Story = { name: '富文本助手消息', render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={fullDocument} local /></Conversation> };
-export const RichUserMessage: Story = { name: '富文本用户消息', render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="user" content={'请检查 **Markdown** 和 `CodeBlock` 的组合。'} local /></Conversation> };
-export const Table: Story = { name: 'GFM 表格', args: { value: '| 项目 | 负责人 | 状态 |\n| --- | --- | --- |\n| Token | Reito | 完成 |\n| Markdown | Lin | 检查中 |' } };
-export const TaskList: Story = { name: 'GFM 任务列表', args: { value: '- [x] 解析结构\n- [ ] 连接宿主数据' } };
-export const FencedCode: Story = { name: '高亮代码与原文复制', args: { value: '```typescript\nexport const density = "compact";\n```' } };
-export const InlineCode: Story = { name: '行内代码', args: { value: '设置 `data-density="compact"` 后重新渲染。' } };
-export const Links: Story = { name: '外部与相对链接', args: { value: '[外部文档](https://ui.nuxt.com/) · [项目文档](/docs/design-language)' } };
-export const HtmlEscaped: Story = { name: '原始 HTML 转义', args: { value: '前文 <strong data-demo="raw">HTML 不执行</strong> 后文', htmlPolicy: 'escape' } };
-export const HtmlRemoved: Story = { name: '原始 HTML 标签移除', args: { value: '前文 <strong data-demo="raw">HTML 不执行</strong> 后文', htmlPolicy: 'remove' } };
-export const UnsafeUrl: Story = { name: '危险 URL 过滤', args: { value: '[不安全链接](javascript:alert(1))\n\n![不安全图片](javascript:alert(2))' } };
-export const FilteredElements: Story = { name: '元素白名单与解包', args: { value: '# 标题\n\n保留 **强调** 和 [链接文字](https://example.com)。', allowedElements: ['h1', 'p', 'strong'], unwrapDisallowed: true } };
+export const Default: Story = { name: "完整 GFM 文档", args: { value: fullDocument } };
+export const RichAssistantMessage: Story = { name: "富文本助手消息", render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="assistant" content={fullDocument} local /></Conversation> };
+export const RichUserMessage: Story = { name: "富文本用户消息", render: () => <Conversation className="min-h-[var(--rui-preview-min-height)] rounded-lg border"><RichMessage from="user" content={'请检查 **Markdown** 和 `CodeBlock` 的组合。'} local /></Conversation> };
+export const Table: Story = { name: "GFM 表格", args: { value: '| 项目 | 负责人 | 状态 |\n| --- | --- | --- |\n| Token | Reito | 完成 |\n| Markdown | Lin | 检查中 |' } };
+export const TaskList: Story = { name: "GFM 任务列表", args: { value: '- [x] 解析结构\n- [ ] 连接宿主数据' } };
+export const FencedCode: Story = { name: "高亮代码与原文复制", args: { value: '```typescript\nexport const density = "compact";\n```' } };
+export const InlineCode: Story = { name: "行内代码", args: { value: '设置 `data-density="compact"` 后重新渲染。' } };
+export const Links: Story = { name: "外部与相对链接", args: { value: '[外部文档](https://ui.nuxt.com/) · [项目文档](/docs/design-language)' } };
+export const HtmlEscaped: Story = { name: "原始 HTML 转义", args: { value: '前文 <strong data-demo="raw">HTML 不执行</strong> 后文', htmlPolicy: 'escape' } };
+export const HtmlRemoved: Story = { name: "原始 HTML 标签移除", args: { value: '前文 <strong data-demo="raw">HTML 不执行</strong> 后文', htmlPolicy: 'remove' } };
+export const UnsafeUrl: Story = { name: "危险 URL 过滤", args: { value: '[不安全链接](javascript:alert(1))\n\n![不安全图片](javascript:alert(2))' } };
+export const FilteredElements: Story = { name: "元素白名单与解包", args: { value: '# 标题\n\n保留 **强调** 和 [链接文字](https://example.com)。', allowedElements: ['h1', 'p', 'strong'], unwrapDisallowed: true } };
 export const CustomRenderers: Story = {
-  name: '自定义节点与代码块',
+  name: "自定义节点与代码块",
   render: () => <MarkdownContent
     value={'> 由宿主替换引用节点。\n\n```txt\ncustom renderer\n```'}
     components={{ blockquote: ({ node: _node, ...props }) => <aside data-testid="custom-quote" aria-label="自定义引用" {...props} /> }}
     renderCodeBlock={({ code, language }) => <section data-testid="custom-code" aria-label={`${language}自定义代码块`} className="my-[var(--rui-space-3)] rounded-md border border-border bg-muted p-[var(--rui-content-padding)]"><code className="font-mono text-xs">{code}</code></section>}
   />,
 };
-export const Empty: Story = { name: '空内容', args: { value: '  ', empty: <p className="text-sm text-muted-foreground">没有可显示的 Markdown 内容</p> } };
-export const LongDocument: Story = { name: '长文档', args: { value: Array.from({ length: 18 }, (_, index) => `## 章节 ${index + 1}\n\n这是用于检查长内容排版与自然流动的本地段落。`).join('\n\n') } };
-export const Narrow: Story = { name: '窄工作面', render: () => <div className="max-w-[var(--rui-container-3xs)]"><MarkdownContent value={'## 窄面板\n\n超长路径：`workspace/packages/ui/src/ai/markdown-content.tsx`\n\n| 能力 | 状态 |\n| --- | --- |\n| 横向内容 | 仅表格容器滚动 |\n\n```powershell\nnpm run check --workspace @reito/ui\n```'} /></div> };
+export const Empty: Story = { name: "状态 · 空内容", args: { value: '  ', empty: <p className="text-sm text-muted-foreground">没有可显示的 Markdown 内容</p> } };
+export const LongDocument: Story = { name: "长文档", args: { value: Array.from({ length: 18 }, (_, index) => `## 章节 ${index + 1}\n\n这是用于检查长内容排版与自然流动的本地段落。`).join('\n\n') } };
+export const Narrow: Story = { name: "窄工作面", render: () => <div className="max-w-[var(--rui-container-3xs)]"><MarkdownContent value={'## 窄面板\n\n超长路径：`workspace/packages/ui/src/ai/markdown-content.tsx`\n\n| 能力 | 状态 |\n| --- | --- |\n| 横向内容 | 仅表格容器滚动 |\n\n```powershell\nnpm run check --workspace @reito/ui\n```'} /></div> };

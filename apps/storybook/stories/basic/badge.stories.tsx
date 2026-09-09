@@ -3,8 +3,8 @@ import { Check } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BadgeDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Badge",
+const meta = { id: "基础-badge",
+  title: "基础/Badge 徽标",
   component: P.Badge,
 
   tags: ["autodocs"],
@@ -31,27 +31,27 @@ export const Overview: Story = {
 };
 
 export const Default: Story = {
-  name: "样式 / 默认",
+  name: "样式 · 默认",
   args: { children: "已发布" },
 };
 export const Secondary: Story = {
-  name: "样式 / 次要",
+  name: "样式 · 次要",
   args: { variant: "secondary", children: "草稿" },
 };
 export const Outline: Story = {
-  name: "样式 / 描边",
+  name: "样式 · 描边",
   args: { variant: "outline", children: "TypeScript" },
 };
 export const Destructive: Story = {
-  name: "样式 / 失败",
+  name: "样式 · 失败",
   args: { variant: "destructive", children: "失败" },
 };
 export const Ghost: Story = {
-  name: "样式 / 轻量",
+  name: "样式 · 轻量",
   args: { variant: "ghost", children: "本地" },
 };
 export const Link: Story = {
-  name: "样式 / 链接",
+  name: "样式 · 链接",
   args: {
     variant: "link",
     render: (
@@ -61,7 +61,7 @@ export const Link: Story = {
   },
 };
 export const WithIcon: Story = {
-  name: "内容 / 图标标签",
+  name: "内容 · 图标标签",
   args: {
     variant: "secondary",
     children: (

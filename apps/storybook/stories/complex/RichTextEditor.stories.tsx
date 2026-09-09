@@ -24,8 +24,8 @@ const teamMentions: readonly RichTextEditorMentionItem[] = [
 ];
 const localImageUrl = new URL('../../../../docs/images/graphite-preview.png', import.meta.url).href;
 
-const meta = {
-  title: '复杂/RichTextEditor 富文本编辑',
+const meta = { id: "复杂-richtexteditor-富文本编辑",
+  title: "复杂/RichTextEditor 富文本编辑",
   component: RichTextEditor,
   parameters: { docs: { description: { component: 'Tiptap schema 驱动的内容面，公开 JSON、HTML、Markdown 受控输入输出，并提供紧凑工具栏、任务列表、段落对齐、Emoji、斜杠命令、提及、链接编辑、格式状态和历史操作。' } } },
 } satisfies Meta<typeof RichTextEditor>;
@@ -130,7 +130,7 @@ function printable(value: RichTextEditorValue) {
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { format: 'markdown', value: markdownValue, label: '可调内容', description: '直接调整格式、工具栏、块操作、媒体、补全和交互状态。所有上传与补全均为本地示例。', placeholder: '开始输入…', readOnly: false, disabled: false, showOutput: true, showToolbar: true, toolbarPreset: 'full', emojiPreset: 'all', suggestions: true, mentionPreset: 'team', slashPreset: 'full', blockControls: true, blockPreset: 'full', imageUploadPreset: 'success', completionPreset: 'success', linkPlaceholder: 'https://example.com' },
   argTypes: {
     format: choiceControl(['markdown', 'html', 'json']),
@@ -162,49 +162,49 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '默认本地示例', render: () => <RichTextEditorDemo /> };
+export const Default: Story = { name: "默认本地示例", render: () => <RichTextEditorDemo /> };
 
-export const MarkdownControlled: Story = { name: 'Markdown 受控值', render: function Render() { const [value, setValue] = useState(markdownValue); return <RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="Markdown 文档" />; } };
-export const HtmlControlled: Story = { name: 'HTML 受控值', render: function Render() { const [value, setValue] = useState(htmlValue); return <RichTextEditor format="html" value={value} onValueChange={next => setValue(String(next))} label="HTML 文档" />; } };
-export const JsonControlled: Story = { name: 'JSON 受控值', render: function Render() { const [value, setValue] = useState<RichTextEditorValue>(jsonValue); return <RichTextEditor format="json" value={value} onValueChange={setValue} label="JSON 文档" />; } };
+export const MarkdownControlled: Story = { name: "Markdown 受控值", render: function Render() { const [value, setValue] = useState(markdownValue); return <RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="Markdown 文档" />; } };
+export const HtmlControlled: Story = { name: "HTML 受控值", render: function Render() { const [value, setValue] = useState(htmlValue); return <RichTextEditor format="html" value={value} onValueChange={next => setValue(String(next))} label="HTML 文档" />; } };
+export const JsonControlled: Story = { name: "JSON 受控值", render: function Render() { const [value, setValue] = useState<RichTextEditorValue>(jsonValue); return <RichTextEditor format="json" value={value} onValueChange={setValue} label="JSON 文档" />; } };
 
 function SnapshotExample() {
   const [value, setValue] = useState(markdownValue);
   const [state, setState] = useState<RichTextEditorSnapshot>();
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="多格式输出" /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="snapshot-markdown" className="truncate font-mono">{state?.markdown ?? '编辑后生成'}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="snapshot-html" className="truncate font-mono">{state?.html ?? '编辑后生成'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="snapshot-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '编辑后生成'}</dd></dl></div>;
 }
-export const MultiFormatSnapshot: Story = { name: '同一模型多格式输出', render: () => <SnapshotExample /> };
+export const MultiFormatSnapshot: Story = { name: "同一模型多格式输出", render: () => <SnapshotExample /> };
 
-export const MarksToolbar: Story = { name: '仅文本格式工具', args: { format: 'markdown', defaultValue: '选择文字后应用 **格式**。', label: '文本格式', toolbarItems: toolbarPresets.marks } };
-export const StructureToolbar: Story = { name: '仅结构工具', args: { format: 'markdown', defaultValue: '把当前段落转换为标题、列表或引用。', label: '段落结构', toolbarItems: toolbarPresets.structure } };
-export const ExtensionToolbar: Story = { name: '仅扩展工具', args: { format: 'markdown', defaultValue: '任务、对齐与 Emoji 共用同一文档模型。', label: '编辑扩展', toolbarItems: toolbarPresets.extensions } };
-export const ToolbarHidden: Story = { name: '隐藏工具栏', args: { format: 'markdown', defaultValue: markdownValue, label: '沉浸编辑', toolbar: false } };
+export const MarksToolbar: Story = { name: "仅文本格式工具", args: { format: 'markdown', defaultValue: '选择文字后应用 **格式**。', label: '文本格式', toolbarItems: toolbarPresets.marks } };
+export const StructureToolbar: Story = { name: "仅结构工具", args: { format: 'markdown', defaultValue: '把当前段落转换为标题、列表或引用。', label: '段落结构', toolbarItems: toolbarPresets.structure } };
+export const ExtensionToolbar: Story = { name: "仅扩展工具", args: { format: 'markdown', defaultValue: '任务、对齐与 Emoji 共用同一文档模型。', label: '编辑扩展', toolbarItems: toolbarPresets.extensions } };
+export const ToolbarHidden: Story = { name: "隐藏工具栏", args: { format: 'markdown', defaultValue: markdownValue, label: '沉浸编辑', toolbar: false } };
 
 function BlockActionsExample() {
   const [value, setValue] = useState('# 发布说明\n\n第一段需要移动。\n\n第二段可以转换。\n\n最后一段用于检查边界。');
   const [state, setState] = useState<RichTextEditorSnapshot>();
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="受控块操作" description="悬停块左侧可拖拽或打开菜单；Alt+Shift+↑/↓ 可移动当前块。" toolbarItems={['block-actions', 'undo', 'redo']} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="block-markdown" className="whitespace-pre-wrap font-mono">{state?.markdown ?? value}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="block-html" className="truncate font-mono">{state?.html ?? '操作后同步'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="block-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '操作后同步'}</dd></dl></div>;
 }
-export const BlockActionsControlled: Story = { name: '块移动转换删除与恢复', render: () => <BlockActionsExample /> };
-export const BlockActionsEmpty: Story = { name: '块操作空能力', args: { format: 'markdown', defaultValue: '宿主保留入口，但没有授予块操作。', label: '空块操作', toolbarItems: ['block-actions'], blockActions: [] } };
-export const BlockSingle: Story = { name: '唯一块删除与恢复', render: function Render() { const [value, setValue] = useState('唯一内容块'); return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="唯一块" toolbarItems={['block-actions', 'undo', 'redo']} /><output data-testid="single-block-output" className="font-mono text-xs text-muted-foreground">{value || '空文档'}</output></div>; } };
-export const BlockControlsOff: Story = { name: '关闭块控制', args: { format: 'markdown', defaultValue: '内容不显示块句柄和块操作入口。', label: '纯编辑面', blockControls: false } };
-export const BlockReadOnly: Story = { name: '只读块内容', args: { format: 'markdown', defaultValue: '# 只读内容\n\n块句柄与写操作均隐藏。', label: '只读块', readOnly: true } };
-export const BlockNarrow: Story = { name: '窄面板块操作', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue={'# 窄面板\n\n悬停此段检查句柄。\n\n末段保持在组件内。'} label="窄面板块" toolbarItems={['block-actions', 'undo', 'redo']} /></div> };
+export const BlockActionsControlled: Story = { name: "块移动转换删除与恢复", render: () => <BlockActionsExample /> };
+export const BlockActionsEmpty: Story = { name: "块操作空能力", args: { format: 'markdown', defaultValue: '宿主保留入口，但没有授予块操作。', label: '空块操作', toolbarItems: ['block-actions'], blockActions: [] } };
+export const BlockSingle: Story = { name: "唯一块删除与恢复", render: function Render() { const [value, setValue] = useState('唯一内容块'); return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="唯一块" toolbarItems={['block-actions', 'undo', 'redo']} /><output data-testid="single-block-output" className="font-mono text-xs text-muted-foreground">{value || '空文档'}</output></div>; } };
+export const BlockControlsOff: Story = { name: "关闭块控制", args: { format: 'markdown', defaultValue: '内容不显示块句柄和块操作入口。', label: '纯编辑面', blockControls: false } };
+export const BlockReadOnly: Story = { name: "只读块内容", args: { format: 'markdown', defaultValue: '# 只读内容\n\n块句柄与写操作均隐藏。', label: '只读块', readOnly: true } };
+export const BlockNarrow: Story = { name: "窄面板块操作", render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue={'# 窄面板\n\n悬停此段检查句柄。\n\n末段保持在组件内。'} label="窄面板块" toolbarItems={['block-actions', 'undo', 'redo']} /></div> };
 
 function ImageSerializationExample() {
   const [value, setValue] = useState('图片插入点');
   const [state, setState] = useState<RichTextEditorSnapshot>();
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="图片与上传" description="地址插入和文件上传都写入同一个 image 节点；上传由本地 Story Provider 模拟。" toolbarItems={toolbarPresets.media} uploadImage={successfulImageUpload} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="media-markdown" className="break-all font-mono">{state?.markdown ?? value}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="media-html" className="truncate font-mono">{state?.html ?? '插入后同步'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="media-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '插入后同步'}</dd></dl></div>;
 }
-export const ImageSerialization: Story = { name: '图片地址上传与序列化', render: () => <ImageSerializationExample /> };
+export const ImageSerialization: Story = { name: "图片地址上传与序列化", render: () => <ImageSerializationExample /> };
 
 const slowImageUpload: RichTextEditorImageUpload = async (file, { signal, onProgress }) => {
   onProgress(15);
   await waitForDemo(2_000, signal);
   return { src: localImageUrl, alt: file.name };
 };
-export const ImageUploadCancel: Story = { name: '图片上传取消', args: { format: 'markdown', defaultValue: '取消上传不会改变文档。', label: '可取消图片上传', toolbarItems: ['image'], uploadImage: slowImageUpload } };
+export const ImageUploadCancel: Story = { name: "图片上传取消", args: { format: 'markdown', defaultValue: '取消上传不会改变文档。', label: '可取消图片上传', toolbarItems: ['image'], uploadImage: slowImageUpload } };
 
 function ImageUploadRecoveryExample() {
   const attempts = useRef(0);
@@ -215,22 +215,22 @@ function ImageUploadRecoveryExample() {
   };
   return <RichTextEditor format="markdown" defaultValue="失败后保留文件并允许重试。" label="图片失败恢复" toolbarItems={['image', 'undo', 'redo']} uploadImage={upload} onExtensionError={() => undefined} />;
 }
-export const ImageUploadRecovery: Story = { name: '图片上传失败与重试', render: () => <ImageUploadRecoveryExample /> };
-export const ImageInvalid: Story = { name: '图片校验错误', args: { format: 'markdown', defaultValue: '无效地址与文件不会进入文档。', label: '图片校验', toolbarItems: ['image'], uploadImage: successfulImageUpload, imageMaxSize: 8 } };
-export const ImageReadOnly: Story = { name: '只读图片内容', args: { format: 'markdown', defaultValue: `![Graphite 预览](${localImageUrl})`, label: '只读图片', readOnly: true, toolbarItems: ['image'] } };
+export const ImageUploadRecovery: Story = { name: "图片上传失败与重试", render: () => <ImageUploadRecoveryExample /> };
+export const ImageInvalid: Story = { name: "图片校验错误", args: { format: 'markdown', defaultValue: '无效地址与文件不会进入文档。', label: '图片校验', toolbarItems: ['image'], uploadImage: successfulImageUpload, imageMaxSize: 8 } };
+export const ImageReadOnly: Story = { name: "只读图片内容", args: { format: 'markdown', defaultValue: `![Graphite 预览](${localImageUrl})`, label: '只读图片', readOnly: true, toolbarItems: ['image'] } };
 
 function CompletionExample() {
   const [value, setValue] = useState('发布前确认');
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="宿主补全" description="Provider 是本地 Story 函数；建议先预览，再由用户接受或拒绝。" toolbarItems={['ai-complete', 'undo', 'redo']} requestCompletion={successfulCompletion} /><output data-testid="completion-output" className="whitespace-pre-wrap font-mono text-xs text-muted-foreground">{value}</output></div>;
 }
-export const CompletionReview: Story = { name: '补全预览接受与拒绝', render: () => <CompletionExample /> };
+export const CompletionReview: Story = { name: "补全预览接受与拒绝", render: () => <CompletionExample /> };
 
 const slowCompletion: RichTextEditorCompletionProvider = async ({ signal }) => {
   await waitForDemo(2_000, signal);
   return '这条结果应在取消后被忽略。';
 };
-export const CompletionCancel: Story = { name: '补全请求取消', args: { format: 'markdown', defaultValue: '取消中的补全', label: '可取消补全', toolbarItems: ['ai-complete'], requestCompletion: slowCompletion } };
-export const CompletionLiteralText: Story = { name: '补全结果按纯文本插入', args: { format: 'markdown', defaultValue: '字面值测试：', label: '纯文本补全', toolbarItems: ['ai-complete'], requestCompletion: literalCompletion } };
+export const CompletionCancel: Story = { name: "补全请求取消", args: { format: 'markdown', defaultValue: '取消中的补全', label: '可取消补全', toolbarItems: ['ai-complete'], requestCompletion: slowCompletion } };
+export const CompletionLiteralText: Story = { name: "补全结果按纯文本插入", args: { format: 'markdown', defaultValue: '字面值测试：', label: '纯文本补全', toolbarItems: ['ai-complete'], requestCompletion: literalCompletion } };
 
 function CompletionRecoveryExample() {
   const attempts = useRef(0);
@@ -241,17 +241,17 @@ function CompletionRecoveryExample() {
   };
   return <RichTextEditor format="markdown" defaultValue="重试补全" label="补全失败恢复" toolbarItems={['ai-complete']} requestCompletion={provider} onExtensionError={() => undefined} />;
 }
-export const CompletionRecovery: Story = { name: '补全失败与重试', render: () => <CompletionRecoveryExample /> };
+export const CompletionRecovery: Story = { name: "补全失败与重试", render: () => <CompletionRecoveryExample /> };
 
 function CompletionStaleExample() {
   const [value, setValue] = useState('等待补全');
   return <div className="grid gap-[var(--rui-content-gap)]"><Button size="xs" variant="outline" onClick={() => setValue('宿主已经替换文档')}>替换宿主文档</Button><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="过期补全" toolbarItems={['ai-complete']} requestCompletion={successfulCompletion} /></div>;
 }
-export const CompletionStale: Story = { name: '宿主替换后的过期补全', render: () => <CompletionStaleExample /> };
-export const MediaNarrow: Story = { name: '窄面板媒体与补全', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue="窄面板保持工具、图片和建议在组件内部。" label="窄媒体编辑" toolbarItems={toolbarPresets.media} uploadImage={successfulImageUpload} requestCompletion={successfulCompletion} /></div> };
+export const CompletionStale: Story = { name: "宿主替换后的过期补全", render: () => <CompletionStaleExample /> };
+export const MediaNarrow: Story = { name: "窄面板媒体与补全", render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue="窄面板保持工具、图片和建议在组件内部。" label="窄媒体编辑" toolbarItems={toolbarPresets.media} uploadImage={successfulImageUpload} requestCompletion={successfulCompletion} /></div> };
 
 export const SlashCommands: Story = {
-  name: '斜杠命令',
+  name: "斜杠命令",
   args: { format: 'markdown', defaultValue: '', label: '命令编辑', description: '在空段落行首输入 /，筛选后使用方向键与 Enter 插入结构。', mentionItems: teamMentions },
 };
 
@@ -260,7 +260,7 @@ function MentionSerializationExample() {
   const [state, setState] = useState<RichTextEditorSnapshot>();
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="json" value={value} onValueChange={(next, snapshot) => { setValue(next); setState(snapshot); }} label="本地提及" description="输入 @ 后选择本地成员；禁用成员不会被选中。" mentionItems={teamMentions} /><section aria-label="提及序列化结果"><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">JSON</dt><dd data-testid="mention-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '插入后显示 mention 节点'}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="mention-html" className="truncate font-mono">{state?.html ?? '插入后显示 data-type=mention'}</dd><dt className="text-muted-foreground">Markdown</dt><dd data-testid="mention-markdown" className="truncate font-mono">{state?.markdown ?? '插入后显示提及扩展语法'}</dd></dl></section></div>;
 }
-export const MentionLocal: Story = { name: '本地提及与序列化', render: () => <MentionSerializationExample /> };
+export const MentionLocal: Story = { name: "本地提及与序列化", render: () => <MentionSerializationExample /> };
 
 function loadTeamMentions(query: string, { signal }: { signal: AbortSignal }) {
   return new Promise<readonly RichTextEditorMentionItem[]>((resolve, reject) => {
@@ -271,71 +271,71 @@ function loadTeamMentions(query: string, { signal }: { signal: AbortSignal }) {
     signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('请求已取消', 'AbortError')); }, { once: true });
   });
 }
-export const MentionAsync: Story = { name: '异步提及与加载态', args: { format: 'markdown', defaultValue: '', label: '异步成员', description: '输入 @ 后由本地延时 Provider 返回结果；新查询会取消旧请求。', loadMentionItems: loadTeamMentions } };
-export const MentionEmpty: Story = { name: '提及空结果', args: { format: 'markdown', defaultValue: '', label: '空成员集合', mentionItems: [] } };
-export const SuggestionsOff: Story = { name: '关闭建议能力', args: { format: 'markdown', defaultValue: '', label: '普通编辑', suggestions: false, mentionItems: teamMentions } };
-export const SuggestionNarrow: Story = { name: '窄面板建议菜单', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue="" label="窄面板命令" mentionItems={teamMentions} /></div> };
+export const MentionAsync: Story = { name: "异步提及与加载态", args: { format: 'markdown', defaultValue: '', label: '异步成员', description: '输入 @ 后由本地延时 Provider 返回结果；新查询会取消旧请求。', loadMentionItems: loadTeamMentions } };
+export const MentionEmpty: Story = { name: "提及空结果", args: { format: 'markdown', defaultValue: '', label: '空成员集合', mentionItems: [] } };
+export const SuggestionsOff: Story = { name: "关闭建议能力", args: { format: 'markdown', defaultValue: '', label: '普通编辑', suggestions: false, mentionItems: teamMentions } };
+export const SuggestionNarrow: Story = { name: "窄面板建议菜单", render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue="" label="窄面板命令" mentionItems={teamMentions} /></div> };
 
 function TaskListExample() {
   const [value, setValue] = useState('- [ ] 检查紧凑间距\n  - [x] 确认嵌套任务\n- [x] 记录验收结果');
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="Markdown 任务列表" toolbarItems={['task-list', 'undo', 'redo']} /><output data-testid="task-list-output" className="whitespace-pre-wrap font-mono text-xs text-muted-foreground">{value}</output></div>;
 }
-export const TaskListMarkdown: Story = { name: '任务列表与 Markdown', render: () => <TaskListExample /> };
+export const TaskListMarkdown: Story = { name: "任务列表与 Markdown", render: () => <TaskListExample /> };
 
 function AlignmentExample() {
   const [value, setValue] = useState('<p>选中段落并更改对齐方式。</p>');
   const [state, setState] = useState<RichTextEditorSnapshot>();
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="html" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="HTML 段落对齐" toolbarItems={['align-left', 'align-center', 'align-right', 'align-justify', 'undo', 'redo']} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">HTML</dt><dd data-testid="alignment-html" className="truncate font-mono">{state?.html ?? value}</dd><dt className="text-muted-foreground">Markdown</dt><dd data-testid="alignment-markdown" className="truncate font-mono">{state?.markdown ?? '对齐属性不进入 Markdown'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="alignment-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '操作后显示 textAlign'}</dd></dl></div>;
 }
-export const AlignmentSerialization: Story = { name: '对齐序列化边界', render: () => <AlignmentExample /> };
+export const AlignmentSerialization: Story = { name: "对齐序列化边界", render: () => <AlignmentExample /> };
 
 function EmojiExample() {
   const [value, setValue] = useState('发布状态：');
   const [state, setState] = useState<RichTextEditorSnapshot>();
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={(next, snapshot) => { setValue(String(next)); setState(snapshot); }} label="Emoji 节点" toolbarItems={['emoji', 'undo', 'redo']} /><dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-[var(--rui-content-gap)] gap-y-[var(--rui-space-1)] text-xs"><dt className="text-muted-foreground">Markdown</dt><dd data-testid="emoji-markdown" className="truncate font-mono">{state?.markdown ?? value}</dd><dt className="text-muted-foreground">HTML</dt><dd data-testid="emoji-html" className="truncate font-mono">{state?.html ?? '插入后显示 data-type=emoji'}</dd><dt className="text-muted-foreground">JSON</dt><dd data-testid="emoji-json" className="truncate font-mono">{state ? JSON.stringify(state.json) : '插入后显示 emoji 节点'}</dd></dl></div>;
 }
-export const EmojiSerialization: Story = { name: 'Emoji 插入与序列化', render: () => <EmojiExample /> };
-export const EmojiEmptyPicker: Story = { name: 'Emoji 空选项', args: { format: 'markdown', defaultValue: '宿主已隐藏全部 Emoji 选项。', label: 'Emoji 空选择器', toolbarItems: ['emoji'], emojiItems: [] } };
+export const EmojiSerialization: Story = { name: "Emoji 插入与序列化", render: () => <EmojiExample /> };
+export const EmojiEmptyPicker: Story = { name: "Emoji 空选项", args: { format: 'markdown', defaultValue: '宿主已隐藏全部 Emoji 选项。', label: 'Emoji 空选择器', toolbarItems: ['emoji'], emojiItems: [] } };
 
-export const TaskListReadOnly: Story = { name: '只读任务列表', args: { format: 'markdown', defaultValue: '- [ ] 只读任务\n- [x] 已完成任务', label: '只读检查项', readOnly: true, toolbarItems: toolbarPresets.extensions } };
+export const TaskListReadOnly: Story = { name: "只读任务列表", args: { format: 'markdown', defaultValue: '- [ ] 只读任务\n- [x] 已完成任务', label: '只读检查项', readOnly: true, toolbarItems: toolbarPresets.extensions } };
 
 function HistoryExample() {
   const [value, setValue] = useState('历史起点');
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="撤销重做" toolbarItems={toolbarPresets.history} /><output data-testid="history-output" className="text-xs text-muted-foreground">{value}</output></div>;
 }
-export const HistoryControls: Story = { name: '撤销与重做', render: () => <HistoryExample /> };
+export const HistoryControls: Story = { name: "撤销与重做", render: () => <HistoryExample /> };
 
 function LinkExample() {
   const [value, setValue] = useState('选择这段文字并设置链接。');
   return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="html" value={value} onValueChange={next => setValue(String(next))} label="链接与选区" toolbarItems={['link', 'unlink', 'undo', 'redo']} /><output data-testid="link-output" className="break-all font-mono text-xs text-muted-foreground">{value}</output></div>;
 }
-export const LinkSelection: Story = { name: '链接与选区保留', render: () => <LinkExample /> };
+export const LinkSelection: Story = { name: "链接与选区保留", render: () => <LinkExample /> };
 
 function FormatStateExample() {
   const [value, setValue] = useState('<p><strong>粗体</strong> 与普通文本</p>');
   return <RichTextEditor format="html" value={value} onValueChange={next => setValue(String(next))} label="格式状态" toolbarItems={['bold', 'italic', 'underline', 'strike', 'code']} />;
 }
-export const ActiveFormatState: Story = { name: '当前格式状态', render: () => <FormatStateExample /> };
+export const ActiveFormatState: Story = { name: "当前格式状态", render: () => <FormatStateExample /> };
 
 function ExternalReplacementExample() {
   const [value, setValue] = useState(markdownValue);
   return <div className="grid gap-[var(--rui-content-gap)]"><div className="flex flex-wrap gap-[var(--rui-space-1)]"><Button size="xs" variant="outline" onClick={() => setValue('## 宿主替换\n\n外部状态已成为新的受控文档。')}>替换文档</Button><Button size="xs" variant="outline" onClick={() => setValue('')}>清空文档</Button></div><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="外部受控文档" /></div>;
 }
-export const ExternalReplacement: Story = { name: '宿主替换与清空', render: () => <ExternalReplacementExample /> };
+export const ExternalReplacement: Story = { name: "宿主替换与清空", render: () => <ExternalReplacementExample /> };
 
-export const RoundTripNormalization: Story = { name: 'Markdown 往返规范化', args: { format: 'markdown', defaultValue: '# 标题\n\n-   不规则缩进\n- 第二项\n\n<div>内嵌 HTML 会按已安装 schema 处理</div>', label: '规范化示例', description: '编辑后的输出会规范缩进与空行；未被 schema 支持的结构可能丢失。' } };
-export const FilteredHtml: Story = { name: 'HTML schema 过滤', args: { format: 'html', defaultValue: '<h2 data-private="secret">安全边界</h2><p onclick="alert(1)">事件属性不会进入规范输出。</p><script>window.bad = true</script>', label: 'HTML 过滤示例', description: '仅保留已安装扩展理解的节点与属性；宿主自定义扩展仍需自行评审输入。' } };
-export const Empty: Story = { name: '空内容与占位', args: { format: 'markdown', defaultValue: '', label: '空文档', placeholder: '记录当前工作区决策…' } };
-export const ReadOnly: Story = { name: '只读内容', args: { format: 'markdown', defaultValue: markdownValue, label: '只读文档', readOnly: true } };
-export const Disabled: Story = { name: '禁用内容', args: { format: 'markdown', defaultValue: markdownValue, label: '禁用文档', disabled: true } };
-export const HostError: Story = { name: '宿主错误', args: { format: 'markdown', defaultValue: markdownValue, label: '保存失败文档', error: '宿主未能保存草稿；当前内容仍保留在编辑器。' } };
-export const InvalidJson: Story = { name: '无效 JSON 文档', args: { format: 'json', value: { type: 'doc', content: [{ type: 'unknown-node' }] }, label: '无效 JSON', onContentError: () => undefined } };
+export const RoundTripNormalization: Story = { name: "Markdown 往返规范化", args: { format: 'markdown', defaultValue: '# 标题\n\n-   不规则缩进\n- 第二项\n\n<div>内嵌 HTML 会按已安装 schema 处理</div>', label: '规范化示例', description: '编辑后的输出会规范缩进与空行；未被 schema 支持的结构可能丢失。' } };
+export const FilteredHtml: Story = { name: "HTML schema 过滤", args: { format: 'html', defaultValue: '<h2 data-private="secret">安全边界</h2><p onclick="alert(1)">事件属性不会进入规范输出。</p><script>window.bad = true</script>', label: 'HTML 过滤示例', description: '仅保留已安装扩展理解的节点与属性；宿主自定义扩展仍需自行评审输入。' } };
+export const Empty: Story = { name: "空内容与占位", args: { format: 'markdown', defaultValue: '', label: '空文档', placeholder: '记录当前工作区决策…' } };
+export const ReadOnly: Story = { name: "只读内容", args: { format: 'markdown', defaultValue: markdownValue, label: '只读文档', readOnly: true } };
+export const Disabled: Story = { name: "禁用内容", args: { format: 'markdown', defaultValue: markdownValue, label: '禁用文档', disabled: true } };
+export const HostError: Story = { name: "宿主错误", args: { format: 'markdown', defaultValue: markdownValue, label: '保存失败文档', error: '宿主未能保存草稿；当前内容仍保留在编辑器。' } };
+export const InvalidJson: Story = { name: "无效 JSON 文档", args: { format: 'json', value: { type: 'doc', content: [{ type: 'unknown-node' }] }, label: '无效 JSON', onContentError: () => undefined } };
 
-export const LongDocument: Story = { name: '长文档', args: { format: 'markdown', defaultValue: Array.from({ length: 18 }, (_, index) => `## 第 ${index + 1} 节\n\n本地内容用于检查文档自然增高与段落间距。`).join('\n\n'), label: '长文档' } };
-export const Narrow: Story = { name: '窄工作面', render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue={'# 窄面板\n\n包含很长且不会撑开页面的文本：workspace/components/rich-text-editor/content-model/serialized-output'} label="窄面板文档" /></div> };
+export const LongDocument: Story = { name: "长文档", args: { format: 'markdown', defaultValue: Array.from({ length: 18 }, (_, index) => `## 第 ${index + 1} 节\n\n本地内容用于检查文档自然增高与段落间距。`).join('\n\n'), label: '长文档' } };
+export const Narrow: Story = { name: "窄工作面", render: () => <div className="max-w-[var(--rui-container-3xs)]"><RichTextEditor format="markdown" defaultValue={'# 窄面板\n\n包含很长且不会撑开页面的文本：workspace/components/rich-text-editor/content-model/serialized-output'} label="窄面板文档" /></div> };
 
 export const ImeInput: Story = {
-  name: '中文输入法与真实文档更新',
+  name: "中文输入法与真实文档更新",
   render: function Render() { const [value, setValue] = useState(''); return <div className="grid gap-[var(--rui-content-gap)]"><RichTextEditor format="markdown" value={value} onValueChange={next => setValue(String(next))} label="中文草稿" /><output data-testid="ime-output" className="text-xs text-muted-foreground">{value || '空'}</output></div>; },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

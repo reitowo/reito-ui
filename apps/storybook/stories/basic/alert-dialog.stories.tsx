@@ -5,8 +5,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AlertDialogDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Alert Dialog",
+const meta = { id: "基础-alert-dialog",
+  title: "基础/AlertDialog 警告对话框",
   component: AlertDialogDemo,
   tags: ["autodocs"],
   parameters: {
@@ -23,7 +23,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <AlertDialogDemo />,
 };
 
@@ -69,15 +69,15 @@ function ArchiveDialog({
   );
 }
 export const Default: Story = {
-  name: "尺寸 / 默认确认框",
+  name: "尺寸 · 默认确认框",
   render: () => <ArchiveDialog />,
 };
 export const Small: Story = {
-  name: "尺寸 / 紧凑确认框",
+  name: "尺寸 · 紧凑确认框",
   render: () => <ArchiveDialog size="sm" />,
 };
 export const Loading: Story = {
-  name: "状态 / 提交中",
+  name: "状态 · 提交中",
   render: () => <ArchiveDialog busy />,
 };
 

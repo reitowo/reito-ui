@@ -15,15 +15,15 @@ const remoteResources: ResourceItem[] = Array.from({ length: 80 }, (_, index) =>
   updatedAt: `2026-09-${String((index % 28) + 1).padStart(2, '0')}T10:00:00+08:00`,
 }));
 
-const meta = {
-  title: '复杂/ResourceList 资源列表', component: ResourceListDemo,
+const meta = { id: "复杂-resourcelist-资源列表",
+  title: "复杂/ResourceList 资源列表", component: ResourceListDemo,
   parameters: { docs: { description: { component: '资源列表支持本地或远程数据、虚拟化、增量加载、稳定 ID 选择和宿主行操作。远程模式由宿主响应查询与排序，并传入当前加载窗口和总量。' } } },
 } satisfies Meta<typeof ResourceListDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { selectionMode: 'multiple', selectedIds: [], query: '', sort: 'name-asc', loading: false, disabled: false, label: '项目资源', error: '', empty: false, virtualized: false, overscan: 4 },
   argTypes: {
     selectionMode: choiceControl(['none', 'single', 'multiple']),
@@ -44,7 +44,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Overview: Story = { name: '总览', render: () => <ResourceListDemo /> };
+export const Overview: Story = { name: "总览对比", render: () => <ResourceListDemo /> };
 
 function LocalInteractive() {
   const [selected, setSelected] = useState<string[]>([]);
@@ -57,7 +57,7 @@ function LocalInteractive() {
 }
 
 export const Interactive: Story = {
-  name: '交互场景：筛选、批量选择、排序与行操作',
+  name: "交互 · 筛选、批量选择、排序与行操作",
   render: () => <LocalInteractive />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -89,13 +89,13 @@ function Incremental({ automatic = false, error = false }: { automatic?: boolean
     label={automatic ? '自动增量资源' : '手动增量资源'} />;
 }
 
-export const Virtualized: Story = { name: '虚拟化大列表', render: () => <ResourceList items={remoteResources} dataMode="remote" totalCount={remoteResources.length} virtualized viewportClassName="h-64" selectionMode="multiple" label="虚拟资源" /> };
-export const ManualIncremental: Story = { name: '手动增量加载', render: () => <Incremental /> };
-export const AutomaticIncremental: Story = { name: '滚动触发增量加载', render: () => <Incremental automatic /> };
-export const LoadMoreError: Story = { name: '增量加载错误与重试', render: () => <Incremental error /> };
+export const Virtualized: Story = { name: "虚拟化大列表", render: () => <ResourceList items={remoteResources} dataMode="remote" totalCount={remoteResources.length} virtualized viewportClassName="h-64" selectionMode="multiple" label="虚拟资源" /> };
+export const ManualIncremental: Story = { name: "手动增量加载", render: () => <Incremental /> };
+export const AutomaticIncremental: Story = { name: "滚动触发增量加载", render: () => <Incremental automatic /> };
+export const LoadMoreError: Story = { name: "增量加载错误与重试", render: () => <Incremental error /> };
 
 export const QueryReplacement: Story = {
-  name: '远程查询替换结果',
+  name: "远程查询替换结果",
   render: function QueryReplacementRender() {
     const [query, setQuery] = useState('');
     const [selected, setSelected] = useState(['resource-003']);
@@ -105,7 +105,7 @@ export const QueryReplacement: Story = {
 };
 
 export const SelectionAcrossWindows: Story = {
-  name: '跨窗口选择保持',
+  name: "跨窗口选择保持",
   render: function SelectionAcrossWindowsRender() {
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState(['resource-003']);
@@ -117,11 +117,11 @@ export const SelectionAcrossWindows: Story = {
   },
 };
 
-export const SingleSelection: Story = { name: '单选', render: () => <ResourceList items={demoResources.filter(item => !item.disabled)} selectionMode="single" /> };
-export const InitialLoading: Story = { name: '首次加载', render: () => <ResourceList items={[]} loading /> };
-export const InitialError: Story = { name: '首次加载错误', render: () => <ResourceList items={[]} error="无法加载资源，请检查宿主数据来源。" onRetry={() => undefined} /> };
-export const Empty: Story = { name: '空资源', render: () => <ResourceList items={[]} /> };
-export const Disabled: Story = { name: '禁用资源操作', render: () => <ResourceList items={demoResources.filter(item => !item.disabled)} disabled /> };
-export const Narrow: Story = { name: '窄宽度', render: () => <div className="max-w-80"><ResourceList items={remoteResources.slice(0, 10)} dataMode="remote" totalCount={80} virtualized viewportClassName="h-52" selectionMode="multiple" hasMore onLoadMore={() => undefined} label="窄面板资源" /></div> };
+export const SingleSelection: Story = { name: "单选", render: () => <ResourceList items={demoResources.filter(item => !item.disabled)} selectionMode="single" /> };
+export const InitialLoading: Story = { name: "首次加载", render: () => <ResourceList items={[]} loading /> };
+export const InitialError: Story = { name: "首次加载错误", render: () => <ResourceList items={[]} error="无法加载资源，请检查宿主数据来源。" onRetry={() => undefined} /> };
+export const Empty: Story = { name: "空资源", render: () => <ResourceList items={[]} /> };
+export const Disabled: Story = { name: "禁用资源操作", render: () => <ResourceList items={demoResources.filter(item => !item.disabled)} disabled /> };
+export const Narrow: Story = { name: "窄宽度", render: () => <div className="max-w-80"><ResourceList items={remoteResources.slice(0, 10)} dataMode="remote" totalCount={80} virtualized viewportClassName="h-52" selectionMode="multiple" hasMore onLoadMore={() => undefined} label="窄面板资源" /></div> };
 
 type PlaygroundArgs = Pick<ComponentProps<typeof ResourceList>, 'selectionMode' | 'selectedIds' | 'query' | 'sort' | 'loading' | 'disabled' | 'label' | 'error' | 'virtualized' | 'overscan'> & { empty: boolean };

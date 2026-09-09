@@ -4,8 +4,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ContextMenuDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Context Menu",
+const meta = { id: "基础-context-menu",
+  title: "基础/ContextMenu 右键菜单",
   component: ContextMenuDemo,
   tags: ["autodocs"],
   parameters: {
@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <ContextMenuDemo />,
 };
 
@@ -53,19 +53,19 @@ function FileContextMenu({
   );
 }
 export const Default: Story = {
-  name: "条目 / 普通操作",
+  name: "条目 · 普通操作",
   render: () => <FileContextMenu />,
 };
 export const Disabled: Story = {
-  name: "条目 / 禁用操作",
+  name: "条目 · 禁用操作",
   render: () => <FileContextMenu state="disabled" />,
 };
 export const Destructive: Story = {
-  name: "条目 / 危险操作",
+  name: "条目 · 危险操作",
   render: () => <FileContextMenu state="destructive" />,
 };
 export const Checkbox: Story = {
-  name: "条目 / 复选操作",
+  name: "条目 · 复选操作",
   render: () => <FileContextMenu state="checkbox" />,
 };
 

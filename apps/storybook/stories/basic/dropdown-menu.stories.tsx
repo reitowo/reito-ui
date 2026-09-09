@@ -5,8 +5,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { DropdownMenuDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Dropdown Menu",
+const meta = { id: "基础-dropdown-menu",
+  title: "基础/DropdownMenu 下拉菜单",
   component: DropdownMenuDemo,
   tags: ["autodocs"],
   parameters: {
@@ -23,7 +23,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <DropdownMenuDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -71,19 +71,19 @@ function TaskMenu({
   );
 }
 export const Default: Story = {
-  name: "条目 / 普通操作",
+  name: "条目 · 普通操作",
   render: () => <TaskMenu />,
 };
 export const Disabled: Story = {
-  name: "条目 / 禁用操作",
+  name: "条目 · 禁用操作",
   render: () => <TaskMenu state="disabled" />,
 };
 export const Destructive: Story = {
-  name: "条目 / 危险操作",
+  name: "条目 · 危险操作",
   render: () => <TaskMenu state="destructive" />,
 };
 export const Checkbox: Story = {
-  name: "条目 / 复选操作",
+  name: "条目 · 复选操作",
   render: () => <TaskMenu state="checkbox" />,
 };
 

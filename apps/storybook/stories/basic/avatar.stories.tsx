@@ -3,8 +3,8 @@ import { Check } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AvatarDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Avatar",
+const meta = { id: "基础-avatar",
+  title: "基础/Avatar 头像",
   component: P.Avatar,
 
   tags: ["autodocs"],
@@ -26,7 +26,7 @@ export const Overview: Story = {
 };
 
 export const Default: Story = {
-  name: "尺寸 / 默认",
+  name: "尺寸 · 默认",
   args: {
     role: "img",
     "aria-label": "Reito",
@@ -34,7 +34,7 @@ export const Default: Story = {
   },
 };
 export const Small: Story = {
-  name: "尺寸 / 小",
+  name: "尺寸 · 小",
   args: {
     size: "sm",
     role: "img",
@@ -43,7 +43,7 @@ export const Small: Story = {
   },
 };
 export const Large: Story = {
-  name: "尺寸 / 大",
+  name: "尺寸 · 大",
   args: {
     size: "lg",
     role: "img",
@@ -52,7 +52,7 @@ export const Large: Story = {
   },
 };
 export const WithBadge: Story = {
-  name: "内容 / 状态标记",
+  name: "内容 · 状态标记",
   args: {
     role: "img",
     "aria-label": "Reito，在线",
@@ -67,7 +67,7 @@ export const WithBadge: Story = {
   },
 };
 export const Group: Story = {
-  name: "组合 / 头像组",
+  name: "组合 · 头像组",
   render: () => (
     <P.AvatarGroup role="group" aria-label="工作区成员">
       <P.Avatar role="img" aria-label="Reito">

@@ -8,7 +8,7 @@ import { ComposerDemo, demoComposerCommands, demoComposerMentions } from '../../
 import { Button } from '../../../../packages/ui/src/primitives/button.js';
 import { StoryFrame } from './story-frame.js';
 
-const meta = { title: 'AI/Composer', component: Composer, args: { onSubmit: fn() }, decorators: [Story => <StoryFrame><Story /></StoryFrame>], parameters: { docs: { description: { component: '受控或内部草稿；Enter 提交、Shift+Enter 换行、中文 IME 组合保护。异步提交成功才清空未改动的草稿，失败保留。请求和停止行为由宿主提供。' } } } } satisfies Meta<typeof Composer>;
+const meta = { id: "ai-composer", title: "AI/Composer 消息输入", component: Composer, args: { onSubmit: fn() }, decorators: [Story => <StoryFrame><Story /></StoryFrame>], parameters: { docs: { description: { component: '受控或内部草稿；Enter 提交、Shift+Enter 换行、中文 IME 组合保护。异步提交成功才清空未改动的草稿，失败保留。请求和停止行为由宿主提供。' } } } } satisfies Meta<typeof Composer>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
@@ -39,7 +39,7 @@ function ComposerPlayground({ args, updateArgs }: { args: PlaygroundArgs; update
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { value: '', disabled: false, running: false, placeholder: '描述你的下一步…', label: '消息草稿', hint: 'Enter 发送 · Shift + Enter 换行 · / 命令 · @ 提及', error: '', enableCommands: true, enableMentions: true, includeContext: true },
   argTypes: { value: textControl, disabled: booleanControl, running: booleanControl, placeholder: textControl, label: textControl, hint: textControl, error: textControl, enableCommands: booleanControl, enableMentions: booleanControl, includeContext: booleanControl },
   parameters: { controls: { include: ['value', 'disabled', 'running', 'placeholder', 'label', 'hint', 'error', 'enableCommands', 'enableMentions', 'includeContext'] } },
@@ -49,12 +49,12 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Guidelines: Story = { name: '交互场景：上下文、输入与发送', render: () => <ComposerDemo /> };
-export const Disabled: Story = { name: '禁用', args: { disabled: true, defaultValue: '等待选择工作区' } };
-export const Empty: Story = { name: '空草稿', args: { placeholder: '开始一条本地请求…' } };
-export const ExternalError: Story = { name: '外部错误', args: { defaultValue: '检查共享令牌', error: '当前工作区不可用，草稿已保留。' } };
-export const Submitting: Story = { name: '提交中', args: { defaultValue: '提交期间保留草稿', onSubmit: fn(() => new Promise<void>(() => undefined)) }, play: async ({ canvasElement }) => { const canvas = within(canvasElement); await userEvent.click(canvas.getByRole('button', { name: '发送消息' })); await expect(canvas.getByRole('button', { name: '正在提交' })).toBeDisabled(); await expect(canvas.getByRole('textbox')).toHaveValue('提交期间保留草稿'); } };
-export const FailedSubmissionRetainsDraft: Story = { name: '交互场景：失败保留草稿与重试',
+export const Guidelines: Story = { name: "交互 · 上下文、输入与发送", render: () => <ComposerDemo /> };
+export const Disabled: Story = { name: "状态 · 禁用", args: { disabled: true, defaultValue: '等待选择工作区' } };
+export const Empty: Story = { name: "空草稿", args: { placeholder: '开始一条本地请求…' } };
+export const ExternalError: Story = { name: "外部错误", args: { defaultValue: '检查共享令牌', error: '当前工作区不可用，草稿已保留。' } };
+export const Submitting: Story = { name: "提交中", args: { defaultValue: '提交期间保留草稿', onSubmit: fn(() => new Promise<void>(() => undefined)) }, play: async ({ canvasElement }) => { const canvas = within(canvasElement); await userEvent.click(canvas.getByRole('button', { name: '发送消息' })); await expect(canvas.getByRole('button', { name: '正在提交' })).toBeDisabled(); await expect(canvas.getByRole('textbox')).toHaveValue('提交期间保留草稿'); } };
+export const FailedSubmissionRetainsDraft: Story = { name: "交互 · 失败保留草稿与重试",
   args: { onSubmit: fn() },
   play: async ({ canvasElement, args }) => {
     args.onSubmit.mockRejectedValueOnce(new Error('本地提交失败，请重试。')).mockResolvedValue(undefined);
@@ -71,7 +71,7 @@ export const FailedSubmissionRetainsDraft: Story = { name: '交互场景：失�
     await expect(args.onSubmit).toHaveBeenLastCalledWith('检查共享令牌');
   },
 };
-export const CompositionAndMultiline: Story = { name: '交互场景：中文 IME 与多行',
+export const CompositionAndMultiline: Story = { name: "交互 · 中文 IME 与多行",
   play: async ({ canvasElement, args }) => {
     const input = within(canvasElement).getByRole('textbox', { name: '消息草稿' });
     await userEvent.click(input);
@@ -91,8 +91,8 @@ export const CompositionAndMultiline: Story = { name: '交互场景：中文 IME
   },
   parameters: { docs: { description: { story: '此 play 检查合成 composition 事件与换行保护；操作系统的真实中文输入法仍需人工检查。' } } },
 };
-export const StopAction: Story = { name: '交互场景：停止生成', args: { onStop: fn(), defaultValue: '下一条草稿' }, render: function StopDemo(args) { const [running, setRunning] = useState(true); return <Composer {...args} running={running} onStop={() => { args.onStop?.(); setRunning(false); }} />; }, play: async ({ canvasElement, args }) => { const canvas = within(canvasElement); await userEvent.click(canvas.getByRole('button', { name: '停止生成' })); await expect(args.onStop).toHaveBeenCalledTimes(1); await expect(canvas.getByRole('textbox')).toHaveValue('下一条草稿'); await expect(canvas.getByRole('button', { name: '发送消息' })).toBeEnabled(); } };
-export const StopPreservesControlledDraft: Story = { name: '交互场景：停止并保留受控草稿',
+export const StopAction: Story = { name: "交互 · 停止生成", args: { onStop: fn(), defaultValue: '下一条草稿' }, render: function StopDemo(args) { const [running, setRunning] = useState(true); return <Composer {...args} running={running} onStop={() => { args.onStop?.(); setRunning(false); }} />; }, play: async ({ canvasElement, args }) => { const canvas = within(canvasElement); await userEvent.click(canvas.getByRole('button', { name: '停止生成' })); await expect(args.onStop).toHaveBeenCalledTimes(1); await expect(canvas.getByRole('textbox')).toHaveValue('下一条草稿'); await expect(canvas.getByRole('button', { name: '发送消息' })).toBeEnabled(); } };
+export const StopPreservesControlledDraft: Story = { name: "交互 · 停止并保留受控草稿",
   render: function ControlledStopDemo(args) {
     const [running, setRunning] = useState(true);
     const [value, setValue] = useState('停止后继续编辑这一条草稿');
@@ -108,11 +108,11 @@ export const StopPreservesControlledDraft: Story = { name: '交互场景：停�
   parameters: { docs: { description: { story: '宿主同步切换 running=false 时，停止按钮的默认点击行为不会转成表单提交；受控草稿保留。' } } },
 };
 
-export const Default: Story = { name: '默认草稿', args: { defaultValue: '检查共享组件在桌面工作区里的布局。' } };
-export const Running: Story = { name: '生成中', args: { running: true, onStop: fn(), defaultValue: '可继续编辑下一条草稿' } };
+export const Default: Story = { name: "默认草稿", args: { defaultValue: '检查共享组件在桌面工作区里的布局。' } };
+export const Running: Story = { name: "生成中", args: { running: true, onStop: fn(), defaultValue: '可继续编辑下一条草稿' } };
 
 export const SlashCommands: Story = {
-  name: '交互场景：斜杠命令',
+  name: "交互 · 斜杠命令",
   args: { commandItems: demoComposerCommands },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -127,7 +127,7 @@ export const SlashCommands: Story = {
 };
 
 export const FileAndPersonMentions: Story = {
-  name: '交互场景：文件与人员提及',
+  name: "交互 · 文件与人员提及",
   args: { mentionItems: demoComposerMentions },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -150,7 +150,7 @@ function StructuredDraftExample({ onSubmit }: { onSubmit: NonNullable<ComposerPr
   return <Composer draft={draft} onDraftChange={setDraft} onSubmit={() => undefined} onSubmitDraft={onSubmit} mentionItems={demoComposerMentions} contextItems={contexts} onContextRemove={id => setContexts(current => current.filter(item => item.id !== id))} />;
 }
 export const StructuredDraftSubmission: Story = {
-  name: '结构化草稿提交',
+  name: "结构化草稿提交",
   args: { onSubmit: fn() },
   render: args => <StructuredDraftExample onSubmit={args.onSubmit} />,
   play: async ({ canvasElement, args }) => {
@@ -165,7 +165,7 @@ export const StructuredDraftSubmission: Story = {
 };
 
 export const MentionRemoval: Story = {
-  name: '交互场景：移除提及值',
+  name: "交互 · 移除提及值",
   args: { mentionItems: demoComposerMentions },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -178,10 +178,10 @@ export const MentionRemoval: Story = {
   },
 };
 
-export const DisabledAndEmptySuggestions: Story = { name: '禁用与空建议', args: { commandItems: demoComposerCommands, mentionItems: demoComposerMentions, defaultValue: '/remote' } };
+export const DisabledAndEmptySuggestions: Story = { name: "禁用与空建议", args: { commandItems: demoComposerCommands, mentionItems: demoComposerMentions, defaultValue: '/remote' } };
 
 export const StructuredFailure: Story = {
-  name: '结构化提交失败与恢复',
+  name: "结构化提交失败与恢复",
   render: function StructuredFailureExample() {
     const [attempts, setAttempts] = useState(0);
     const [receipt, setReceipt] = useState('');
@@ -199,12 +199,12 @@ export const StructuredFailure: Story = {
 };
 
 export const LongSuggestions: Story = {
-  name: '长建议列表键盘定位',
+  name: "长建议列表键盘定位",
   args: { commandItems: Array.from({ length: 30 }, (_, index) => ({ id: `command-${index}`, label: `command-${index}`, description: `本地命令 ${index + 1}`, insertText: `命令 ${index + 1}` })) },
 };
 
 export const ReplacePendingDraft: Story = {
-  name: '提交期间宿主替换草稿',
+  name: "提交期间宿主替换草稿",
   render: function ReplacePendingDraftExample() {
     const [draft, setDraft] = useState<ComposerDraft>({ text: '原始草稿', mentions: [], contextIds: ['original'] });
     const complete = useRef<() => void>(() => undefined);
@@ -217,14 +217,14 @@ export const ReplacePendingDraft: Story = {
 };
 
 export const LocalAttachments: Story = {
-  name: '附件：选择、粘贴与拖入',
+  name: "附件 · 选择、粘贴与拖入",
   render: function LocalAttachmentsExample() {
     const [receipt, setReceipt] = useState('');
     return <><Composer attachmentOptions={{ accept: '.txt,.md,image/*', maxFiles: 2, maxSize: 1024 }} onSubmit={() => undefined} onSubmitDraft={next => setReceipt(JSON.stringify({ text: next.text, files: next.attachments?.map(item => item.file.name) }))} /><output aria-label="附件提交结果">{receipt}</output></>;
   },
 };
 export const AttachmentUpload: Story = {
-  name: '附件：上传、取消与重试',
+  name: "附件 · 上传、取消与重试",
   render: function AttachmentUploadExample() {
     const [receipt, setReceipt] = useState('');
     const attempts = useRef(new Set<string>());
@@ -254,7 +254,7 @@ function AttachmentPlaygroundExample(args: AttachmentPlaygroundArgs) {
   /><output aria-label="附件提交结果">{receipt}</output></>;
 }
 export const AttachmentPlayground: StoryObj<AttachmentPlaygroundArgs> = {
-  name: '附件参数调试',
+  name: "附件参数调试",
   args: { accept: '.txt,.md,image/*', maxFiles: 3, maxSize: 1048576, preview: true, disabled: false, failSubmit: false },
   argTypes: { accept: textControl, maxFiles: { control: { type: 'number', min: 1 } }, maxSize: { control: { type: 'number', min: 1 } }, preview: booleanControl, disabled: booleanControl, failSubmit: booleanControl },
   parameters: { controls: { include: ['accept', 'maxFiles', 'maxSize', 'preview', 'disabled', 'failSubmit'] } },
@@ -262,7 +262,7 @@ export const AttachmentPlayground: StoryObj<AttachmentPlaygroundArgs> = {
 };
 
 export const ReplaceUploadingAttachment: Story = {
-  name: '附件：宿主替换并中止旧上传',
+  name: "附件 · 宿主替换并中止旧上传",
   render: function ReplaceUploadingAttachmentExample() {
     const [draft, setDraft] = useState<ComposerDraft>({ text: '保留正文', mentions: [], contextIds: [] });
     const [aborted, setAborted] = useState(false);

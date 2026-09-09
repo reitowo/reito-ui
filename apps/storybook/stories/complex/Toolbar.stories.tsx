@@ -6,8 +6,8 @@ import { Toolbar, type ToolbarGroup, type ToolbarOverflow, type ToolbarSize } fr
 import { ToolbarDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, numberControl, textControl } from '../feature-controls.js';
 
-const meta = {
-  title: '复杂/Toolbar 工具栏',
+const meta = { id: "复杂-toolbar-工具栏",
+  title: "复杂/Toolbar 工具栏",
   component: Toolbar,
   args: { label: '编辑操作', groups: [] },
   tags: ['autodocs'],
@@ -58,7 +58,7 @@ function groupsFor(args: Pick<PlaygroundArgs, 'bold' | 'busy'>, update?: (next: 
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: { label: '编辑操作', size: 'xs', overflow: 'menu', maxVisibleItems: 4, showLabels: false, disabled: false, bold: true, busy: false, status: '本地草稿', receipt: '等待操作。' },
   argTypes: {
     label: textControl,
@@ -82,40 +82,40 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '默认本地示例', render: () => <ToolbarDemo /> };
+export const Default: Story = { name: "默认本地示例", render: () => <ToolbarDemo /> };
 
 export const ActionGroups: Story = {
-  name: '命令分组',
+  name: "命令分组",
   render: () => <Toolbar label="文件操作" groups={groupsFor({ bold: false, busy: false }).slice(0, 2)} showLabels />,
 };
 
 export const ToggleStates: Story = {
-  name: '切换状态',
+  name: "切换状态",
   render: () => <Toolbar label="格式状态" groups={groupsFor({ bold: true, busy: false }).slice(1, 2)} />,
 };
 
 export const MenuOverflow: Story = {
-  name: '溢出菜单',
+  name: "溢出菜单",
   render: () => <div className="w-[var(--rui-container-xs)] max-w-full"><Toolbar label="窄编辑操作" groups={groupsFor({ bold: true, busy: false })} overflow="menu" maxVisibleItems={3} /></div>,
 };
 
 export const ScrollOverflow: Story = {
-  name: '横向滚动保留动作',
+  name: "横向滚动保留动作",
   render: () => <div className="w-[var(--rui-container-2xs)] max-w-full"><Toolbar label="可滚动编辑操作" groups={groupsFor({ bold: true, busy: false })} overflow="scroll" showLabels /></div>,
 };
 
 export const DisabledAndLoading: Story = {
-  name: '禁用与忙碌',
+  name: "禁用与忙碌",
   render: () => <Toolbar label="任务操作" groups={groupsFor({ bold: false, busy: true })} overflow="menu" maxVisibleItems={5} />,
 };
 
 export const StatusAndLabels: Story = {
-  name: '文字标签与状态',
+  name: "文字标签与状态",
   render: () => <Toolbar label="工作区操作" groups={groupsFor({ bold: true, busy: false }).slice(0, 2)} size="sm" showLabels status="已保存" />,
 };
 
 export const KeyboardNavigation: Story = {
-  name: '方向键漫游焦点',
+  name: "方向键漫游焦点",
   render: () => <Toolbar label="键盘编辑操作" groups={groupsFor({ bold: false, busy: false })} overflow="menu" maxVisibleItems={3} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -131,11 +131,11 @@ export const KeyboardNavigation: Story = {
 };
 
 export const EntireToolbarDisabled: Story = {
-  name: '整栏禁用',
+  name: "整栏禁用",
   render: () => <Toolbar label="只读编辑操作" groups={groupsFor({ bold: true, busy: false })} overflow="menu" maxVisibleItems={4} disabled status="只读" />,
 };
 
 export const CustomLoadingIcon: Story = {
-  name: '宿主状态内容',
+  name: "宿主状态内容",
   render: () => <Toolbar label="同步操作" groups={[{ id: 'sync', label: '同步', items: [{ id: 'syncing', label: '正在同步', icon: <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />, disabled: true, showLabel: true }] }]} status="2 / 4" />,
 };

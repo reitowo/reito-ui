@@ -8,8 +8,8 @@ import { ConfirmPopover } from '../../../../packages/ui/src/complex/confirm-popo
 import { ConfirmPopoverDemo } from '../../../../packages/ui/src/complex/catalog.js';
 import { booleanControl, textControl } from '../feature-controls.js';
 
-const meta = {
-  title: '复杂/ConfirmPopover 锚点确认',
+const meta = { id: "复杂-confirmpopover-锚点确认",
+  title: "复杂/ConfirmPopover 锚点确认",
   component: ConfirmPopover,
   args: {
     trigger: <Button type="button" variant="outline" size="sm">归档</Button>,
@@ -50,7 +50,7 @@ type PlaygroundArgs = {
 const delay = (duration = 240) => new Promise(resolve => window.setTimeout(resolve, duration));
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  name: '参数调试',
+  name: "参数调试",
   args: {
     title: '归档这个项目？',
     description: '项目会从当前列表移出，可以稍后恢复。',
@@ -104,10 +104,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
 };
 
-export const Default: Story = { name: '默认本地示例', render: () => <ConfirmPopoverDemo /> };
+export const Default: Story = { name: "默认本地示例", render: () => <ConfirmPopoverDemo /> };
 
 export const Destructive: Story = {
-  name: '危险确认',
+  name: "危险确认",
   args: {
     trigger: <Button type="button" variant="outline" size="sm"><Trash2 aria-hidden="true" />删除草稿</Button>,
     title: '删除这份草稿？',
@@ -120,7 +120,7 @@ export const Destructive: Story = {
 };
 
 export const WithDetails: Story = {
-  name: '附加详情',
+  name: "附加详情",
   args: {
     trigger: <Button type="button" variant="outline" size="sm">移除连接</Button>,
     title: '移除本地连接？',
@@ -134,7 +134,7 @@ export const WithDetails: Story = {
 };
 
 export const ExternalPending: Story = {
-  name: '外部忙碌状态',
+  name: "外部忙碌状态",
   args: {
     trigger: <Button type="button" variant="outline" size="sm">归档</Button>,
     title: '归档这个项目？',
@@ -147,7 +147,7 @@ export const ExternalPending: Story = {
 };
 
 export const HostError: Story = {
-  name: '宿主错误状态',
+  name: "宿主错误状态",
   args: {
     trigger: <Button type="button" variant="outline" size="sm">重新连接</Button>,
     title: '重新连接工作区？',
@@ -180,11 +180,11 @@ function AsyncExample({ fail = false }: { fail?: boolean }) {
   </div>;
 }
 
-export const AsyncSuccess: Story = { name: '异步成功', render: () => <AsyncExample /> };
-export const AsyncFailure: Story = { name: '异步失败与重试', render: () => <AsyncExample fail /> };
+export const AsyncSuccess: Story = { name: "异步成功", render: () => <AsyncExample /> };
+export const AsyncFailure: Story = { name: "异步失败与重试", render: () => <AsyncExample fail /> };
 
 export const Disabled: Story = {
-  name: '禁用触发器',
+  name: "禁用触发器",
   args: {
     trigger: <Button type="button" variant="outline" size="sm">删除锁定项目</Button>,
     title: '删除锁定项目？',
@@ -196,7 +196,7 @@ export const Disabled: Story = {
 };
 
 export const KeyboardFocus: Story = {
-  name: '键盘关闭与焦点恢复',
+  name: "键盘关闭与焦点恢复",
   render: () => <div className="grid min-h-[var(--rui-container-sm)] place-content-center">
     <ConfirmPopover
       trigger={<Button type="button" variant="outline" size="sm">归档项目</Button>}

@@ -5,8 +5,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AccordionDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Accordion",
+const meta = { id: "基础-accordion",
+  title: "基础/Accordion 折叠面板",
   component: AccordionDemo,
   tags: ["autodocs"],
   parameters: {
@@ -43,19 +43,19 @@ function Sections(props: React.ComponentProps<typeof P.Accordion>) {
   );
 }
 export const Default: Story = {
-  name: "状态 / 全部收起",
+  name: "状态 · 全部收起",
   render: () => <Sections />,
 };
 export const Expanded: Story = {
-  name: "状态 / 默认展开",
+  name: "状态 · 默认展开",
   render: () => <Sections defaultValue={["theme"]} />,
 };
 export const Multiple: Story = {
-  name: "行为 / 多项展开",
+  name: "行为 · 多项展开",
   render: () => <Sections multiple defaultValue={["theme", "reuse"]} />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用",
+  name: "状态 · 禁用",
   render: () => <Sections disabled />,
 };
 

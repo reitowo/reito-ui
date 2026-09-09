@@ -6,8 +6,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { ComboboxDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Combobox",
+const meta = { id: "基础-combobox",
+  title: "基础/Combobox 组合框",
   component: ComboboxDemo,
   tags: ["autodocs"],
   parameters: {
@@ -23,7 +23,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <ComboboxDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -83,7 +83,7 @@ function TechnologyPicker({
   );
 }
 export const Default: Story = {
-  name: "状态 / 未选择",
+  name: "状态 · 未选择",
   render: () => <TechnologyPicker />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -112,19 +112,19 @@ export const Default: Story = {
   },
 };
 export const Selected: Story = {
-  name: "状态 / 已选择可清除",
+  name: "状态 · 已选择可清除",
   render: () => <TechnologyPicker initial="TypeScript" />,
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用",
+  name: "状态 · 禁用",
   render: () => <TechnologyPicker disabled initial="React" />,
 };
 export const Empty: Story = {
-  name: "状态 / 无可选项",
+  name: "状态 · 无可选项",
   render: () => <TechnologyPicker empty />,
 };
 export const Invalid: Story = {
-  name: "状态 / 校验错误",
+  name: "状态 · 校验错误",
   render: () => <TechnologyPicker invalid />,
 };
 

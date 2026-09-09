@@ -4,8 +4,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { HoverCardDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Hover Card",
+const meta = { id: "基础-hover-card",
+  title: "基础/HoverCard 悬停卡片",
   component: HoverCardDemo,
   tags: ["autodocs"],
   parameters: {
@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <HoverCardDemo />,
 };
 
@@ -50,11 +50,11 @@ function DocumentPreview({ side = "bottom" }: { side?: "bottom" | "right" }) {
   );
 }
 export const Default: Story = {
-  name: "位置 / 下方预览",
+  name: "位置 · 下方预览",
   render: () => <DocumentPreview />,
 };
 export const Beside: Story = {
-  name: "位置 / 右侧预览",
+  name: "位置 · 右侧预览",
   render: () => <DocumentPreview side="right" />,
 };
 

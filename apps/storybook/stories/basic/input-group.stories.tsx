@@ -3,8 +3,8 @@ import { Folder, Search, ArrowUp } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InputGroupDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Input Group",
+const meta = { id: "基础-input-group",
+  title: "基础/InputGroup 输入组合",
   component: InputGroupDemo,
   tags: ["autodocs"],
   parameters: {
@@ -25,7 +25,7 @@ export const Overview: Story = {
 };
 
 export const Default: Story = {
-  name: "布局 / 单行前后缀",
+  name: "布局 · 单行前后缀",
   render: () => (
     <div className="w-full max-w-md">
       <P.InputGroup>
@@ -41,7 +41,7 @@ export const Default: Story = {
   ),
 };
 export const Multiline: Story = {
-  name: "布局 / 多行底部操作",
+  name: "布局 · 多行底部操作",
   render: () => (
     <div className="w-full max-w-md">
       <P.InputGroup>
@@ -62,7 +62,7 @@ export const Multiline: Story = {
   ),
 };
 export const TextPrefix: Story = {
-  name: "内容 / 文字前缀",
+  name: "内容 · 文字前缀",
   render: () => (
     <div className="w-full max-w-md">
       <P.InputGroup>
@@ -78,7 +78,7 @@ export const TextPrefix: Story = {
   ),
 };
 export const Invalid: Story = {
-  name: "状态 / 校验错误",
+  name: "状态 · 校验错误",
   render: () => (
     <div className="w-full max-w-md">
       <P.InputGroup>
@@ -95,7 +95,7 @@ export const Invalid: Story = {
   ),
 };
 export const Disabled: Story = {
-  name: "状态 / 禁用",
+  name: "状态 · 禁用",
   render: () => (
     <div className="w-full max-w-md">
       <P.InputGroup>

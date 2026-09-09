@@ -3,8 +3,8 @@ import * as P from "@reito/ui/basic";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CardDemo } from "../../../../packages/ui/src/basic/catalog.js";
 
-const meta = {
-  title: "基础/Card",
+const meta = { id: "基础-card",
+  title: "基础/Card 卡片",
   component: CardDemo,
   tags: ["autodocs"],
   parameters: {
@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
-  name: "交互示例",
+  name: "交互演示",
   render: () => <CardDemo />,
 };
 
@@ -47,15 +47,15 @@ function WorkspaceCard({
   );
 }
 export const Default: Story = {
-  name: "尺寸 / 默认",
+  name: "尺寸 · 默认",
   render: () => <WorkspaceCard />,
 };
 export const Small: Story = {
-  name: "尺寸 / 紧凑",
+  name: "尺寸 · 紧凑",
   render: () => <WorkspaceCard size="sm" />,
 };
 export const WithFooter: Story = {
-  name: "组合 / 页脚",
+  name: "组合 · 页脚",
   render: () => <WorkspaceCard footer />,
 };
 
