@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [react(), tailwindcss()],
   resolve: { alias: [
     { find: /^@reito\/ui\/styles\.css$/, replacement: fileURLToPath(new URL('../../packages/ui/src/styles.css', import.meta.url)) },

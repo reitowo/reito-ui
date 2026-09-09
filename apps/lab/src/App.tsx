@@ -41,11 +41,11 @@ export function App() {
   const selectLayer = (id: LayerId) => { setQuery(''); setSelection(all.find(entry => entry.layer === id)!); };
   const updateReview = (patch: Partial<Review>) => setReviews(previous => { const updated = { ...previous, [key]: { ...review, ...patch } }; saveSetting('reito-v3-reviews', JSON.stringify(updated)); return updated; });
   const storyId = catalogManifest.entries.find(entry => entry.layer === selection.layer && entry.id === selection.id)!.storyId;
-  const storybookBase = import.meta.env.VITE_STORYBOOK_URL || 'http://127.0.0.1:6007';
+  const storybookBase = (import.meta.env.VITE_STORYBOOK_URL || (import.meta.env.PROD ? `${import.meta.env.BASE_URL}storybook` : 'http://127.0.0.1:6007')).replace(/\/$/, '');
   const storybookUrl = `${storybookBase}/?path=/story/${encodeURIComponent(storyId)}&globals=theme:${theme};density:${density}`;
   return <TooltipProvider><div className="reito-root lab-shell">
     <header className="lab-titlebar">
-      <a href="/" className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></a>
+      <a href={import.meta.env.BASE_URL} className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></a>
       <span className="lab-project">Graphite / Component library</span>
       <div className="lab-tools">
         <Button variant="ghost" size="sm" onClick={() => setTokensOpen(true)}>Tokens</Button>
