@@ -1,10 +1,11 @@
+import { chooseSelectOption, storybookUrl } from './select-option';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const prefix = '复杂-datatable-数据表格';
 
 async function open(page: Page, story: 'export-scopes' | 'remote-export' | 'saved-views', globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const names = { 'export-scopes': '本地导出任务', 'remote-export': '远程导出任务', 'saved-views': '偏好视图任务' };
   const table = page.getByRole('region', { name: names[story] });
   await expect(table).toBeVisible();
@@ -22,7 +23,7 @@ test('filtered export uses the full filtered row model rather than the current p
   const table = await open(page, 'export-scopes');
   await table.getByRole('textbox', { name: '筛选本地导出任务' }).fill('远程任务 1');
   await table.getByRole('button', { name: '导出' }).click();
-  await page.getByRole('combobox', { name: '导出范围' }).selectOption('filtered');
+  await chooseSelectOption(page.getByRole('combobox', { name: '导出范围' }), "筛选结果");
   await page.getByRole('button', { name: '请求导出', exact: true }).click();
   await expect(page.getByText(/filtered · csv · cols=5 · loaded=11 · ids=11 · host=false/)).toBeVisible();
 });
@@ -32,8 +33,8 @@ test('selected export preserves stable selected IDs', async ({ page }) => {
   await table.getByRole('checkbox', { name: '选择记录 REMOTE-01' }).click();
   await table.getByRole('checkbox', { name: '选择记录 REMOTE-02' }).click();
   await table.getByRole('button', { name: '导出' }).click();
-  await page.getByRole('combobox', { name: '导出范围' }).selectOption('selected');
-  await page.getByRole('combobox', { name: '导出格式' }).selectOption('json');
+  await chooseSelectOption(page.getByRole('combobox', { name: '导出范围' }), "已选记录");
+  await chooseSelectOption(page.getByRole('combobox', { name: '导出格式' }), "JSON");
   await page.getByRole('button', { name: '请求导出', exact: true }).click();
   await expect(page.getByText('selected · json · cols=5 · loaded=2 · ids=2 · host=false')).toBeVisible();
 });
@@ -41,7 +42,7 @@ test('selected export preserves stable selected IDs', async ({ page }) => {
 test('manual all export marks that the host must resolve the complete dataset', async ({ page }) => {
   const table = await open(page, 'remote-export');
   await table.getByRole('button', { name: '导出' }).click();
-  await page.getByRole('combobox', { name: '导出范围' }).selectOption('all');
+  await chooseSelectOption(page.getByRole('combobox', { name: '导出范围' }), "全部数据");
   await page.getByRole('button', { name: '请求导出', exact: true }).click();
   await expect(page.getByText('all · csv · cols=5 · loaded=5 · ids=5 · host=true')).toBeVisible();
 });
@@ -52,7 +53,7 @@ test('compatible view restores query, visibility, pinning, sorting and page size
   await page.getByRole('button', { name: '最近待审', exact: true }).click();
   await expect(table.getByRole('textbox', { name: '筛选偏好视图任务' })).toHaveValue('远程任务 1');
   await expect(table.getByRole('columnheader', { name: '评分' })).toHaveCount(0);
-  await expect(table.getByRole('combobox', { name: '每页记录数' })).toHaveValue('10');
+  await expect(table.getByRole('combobox', { name: '每页记录数' }).locator('[data-slot="select-value"]')).toHaveText("10 条");
   await expect(table.getByRole('columnheader', { name: /更新日期/ })).toHaveAttribute('aria-sort', 'descending');
 });
 
@@ -75,7 +76,7 @@ test('host can save and delete named view snapshots', async ({ page }) => {
 });
 
 test('Playground enables export and view props without changing tabs', async ({ page }) => {
-  await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
+  await page.goto(`${storybookUrl}/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
   await page.getByRole('tab', { name: /^Controls/ }).click();
   const path = new URL(page.url()).searchParams.get('path');

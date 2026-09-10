@@ -4,7 +4,7 @@ import { AsyncForm, useAsyncForm } from './async-form.js';
 import { Input } from '../primitives/input.js';
 import { Switch } from '../primitives/switch.js';
 import { Button } from '../primitives/button.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 type Draft = { name: string; mode: 'personal' | 'team'; teamName: string; notifications: boolean; email: string };
@@ -63,7 +63,16 @@ export function DynamicFormDemo({ disabled = false, initialMode = 'personal', in
         render={({ field, controlProps }) => definition.kind === 'switch'
           ? <Switch {...controlProps} ref={field.ref} name={field.name} checked={!!field.value} onCheckedChange={field.onChange} onBlur={field.onBlur} />
           : definition.kind === 'mode'
-            ? <NativeSelect {...field} {...controlProps} value={String(field.value)}><NativeSelectOption value="personal">个人</NativeSelectOption><NativeSelectOption value="team">团队</NativeSelectOption></NativeSelect>
+            ? <SelectInput {...controlProps} ref={field.ref} name={field.name} onBlur={field.onBlur} onValueChange={field.onChange} value={String(field.value)} options={[
+    {
+        value: "personal",
+        label: "个人"
+    },
+    {
+        value: "team",
+        label: "团队"
+    }
+]}/>
             : <Input {...field} {...controlProps} value={String(field.value ?? '')} />} />)}
       <FormError />
       <div className="flex flex-wrap gap-[var(--rui-content-gap-sm)]"><Button type="submit">保存配置</Button><Button type="reset" variant="outline">重置配置</Button></div>

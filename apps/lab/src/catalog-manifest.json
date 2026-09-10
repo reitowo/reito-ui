@@ -5,7 +5,7 @@
     "ai": 24
   },
   "total": 138,
-  "stories": 1415,
+  "stories": 1418,
   "entries": [
     {
       "layer": "basic",
@@ -255,7 +255,7 @@
       "storyId": "基础-select--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "SelectDemo",
-      "stories": 8
+      "stories": 11
     },
     {
       "layer": "basic",
@@ -631,7 +631,7 @@
       "layer": "basic",
       "id": "native-select",
       "name": "Native Select",
-      "description": "使用平台原生选择行为。",
+      "description": "平台兼容入口；产品界面请使用 SelectInput / Select。",
       "storyId": "基础-native-select--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "NativeSelectDemo",

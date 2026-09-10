@@ -5,7 +5,7 @@ import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
 import { Checkbox } from '../primitives/checkbox.js';
 import { Spinner } from '../primitives/spinner.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import { Field, FieldError, FieldLabel } from '../primitives/field.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../primitives/select.js';
 import { Switch } from '../primitives/switch.js';
@@ -45,11 +45,20 @@ export function FormDemo({ disabled = false, validationMode = 'onBlur', showDesc
   return <div className="grid min-w-0 gap-[var(--rui-content-gap)]">
     {showScenarioControl && <Field>
       <FieldLabel htmlFor={scenarioId}>提交结果</FieldLabel>
-      <NativeSelect id={scenarioId} aria-label="提交结果" value={behavior} disabled={disabled || isSubmitting} onChange={event => setBehavior(event.target.value as typeof behavior)}>
-        <NativeSelectOption value="success">本地成功</NativeSelectOption>
-        <NativeSelectOption value="error">本地保存失败</NativeSelectOption>
-        <NativeSelectOption value="field-error">字段错误</NativeSelectOption>
-      </NativeSelect>
+      <SelectInput id={scenarioId} aria-label="提交结果" value={behavior} disabled={disabled || isSubmitting} onValueChange={(nextValue) => setBehavior(nextValue as typeof behavior)} options={[
+    {
+        value: "success",
+        label: "本地成功"
+    },
+    {
+        value: "error",
+        label: "本地保存失败"
+    },
+    {
+        value: "field-error",
+        label: "字段错误"
+    }
+]}/>
     </Field>}
     <Form form={form} aria-label="工作区设置" disabled={disabled} onReset={() => { setReceipt(undefined); setAttempts(0); }} onSubmit={async value => {
       setReceipt(undefined); setAttempts(current => current + 1);

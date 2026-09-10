@@ -1,5 +1,5 @@
 import { useArgs } from "storybook/preview-api";
-import { NativeSelect, NativeSelectOption } from '../../../../packages/ui/src/basic.js';
+import { NativeSelect, NativeSelectOption } from '../../../../packages/ui/src/native.js';
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NativeSelectDemo } from "../../../../packages/ui/src/basic/catalog.js";
 

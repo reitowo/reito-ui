@@ -4,26 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import type { ColumnDef } from '@tanstack/react-table';
 import { CheckCircle2, LayoutDashboard, ListTodo, Plus, Search, Settings } from 'lucide-react';
-import {
-  Badge,
-  Button,
-  Input,
-  NativeSelect,
-  NativeSelectOption,
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from '../../../../packages/ui/src/basic.js';
+import { Badge, Button, Input, SelectInput, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from '../../../../packages/ui/src/basic.js';
 import {
   ApplicationSearch,
   AppShell,
@@ -192,7 +173,20 @@ function DashboardWorkspaceRecipe({
       if (layoutMode === 'narrow') onViewChange({ ...view, activePanel: 'workspace' });
     }}>
       <FormField control={form.control} name="title" label="任务名称" required rules={{ required: '请输入任务名称', validate: value => value.trim().length >= 2 || '至少输入 2 个字符' }} render={({ field, controlProps }) => <Input {...field} {...controlProps} placeholder="例如：检查表格密度" />} />
-      <FormField control={form.control} name="owner" label="负责人" render={({ field, controlProps }) => <NativeSelect {...controlProps} ref={field.ref} name={field.name} value={field.value} onBlur={field.onBlur} onChange={field.onChange}><NativeSelectOption value="Reito">Reito</NativeSelectOption><NativeSelectOption value="林澈">林澈</NativeSelectOption><NativeSelectOption value="周野">周野</NativeSelectOption></NativeSelect>} />
+      <FormField control={form.control} name="owner" label="负责人" render={({ field, controlProps }) => <SelectInput {...controlProps} ref={field.ref} name={field.name} value={field.value} onBlur={field.onBlur} onValueChange={field.onChange} options={[
+    {
+        value: "Reito",
+        label: "Reito"
+    },
+    {
+        value: "林澈",
+        label: "\u6797\u6F88"
+    },
+    {
+        value: "周野",
+        label: "\u5468\u91CE"
+    }
+]}/>} />
       <FormError />
       <div className="flex flex-wrap gap-[var(--rui-content-gap-sm)]"><Button type="submit" size="sm"><Plus />添加任务</Button><Button type="reset" size="sm" variant="outline">清空</Button></div>
     </Form>

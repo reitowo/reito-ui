@@ -8,7 +8,7 @@ type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
 
 /**
  * HTML select with a themed closed state. Its expanded popup is rendered by the browser/OS.
- * Use Select when the expanded menu must follow the Graphite visual language.
+ * Only exported from @reito/ui/native. Product UI uses SelectInput or Select.
  */
 function NativeSelect({
   className,

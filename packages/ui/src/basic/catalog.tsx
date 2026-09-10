@@ -1,7 +1,9 @@
-import { ScrollTopDemo } from './scroll-top-demo.js';
 import { tokenMetrics } from "@reito/tokens/metrics";
 import { OneTimeCodeDemo } from './one-time-code-demo.js';
+import { ScrollTopDemo } from './scroll-top-demo.js';
 import * as React from "react";
+import * as Native from '../native.js';
+import { SelectInput } from './select-input.js';
 import { ToastProvider, useToastManager } from './feedback.js';
 import { AsyncCombobox, type AsyncComboboxOption } from './async-combobox.js';
 import { AsyncMultiSelect } from './async-multi-select.js';
@@ -440,25 +442,8 @@ export function SelectDemo() {
   ];
   return (
     <Stack>
-      <P.Select items={options} value={value} onValueChange={setValue}>
-        <P.SelectTrigger aria-label="选择执行位置" className="w-60">
-          <P.SelectValue placeholder="选择位置" />
-        </P.SelectTrigger>
-        <P.SelectContent>
-          <P.SelectGroup>
-            <P.SelectLabel>执行位置</P.SelectLabel>
-            {options.map((option) => (
-              <P.SelectItem
-                key={option.value}
-                value={option.value}
-                disabled={option.value === "cloud"}
-              >
-                {option.label}
-              </P.SelectItem>
-            ))}
-          </P.SelectGroup>
-        </P.SelectContent>
-      </P.Select>
+      <SelectInput aria-label="选择执行位置" className="w-60" value={value} onValueChange={setValue}
+        options={options.map(option => ({ ...option, disabled: option.value === 'cloud' }))} placeholder="选择位置" />
       <P.Select disabled>
         <P.SelectTrigger aria-label="禁用选择器">
           <P.SelectValue placeholder="当前不可用" />
@@ -1307,18 +1292,19 @@ export function NativeSelectDemo() {
   const [value, setValue] = React.useState("system");
   return (
     <Stack>
-      <P.NativeSelect
+      <Native.NativeSelect
         aria-label="主题偏好"
         value={value}
         onChange={(event) => setValue(event.target.value)}
       >
-        <P.NativeSelectOption value="system">跟随系统</P.NativeSelectOption>
-        <P.NativeSelectOption value="light">浅色</P.NativeSelectOption>
-        <P.NativeSelectOption value="dark">深色</P.NativeSelectOption>
-      </P.NativeSelect>
-      <P.NativeSelect aria-label="禁用的原生选择器" disabled>
-        <P.NativeSelectOption>不可用</P.NativeSelectOption>
-      </P.NativeSelect>
+        <Native.NativeSelectOption value="system">跟随系统</Native.NativeSelectOption>
+        <Native.NativeSelectOption value="light">浅色</Native.NativeSelectOption>
+        <Native.NativeSelectOption value="dark">深色</Native.NativeSelectOption>
+      </Native.NativeSelect>
+      <Native.NativeSelect aria-label="禁用的原生选择器" disabled>
+        <Native.NativeSelectOption>不可用</Native.NativeSelectOption>
+      </Native.NativeSelect>
+      <Note>平台兼容示例，仅从 @reito/ui/native 导入。产品界面使用 SelectInput 或 Select。</Note>
       <Note>偏好：{value}</Note>
     </Stack>
   );
@@ -1770,7 +1756,7 @@ export const basicCatalog: BasicCatalogEntry[] = [
   {
     id: "native-select",
     name: "Native Select",
-    description: "使用平台原生选择行为。",
+    description: "平台兼容入口；产品界面请使用 SelectInput / Select。",
     component: NativeSelectDemo,
   },
   {

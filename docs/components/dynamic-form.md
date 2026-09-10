@@ -2,7 +2,7 @@
 
 [同页参数调试](http://127.0.0.1:6006/?path=/story/复杂-form-表单管理--dynamic-playground)；[配方源码](../../packages/ui/src/complex/dynamic-form-demo.tsx)。这是基于公开 FormField、AsyncForm 和基础输入的可复用示例，不是 JSON FormBuilder 或 schema 自动生成引擎。
 
-字段定义包含稳定 name、label、kind 和可选 visible(values) 函数。渲染器把 text、mode、switch 映射到共享 Input、NativeSelect、Switch；新增类型时显式处理值和 ref 的适配，不执行配置中的任意字符串脚本。
+字段定义包含稳定 name、label、kind 和可选 visible(values) 函数。渲染器把 text、mode、switch 映射到共享 Input、SelectInput、Switch；新增类型时显式处理值和 ref 的适配，不执行配置中的任意字符串脚本。
 
 工作区类型选择“团队”时显示团队名称；启用通知时显示邮箱。校验器使用相同条件，只校验当前可见字段，返回的 Payload 也只包含生效配置。隐藏字段不会因为旧错误阻止提交。
 

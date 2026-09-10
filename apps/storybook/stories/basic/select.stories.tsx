@@ -1,5 +1,6 @@
 import { useArgs } from "storybook/preview-api";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from '../../../../packages/ui/src/basic.js';
+import { Button, Select, SelectInput, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from '../../../../packages/ui/src/basic.js';
+import { useRef, useState } from 'react';
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { SelectDemo } from "../../../../packages/ui/src/basic/catalog.js";
@@ -48,9 +49,42 @@ export const Disabled: Story = { name: "状态 · 禁用", render: () => <Execut
 export const DisabledOption: Story = { name: "含禁用选项", render: () => <ExecutionSelect disabledOption /> };
 export const Invalid: Story = { name: "状态 · 错误", render: () => <div className="grid gap-2"><ExecutionSelect invalid /><p className="text-xs text-destructive" role="alert">所选位置已失效，请重新选择。</p></div> };
 
+export const Input: Story = {
+  name: "应用单选 · SelectInput",
+  render: () => <SelectInput aria-label="界面密度" defaultValue="compact" options={[{ value: 'compact', label: '紧凑' }, { value: 'comfortable', label: '舒适' }, { value: 'unavailable', label: '暂不可用', disabled: true }]} />,
+};
+
+export const InputStates: Story = {
+  name: "应用单选 · 未选择与禁用",
+  render: () => <div className="grid gap-2">
+    <SelectInput aria-label="未选择位置" value={null} options={executionOptions} placeholder="选择位置" />
+    <SelectInput aria-label="禁用位置" value="local" disabled options={executionOptions} />
+    <SelectInput aria-label="无可用位置" value={null} disabled options={[]} placeholder="暂无可用选项" />
+    <SelectInput aria-label="无效位置" value={null} aria-invalid options={executionOptions} />
+  </div>,
+};
+
+export const NumericForm: Story = {
+  name: "应用单选 · 数值与表单",
+  render: function NumericFormExample() {
+    const [size, setSize] = useState(10);
+    const [receipt, setReceipt] = useState('尚未提交');
+    const trigger = useRef<HTMLButtonElement>(null);
+    return <form className="grid gap-2" onSubmit={event => { event.preventDefault(); setReceipt(String(new FormData(event.currentTarget).get('pageSize'))); }}>
+      <label htmlFor="select-input-page-size">每页记录数</label>
+      <SelectInput ref={trigger} id="select-input-page-size" name="pageSize" required value={size} onValueChange={setSize}
+        options={[{ value: 10, label: '10 条' }, { value: 20, label: '20 条' }, { value: 50, label: '50 条', disabled: true }]} />
+      <Button type="button" onClick={() => trigger.current?.focus()}>定位选择器</Button>
+      <Button type="submit">提交示例</Button>
+      <output aria-label="当前数值">{typeof size}:{size}</output>
+      <output aria-label="表单结果">{receipt}</output>
+    </form>;
+  },
+};
+
 export const Playground: StoryObj<{ value: string | null; size: 'default' | 'sm'; disabled: boolean; invalid: boolean; placeholder: string }> = {
   name: "参数调试", args: { value: 'local', size: 'default', disabled: false, invalid: false, placeholder: '选择位置' },
   argTypes: { value: { control: 'select', options: [null, 'local', 'worktree', 'cloud'] }, size: { control: 'select', options: ['default', 'sm'], table: { category: 'SelectTrigger' } }, disabled: { control: 'boolean' }, invalid: { control: 'boolean', table: { category: '组合示例' }, description: '映射 SelectTrigger 的 aria-invalid。' }, placeholder: { control: 'text', table: { category: 'SelectValue' } } },
   parameters: { controls: { include: ['value', 'size', 'disabled', 'invalid', 'placeholder'] } },
-  render: function Render(args) { const [, updateArgs] = useArgs(); return <Select items={executionOptions} value={args.value} onValueChange={value => updateArgs({ value })} disabled={args.disabled}><SelectTrigger aria-label="选择执行位置" aria-invalid={args.invalid} size={args.size} className="w-60"><SelectValue placeholder={args.placeholder} /></SelectTrigger><SelectContent><SelectGroup><SelectLabel>执行位置</SelectLabel>{executionOptions.map(option => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectGroup></SelectContent></Select>; },
+  render: function Render(args) { const [, updateArgs] = useArgs(); return <SelectInput options={executionOptions} value={args.value} onValueChange={value => updateArgs({ value })} disabled={args.disabled} aria-label="选择执行位置" aria-invalid={args.invalid} size={args.size} className="w-60" placeholder={args.placeholder} />; },
 };

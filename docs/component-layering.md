@@ -19,7 +19,7 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 | 用途 | 组件族 |
 | --- | --- |
 | 操作 | Button、ButtonGroup、Toggle、ToggleGroup |
-| 表单 | Input、Textarea、Label、Field、InputGroup、InputOTP、Checkbox、RadioGroup、Switch、Slider、Select、NativeSelect、Combobox |
+| 表单 | Input、Textarea、Label、Field、InputGroup、InputOTP、Checkbox、RadioGroup、Switch、Slider、Select / SelectInput、Combobox |
 | 弹层与提示 | Dialog、AlertDialog、Sheet、Popover、HoverCard、Tooltip |
 | 导航与展开 | Tabs、Accordion、Collapsible、Breadcrumb、NavigationMenu、Menubar、ContextMenu、DropdownMenu、Pagination、Sidebar |
 | 数据与选择 | Table、Calendar、Command |
@@ -71,7 +71,7 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 | [`Cascader`](../packages/ui/src/complex/cascader.tsx) | 以并列层级面板浏览任意深度的选项树，值为完整稳定 ID 路径。默认只提交叶节点，可显式允许选择分支；支持受控路径、末级/完整路径显示、lazy 子项、错误重试、清除、方向键导航和 JSON 表单值。 |
 | [`TreeTable`](../packages/ui/src/complex/tree-table.tsx) | 原生 table 上的 row-focused ARIA treegrid。泛型节点用全树唯一 ID 与列渲染器；支持受控展开、单选或级联/独立三态复选、禁用分支、全选、方向键导航和折叠后的焦点回退。高级筛选、根分页与 lazy 子节点属于 TREETABLE-02。 |
 | [`FileUpload`](../packages/ui/src/complex/file-upload.tsx) | `value?: QueuedFile[]` / `onValueChange` 可接管文件与 queued/uploading/success/error/canceled 状态；可选宿主 `transport` 接收 AbortSignal 与进度回调。支持本地校验、开始/取消/重试，以及默认开启的图片缩略图；失败与非图片有明确回退，移除、替换和卸载释放对象 URL。**组件不内置网络、存储或全屏图库。** |
-| [`PropertyList`](../packages/ui/src/complex/property-list.tsx) | `items` 提供稳定 `key`、可选嵌套 `path` 与 `text / number / boolean / select / date` 字段。`onDraftValueChange` 报告未提交草稿，`onValueChange(key, value, path)` 只在保存后提交；复用 Field、Input、Switch 与 NativeSelect。支持上下界、自定义验证、逐项禁用/只读、Escape 取消和焦点恢复；远程保存及冲突处理由宿主提供。 |
+| [`PropertyList`](../packages/ui/src/complex/property-list.tsx) | `items` 提供稳定 `key`、可选嵌套 `path` 与 `text / number / boolean / select / date` 字段。`onDraftValueChange` 报告未提交草稿，`onValueChange(key, value, path)` 只在保存后提交；复用 Field、Input、Switch 与 SelectInput。支持上下界、自定义验证、逐项禁用/只读、Escape 取消和焦点恢复；远程保存及冲突处理由宿主提供。 |
 | [`Timeline`](../packages/ui/src/complex/timeline.tsx) | `events` 包含稳定 ID、标题、说明、可选时间与内容；`status` 为 `complete / current / error / pending`。按传入顺序呈现，不自动按日期重排，也不执行事件。 |
 | [`Stepper`](../packages/ui/src/complex/stepper.tsx) | 必填 `steps`、`value`；可选 `onValueChange` 控制导航。每步可设 `disabled`、`error` 和说明。允许跳步及业务验证由宿主决定；它不负责保存整个流程。 |
 | [`SettingsSection / SettingsRow`](../packages/ui/src/complex/settings-section.tsx) | `SettingsSection` 提供必填 `title` 与可选 `description`、`actions`、`children`。`SettingsRow` 提供 `label`、`description` 和控件区域。行标题不会自动成为内部控件的 label，宿主仍须提供 `aria-label` 或显式 `<label>` 关联。 |

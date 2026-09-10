@@ -7,7 +7,7 @@ import {
 import { Button } from '../primitives/button.js';
 import { Checkbox } from '../primitives/checkbox.js';
 import { Input } from '../primitives/input.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import { DataTableColumnFilterMenu, dataTableColumnFilterFn, isDataTableColumnFilterActive, type DataTableColumnFilterDefinition, type DataTableColumnFiltersState } from './data-table-filter.js';
 import { DataTableColumnManager } from './data-table-columns.js';
 import { DataTableGroupingMenu, type DataTableGroupingDefinition } from './data-table-grouping.js';
@@ -389,7 +389,12 @@ export function DataTable<TData>({ data, columns, getRowId, caption = '工作区
     </div>
     {editSubmissionError && <div role="alert" className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)] rounded-md border border-destructive/30 bg-destructive/5 px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)] text-sm text-destructive"><span>{editSubmissionError}</span><Button variant="outline" size="sm" disabled={editSubmitting} onClick={() => { void commitEditing(); }}><RotateCcw aria-hidden="true" />重试保存</Button></div>}
     <div className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] text-xs text-muted-foreground">
-      <div className="flex items-center gap-2"><span>每页</span><NativeSelect size="sm" aria-label="每页记录数" value={currentPagination.pageSize} disabled={loading} onChange={event => table.setPageSize(Number(event.target.value))}>{Array.from(new Set([Math.max(1, pageSize), currentPagination.pageSize, 5, 10, 20])).sort((a, b) => a - b).map(size => <NativeSelectOption key={size} value={size}>{size} 条</NativeSelectOption>)}</NativeSelect></div>
+      <div className="flex items-center gap-2"><span>每页</span><SelectInput size="sm" aria-label="每页记录数" value={currentPagination.pageSize} disabled={loading} onValueChange={(nextValue) => table.setPageSize(Number(nextValue))} options={[
+    ...Array.from(new Set([Math.max(1, pageSize), currentPagination.pageSize, 5, 10, 20])).sort((a, b) => a - b).map(size => ({
+        value: size,
+        label: <>{size} 条</>
+    }))
+]}/></div>
       <div className="flex items-center gap-[var(--rui-content-gap)]"><span aria-live="polite">第 {currentPagination.pageIndex + 1} / {resolvedPageCount < 0 ? '?' : Math.max(1, resolvedPageCount)} 页</span><Button variant="outline" size="icon-sm" aria-label="上一页" disabled={!table.getCanPreviousPage() || loading} onClick={() => table.previousPage()}><ChevronLeft aria-hidden="true" /></Button><Button variant="outline" size="icon-sm" aria-label="下一页" disabled={!table.getCanNextPage() || loading} onClick={() => table.nextPage()}><ChevronRight aria-hidden="true" /></Button></div>
     </div>
   </section>;

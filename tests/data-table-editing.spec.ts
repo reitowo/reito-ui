@@ -1,3 +1,4 @@
+import { chooseSelectOption, storybookUrl } from './select-option';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
@@ -5,7 +6,7 @@ const prefix = '复杂-datatable-数据表格';
 type EditingStory = 'row-editing' | 'cell-editing' | 'editing-failure' | 'controlled-editing';
 
 async function open(page: Page, story: EditingStory, globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const names: Record<EditingStory, string> = { 'row-editing': '行编辑任务', 'cell-editing': '单元格编辑任务', 'editing-failure': '失败重试任务', 'controlled-editing': '受控编辑任务' };
   const table = page.getByRole('region', { name: names[story] });
   await expect(table).toBeVisible();
@@ -17,7 +18,7 @@ test('row editing creates a draft and disables competing edit actions', async ({
   await table.getByRole('button', { name: '编辑记录 TASK-01' }).click();
   await expect(table.getByRole('textbox', { name: '编辑任务', exact: true })).toBeFocused();
   await expect(table.getByRole('button', { name: '编辑记录 TASK-02' })).toBeDisabled();
-  await expect(table.getByRole('combobox', { name: '编辑负责人' })).toHaveValue('Reito');
+  await expect(table.getByRole('combobox', { name: '编辑负责人' }).locator('[data-slot="select-value"]')).toHaveText("Reito");
 });
 
 test('required and custom validators retain the draft and focus the invalid field', async ({ page }) => {
@@ -56,7 +57,7 @@ test('Ctrl+Enter submits a row and the host replaces its data', async ({ page })
 test('select editors commit typed values through the same row transaction', async ({ page }) => {
   const table = await open(page, 'row-editing');
   await table.getByRole('button', { name: '编辑记录 TASK-01' }).click();
-  await table.getByRole('combobox', { name: '编辑负责人' }).selectOption('Ming');
+  await chooseSelectOption(table.getByRole('combobox', { name: '编辑负责人' }), "Ming");
   await table.getByRole('button', { name: '保存记录 TASK-01' }).click();
   await expect(page.getByText('已保存 TASK-01：owner')).toBeVisible();
   await expect(table.getByRole('row').nth(1)).toContainText('Ming');
@@ -116,7 +117,7 @@ test('controlled editing state receives every draft update', async ({ page }) =>
 });
 
 test('Playground switches editing and failure behavior without changing tabs', async ({ page }) => {
-  await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
+  await page.goto(`${storybookUrl}/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
   await expect(frame.getByRole('region', { name: '本地任务' })).toBeVisible({ timeout: 15000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();

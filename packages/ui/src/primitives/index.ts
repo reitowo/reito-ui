@@ -26,7 +26,6 @@ export * from './item.js';
 export * from './kbd.js';
 export * from './label.js';
 export * from './menubar.js';
-export * from './native-select.js';
 export * from './navigation-menu.js';
 export * from './pagination.js';
 export * from './popover.js';

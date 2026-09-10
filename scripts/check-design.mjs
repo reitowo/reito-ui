@@ -5,6 +5,20 @@ const css = await readFile('packages/tokens/dist/tokens.css', 'utf8');
 const defined = new Set([...css.matchAll(/(--rui-[\w-]+)\s*:/g)].map(match => match[1]));
 const styles = (await Promise.all(['packages/ui/src','apps/lab/src','apps/workbench/src','apps/storybook/stories'].map(files))).flat().filter(file=>file.endsWith('.css'));
 const problems = [];
+// Browser-rendered menus are opt-in compatibility, never an application default.
+const nativeSelectFiles = new Set([
+  'packages/ui/src/native.ts',
+  'packages/ui/src/primitives/native-select.tsx',
+  'packages/ui/src/basic/catalog.tsx',
+  'apps/storybook/stories/basic/native-select.stories.tsx',
+]);
+for (const file of (await Promise.all(['packages/ui/src','apps/lab/src','apps/workbench/src','apps/storybook/stories'].map(files))).flat().filter(file => /\.[jt]sx?$/.test(file))) {
+  if (nativeSelectFiles.has(file)) continue;
+  const content = await readFile(file, 'utf8');
+  if (/\b(?:NativeSelect|NativeSelectOption|NativeSelectOptGroup)\b|<select\b|from\s+['"][^'"]*\/(?:native|native-select)(?:\.js)?['"]/.test(content)) {
+    problems.push(`${file}: use SelectInput or Select; browser pickers belong only in the explicit native compatibility entry/demo`);
+  }
+}
 const featureSources = (await Promise.all(['packages/ui/src/basic','packages/ui/src/complex','packages/ui/src/ai','apps/lab/src','apps/workbench/src'].map(files))).flat().filter(file => /\.[jt]sx?$/.test(file));
 for (const file of featureSources) {
   const content = await readFile(file, 'utf8');

@@ -1,13 +1,16 @@
 {
   "name": "@reito/tokens",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "type": "module",
   "description": "Original graphite desktop design tokens with dark/light themes and two densities",
   "exports": {
     "./css": "./dist/tokens.css",
     "./json": "./src/tokens.json",
     "./tailwind": "./dist/tailwind.css",
-    "./metrics": { "types": "./dist/metrics.d.ts", "import": "./dist/metrics.js" }
+    "./metrics": {
+      "types": "./dist/metrics.d.ts",
+      "import": "./dist/metrics.js"
+    }
   },
   "files": [
     "src/tokens.json",

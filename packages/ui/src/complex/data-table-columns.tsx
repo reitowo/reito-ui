@@ -2,7 +2,7 @@ import { Columns3, MoveDown, MoveUp } from 'lucide-react';
 import type { ColumnPinningState, Table } from '@tanstack/react-table';
 import { Button } from '../primitives/button.js';
 import { Checkbox } from '../primitives/checkbox.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from '../primitives/popover.js';
 
 function moveItem(ids: string[], id: string, delta: -1 | 1) {
@@ -50,7 +50,20 @@ export function DataTableColumnManager<TData>({ table, labels = {}, disabled }: 
         const label = labelFor(column.id);
         return <div key={column.id} tabIndex={0} aria-label={`管理${label}列`} onKeyDown={event => { if (event.altKey && event.key === 'ArrowUp' && canMove(column.id, -1)) { event.preventDefault(); move(column.id, -1); } if (event.altKey && event.key === 'ArrowDown' && canMove(column.id, 1)) { event.preventDefault(); move(column.id, 1); } }} className="grid min-h-[var(--rui-control-height)] grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-1 rounded-md px-1.5 outline-none hover:bg-muted focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-ring/50">
           <label className="flex min-w-0 cursor-pointer items-center gap-[var(--rui-content-gap)] text-sm"><Checkbox checked={column.getIsVisible()} disabled={!column.getCanHide() || column.getIsVisible() && visibleCount <= 1} onCheckedChange={checked => column.toggleVisibility(checked)} /><span className="truncate">{label}</span></label>
-          <NativeSelect size="sm" aria-label={`${label}固定位置`} value={column.getIsPinned() || 'none'} disabled={!column.getCanPin()} onChange={event => column.pin(event.target.value === 'none' ? false : event.target.value as 'left' | 'right')}><NativeSelectOption value="none">不固定</NativeSelectOption><NativeSelectOption value="left">左侧</NativeSelectOption><NativeSelectOption value="right">右侧</NativeSelectOption></NativeSelect>
+          <SelectInput size="sm" aria-label={`${label}固定位置`} value={column.getIsPinned() || 'none'} disabled={!column.getCanPin()} onValueChange={(nextValue) => column.pin(nextValue === 'none' ? false : nextValue as 'left' | 'right')} options={[
+    {
+        value: "none",
+        label: "不固定"
+    },
+    {
+        value: "left",
+        label: "左侧"
+    },
+    {
+        value: "right",
+        label: "右侧"
+    }
+]}/>
           <Button variant="ghost" size="icon-xs" aria-label={`${label}前移`} disabled={!canMove(column.id, -1)} onClick={() => move(column.id, -1)}><MoveUp aria-hidden="true" /></Button>
           <Button variant="ghost" size="icon-xs" aria-label={`${label}后移`} disabled={!canMove(column.id, 1)} onClick={() => move(column.id, 1)}><MoveDown aria-hidden="true" /></Button>
         </div>;

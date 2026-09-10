@@ -1,9 +1,10 @@
+import { chooseSelectOption, storybookUrl } from './select-option';
 import { expect, test, type Page } from '@playwright/test';
 
 const prefix = '复杂-keyvalueeditor-键值编辑';
 
 async function open(page: Page, story = 'transactional', globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const editor = page.locator('section[aria-label="键值配置"]');
   await expect(editor).toBeVisible({ timeout: 15_000 });
   return editor;
@@ -22,7 +23,7 @@ test('controlled edits remain pending until the array transaction succeeds', asy
 
 test('cross-row validation maps by stable id and focuses the invalid row', async ({ page }) => {
   const editor = await open(page);
-  await editor.getByRole('combobox', { name: '值 1' }).selectOption('production');
+  await chooseSelectOption(editor.getByRole('combobox', { name: '值 1' }), "生产");
   await editor.getByRole('spinbutton', { name: '值 2' }).fill('80');
   await editor.getByRole('button', { name: '应用配置' }).click();
   const row = editor.locator('[data-entry-id="port"]');
@@ -34,13 +35,13 @@ test('cross-row validation maps by stable id and focuses the invalid row', async
 
 test('server entry errors preserve the row and clear when its value changes', async ({ page }) => {
   const editor = await open(page);
-  await editor.getByRole('combobox', { name: '值 1' }).selectOption('reserved');
+  await chooseSelectOption(editor.getByRole('combobox', { name: '值 1' }), "保留值");
   await editor.getByRole('button', { name: '应用配置' }).click();
   const row = editor.locator('[data-entry-id="mode"]');
   await expect(row).toBeFocused();
   await expect(row.getByRole('alert')).toHaveText('该模式值已被策略保留');
-  await expect(editor.getByRole('combobox', { name: '值 1' })).toHaveValue('reserved');
-  await editor.getByRole('combobox', { name: '值 1' }).selectOption('local');
+  await expect(editor.getByRole('combobox', { name: '值 1' }).locator('[data-slot="select-value"]')).toHaveText("保留值");
+  await chooseSelectOption(editor.getByRole('combobox', { name: '值 1' }), "本地");
   await expect(editor.getByRole('alert')).toHaveCount(0);
 });
 

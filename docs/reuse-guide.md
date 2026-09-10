@@ -1,13 +1,13 @@
 # 复用与迁移
 
-当前版本为 0.4.1，面向 React 19 / ESM，尚未发布 npm。0.3 的 shadcn / Base UI 重建替换了 0.2 自定义 Radix 包装 API；0.4 在其上扩展组件并调整共享密度默认值。
+当前版本为 0.5.1，面向 React 19 / ESM，尚未发布 npm。0.3 的 shadcn / Base UI 重建替换了 0.2 自定义 Radix 包装 API；0.4 在其上扩展组件并调整共享密度默认值。
 
 ## 安装打包产物
 
 在组件库执行 `npm ci`，然后 `npm run pack:library`。在消费项目同时安装两个 tarball：
 
 ```powershell
-npm install <库路径>/artifacts/reito-tokens-0.4.1.tgz <库路径>/artifacts/reito-ui-0.4.1.tgz
+npm install <库路径>/artifacts/reito-tokens-0.5.1.tgz <库路径>/artifacts/reito-ui-0.5.1.tgz
 ```
 
 应用入口只引入一次：
@@ -28,9 +28,19 @@ export function Example() {
 
 主题和密度放在 `<html data-theme="dark" data-density="compact">`，供所有 portal 继承。切换值为 dark/light、compact/comfortable；持久化由应用实现。TooltipProvider 可放在应用根，`delay` 是 Base UI 属性，不能沿用旧 `delayDuration`。
 
+密度是组件库提供的尺寸能力，不要求消费产品显示切换控件。产品可以固定 `compact`，只有明确的产品需求才添加密度设置；Lab / Storybook 的切换器用于检查组件状态，不应照搬到业务页。
+
 CSS 已编译，包含 Tailwind Preflight、共享密度与 Inter Variable 字体。包内控件不依赖消费项目扫描 class；中文使用系统字体。代码字体由系统等宽字体回退。全局 Preflight 会规范原生元素，请在接入已有站点时检查其布局；不要通过页面改写 `[data-slot]` 修复共享组件。
 
 默认设置 `data-density="compact"` 即可，不要因为组件库支持两种密度就自动添加「紧凑 / 舒适」切换。仅在用户明确要求时提供密度选择入口；不要把 Lab / Storybook 的检查工具复制到产品标题栏、工具栏或设置页。
+
+## 0.5：统一产品单选
+
+产品界面默认使用 `SelectInput`（options 数据驱动）或 `Select`（分组、自定义内容组合）。触发器和展开菜单共享 Graphite 主题与密度。
+
+`NativeSelect / NativeSelectOption / NativeSelectOptGroup` 不再由默认入口和 `@reito/ui/basic` 导出。兼容场景须显式从 `@reito/ui/native` 导入。迁移时将 `onChange(event)` 改为 `onValueChange(value)`；数字选项保持 number。库内表格、筛选、属性编辑与表单配方均使用 `SelectInput`，默认检查禁止产品源码引入原生选择器。
+
+`SelectInput` 接受 `options: { value: string | number; label: ReactNode; disabled?: boolean }[]`、受控 `value` 或 `defaultValue`。`null` 表示未选择；选中时返回该选项的值。`id/ref/aria-*/onBlur` 作用于可聚焦按钮，`name/form/required` 由 Base UI 表单输入处理。
 
 ## 三层入口
 

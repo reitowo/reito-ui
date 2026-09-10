@@ -1,10 +1,11 @@
+import { chooseSelectOption, storybookUrl } from './select-option';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const prefix = '复杂-propertylist-属性编辑';
 
 async function open(page: Page, story: string, globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const list = page.locator('dl[aria-label="属性"]');
   await expect(list).toBeVisible({ timeout: 15_000 });
   return list;
@@ -33,7 +34,7 @@ test('boolean adapter edits a boolean value through the shared Switch', async ({
 test('select adapter saves an enabled option', async ({ page }) => {
   await open(page, 'select-property');
   await page.getByRole('button', { name: '编辑界面密度' }).click();
-  await page.getByRole('combobox', { name: '界面密度' }).selectOption('comfortable');
+  await chooseSelectOption(page.getByRole('combobox', { name: '界面密度' }), "舒适");
   await page.getByRole('button', { name: '保存字段' }).click();
   await expect(page.getByText('舒适', { exact: true })).toBeVisible();
 });
@@ -71,7 +72,7 @@ test('Escape cancels select drafts and restores the edit trigger focus', async (
   await open(page, 'select-property');
   const edit = page.getByRole('button', { name: '编辑界面密度' });
   await edit.click();
-  await page.getByRole('combobox', { name: '界面密度' }).selectOption('comfortable');
+  await chooseSelectOption(page.getByRole('combobox', { name: '界面密度' }), "舒适");
   await page.keyboard.press('Escape');
   await expect(page.getByText('紧凑', { exact: true })).toBeVisible();
   await expect(edit).toBeFocused();
@@ -87,7 +88,7 @@ test('per-item disabled differs from read-only and global disabled', async ({ pa
 });
 
 test('Playground changes kind and nested path without leaving the Story', async ({ page }) => {
-  await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
+  await page.goto(`${storybookUrl}/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
   await expect(frame.locator('dl[aria-label="属性"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();

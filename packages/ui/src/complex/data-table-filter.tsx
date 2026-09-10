@@ -4,7 +4,7 @@ import type { Column, FilterFn } from '@tanstack/react-table';
 import { Button } from '../primitives/button.js';
 import { Checkbox } from '../primitives/checkbox.js';
 import { Input } from '../primitives/input.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '../primitives/popover.js';
 
 export type DataTableTextFilterValue = { kind: 'text'; operator: 'contains' | 'equals' | 'startsWith'; value: string };
@@ -117,20 +117,67 @@ function CompactInput(props: ComponentProps<typeof Input>) {
 
 function FilterEditor({ definition, value, onChange }: { definition: DataTableColumnFilterDefinition; value: DataTableColumnFilterValue; onChange: (value: DataTableColumnFilterValue) => void }) {
   if (value.kind === 'text') return <div className="grid gap-[var(--rui-content-gap-sm)]">
-    <NativeSelect size="sm" aria-label={`${definition.label}匹配方式`} value={value.operator} onChange={event => onChange({ ...value, operator: event.target.value as DataTableTextFilterValue['operator'] })}><NativeSelectOption value="contains">包含</NativeSelectOption><NativeSelectOption value="equals">等于</NativeSelectOption><NativeSelectOption value="startsWith">开头是</NativeSelectOption></NativeSelect>
+    <SelectInput size="sm" aria-label={`${definition.label}匹配方式`} value={value.operator} onValueChange={(nextValue) => onChange({ ...value, operator: nextValue as DataTableTextFilterValue['operator'] })} options={[
+    {
+        value: "contains",
+        label: "包含"
+    },
+    {
+        value: "equals",
+        label: "等于"
+    },
+    {
+        value: "startsWith",
+        label: "开头是"
+    }
+]}/>
     <CompactInput autoFocus aria-label={`${definition.label}筛选值`} placeholder={definition.placeholder ?? `输入${definition.label}`} value={value.value} onChange={event => onChange({ ...value, value: event.target.value })} />
   </div>;
   if (value.kind === 'number') {
     const range = value.operator === 'between';
     return <div className="grid gap-[var(--rui-content-gap-sm)]">
-      <NativeSelect size="sm" aria-label={`${definition.label}匹配方式`} value={value.operator} onChange={event => onChange({ ...value, operator: event.target.value as DataTableNumberFilterValue['operator'] })}><NativeSelectOption value="between">范围内</NativeSelectOption><NativeSelectOption value="equals">等于</NativeSelectOption><NativeSelectOption value="atLeast">大于等于</NativeSelectOption><NativeSelectOption value="atMost">小于等于</NativeSelectOption></NativeSelect>
+      <SelectInput size="sm" aria-label={`${definition.label}匹配方式`} value={value.operator} onValueChange={(nextValue) => onChange({ ...value, operator: nextValue as DataTableNumberFilterValue['operator'] })} options={[
+    {
+        value: "between",
+        label: "范围内"
+    },
+    {
+        value: "equals",
+        label: "等于"
+    },
+    {
+        value: "atLeast",
+        label: "大于等于"
+    },
+    {
+        value: "atMost",
+        label: "小于等于"
+    }
+]}/>
       <div className={range ? 'grid grid-cols-2 gap-[var(--rui-content-gap-sm)]' : undefined}><CompactInput autoFocus type="number" aria-label={range ? `${definition.label}最小值` : `${definition.label}数值`} placeholder={range ? '最小' : '数值'} value={value.value ?? ''} onChange={event => onChange({ ...value, value: event.target.value === '' ? undefined : Number(event.target.value) })} />{range && <CompactInput type="number" aria-label={`${definition.label}最大值`} placeholder="最大" value={value.valueTo ?? ''} onChange={event => onChange({ ...value, valueTo: event.target.value === '' ? undefined : Number(event.target.value) })} />}</div>
     </div>;
   }
   if (value.kind === 'date') {
     const range = value.operator === 'between';
     return <div className="grid gap-[var(--rui-content-gap-sm)]">
-      <NativeSelect size="sm" aria-label={`${definition.label}匹配方式`} value={value.operator} onChange={event => onChange({ ...value, operator: event.target.value as DataTableDateFilterValue['operator'] })}><NativeSelectOption value="between">日期范围</NativeSelectOption><NativeSelectOption value="on">当天</NativeSelectOption><NativeSelectOption value="onOrAfter">不早于</NativeSelectOption><NativeSelectOption value="onOrBefore">不晚于</NativeSelectOption></NativeSelect>
+      <SelectInput size="sm" aria-label={`${definition.label}匹配方式`} value={value.operator} onValueChange={(nextValue) => onChange({ ...value, operator: nextValue as DataTableDateFilterValue['operator'] })} options={[
+    {
+        value: "between",
+        label: "日期范围"
+    },
+    {
+        value: "on",
+        label: "当天"
+    },
+    {
+        value: "onOrAfter",
+        label: "不早于"
+    },
+    {
+        value: "onOrBefore",
+        label: "不晚于"
+    }
+]}/>
       <div className={range ? 'grid grid-cols-2 gap-[var(--rui-content-gap-sm)]' : undefined}><CompactInput autoFocus type="date" aria-label={range ? `${definition.label}开始日期` : `${definition.label}日期`} value={value.value ?? ''} onChange={event => onChange({ ...value, value: event.target.value || undefined })} />{range && <CompactInput type="date" aria-label={`${definition.label}结束日期`} value={value.valueTo ?? ''} onChange={event => onChange({ ...value, valueTo: event.target.value || undefined })} />}</div>
     </div>;
   }

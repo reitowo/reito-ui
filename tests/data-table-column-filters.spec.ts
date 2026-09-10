@@ -1,9 +1,10 @@
+import { chooseSelectOption, storybookUrl } from './select-option';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const prefix = '复杂-datatable-数据表格';
 async function open(page: Page, story = 'column-filters', globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const table = page.getByRole('region', { name: story === 'remote-column-filters' ? '远程筛选任务' : '可筛选任务' });
   await expect(table).toBeVisible();
   return table;
@@ -70,7 +71,7 @@ test('manual filters reset pagination and emit a stable server query', async ({ 
   await table.getByRole('button', { name: '下一页' }).click();
   await expect(table.getByText('第 2 / 2 页')).toBeVisible();
   await table.getByRole('button', { name: '评分列筛选' }).click();
-  await page.getByRole('combobox', { name: '评分匹配方式' }).selectOption('atLeast');
+  await chooseSelectOption(page.getByRole('combobox', { name: '评分匹配方式' }), '大于等于');
   await page.getByRole('spinbutton', { name: '评分数值' }).fill('50');
   await page.getByRole('button', { name: '应用' }).last().click();
   await expect(table.getByText('共 4 条 · 已选 0 条 · 2 个列筛选')).toBeVisible();
@@ -79,7 +80,7 @@ test('manual filters reset pagination and emit a stable server query', async ({ 
 });
 
 test('Playground Controls change filter props without changing tabs', async ({ page }) => {
-  await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
+  await page.goto(`${storybookUrl}/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
   await expect(frame.getByRole('region', { name: '本地任务' })).toBeVisible({ timeout: 15000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();

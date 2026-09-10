@@ -1,6 +1,6 @@
 {
   "name": "@reito/storybook",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,8 +9,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@reito/ui": "0.4.1",
-    "@reito/tokens": "0.4.1",
+    "@reito/ui": "0.5.1",
+    "@reito/tokens": "0.5.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "lucide-react": "1.41.0"

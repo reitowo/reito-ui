@@ -3,7 +3,7 @@ import { Eye, EyeOff, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../primitives/field.js';
 import { Input } from '../primitives/input.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import { Switch } from '../primitives/switch.js';
 import { cx } from './shared.js';
 
@@ -230,7 +230,7 @@ export function KeyValueEditor({
         const valueControl = entry.kind === 'boolean'
           ? <Switch id={valueId} checked={entry.value === 'true'} disabled={entryLocked} aria-invalid={!!problem.value} aria-describedby={problem.value ? `${valueId}-error` : undefined} onCheckedChange={checked => update(entry.id, { value: String(checked) })} />
           : entry.kind === 'select'
-            ? <NativeSelect id={valueId} className="w-full" value={entry.value} disabled={entryLocked} aria-invalid={!!problem.value} aria-describedby={problem.value ? `${valueId}-error` : undefined} onChange={event => update(entry.id, { value: event.target.value })}>{entry.options?.map(option => <NativeSelectOption key={option.value} value={option.value} disabled={option.disabled}>{option.label}</NativeSelectOption>)}</NativeSelect>
+            ? <SelectInput id={valueId} className="w-full" value={entry.value} disabled={entryLocked} aria-invalid={!!problem.value} aria-describedby={problem.value ? `${valueId}-error` : undefined} onValueChange={value => update(entry.id, { value })} options={entry.options ?? []} />
             : <div className="flex items-center gap-[var(--rui-space-1)]"><Input id={valueId} type={entry.secret && !visible ? 'password' : entry.kind === 'number' ? 'number' : entry.kind === 'date' ? 'date' : 'text'} value={entry.value}
               min={entry.min} max={entry.max} disabled={entryLocked} readOnly={entry.readOnly} autoComplete="off"
               aria-required={requireValues} aria-invalid={!!problem.value} aria-describedby={problem.value ? `${valueId}-error` : undefined}

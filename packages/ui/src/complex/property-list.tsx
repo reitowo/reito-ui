@@ -3,7 +3,7 @@ import { Check, Pencil, RotateCcw, Save, X } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Field, FieldError, FieldLabel } from '../primitives/field.js';
 import { Input } from '../primitives/input.js';
-import { NativeSelect, NativeSelectOption } from '../primitives/native-select.js';
+import { SelectInput } from "../basic/select-input.js";
 import { Switch } from '../primitives/switch.js';
 import { cx } from './shared.js';
 
@@ -99,7 +99,7 @@ function PropertyRow({ item, onValueChange, onDraftValueChange, disabled, fieldE
     setDraft(draftOf(item));
     setLocalError(undefined);
   }, [transactionRevision]);
-  useEffect(() => { if (editing) requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('input, select, [role="switch"]')?.focus()); }, [editing]);
+  useEffect(() => { if (editing) requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('input:not([type="hidden"]), [role="combobox"], [role="switch"]')?.focus()); }, [editing]);
 
   function updateDraft(next: PropertyDraftValue) {
     setDraft(next);
@@ -145,18 +145,18 @@ function PropertyRow({ item, onValueChange, onDraftValueChange, disabled, fieldE
   const editor = item.kind === 'boolean'
     ? <Switch {...inputProps} checked={Boolean(draft)} onCheckedChange={checked => updateDraft(checked)} />
     : item.kind === 'select'
-      ? <NativeSelect {...inputProps} className="w-full" value={String(draft)} onChange={event => updateDraft(event.target.value)}>{item.options?.map(option => <NativeSelectOption key={option.value} value={option.value} disabled={option.disabled}>{option.label}</NativeSelectOption>)}</NativeSelect>
+      ? <SelectInput {...inputProps} className="w-full" value={String(draft)} onValueChange={updateDraft} options={item.options ?? []} />
       : <Input {...inputProps} type={item.kind === 'number' ? 'number' : item.kind === 'date' ? 'date' : 'text'} value={String(draft)} placeholder={item.placeholder}
         min={item.min} max={item.max} step={item.kind === 'number' ? item.step : undefined}
         onChange={event => updateDraft(event.target.value)} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }}
         onKeyDown={event => { if (event.key === 'Enter' && (composing.current || event.nativeEvent.isComposing || event.keyCode === 229)) event.preventDefault(); }} />;
 
-  return <div ref={node => { registerRow(item.key, node); }} data-property-key={item.key} data-disabled={locked || undefined} tabIndex={fieldError ? -1 : undefined} className="grid min-w-0 grid-cols-1 gap-[var(--rui-content-gap-sm)] px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)] outline-none focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-inset focus-visible:ring-ring @md/property-list:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] @md/property-list:gap-[var(--rui-content-gap)]">
+  return <div ref={node => { registerRow(item.key, node); }} data-property-key={item.key} data-readonly={item.readOnly || undefined} data-disabled={locked || undefined} tabIndex={fieldError ? -1 : undefined} className="grid min-w-0 grid-cols-1 gap-[var(--rui-content-gap-sm)] px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)] data-readonly:min-h-[var(--rui-control-height-sm)] data-readonly:py-1 outline-none focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-inset focus-visible:ring-ring @md/property-list:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] @md/property-list:gap-[var(--rui-content-gap)]">
     <dt className="min-w-0 text-sm text-muted-foreground"><span className="block text-foreground">{item.label}</span>{item.description && <span className="mt-1 block text-xs leading-relaxed">{item.description}</span>}{item.path && <code className="mt-1 block truncate font-mono text-xs" title={path.join('.')}>{path.join('.')}</code>}</dt>
     <dd className="min-w-0">{editing ? <form ref={formRef} noValidate onSubmit={event => { event.preventDefault(); save(); }} onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); finish(); } }} className="space-y-[var(--rui-content-gap-sm)]">
       <Field data-disabled={locked || undefined} data-invalid={!!error || undefined}><FieldLabel htmlFor={id} className="sr-only">{item.label}</FieldLabel>{editor}{error && <FieldError id={`${id}-error`} className="text-xs">{error}</FieldError>}</Field>
       <div className="flex gap-[var(--rui-space-2)]"><Button type="submit" size="xs" disabled={locked}><Check aria-hidden="true" />保存字段</Button><Button type="button" variant="ghost" size="xs" onClick={finish}><X aria-hidden="true" />取消编辑</Button></div>
-    </form> : <div className="min-w-0 space-y-[var(--rui-space-1)]"><div className="flex min-w-0 items-center justify-between gap-[var(--rui-content-gap-sm)]"><span className="min-w-0 break-words py-1 text-sm">{displayValue(item)}</span>{!item.readOnly && <Button ref={editRef} variant="ghost" size="icon-sm" aria-label={`编辑${item.label}`} disabled={locked} onClick={() => { setDraft(draftOf(item)); setLocalError(undefined); setEditing(true); }}><Pencil aria-hidden="true" /></Button>}</div>{fieldError && <FieldError className="text-xs">{fieldError}</FieldError>}</div>}</dd>
+    </form> : <div className="min-w-0 space-y-[var(--rui-space-1)]"><div className="flex min-w-0 items-center justify-between gap-[var(--rui-content-gap-sm)]"><span className={cx('min-w-0 break-words text-sm', !item.readOnly && 'py-1')}>{displayValue(item)}</span>{!item.readOnly && <Button ref={editRef} variant="ghost" size="icon-sm" aria-label={`编辑${item.label}`} disabled={locked} onClick={() => { setDraft(draftOf(item)); setLocalError(undefined); setEditing(true); }}><Pencil aria-hidden="true" /></Button>}</div>{fieldError && <FieldError className="text-xs">{fieldError}</FieldError>}</div>}</dd>
   </div>;
 }
 

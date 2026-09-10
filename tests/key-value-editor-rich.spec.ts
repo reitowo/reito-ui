@@ -1,10 +1,11 @@
+import { chooseSelectOption, storybookUrl } from './select-option';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const prefix = '复杂-keyvalueeditor-键值编辑';
 
 async function open(page: Page, story: string, globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const editor = page.locator('section[aria-label="键值配置"]');
   await expect(editor).toBeVisible({ timeout: 15_000 });
   return editor;
@@ -33,8 +34,8 @@ test('boolean, select and date adapters update the controlled entries', async ({
   await toggle.click();
   await expect(toggle).not.toBeChecked();
   const select = editor.getByRole('combobox', { name: '值 3' });
-  await select.selectOption('comfortable');
-  await expect(select).toHaveValue('comfortable');
+  await chooseSelectOption(select, "舒适");
+  await expect(select.locator('[data-slot="select-value"]')).toHaveText('舒适');
   const date = editor.getByLabel('值 4');
   await expect(date).toHaveAttribute('type', 'date');
   await expect(date).toHaveAttribute('min', '2026-09-01');
@@ -68,7 +69,7 @@ test('required and duplicate validation still report each affected draft', async
 });
 
 test('Playground controls switch field recipes without leaving the Story', async ({ page }) => {
-  await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
+  await page.goto(`${storybookUrl}/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
   await expect(frame.locator('section[aria-label="键值配置"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
