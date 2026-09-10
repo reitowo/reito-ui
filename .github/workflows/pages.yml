@@ -25,11 +25,11 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
-      - run: npm run check
       - name: Build homepage, Lab and Storybook
         run: npm run build
         env:
           VITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+      - run: npm run check
       - name: Assemble website
         run: |
           cp -R apps/storybook/storybook-static apps/lab/dist/storybook

@@ -2,11 +2,11 @@
 
 `.github/workflows/pages.yml` 在 main 推送或手动触发时检查、构建并发布主页、Lab 和 Storybook。仓库 Settings → Pages 的构建来源必须设为 GitHub Actions。
 
-- 主页：`https://reitovo.github.io/reito-ui/`
-- Lab：`https://reitovo.github.io/reito-ui/?layer=basic&component=button`
-- Storybook：`https://reitovo.github.io/reito-ui/storybook/`
+- 主页：`https://reitowo.github.io/reito-ui/`
+- Lab：`https://reitowo.github.io/reito-ui/?layer=basic&component=button`
+- Storybook：`https://reitowo.github.io/reito-ui/storybook/`
 
-构建根目录是仓库根目录。Node 24.11.1，先 `npm ci`、`npm run check`，再 `npm run build`。将 `apps/storybook/storybook-static` 复制到 `apps/lab/dist/storybook`，上传 `apps/lab/dist`。
+构建根目录是仓库根目录。Node 24.11.1，先 `npm ci`、`npm run build`，再 `npm run check`（Storybook 类型检查依赖构建生成的组件库声明）。将 `apps/storybook/storybook-static` 复制到 `apps/lab/dist/storybook`，上传 `apps/lab/dist`。
 
 Lab 的 `VITE_BASE_PATH` 由 configure-pages 的 base_path 提供，可适配项目子路径或自定义域名。站内链接使用 Vite BASE_URL；生产默认 Storybook 地址为 BASE_URL 下的 storybook，开发仍使用 localhost:6007。需要单独托管 Storybook 时，在构建环境设置 VITE_STORYBOOK_URL。
 
