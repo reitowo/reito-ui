@@ -5,7 +5,7 @@
     "ai": 24
   },
   "total": 138,
-  "stories": 1418,
+  "stories": 1419,
   "entries": [
     {
       "layer": "basic",
@@ -315,7 +315,7 @@
       "storyId": "基础-tabs--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "TabsDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "basic",
