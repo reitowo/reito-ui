@@ -46,7 +46,7 @@ export function Conversation({ children, follow = true, label = '对话内容', 
   }, [follow]);
 
   return <div className={classes('relative flex min-h-0 min-w-0 flex-col', className)} {...props}>
-    <div id={id} ref={viewportRef} role="region" aria-label={label} tabIndex={0} className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-md focus-visible:outline-[length:var(--rui-outline-width)] focus-visible:outline-ring" onScroll={updatePosition}>
+    <div id={id} ref={viewportRef} role="region" aria-label={label} tabIndex={0} className="rui-scroll-focus min-h-0 flex-1 overflow-y-auto overscroll-contain" onScroll={updatePosition}>
       <div ref={contentRef} className="mx-auto grid w-full max-w-[var(--rui-reading-width)] gap-[var(--rui-message-gap)] p-[var(--rui-content-padding)]">{Children.count(children) ? children : empty}</div>
     </div>
     {!atEnd && <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center"><Button type="button" variant="outline" size="sm" className="pointer-events-auto shadow-sm" aria-controls={id} onClick={goToEnd}><ArrowDown className="size-3.5" aria-hidden="true" />回到最新</Button></div>}

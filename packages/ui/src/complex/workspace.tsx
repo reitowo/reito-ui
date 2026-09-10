@@ -354,7 +354,7 @@ export function WorkspacePane({ title, description, actions, footer, scroll = tr
       <div className="min-w-0">{title && <h2 id={titleId} className="truncate text-sm font-medium">{title}</h2>}{description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}</div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
     </header>}
-    <div ref={bodyRef} data-slot="workspace-pane-body" tabIndex={scroll ? 0 : undefined} role={scroll ? 'region' : undefined} aria-labelledby={scroll && title ? titleId : undefined} aria-label={scroll && !title ? '面板内容' : undefined} className={cx('min-h-0 min-w-0 flex-1', scroll && 'overflow-auto overscroll-contain focus-visible:outline-[length:var(--rui-outline-width)] focus-visible:-outline-offset-[var(--rui-outline-width)] focus-visible:outline-ring')}>{children}</div>
+    <div ref={bodyRef} data-slot="workspace-pane-body" tabIndex={scroll ? 0 : undefined} role={scroll ? 'region' : undefined} aria-labelledby={scroll && title ? titleId : undefined} aria-label={scroll && !title ? '面板内容' : undefined} className={cx('min-h-0 min-w-0 flex-1', scroll && 'rui-scroll-focus overflow-auto overscroll-contain')}>{children}</div>
     {footer && <footer className="shrink-0 border-t border-border px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">{footer}</footer>}
   </section>;
 }
