@@ -1,4 +1,5 @@
 import { useArgs } from 'storybook/preview-api';
+import { Bell } from 'lucide-react';
 import { textControl, booleanControl, recipeControl } from '../feature-controls.js';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SettingsSection, SettingsRow } from '../../../../packages/ui/src/complex/index.js';
@@ -12,6 +13,10 @@ export const Interactive: Story = { name: "交互 · 偏好设置与本地保存
 export const Default: Story = { name: "默认设置分组", render: () => <SettingsSection title="通知设置"><SettingsRow label="桌面提醒"><Switch aria-label="桌面提醒" defaultChecked /></SettingsRow></SettingsSection> };
 export const WithDescription: Story = { name: "带分组与行说明", render: () => <SettingsSection title="通知设置" description="仅用于本地组件展示。"><SettingsRow label="桌面提醒" description="在任务完成时显示提醒"><Switch aria-label="桌面提醒" defaultChecked /></SettingsRow></SettingsSection> };
 export const DisabledSetting: Story = { name: "禁用设置项", render: () => <SettingsSection title="同步设置"><SettingsRow label="云端同步" description="本地示例没有配置外部服务"><Switch aria-label="云端同步" disabled /></SettingsRow></SettingsSection> };
+export const InlineIconValue: Story = {
+ name: '行内图标与文字',
+ render: () => <SettingsSection title="通知设置" description="仅展示本地状态，不连接外部通知服务。"><SettingsRow label="提醒状态"><span><Bell className="size-4" aria-hidden="true" /> 已关闭</span></SettingsRow><SettingsRow label="纯文本状态"><span>未启用自动提醒</span></SettingsRow></SettingsSection>,
+};
 
 type PlaygroundArgs = { title: string; description: string; rowLabel: string; rowDescription: string; checked: boolean; disabled: boolean };
 export const Playground: StoryObj<PlaygroundArgs> = {

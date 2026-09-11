@@ -5,7 +5,7 @@
     "ai": 24
   },
   "total": 138,
-  "stories": 1418,
+  "stories": 1419,
   "entries": [
     {
       "layer": "basic",
@@ -1065,7 +1065,7 @@
       "storyId": "复杂-settingssection-设置分组--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "SettingsSectionDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "complex",
