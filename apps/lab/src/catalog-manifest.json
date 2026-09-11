@@ -5,7 +5,7 @@
     "ai": 24
   },
   "total": 138,
-  "stories": 1418,
+  "stories": 1422,
   "entries": [
     {
       "layer": "basic",
@@ -365,7 +365,7 @@
       "storyId": "基础-popover--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "PopoverDemo",
-      "stories": 5
+      "stories": 9
     },
     {
       "layer": "basic",
