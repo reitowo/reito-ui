@@ -681,6 +681,17 @@ export function ContextMenuDemo() {
 export function PopoverDemo() {
   const id = React.useId();
   return (
+    <div className="flex flex-wrap items-center gap-2">
+    <P.Popover>
+      <P.PopoverTrigger render={<P.Button variant="outline" />}>查看请求路径</P.PopoverTrigger>
+      <P.PopoverContent variant="list" align="start" aria-label="请求路径">
+        <P.PopoverList aria-label="请求路径列表">
+          <P.PopoverListItem metadata="HEAD · 16 次"><code>/health</code></P.PopoverListItem>
+          <P.PopoverListItem metadata="HEAD · 3 次"><code>/health/readiness</code></P.PopoverListItem>
+          <P.PopoverListItem metadata="HEAD · 2 次">路径未记录</P.PopoverListItem>
+        </P.PopoverList>
+      </P.PopoverContent>
+    </P.Popover>
     <P.Popover>
       <P.PopoverTrigger render={<P.Button variant="outline" />}>
         显示设置
@@ -698,6 +709,7 @@ export function PopoverDemo() {
         </P.Field>
       </P.PopoverContent>
     </P.Popover>
+    </div>
   );
 }
 export function TooltipDemo() {
