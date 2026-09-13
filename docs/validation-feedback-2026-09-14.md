@@ -27,3 +27,9 @@ Edge checked dark/light × compact/comfortable: date buttons and both axis pitch
 Lab and Storybook Playground now default to one continuous group of six slots. The explicit grouped story and grouped control remain available.
 
 Edge checked four theme/density combinations: six digits fill and completion feedback appears, no separator is rendered. The dark compact completed screenshot was inspected against the annotated 3+3 layout.
+
+## ImageCompare
+
+The bottom strip came from the local mountain SVG: its polygon ended at y=530 on a 540 px canvas. Extended the polygon to the bottom edge. The reusable comparison component and its cover/contain semantics remain unchanged. The corrected shared asset also serves gallery/carousel stories.
+
+At 100/0, Edge checked all four theme/density combinations. Canvas sampling confirms the bottom-center pixel matches the mountain above it. Inspected the dark compact screenshot against the annotation: no background band remains below the mountain. Keyboard End still reaches 100%.
