@@ -22,6 +22,10 @@
    without a rounded ring around the whole pane or focus-within on its children. */
 .rui-scroll-focus { outline: none; }
 .rui-scroll-focus:focus-visible { box-shadow: inset var(--rui-outline-width) 0 0 var(--rui-focus); }
+/* Opaque descendants can cover an inset shadow. Reserve a leading edge before
+   focus, so these surfaces keep a visible marker without moving their content. */
+.rui-scroll-focus-border { border-inline-start: var(--rui-border-width) solid transparent; }
+.rui-scroll-focus-border:focus-visible { border-inline-start-color: var(--rui-focus); box-shadow: none; }
 @media (forced-colors: active) {
   /* Forced-colors removes box shadows: retain an explicit system-color cue. */
   .rui-scroll-focus:focus-visible { outline: var(--rui-outline-width) solid Highlight; outline-offset: calc(-1 * var(--rui-outline-width)); }
