@@ -16,3 +16,7 @@
 当前浏览器工具连接不可用，未完成视觉比较及 Playwright 交互执行。PR 保持草稿，不能把构建或 SSR 检查视为实际行高、窄屏和焦点行为证明。
 
 交互用例覆盖 dark/light × compact/comfortable、桌面/窄屏、单行几何、浮层不改变宿主尺寸、Escape/外部点击关闭、键盘滚动、长路径及显式多行。Storybook 用例沿用 `REITO_STORYBOOK_URL`（默认 6007）；启动 Lab、Workbench 与该 Storybook 服务后运行上述用例，不使用线上服务。
+
+## 合并验收补充（2026-09-13）
+
+在合并 PR #5/#6/#7 的独立检出上，完整 build/check 通过。Edge/Playwright 实际执行 Popover 12 项、Tabs/Table 11 项、原有滚动焦点 13 项和主页 6 项，共 42 项全部通过（39.3 秒）。Popover 单行几何、窄屏、长路径、键盘滚动、关闭与焦点恢复已验证；以上“待执行”描述为原作者提交时的历史状态。新增 Popover 与 Tabs/Table 用例已加入常规 CI。

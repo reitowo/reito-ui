@@ -4,6 +4,7 @@ export default defineConfig({
   testDir: './tests', timeout: 45_000, workers: 2,
   testMatch: [
     'home.spec.ts', 'scroll-focus.spec.ts', 'select-input.spec.ts',
+    'popover-list.spec.ts', 'tabs-table-focus.spec.ts',
     'data-table-column-filters.spec.ts', 'data-table-column-management.spec.ts',
     'data-table-controlled.spec.ts', 'data-table-editing.spec.ts', 'data-table-preferences.spec.ts',
     'dynamic-form.spec.ts', 'form.spec.ts', 'key-value-editor-rich.spec.ts',
