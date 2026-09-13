@@ -22,6 +22,6 @@ export interface SettingsRowProps { label: string; description?: string; childre
 export function SettingsRow({ label, description, children, className }: SettingsRowProps) {
   return <div className={cx('flex flex-wrap items-center justify-between gap-[var(--rui-content-gap)] px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]', className)}>
     <div className="min-w-0 flex-1"><h3 className="text-sm font-medium">{label}</h3>{description && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>}</div>
-    <div className="flex max-w-full shrink-0 items-center gap-2">{children}</div>
+    <div className="flex max-w-full shrink-0 items-center gap-2 [&>span>svg]:inline-block [&>span>svg]:align-middle">{children}</div>
   </div>;
 }
