@@ -15,3 +15,9 @@ The clock opens a token-themed Popover with hour/minute/optional-second selector
 Removed the demo's outer 12 px content inset and row divider/vertical padding stack. Rows now use cell padding and a 4 px vertical edge inset; generic ScrollArea remains padding-free for caller content. Lab, Storybook Overview and vertical Playground share ScrollAreaDemo.
 
 Edge checked dark/light × compact/comfortable: row padding **6px 10px / 10px 16px**, measured row heights **32 / 40px**. Keyboard End scrolls the viewport. The light compact screenshot was inspected against the supplied list annotation; file icons and text now share consistent row insets.
+
+## Calendar
+
+Removed the extra 8 px margin between week rows, centered weekday headings in the same cell height, and aligned date-button radii to the calendar cell token. Continuous range backgrounds retain adjacent cells.
+
+Edge checked dark/light × compact/comfortable: date buttons and both axis pitches measure **32 × 32px / 40 × 40px**. Selecting September 8 updates the output. Inspected the compact dark calendar screenshot against the annotated September 6 reference: rows no longer have a wider vertical pitch than columns.
