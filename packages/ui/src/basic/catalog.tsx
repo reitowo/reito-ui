@@ -918,14 +918,14 @@ export function SeparatorDemo() {
     </Stack>
   );
 }
-export function ScrollAreaDemo() {
+export function ScrollAreaDemo({ rowCount = 18 }: { rowCount?: number } = {}) {
   return (
-    <P.ScrollArea className="h-48 w-72 rounded-lg border" aria-label="文件列表">
-      <div className="p-3">
-        {Array.from({ length: 18 }, (_, index) => (
+    <P.ScrollArea className="h-48 w-72 max-w-full rounded-lg border" aria-label="文件列表">
+      <div className="py-[var(--rui-space-1)]">
+        {Array.from({ length: Math.max(1, Math.min(50, Math.floor(rowCount))) }, (_, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 border-b py-2 text-sm last:border-0"
+            className="flex items-center gap-[var(--rui-content-gap-sm)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-sm"
           >
             <FileText className="size-4 text-muted-foreground" />
             component-{String(index + 1).padStart(2, "0")}.tsx
