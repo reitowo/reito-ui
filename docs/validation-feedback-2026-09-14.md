@@ -33,3 +33,11 @@ Edge checked four theme/density combinations: six digits fill and completion fee
 The bottom strip came from the local mountain SVG: its polygon ended at y=530 on a 540 px canvas. Extended the polygon to the bottom edge. The reusable comparison component and its cover/contain semantics remain unchanged. The corrected shared asset also serves gallery/carousel stories.
 
 At 100/0, Edge checked all four theme/density combinations. Canvas sampling confirms the bottom-center pixel matches the mountain above it. Inspected the dark compact screenshot against the annotation: no background band remains below the mountain. Keyboard End still reaches 100%.
+
+## Lab navigation and ColorPicker recheck
+
+Component navigation rows display the English name, while full bilingual titles remain in page headings, hover titles and the search index. All complex navigation rows were checked for Chinese suffix removal; searching 排程 still finds Scheduler.
+
+ColorPicker's existing fix (6c52bac) was rechecked across all four theme/density combinations: the addon inherits the group's **12 px radius**, opens the picker, and Escape restores focus.
+
+Remaining scope: this is local validation and local Git history, not a deployment or npm release. Deferred Kanban drafts remain outside these commits.

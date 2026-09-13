@@ -61,7 +61,7 @@ export function App() {
         <nav className="lab-navigation" aria-label="按应用层查找组件">
           {layers.map(group => { const entries = filtered.filter(entry => entry.layer === group.id); return entries.length ? <section key={group.id} className="lab-nav-group">
             <h2><group.icon className="size-3.5" />{group.name}<span>{entries.length}</span></h2>
-            {entries.map(entry => <button key={entry.id} className={`lab-nav-item ${selection.layer === entry.layer && selection.id === entry.id ? 'is-active' : ''}`} aria-current={selection.layer === entry.layer && selection.id === entry.id ? 'page' : undefined} onClick={() => { setSelection(entry); setNavigationOpen(false); }}><span>{entry.name}</span>{reviews[`${entry.layer}/${entry.id}`]?.status === 'accepted' && <Check className="size-3" aria-label="已确认" />}</button>)}
+            {entries.map(entry => <button key={entry.id} className={`lab-nav-item ${selection.layer === entry.layer && selection.id === entry.id ? 'is-active' : ''}`} aria-current={selection.layer === entry.layer && selection.id === entry.id ? 'page' : undefined} onClick={() => { setSelection(entry); setNavigationOpen(false); }}><span title={entry.name}>{entry.name.replace(/\s*[\u3400-\u9fff].*$/u, "").trim() || entry.name}</span>{reviews[`${entry.layer}/${entry.id}`]?.status === 'accepted' && <Check className="size-3" aria-label="已确认" />}</button>)}
           </section> : null; })}
           {!filtered.length && <p className="lab-no-results">未找到组件。试试“输入”或 “Tool”。</p>}
         </nav>
