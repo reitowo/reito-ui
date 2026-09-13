@@ -277,7 +277,7 @@ function ColorTextField({ props, editor, pickerButton }: { props: ColorInputProp
   return <Field data-invalid={invalid || undefined} data-disabled={props.disabled || undefined} className={props.className}>
     <FieldLabel htmlFor={id}>{props.label}</FieldLabel>
     <InputGroup data-disabled={props.disabled || undefined}>
-      <InputGroupAddon className={cn('overflow-hidden p-0', transparencyClass)}>
+      <InputGroupAddon className={cn('overflow-hidden rounded-[inherit] p-0', transparencyClass)}>
         {pickerButton ?? <span aria-hidden="true" className="size-[var(--rui-control-height)] border-r border-border" style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }} />}
       </InputGroupAddon>
       <InputGroupInput
