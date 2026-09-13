@@ -30,7 +30,7 @@ function VerificationCode({
   disabled = false,
   invalid = false,
   initial = "",
-  grouped = true,
+  grouped = false,
 }: {
   disabled?: boolean;
   invalid?: boolean;
@@ -80,7 +80,7 @@ function VerificationCode({
 }
 export const Default: Story = {
   name: "布局 · 分组输入",
-  render: () => <VerificationCode />,
+  render: () => <VerificationCode grouped />,
 };
 export const Continuous: Story = {
   name: "布局 · 连续输入",
@@ -102,7 +102,7 @@ export const Invalid: Story = {
 type PlaygroundArgs = { value: string; maxLength: number; disabled: boolean; invalid: boolean; grouped: boolean };
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: "参数调试",
-  args: { value: "", maxLength: 6, disabled: false, invalid: false, grouped: true },
+  args: { value: "", maxLength: 6, disabled: false, invalid: false, grouped: false },
   argTypes: {
     value: { control: "text" }, maxLength: { control: { type: "range", min: 4, max: 8, step: 1 } }, disabled: { control: "boolean" },
     invalid: { control: "boolean", description: "InputOTP 与 InputOTPSlot 的 aria-invalid", table: { category: "组合示例" } },

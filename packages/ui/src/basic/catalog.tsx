@@ -1241,13 +1241,7 @@ export function InputOTPDemo() {
         onChange={setValue}
       >
         <P.InputOTPGroup>
-          {[0, 1, 2].map((index) => (
-            <P.InputOTPSlot key={index} index={index} />
-          ))}
-        </P.InputOTPGroup>
-        <P.InputOTPSeparator />
-        <P.InputOTPGroup>
-          {[3, 4, 5].map((index) => (
+          {[0, 1, 2, 3, 4, 5].map((index) => (
             <P.InputOTPSlot key={index} index={index} />
           ))}
         </P.InputOTPGroup>

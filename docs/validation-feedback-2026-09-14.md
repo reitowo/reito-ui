@@ -21,3 +21,9 @@ Edge checked dark/light × compact/comfortable: row padding **6px 10px / 10px 16
 Removed the extra 8 px margin between week rows, centered weekday headings in the same cell height, and aligned date-button radii to the calendar cell token. Continuous range backgrounds retain adjacent cells.
 
 Edge checked dark/light × compact/comfortable: date buttons and both axis pitches measure **32 × 32px / 40 × 40px**. Selecting September 8 updates the output. Inspected the compact dark calendar screenshot against the annotated September 6 reference: rows no longer have a wider vertical pitch than columns.
+
+## InputOTP
+
+Lab and Storybook Playground now default to one continuous group of six slots. The explicit grouped story and grouped control remain available.
+
+Edge checked four theme/density combinations: six digits fill and completion feedback appears, no separator is rendered. The dark compact completed screenshot was inspected against the annotated 3+3 layout.
