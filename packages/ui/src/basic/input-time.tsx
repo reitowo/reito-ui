@@ -2,6 +2,9 @@ import * as React from 'react';
 import { Clock3, X } from 'lucide-react';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../primitives/field.js';
 import { InputGroup, InputGroupAddon, InputGroupButton } from '../primitives/input-group.js';
+import { Popover, PopoverContent, PopoverTrigger } from '../primitives/popover.js';
+import { Button } from '../primitives/button.js';
+import { SelectInput } from './select-input.js';
 import { cn } from '../lib/utils.js';
 
 export interface TimeValue { hour: number; minute: number; second?: number }
@@ -108,6 +111,8 @@ export function InputTime({
   className,
   clearLabel = '清除时间',
 }: InputTimeProps) {
+  const [pickerOpen, setPickerOpen] = React.useState(false);
+  const [pickerValue, setPickerValue] = React.useState<TimeValue | null>(null);
   const generatedId = React.useId();
   const id = suppliedId ?? generatedId;
   const descriptionId = description ? `${id}-description` : undefined;
@@ -198,6 +203,36 @@ export function InputTime({
     requestAnimationFrame(() => refs.current.hour?.focus());
   };
 
+  // Enumerate valid choices once per constraint change, including partial boundary hours.
+  const choices = React.useMemo(() => {
+    const result: TimeValue[] = [];
+    for (let hour = 0; hour < 24; hour++) for (let minute = 0; minute < 60; minute += minuteStep) {
+      for (let second = 0; second < (precision === 'second' ? 60 : 1); second += secondStep) {
+        const next = { hour, minute, second };
+        if ((!min || secondsOf(next) >= secondsOf(min)) && (!max || secondsOf(next) <= secondsOf(max))) result.push(next);
+      }
+    }
+    return result;
+  }, [minuteStep, secondStep, precision, min?.hour, min?.minute, min?.second, max?.hour, max?.minute, max?.second]);
+  const validPickerValue = pickerValue && choices.some(next => secondsOf(next) === secondsOf(pickerValue));
+  const openPicker = (open: boolean) => {
+    if (open && (disabled || readOnly)) return;
+    if (open) {
+      const base = parsed ?? currentValue;
+      setPickerValue((base && choices.find(next => secondsOf(next) === secondsOf(base))) || choices[0] || null);
+    }
+    setPickerOpen(open);
+  };
+  const chooseSegment = (segment: TimeSegment, value: number) => {
+    const base = pickerValue ?? choices[0];
+    if (!base) return;
+    const candidates = choices.filter(next => next[segment] === value && (segment === 'hour' || next.hour === base.hour) && (segment !== 'second' || next.minute === base.minute));
+    const target = secondsOf({ ...base, [segment]: value });
+    const nearest = candidates.reduce<TimeValue | null>((best, next) => !best || Math.abs(secondsOf(next) - target) < Math.abs(secondsOf(best) - target) ? next : best, null);
+    if (nearest) setPickerValue(nearest);
+  };
+  const optionsFor = (segment: TimeSegment) => [...new Set(choices.filter(next => segment === 'hour' || (next.hour === pickerValue?.hour && (segment !== 'second' || next.minute === pickerValue?.minute))).map(next => next[segment] ?? 0))].map(value => ({ value, label: segment === 'hour' && hourCycle === 12 ? `${value < 12 ? '上午' : '下午'} ${pad(value % 12 || 12)}` : pad(value) }));
+
   const keyDown = (event: React.KeyboardEvent<HTMLInputElement>, segment: TimeSegment) => {
     const index = segments.indexOf(segment);
     if (event.key === 'ArrowLeft' && event.currentTarget.selectionStart === 0 && index > 0) { event.preventDefault(); refs.current[segments[index - 1]]?.focus(); refs.current[segments[index - 1]]?.select(); }
@@ -219,7 +254,14 @@ export function InputTime({
       </div>
       <InputGroupAddon align="inline-end">
         {clearable && currentValue && !readOnly && <InputGroupButton size="icon-xs" aria-label={clearLabel} disabled={disabled} onClick={clear}><X aria-hidden="true" /></InputGroupButton>}
-        <Clock3 aria-hidden="true" />
+        <Popover open={pickerOpen && !disabled && !readOnly} onOpenChange={openPicker}>
+          <PopoverTrigger render={<InputGroupButton size="icon-xs" aria-label="打开时间选择器" disabled={disabled || readOnly} />}><Clock3 aria-hidden="true" /></PopoverTrigger>
+          <PopoverContent align="end" aria-label={`${label}选择器`} className="max-w-[var(--available-width)]">
+            <div className="flex items-center justify-between gap-2"><span className="text-sm font-medium">选择时间</span><span className="font-mono text-xs text-muted-foreground">{formatTimeValue(pickerValue, precision)}</span></div>
+            {choices.length ? <div className="flex gap-2">{segments.map(segment => <label key={segment} className="grid min-w-0 flex-1 gap-1 text-xs text-muted-foreground">{segmentNames[segment]}<SelectInput aria-label={`选择${segmentNames[segment]}`} className="w-full" options={optionsFor(segment)} value={pickerValue?.[segment] ?? null} onValueChange={next => chooseSegment(segment, next)} /></label>)}</div> : <p role="status" className="text-sm text-muted-foreground">当前范围与步进下没有可选时间</p>}
+            <div className="flex justify-end gap-2"><Button type="button" size="sm" variant="ghost" onClick={() => setPickerOpen(false)}>取消</Button><Button type="button" size="sm" disabled={!validPickerValue} onClick={() => { if (validPickerValue) { editingRef.current = false; applyValue(pickerValue, true); setPickerOpen(false); } }}>确定</Button></div>
+          </PopoverContent>
+        </Popover>
       </InputGroupAddon>
     </InputGroup>
     {name && <input type="hidden" name={name} form={form} value={formatTimeValue(committedValue, precision)} disabled={disabled} />}

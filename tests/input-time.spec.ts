@@ -1,9 +1,10 @@
+import { storybookUrl, chooseSelectOption } from './select-option';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const prefix = '基础-inputtime';
 async function open(page: Page, story: string, globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   await expect(page.locator('[data-slot="input-time"]').first()).toBeVisible({ timeout: 15_000 });
 }
 
@@ -88,13 +89,13 @@ test('native form emits stable time text and ignores invalid drafts', async ({ p
 test('read-only keeps the time legible while disabled locks segments', async ({ page }) => {
   await open(page, 'read-only');
   await expect(page.getByLabel('提醒时间时')).toHaveAttribute('readonly', '');
-  await expect(page.getByRole('button')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '打开时间选择器' })).toBeDisabled();
   await open(page, 'disabled');
   await expect(page.getByLabel('提醒时间时')).toBeDisabled();
 });
 
 test('Playground hour cycle and precision update in the same Storybook page', async ({ page }) => {
-  await page.goto(`http://127.0.0.1:6007/?path=/story/${prefix}--playground`);
+  await page.goto(`${storybookUrl}/?path=/story/${prefix}--playground`);
   const frame = page.frameLocator('#storybook-preview-iframe');
   await expect(frame.locator('[data-slot="input-time"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
@@ -112,7 +113,68 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   const group = page.locator('[data-slot="input-time"]');
   expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  // Storybook's a11y addon can still own axe while its initial scan finishes.
+  await expect(async () => {
+    expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  }).toPass({ timeout: 5_000 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/input-time/${theme}-${density}.png`, fullPage: true });
+});
+
+
+test('picker drafts can cancel and confirming commits the selected time', async ({ page }) => {
+  await open(page, 'twenty-four-hour');
+  const trigger = page.getByRole('button', { name: '打开时间选择器' });
+  await trigger.click();
+  const picker = page.getByRole('dialog', { name: '提醒时间选择器' });
+  await chooseSelectOption(picker.getByRole('combobox', { name: '选择时' }), '17');
+  await expect(picker.getByRole('combobox', { name: '选择分' })).toHaveText('30');
+  await chooseSelectOption(picker.getByRole('combobox', { name: '选择分' }), '45');
+  await expect(page.locator('output')).toContainText('value=09:30');
+  await picker.getByRole('button', { name: '取消', exact: true }).click();
+  await expect(trigger).toBeFocused();
+  await expect(page.locator('output')).toContainText('value=09:30');
+  await trigger.click();
+  await chooseSelectOption(picker.getByRole('combobox', { name: '选择时' }), '17');
+  await chooseSelectOption(picker.getByRole('combobox', { name: '选择分' }), '45');
+  await picker.getByRole('button', { name: '确定', exact: true }).click();
+  await expect(page.locator('output')).toContainText('committed=17:45');
+  await expect(trigger).toBeFocused();
+});
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
+  test(`picker respects range and minute steps (${theme}/${density})`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 700 });
+    await open(page, 'playground', `theme:${theme};density:${density}`);
+    await page.getByRole('button', { name: '打开时间选择器' }).click();
+    const picker = page.getByRole('dialog', { name: '提醒时间选择器' });
+    await chooseSelectOption(picker.getByRole('combobox', { name: '选择时' }), '18');
+    await expect(picker.getByRole('combobox', { name: '选择分' })).toHaveText('00');
+    await picker.getByRole('combobox', { name: '选择分' }).click();
+    await expect(page.getByRole('option')).toHaveCount(1);
+    await page.keyboard.press('Escape');
+    await expect(picker).toBeVisible();
+    await expect(page.getByRole('listbox')).toBeHidden();
+    await picker.screenshot({ path: `.logs/feedback-time-${theme}-${density}.png` });
+    await picker.getByRole('button', { name: '确定', exact: true }).click();
+    await expect(page.locator('output')).toContainText('value=18:00');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+}
+
+test('picker supports seconds, 12-hour labels and a range with no valid step', async ({ page }) => {
+  await open(page, 'stepped');
+  await page.getByRole('button', { name: '打开时间选择器' }).click();
+  await chooseSelectOption(page.getByRole('combobox', { name: '选择秒' }), '50');
+  await page.getByRole('button', { name: '确定', exact: true }).click();
+  await expect(page.locator('output')).toContainText('committed=09:30:50');
+  await open(page, 'twelve-hour');
+  await page.getByRole('button', { name: '打开时间选择器' }).click();
+  await chooseSelectOption(page.getByRole('combobox', { name: '选择时' }), '上午 12');
+  await page.getByRole('button', { name: '确定', exact: true }).click();
+  await expect(page.locator('output')).toContainText('committed=00:30');
+  await open(page, 'no-available-time');
+  await page.getByRole('button', { name: '打开时间选择器' }).click();
+  await expect(page.getByText('当前范围与步进下没有可选时间')).toBeVisible();
+  await expect(page.getByRole('button', { name: '确定', exact: true })).toBeDisabled();
 });

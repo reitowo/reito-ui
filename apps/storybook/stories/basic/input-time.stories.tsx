@@ -10,7 +10,7 @@ const meta = { id: "基础-inputtime",
   component: InputTime,
   tags: ['autodocs'],
   args: { label: '提醒时间' },
-  parameters: { docs: { description: { component: '不携带日期的分段时间输入，支持 12/24 小时制、分钟/秒精度、步进、范围、键盘调整与稳定表单值。' } } },
+  parameters: { docs: { description: { component: '不携带日期的分段时间输入，点击时钟打开时间选择面板，支持 12/24 小时制、分钟/秒精度、步进、范围、键盘调整与稳定表单值。' } } },
 } satisfies Meta<typeof InputTime>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -52,3 +52,5 @@ export const NativeForm: Story = { name: "原生表单值", render: function Ren
   const [submitted, setSubmitted] = useState('');
   return <form className="grid max-w-sm gap-[var(--rui-content-gap)]" onSubmit={event => { event.preventDefault(); setSubmitted(String(new FormData(event.currentTarget).get('reminder') ?? '')); }}><InputTime label="提醒时间" name="reminder" value={value} onValueChange={setValue} precision="second" required /><Button type="submit" variant="outline">读取表单</Button><output className="font-mono text-xs text-muted-foreground">form={submitted}</output></form>;
 } };
+
+export const NoAvailableTime: Story = { name: "状态 · 无可选时间", render: () => <ControlledTime initial={null} minuteStep={15} min={{ hour: 9, minute: 1 }} max={{ hour: 9, minute: 14 }} /> };
