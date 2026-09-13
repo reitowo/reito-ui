@@ -1,0 +1,45 @@
+name: Publish npm packages
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+jobs:
+  release-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Only release commits from main
+        run: git merge-base --is-ancestor HEAD origin/main
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.11.1'
+      - run: node scripts/check-release-version.mjs
+  quality:
+    needs: release-policy
+    uses: ./.github/workflows/validate.yml
+  publish:
+    needs: quality
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.11.1'
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.6.2
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-packages
+          path: artifacts
+      - name: Publish verified tarballs in dependency order
+        run: node scripts/publish-npm.mjs

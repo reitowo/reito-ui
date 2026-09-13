@@ -1,0 +1,35 @@
+name: Validate packages
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.11.1'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check
+      - name: Reject generated file drift
+        run: git diff --exit-code
+      - run: npx playwright install --with-deps chromium
+      - name: Core interaction regression
+        run: npx playwright test --config playwright.ci.config.ts
+      - run: npm run pack:library
+      - run: node scripts/check-npm-pack.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-packages
+          path: artifacts/*.tgz
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-failures
+          path: test-results/
