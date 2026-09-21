@@ -49,6 +49,8 @@ import { Composer } from '@reito/ui/ai';
 
 完整操作、Tailwind 接入、0.2 API 迁移和 0.3 → 0.4 密度变更见 [复用指南](docs/reuse-guide.md)。
 
+设置页与弹窗可复用 [SettingsSection / SettingsRow](docs/components/settings-section.md) 的平铺分组、可点击标签和纵向控件布局。
+
 ## 工程结构
 
 | 位置 | 职责 |
