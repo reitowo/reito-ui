@@ -54,6 +54,10 @@ import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
 
 若消费项目本身使用 Tailwind 4，在它的主 CSS 中导入 `@reito/tokens/tailwind` 来扩展应用自己的语义 utility。已经编译的组件 CSS 仍从 `@reito/ui/styles.css` 加载；不需要重新扫描 node_modules 来维持组件基本外观。
 
+## 表单分组与行内操作
+
+用 `FieldSet variant="outline"` 管理分组边界和标题间距，以 `FieldControlRow` 将操作按钮与控件对齐。组合契约及密度量度见 [Field 功能组布局](validation-field-layout.md)。
+
 ## 工作区增量：代码高亮
 
 共享 `CodeBlock` 已接入 Refractor / Prism 的语法解析，传入 `language="typescript"` 等标识即可着色；不需要应用额外安装主题 CSS、注册语法或连接服务。随包依赖只注册 JavaScript、TypeScript、JSX、TSX、JSON、HTML/XML、CSS、Bash、PowerShell、Python、SQL、YAML、Markdown、Go、Rust，支持常见别名如 js/ts/html/sh/ps1/py/yml/md。语言名称忽略大小写和两端空格。
