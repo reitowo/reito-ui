@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as P from "@reito/ui/basic";
+import { Trash2 } from "lucide-react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FieldDemo } from "../../../../packages/ui/src/basic/catalog.js";
@@ -83,6 +84,40 @@ export const Disabled: Story = {
   name: "状态 · 禁用",
   render: () => <NamedField disabled />,
 };
+
+function EditableGroup({ disabled = false, invalid = false }: { disabled?: boolean; invalid?: boolean }) {
+  const id = React.useId();
+  const [removed, setRemoved] = React.useState(false);
+  if (removed) return <P.Button variant="outline" onClick={() => setRemoved(false)}>恢复示例功能组</P.Button>;
+  return <P.FieldSet variant="outline" disabled={disabled} className="w-full max-w-2xl">
+    <P.FieldLegend variant="label">功能组 1</P.FieldLegend>
+    <P.FieldGroup>
+      <P.Field data-invalid={invalid || undefined}>
+        <P.FieldLabel htmlFor={`${id}-name`}>组名</P.FieldLabel>
+        <P.FieldControlRow actions={<P.Button type="button" size="icon-sm" variant="ghost" aria-label="删除功能组 1" disabled={disabled} onClick={() => setRemoved(true)}><Trash2 aria-hidden="true" /></P.Button>}>
+          <P.Input id={`${id}-name`} defaultValue={invalid ? '' : '取证试用'} disabled={disabled} aria-invalid={invalid || undefined} aria-describedby={invalid ? `${id}-error` : undefined} />
+        </P.FieldControlRow>
+        {invalid && <P.FieldError id={`${id}-error`}>请填写组名。</P.FieldError>}
+      </P.Field>
+      <P.Field>
+        <P.FieldLabel htmlFor={`${id}-users`}>组内域账号</P.FieldLabel>
+        <P.Textarea id={`${id}-users`} rows={3} defaultValue="example.user" disabled={disabled} aria-describedby={`${id}-help`} />
+        <P.FieldDescription id={`${id}-help`}>用逗号或换行分隔；每个账号须已在接待名单内。这是本地示例。</P.FieldDescription>
+      </P.Field>
+      <P.FieldSet>
+        <P.FieldLegend variant="label">开放功能</P.FieldLegend>
+        <P.FieldGroup>
+          <P.Field orientation="horizontal"><P.Checkbox id={`${id}-trace`} defaultChecked disabled={disabled} /><P.FieldLabel htmlFor={`${id}-trace`}>请求 ID 追踪</P.FieldLabel></P.Field>
+          <P.Field orientation="horizontal"><P.Checkbox id={`${id}-billing`} disabled={disabled} /><P.FieldLabel htmlFor={`${id}-billing`}>扣费查询</P.FieldLabel></P.Field>
+        </P.FieldGroup>
+      </P.FieldSet>
+    </P.FieldGroup>
+  </P.FieldSet>;
+}
+
+export const EditableGroupLayout: Story = { name: "组合 · 可编辑功能组", render: () => <EditableGroup /> };
+export const EditableGroupInvalid: Story = { name: "组合 · 功能组校验", render: () => <EditableGroup invalid /> };
+export const EditableGroupDisabled: Story = { name: "组合 · 功能组禁用", render: () => <EditableGroup disabled /> };
 
 type PlaygroundArgs = { orientation: "vertical" | "horizontal" | "responsive"; disabled: boolean; invalid: boolean; label: string; description: string; error: string };
 export const Playground: StoryObj<PlaygroundArgs> = {

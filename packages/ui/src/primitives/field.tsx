@@ -5,12 +5,19 @@ import { cn } from "../lib/utils.js"
 import { Label } from "./label.js"
 import { Separator } from "./separator.js"
 
-function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
+function FieldSet({
+  className,
+  variant = "default",
+  ...props
+}: React.ComponentProps<"fieldset"> & { variant?: "default" | "outline" }) {
   return (
     <fieldset
       data-slot="field-set"
+      data-variant={variant}
       className={cn(
-        "flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3",
+        "m-0 flex min-w-0 flex-col gap-[var(--rui-content-gap)] has-[>[data-slot=checkbox-group]]:gap-[var(--rui-content-gap-sm)] has-[>[data-slot=radio-group]]:gap-[var(--rui-content-gap-sm)]",
+        variant === "outline" &&
+          "rounded-lg border p-[var(--rui-content-padding)] [&>[data-slot=field-legend]]:mb-0 [&>[data-slot=field-legend]]:px-1",
         className
       )}
       {...props}
@@ -41,7 +48,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-group"
       className={cn(
-        "group/field-group @container/field-group flex w-full flex-col gap-5 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4",
+        "group/field-group @container/field-group flex min-w-0 w-full flex-col gap-[var(--rui-content-gap)] data-[slot=checkbox-group]:gap-[var(--rui-content-gap-sm)]",
         className
       )}
       {...props}
@@ -50,7 +57,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-  "group/field flex w-full gap-2 data-[invalid=true]:text-destructive",
+  "group/field flex min-w-0 w-full gap-[var(--rui-content-gap-sm)] data-[invalid=true]:text-destructive",
   {
     variants: {
       orientation: {
@@ -88,11 +95,42 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-content"
       className={cn(
-        "group/field-content flex flex-1 flex-col gap-0.5 leading-snug",
+        "group/field-content flex min-w-0 flex-1 flex-col gap-0.5 leading-snug",
         className
       )}
       {...props}
     />
+  )
+}
+
+/** Align actions with the control itself, independent of labels and help text. */
+function FieldControlRow({
+  className,
+  children,
+  actions,
+  ...props
+}: React.ComponentProps<"div"> & { actions?: React.ReactNode }) {
+  const hasActions = actions != null && typeof actions !== "boolean" && actions !== ""
+  return (
+    <div
+      data-slot="field-control-row"
+      data-actions={hasActions || undefined}
+      className={cn(
+        "grid min-w-0 grid-cols-1 items-center gap-[var(--rui-content-gap-sm)] data-[actions=true]:grid-cols-[minmax(0,1fr)_auto]",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      {hasActions && (
+        <div
+          data-slot="field-control-actions"
+          className="flex shrink-0 items-center gap-1"
+        >
+          {actions}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -232,5 +270,6 @@ export {
   FieldSeparator,
   FieldSet,
   FieldContent,
+  FieldControlRow,
   FieldTitle,
 }
