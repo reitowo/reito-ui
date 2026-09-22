@@ -18,7 +18,18 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       theme === 'dark' ? 'rgb(38, 38, 38)' : 'rgb(255, 255, 255)',
     );
     await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-    expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } })).violations)).toEqual([]);
+    // Wait only for Storybook's in-flight scan; real violations still fail immediately.
+    let violations: unknown;
+    await expect.poll(async () => {
+      try {
+        violations = await page.evaluate(async () => (await (window as any).axe.run(document.body, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } })).violations);
+        return true;
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('Axe is already running')) return false;
+        throw error;
+      }
+    }, { timeout: 5_000 }).toBe(true);
+    expect(violations).toEqual([]);
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
     await expect(input).toBeFocused();
