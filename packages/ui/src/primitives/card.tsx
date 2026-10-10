@@ -19,14 +19,14 @@ function Card({
           // Layout
           'overflow-hidden',
           // Surface
-          'rounded-xl bg-card',
+          'rounded-[var(--rui-component-card-radius)] bg-card',
           // Typography
           'text-sm text-card-foreground',
           // Surface
           'ring-1 ring-foreground/10',
           // Child and composition rules
-          '[&>[data-slot=card-header]:not(.border-b):has(+[data-slot=card-content])]:pb-0 [&>[data-slot=card-header]:not(.border-b)+[data-slot=card-content]]:pt-[var(--rui-card-text-gap)] *:[img:first-child]:rounded-t-xl',
-          '*:[img:last-child]:rounded-b-xl',
+          '[&>[data-slot=card-header]:not(.border-b):has(+[data-slot=card-content])]:pb-0 [&>[data-slot=card-header]:not(.border-b)+[data-slot=card-content]]:pt-[var(--rui-component-card-text-gap)] *:[img:first-child]:rounded-t-[var(--rui-component-card-radius)]',
+          '*:[img:last-child]:rounded-b-[var(--rui-component-card-radius)]',
         ],
         className,
       )}
@@ -40,7 +40,12 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="card-header"
       className={cn(
-        'group/card-header @container/card-header grid auto-rows-min items-start gap-[var(--rui-card-text-gap)] rounded-t-xl px-[var(--rui-card-padding-x)] py-[var(--rui-card-padding-y)] has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]',
+        [
+          'group/card-header @container/card-header grid auto-rows-min items-start',
+          'gap-[var(--rui-component-card-text-gap)] rounded-t-[var(--rui-component-card-radius)]',
+          'px-[var(--rui-component-card-padding-x)] py-[var(--rui-component-card-padding-y)]',
+          'has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]',
+        ],
         className,
       )}
       {...props}
@@ -85,7 +90,10 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-content"
-      className={cn('px-[var(--rui-card-padding-x)] py-[var(--rui-card-padding-y)]', className)}
+      className={cn(
+        'px-[var(--rui-component-card-padding-x)] py-[var(--rui-component-card-padding-y)]',
+        className,
+      )}
       {...props}
     />
   );
@@ -96,7 +104,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="card-footer"
       className={cn(
-        'flex items-center rounded-b-xl border-t bg-muted/50 px-[var(--rui-card-padding-x)] py-[var(--rui-card-padding-y)]',
+        'flex items-center rounded-b-[var(--rui-component-card-radius)] border-t bg-muted/50 px-[var(--rui-component-card-padding-x)] py-[var(--rui-component-card-padding-y)]',
         className,
       )}
       {...props}

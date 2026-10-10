@@ -28,7 +28,7 @@ Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧�
 
 1. **Primitive**：`palette` 存储原始色值；`foundation` 定义字体、间距、圆角、动效和布局尺寸。
 2. **Semantic**：`themes.dark` / `themes.light` 将颜色映射到用途；`density` 提供控件尺寸、内容间距、单元格内距和会话空间。生成 `--rui-*` CSS 变量与 Tailwind `@theme` 桥接，两者共享同一数值来源。
-3. **Component**：组件的 slot 和 variant 消费语义变量，例如按钮使用 `--rui-primary` 与 `--rui-on-primary`。当前没有独立的 component-token JSON 层；仅当多个组件确实需要独立调节同一角色时，再添加受管理的别名。
+3. **Component**：组件的 slot 和 variant 消费语义变量，例如按钮使用 `--rui-primary` 与 `--rui-on-primary`。`components` 提供 Button、Input、Menu、Card 的组件默认别名，引用共享语义角色；默认继承，确有角色差异时独立覆盖。`ReitoThemeProvider tokens` 支持运行时和局部微调，具体键与继承规则见 [组件 token](component-tokens.md)。
 
 标准 Tailwind 的 spacing、字号、行高、字重、圆角、阴影与动画通过生成桥接消费同一份 token。`p-2`、`gap-3`、`text-sm` 不等于绕过 token：前提是对应尺度已经桥接。2026-10-09 起，`text-sm` 通过 `font-interface` 映射为 13px 界面字号，`text-base` 仍为 16px 阅读字号；`--rui-text-md` 保留 14px 的独立文字尺度。Input / Textarea 不再根据窄视口切换到 16px，嵌入组件预览和窄工作面使用同一界面字号。
 
@@ -51,6 +51,8 @@ Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧�
 
 当前深色画布 / 侧栏面板 / 悬浮层分别为 `#141414` / `#181818` / `#181818`；浅色分别为 `#fafaf8` / `#f2f2f0` / `#ffffff`。composer 在两种主题下分别为 `#181818` 与 `#ffffff`。2026-10-09 调整减少深色容器之间的亮度跳变，浮层通过共享阴影和边界区分。组件和业务 CSS 应引用 token，不能将参考产品的取样值写入页面。
 
+表单错误状态使用共享 `.rui-validation`：错误色沿控件内边缘向内淡出，普通边界保持柔和；组合输入由外层提供高亮，内部控制不叠加。blur、inset spread 和强度来自 token；键盘焦点继续独立显示中性细线。具体数值、参考与验证见 [内边缘错误渐变](validation-inset-glow.md)。
+
 ## 字体、密度与尺度
 
 CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中文系统字体补足字符覆盖。字体规则由公共包统一定义，Lab、Storybook 和消费工程不分别设置。代码使用 Cascadia Code、SFMono-Regular、Consolas 等等宽字体回退。
@@ -65,7 +67,7 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 | 既有布局：紧凑 / 舒适面板内距 | 16 / 24 px | `--rui-panel-padding` 保留；通用组件内容区使用下表的 `--rui-content-padding`。 |
 | 间距尺度 | 0、4、8、12、16、20、24、32、40、48、64 px | 使用 `--rui-space-*`；特殊布局尺寸先登记为共享 token。 |
 | 小 / 中 / 大圆角 / composer | 6 / 8 / 12 / 14 px | 控件、容器与对话框使用稳定层级；composer 有独立角色，圆形状态元素可用 full。 |
-| 边框 / 普通键盘焦点 / 强轮廓 | 1 / 1 / 2 px | 普通focus-width与outline-width分开；错误和结构提示保留强轮廓角色。 |
+| 边框 / 普通键盘焦点 / 强轮廓 | 1 / 1 / 2 px | 普通focus-width与outline-width分开；结构提示保留强轮廓角色；表单错误使用内边缘渐变。 |
 | 快速 / 常规动效 | 120 / 180 ms | 只提示状态变化；尊重 `prefers-reduced-motion`。 |
 
 0.3 → 0.4 调整的是共享内容密度：正文区域、表格和 AI 组件通过同一组角色收紧空白，UI 字号与控件高度保持上述尺度。以下数值仍以 16px 根字号折算；不要把 rem 数值误作不可缩放的像素上限。
@@ -77,7 +79,7 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 | 紧凑面板上下内距 | `--rui-compact-surface-padding-y` | 8px | 12px |
 | 紧凑面板相关文字间隔 | `--rui-compact-surface-gap` | 4px | 8px |
 | 菜单条目左右内距 | `--rui-menu-item-padding-x` | 12px | 16px |
-| 菜单条目上下内距 | `--rui-menu-item-padding-y` | 8px | 10px |
+| 菜单条目上下内距 | `--rui-menu-item-padding-y` | 4px | 8px |
 | 内容间距 | `--rui-content-gap` | 12px | 16px |
 | 小内容间距 | `--rui-content-gap-sm` | 8px | 12px |
 | 单元格横向内距 | `--rui-cell-padding-x` | 10px | 16px |
@@ -229,7 +231,7 @@ ContextMenu、DropdownMenu、Menubar 的条目使用 menu-item-padding-x/y：com
 
 Button、Toggle、输入框附属按钮以及按钮组外端统一使用 radius-sm（6 px），与尺寸、变体、禁用或加载状态无关。相邻组合的内部接缝保留 0 圆角；圆形专用动作和容器仍使用各自角色。
 
-ScrollArea 默认不添加内容内距。variant="inset" 将紧凑面板内距放在 Root 和 Viewport 之间，滚动到中部或末尾后也保留顶部 / 底部边缘；文件列表 Demo 默认使用 inset，行内不再重复横向 padding。Storybook 可调 variant、方向和数量。
+ScrollArea 默认不添加内容内距。variant="inset" 将组件 padding-x/y 放在 Root 和 Viewport 之间：横向继承紧凑面板尺度（12 / 16px），纵向采用 space-1（4px）的薄边缘。滚动到中部或末尾后仍保留顶部 / 底部边缘。文件列表 Demo 默认使用 inset，行内不重复横向 padding；纵向使用共享 Menu 条目尺度（4 / 8px），单行高度为28 / 36px，避免滚动容器内距与表格 cell padding 叠加。Storybook 可调 variant、方向和数量。实测见 [滚动列表内距验证](validation-scroll-area-insets.md)。
 
 ## 默认按钮与 Card 区域（2026-10-10）
 
@@ -283,7 +285,7 @@ Transfer 复用这套 Listbox，公开相同 descriptionLayout；左右标题、
 
 选项图标沿用 ListboxOption.icon，TransferItem 直接继承。一个列表的选项集合中有任意图标时保留统一的 space-4 图标列；无图标项保留空列，全无图标时省略。图标使用次级语义色、space-2 文本间隔和 aria-hidden，不改变 option 的可访问名称与 control-height。图标随稳定 value 对应的选项数据转移，不在消费页添加单独图标覆盖。
 
-## 弹出选项的小幅放大（2026-10-10）
+## 弹出选项的小幅放大（2026-10-10，历史试调）
 
 根据 AsyncCombobox 标注，先试调展开选项的阅读尺度。输入框和普通动作仍使用原有 13px 字号及各自高度；Select、Combobox（含异步和多选组合）、DropdownMenu、ContextMenu、Menubar 的可操作条目主文字使用 menu-font-size（引用 text-md，14px），line-interface 对应的 20px 行高，上下内距 menu-item-padding-y 改为 6/8px，横向继续 12/16px。次级描述和组标签保持 12px；不把辅助说明同样放大。
 
@@ -299,6 +301,8 @@ SettingsRow 的标签与辅助说明间隔在 2026-10-10 的后续文字反馈�
 
 Graphite / 灰白仍是库默认。消费工程可以用 ReitoThemeProvider 的 colors.primary 与 colors.neutral 选择品牌主色和命名工作面色系，Button 等基础控件可单独指定 color。颜色与 variant、尺寸、密度独立；普通导航和键盘焦点继续使用中性规则，不因品牌色增加左侧选中条。作用域、浮层继承、支持的基础组件与当前边界见 [theme-guide.md](theme-guide.md)。新增色阶及语义映射同样来自 tokens.json，运行时数据由 tokens:build 生成。
 
-默认动作、Tabs、Toggle 和选择器触发器共享 action-font-size（14px）。默认按钮的 button-padding-x 在 compact / comfortable 为10 / 14px，菜单条目的上下内距为8 / 10px，单行项高度为36 / 40px。这次调整来自主题说明页的按钮和选择器偏小反馈，参考本库用户裁图；输入框继续使用其独立字段尺度。
+默认动作、Tabs、Toggle 和选择器触发器共享 action-font-size（14px）。默认按钮的 button-padding-x 在 compact / comfortable 为10 / 14px。主题说明页的按钮和选择器偏小反馈曾使菜单上下内距试调为8 / 10px，单行项达到36 / 40px；该菜单值已由下文的紧凑菜单修正替代，输入框继续使用其独立字段尺度。
+
+主题菜单的后续实测发现，18 项颜色列表放大了上述纵向空白问题。菜单主文字改为 menu-font-size 引用 font-interface（13px），保留20px行高；menu-item-padding-y 在 compact / comfortable 为4 / 8px，单行菜单项为28 / 36px，横向仍为12 / 16px。下拉、右键、Menubar、Select 和 Combobox 继续消费同一组角色，不添加 Lab 专用密度覆盖。参考为用户提供的本库深色主题选单截图；实测与交互结果见 [菜单紧凑密度验证](validation-menu-density.md)。
 
 默认 DialogFooter 与 AlertDialogFooter 使用共享 action-footer-padding-y：compact 12px、comfortable 16px，横向内距16px。默认动作区不再四边都用16px；紧凑确认变体继续消费 compact-surface-padding-x/y。新角色引用对应 card-padding-y 的密度值，由 token 源统一生成，供同类操作区复用。

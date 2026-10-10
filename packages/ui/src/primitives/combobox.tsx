@@ -160,9 +160,9 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
           // Surface
           'rounded-md',
           // Spacing
-          'py-[var(--rui-menu-item-padding-y)] pr-8 pl-[var(--rui-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
@@ -203,7 +203,7 @@ function ComboboxLabel({ className, ...props }: ComboboxPrimitive.GroupLabel.Pro
     <ComboboxPrimitive.GroupLabel
       data-slot="combobox-label"
       className={cn(
-        'px-[var(--rui-menu-item-padding-x)] py-1.5 text-xs text-muted-foreground',
+        'px-[var(--rui-component-menu-item-padding-x)] py-1.5 text-xs text-muted-foreground',
         className,
       )}
       {...props}
@@ -262,13 +262,12 @@ function ComboboxChips({
           // Keyboard focus
           'focus-within:border-ring focus-within:ring-[length:var(--rui-focus-width)] focus-within:ring-ring/50',
           // Validation state
-          'has-aria-invalid:border-destructive has-aria-invalid:ring-[length:var(--rui-outline-width)] has-aria-invalid:ring-destructive/20',
+          'rui-validation',
           // Child and composition rules
           'has-data-[slot=combobox-chip]:px-1',
           // Dark theme
           'dark:bg-input/30',
           // Validation state
-          'dark:has-aria-invalid:border-destructive/50 dark:has-aria-invalid:ring-destructive/40',
         ],
         className,
       )}

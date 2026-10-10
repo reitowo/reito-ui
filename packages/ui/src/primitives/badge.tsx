@@ -25,7 +25,7 @@ const badgeVariants = cva(
     // Child and composition rules
     'has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5',
     // Validation state
-    'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+    'rui-validation',
     // Child and composition rules
     '[&>svg]:pointer-events-none [&>svg]:size-3!',
   ],

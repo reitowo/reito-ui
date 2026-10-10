@@ -25,4 +25,11 @@ export * from './basic/image-compare.js';
 export * from './basic/scroll-top.js';
 
 export { ReitoThemeProvider, useReitoTheme } from './theme.js';
-export type { ThemeMode, ThemeColor, ThemeColors, ColorPalette, NeutralPalette } from './theme.js';
+export type {
+  ThemeMode,
+  ThemeColor,
+  ThemeColors,
+  ThemeTokenOverrides,
+  ColorPalette,
+  NeutralPalette,
+} from './theme.js';

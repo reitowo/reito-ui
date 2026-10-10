@@ -17,7 +17,7 @@ function ScrollArea({
       className={cn(
         'relative',
         variant === 'inset' &&
-          'px-[var(--rui-compact-surface-padding-x)] py-[var(--rui-compact-surface-padding-y)]',
+          'px-[var(--rui-component-scroll-area-padding-x)] py-[var(--rui-component-scroll-area-padding-y)]',
         className,
       )}
       {...props}

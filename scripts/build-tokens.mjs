@@ -4,6 +4,30 @@ import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
 const source = JSON.parse(await readFile(new URL('packages/tokens/src/tokens.json', root), 'utf8'));
 const lookup = (path) => path.split('.').reduce((value, key) => value?.[key], source);
+// Check expression edges too: CSS cycles otherwise fail silently at runtime.
+const checkedReferences = new Set();
+function validateReference(path, active = new Set()) {
+  if (active.has(path)) throw new Error(`Cyclic token reference: ${path}`);
+  if (checkedReferences.has(path)) return;
+  const token = lookup(path);
+  if (!token || !('$value' in token)) throw new Error(`Invalid token reference: ${path}`);
+  active.add(path);
+  for (const value of [token.$value, token.$extensions?.reito?.css]) {
+    if (typeof value !== 'string') continue;
+    for (const [, reference] of value.matchAll(/\{([^}]+)\}/g)) validateReference(reference, active);
+  }
+  active.delete(path);
+  checkedReferences.add(path);
+}
+function validateGroup(group, prefix = '') {
+  for (const [key, value] of Object.entries(group)) {
+    if (key.startsWith('$')) continue;
+    const path = prefix + key;
+    if ('$value' in value) validateReference(path);
+    else validateGroup(value, path + '.');
+  }
+}
+validateGroup(source);
 function resolve(token, seen = new Set()) {
   if (!token || !('$value' in token)) throw new Error('Invalid token reference');
   let value = token.$value;
@@ -29,12 +53,36 @@ function resolve(token, seen = new Set()) {
     default: return String(value);
   }
 }
-function flatten(group, prefix = '') {
+// Keep references live in CSS; numeric APIs and palette recipes still need
+// resolved build-time values. Namespace paths map to their public CSS roles.
+function variable(path) {
+  const parts = path.split('.');
+  if (parts[0] === 'foundation') return parts.slice(1).join('-');
+  if (parts[0] === 'themes' || parts[0] === 'density') return parts.slice(2).join('-');
+  if (parts[0] === 'components') return 'component-' + parts.slice(1).join('-');
+  if (parts[0] === 'palette' || parts[0] === 'colorScales') return 'palette-' + parts.slice(1).join('-');
+  throw new Error(`No CSS namespace for token reference: ${path}`);
+}
+function cssValue(token) {
+  resolve(token); // Reject missing or cyclic aliases even when emitting var().
+  const expression = token.$extensions?.reito?.css;
+  if (expression) {
+    if (!/^calc\(.+\)$/.test(expression)) throw new Error('Expected a calc() token expression');
+    return expression.replace(/\{([^}]+)\}/g, (_, path) => {
+      resolve(lookup(path));
+      return `var(--rui-${variable(path)})`;
+    });
+  }
+  return typeof token.$value === 'string' && /^\{.+\}$/.test(token.$value)
+    ? `var(--rui-${variable(token.$value.slice(1, -1))})`
+    : resolve(token);
+}
+function flatten(group, prefix = '', valueOf = resolve) {
   return Object.entries(group).filter(([key]) => !key.startsWith('$')).flatMap(([key, value]) =>
-    '$value' in value ? [[`${prefix}${key}`, resolve(value)]] : flatten(value, `${prefix}${key}-`));
+    '$value' in value ? [[`${prefix}${key}`, valueOf(value)]] : flatten(value, `${prefix}${key}-`, valueOf));
 }
 const declarations = (values) => values.map(([name, value]) => `  --rui-${name}: ${value};`).join('\n');
-const css = `/* Generated from src/tokens.json. Run npm run tokens:build. */\n:root {\n${declarations(flatten(source.foundation))}\n${declarations(flatten(source.colorScales, 'palette-'))}\n}\n\n:root, [data-theme="dark"] {\n  color-scheme: dark;\n${declarations(flatten(source.themes.dark))}\n}\n\n[data-theme="light"] {\n  color-scheme: light;\n${declarations(flatten(source.themes.light))}\n}\n\n:root, [data-density="compact"] {\n${declarations(flatten(source.density.compact))}\n}\n\n[data-density="comfortable"] {\n${declarations(flatten(source.density.comfortable))}\n}\n\n@media (prefers-reduced-motion: reduce) {\n  :root { --rui-duration-fast: 0ms; --rui-duration-normal: 0ms; }\n}\n`;
+let css = `/* Generated from src/tokens.json. Run npm run tokens:build. */\n:root {\n${declarations(flatten(source.foundation, '', cssValue))}\n${declarations(flatten(source.palette, 'palette-'))}\n${declarations(flatten(source.colorScales, 'palette-'))}\n${declarations(flatten(source.components, 'component-', cssValue))}\n}\n\n:root, [data-theme="dark"] {\n  color-scheme: dark;\n${declarations(flatten(source.themes.dark, '', cssValue))}\n}\n\n[data-theme="light"] {\n  color-scheme: light;\n${declarations(flatten(source.themes.light, '', cssValue))}\n}\n\n:root, [data-density="compact"] {\n${declarations(flatten(source.density.compact, '', cssValue))}\n}\n\n[data-density="comfortable"] {\n${declarations(flatten(source.density.comfortable, '', cssValue))}\n}\n\n@media (prefers-reduced-motion: reduce) {\n  :root { --rui-duration-fast: 0ms; --rui-duration-normal: 0ms; }\n}\n`;
 const roles = {
   background:'bg', foreground:'text', card:'surface', 'card-foreground':'text',
   popover:'elevated', 'popover-foreground':'text', primary:'primary', 'primary-foreground':'on-primary',
@@ -49,11 +97,25 @@ const roles = {
 const aliases = `\n/* shadcn roles: accent is an interaction surface; info is the blue status color. */\n:root {\n${Object.entries(roles).map(([name,target])=>`  --${name}: var(--rui-${target});`).join('\n')}\n  --radius: var(--rui-radius-lg);\n}\n`;
 // Public runtime presets are resolved from the same token source as CSS.
 const runtimeThemes = Object.fromEntries(Object.entries(source.themes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values))]));
+const themeBindings = Object.fromEntries(Object.entries(source.themes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values, '', cssValue))]));
 const runtimeNeutral = Object.fromEntries(Object.entries(source.colorThemes.neutral).map(([family, modes]) => [family, Object.fromEntries(Object.entries(modes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values))]))]));
 const runtimeColors = Object.fromEntries(Object.entries(source.colorThemes.color).map(([family, modes]) => [family, Object.fromEntries(Object.entries(modes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values))]))]));
+const presetBindings = (group) => Object.fromEntries(Object.entries(group).map(([family, modes]) => [family, Object.fromEntries(Object.entries(modes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values, '', cssValue))]))]));
+const neutralBindings = presetBindings(source.colorThemes.neutral);
+const colorBindings = presetBindings(source.colorThemes.color);
 const runtimeScales = Object.fromEntries(Object.entries(source.colorScales).map(([family, values]) => [family, Object.fromEntries(flatten(values))]));
 const paletteVariables = Object.fromEntries(Object.entries(runtimeScales).map(([family, scale]) => [family, Object.fromEntries(Object.keys(scale).map(step => [step, `var(--rui-palette-${family}-${step})`]))]));
-const runtime = { paletteVariables, themes: runtimeThemes, neutrals: runtimeNeutral, colors: runtimeColors, scales: runtimeScales, aliases: roles };
+// Rebind aliases at each theme scope so local base overrides also reach aliases.
+const bindings = Object.fromEntries([
+  ...flatten(source.foundation, '', cssValue),
+  ...flatten(source.components, 'component-', cssValue),
+].filter(([, value]) => value.includes('var(')));
+// CSS-only theme/density scopes must also rebind component aliases.
+css += `\n[data-theme], [data-density] {\n${declarations(Object.entries(bindings))}\n}\n`;
+const densityBindings = Object.fromEntries(Object.entries(source.density).map(([mode, values]) => [mode, Object.fromEntries(flatten(values, '', cssValue).filter(([, value]) => value.includes('var(')))]));
+const tokenKeys = [...new Set([...Object.keys(source.foundation), ...Object.keys(source.density.compact), ...Object.keys(source.themes.dark)])];
+const componentKeys = Object.fromEntries(Object.entries(source.components).filter(([key]) => !key.startsWith('$')).map(([key, values]) => [key, Object.keys(values)]));
+const runtime = { paletteVariables, themes: runtimeThemes, neutrals: runtimeNeutral, colors: runtimeColors, scales: runtimeScales, aliases: roles, bindings, densityBindings, themeBindings, neutralBindings, colorBindings };
 const bridge = {
   'font-sans': 'font-sans', 'font-heading': 'font-sans', 'font-mono': 'font-mono', spacing: 'space-1',
   'text-xs': 'font-caption', 'text-sm': 'font-interface', 'text-base': 'font-reading', 'text-lg': 'font-subheading', 'text-xl': 'text-xl', 'text-2xl': 'font-heading', 'text-3xl': 'font-display',
@@ -83,7 +145,7 @@ const metrics = Object.fromEntries(flatten(source.foundation).flatMap(([name, va
 }));
 const outputs = [
   [new URL('packages/tokens/dist/themes.js', root), `/* Generated runtime color presets. Edit src/tokens.json. */\nexport const themeTokens = ${JSON.stringify(runtime, null, 2)};\n`],
-  [new URL('packages/tokens/dist/themes.d.ts', root), `export type ColorPalette = ${Object.keys(runtimeColors).map(v=>JSON.stringify(v)).join(' | ')};\nexport type NeutralPalette = 'graphite' | ${Object.keys(runtimeNeutral).map(v=>JSON.stringify(v)).join(' | ')};\nexport declare const themeTokens: { themes: Record<'dark' | 'light', Record<string, string>>; neutrals: Record<Exclude<NeutralPalette, 'graphite'>, Record<'dark' | 'light', Record<string, string>>>; colors: Record<ColorPalette, Record<'dark' | 'light', Record<string, string>>>; scales: Record<string, Record<string, string>>; paletteVariables: Record<string, Record<string, string>>; aliases: Record<string, string> };\n`],
+  [new URL('packages/tokens/dist/themes.d.ts', root), `export type ColorPalette = ${Object.keys(runtimeColors).map(v=>JSON.stringify(v)).join(' | ')};\nexport type NeutralPalette = 'graphite' | ${Object.keys(runtimeNeutral).map(v=>JSON.stringify(v)).join(' | ')};\nexport declare const themeTokens: { themes: Record<'dark' | 'light', Record<string, string>>; neutrals: Record<Exclude<NeutralPalette, 'graphite'>, Record<'dark' | 'light', Record<string, string>>>; colors: Record<ColorPalette, Record<'dark' | 'light', Record<string, string>>>; scales: Record<string, Record<string, string>>; paletteVariables: Record<string, Record<string, string>>; aliases: Record<string, string>; bindings: Record<string, string>; densityBindings: Record<'compact' | 'comfortable', Record<string, string>>; themeBindings: Record<'dark' | 'light', Record<string, string>>; neutralBindings: Record<string, Record<'dark' | 'light', Record<string, string>>>; colorBindings: Record<ColorPalette, Record<'dark' | 'light', Record<string, string>>> };\nexport type SemanticTokenName = ${tokenKeys.map(v=>JSON.stringify(v)).join(' | ')};\nexport type ComponentTokenOverrides = {\n${Object.entries(componentKeys).map(([name, keys])=>`  ${JSON.stringify(name)}?: Partial<Record<${keys.map(v=>JSON.stringify(v)).join(' | ')}, string>>;`).join('\n')}\n};\nexport type ThemeTokenOverrides = { semantic?: Partial<Record<SemanticTokenName, string>>; components?: ComponentTokenOverrides };\n`],
   [new URL('packages/tokens/dist/tokens.css', root), css + aliases + `\n:root { --rui-color-text: var(--rui-text); --rui-color-soft: var(--rui-hover); --rui-color-border: var(--rui-border-strong); }\n`],
   [new URL('packages/tokens/dist/tailwind.css', root), tailwind],
   [new URL('packages/tokens/dist/metrics.js', root), `/* Generated numeric API defaults; px and ms, rem at a 16px root. */\nexport const tokenMetrics = Object.freeze(${JSON.stringify(metrics, null, 2)});\n`],

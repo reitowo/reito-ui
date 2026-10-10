@@ -456,7 +456,7 @@ export function InputTags({
             // Keyboard focus
             'focus-within:border-ring focus-within:ring-[length:var(--rui-focus-width)] focus-within:ring-ring/50',
             // Validation state
-            'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20',
+            'rui-validation',
             // Disabled state
             'data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:bg-input/50 data-disabled:opacity-[var(--rui-opacity-disabled)]',
             // Dark theme
@@ -464,7 +464,6 @@ export function InputTags({
             // Disabled state
             'dark:data-disabled:bg-input/80',
             // Validation state
-            'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
           ])}
         >
           <ul aria-label={`${label}标签`} className="contents">
@@ -477,7 +476,7 @@ export function InputTags({
                   data-tag-index={index}
                   aria-invalid={Boolean(tagError) || undefined}
                   aria-describedby={tagError ? `${id}-tag-error-${index}` : undefined}
-                  className="inline-flex min-h-[var(--rui-control-height-xs)] min-w-0 max-w-full items-center rounded-sm border border-border bg-muted text-xs text-foreground aria-invalid:border-destructive"
+                  className="inline-flex min-h-[var(--rui-control-height-xs)] min-w-0 max-w-full items-center rounded-sm border border-border bg-muted text-xs text-foreground rui-validation"
                 >
                   {editing?.index === index ? (
                     <>

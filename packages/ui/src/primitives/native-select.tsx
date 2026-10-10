@@ -43,13 +43,12 @@ function NativeSelect({ className, size = 'default', ...props }: NativeSelectPro
           // Disabled state
           'disabled:pointer-events-none disabled:cursor-not-allowed',
           // Validation state
-          'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20',
+          'rui-validation',
           // Component state
           'data-[size=sm]:h-[var(--rui-control-height-sm)] data-[size=sm]:rounded-md data-[size=sm]:py-0.5',
           // Dark theme
           'dark:bg-input/30 dark:hover:bg-input/50',
           // Validation state
-          'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
         ])}
         {...props}
       />

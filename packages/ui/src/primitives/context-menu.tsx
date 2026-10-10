@@ -96,7 +96,7 @@ function ContextMenuLabel({
       data-slot="context-menu-label"
       data-inset={inset}
       className={cn(
-        'px-[var(--rui-menu-item-padding-x)] py-[var(--rui-menu-item-padding-y)] text-xs font-medium text-muted-foreground data-inset:pl-7',
+        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium text-muted-foreground data-inset:pl-7',
         className,
       )}
       {...props}
@@ -127,9 +127,9 @@ function ContextMenuItem({
           // Surface
           'rounded-sm',
           // Spacing
-          'px-[var(--rui-menu-item-padding-x)] py-[var(--rui-menu-item-padding-y)]',
+          'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
@@ -181,9 +181,9 @@ function ContextMenuSubTrigger({
           // Surface
           'rounded-sm',
           // Spacing
-          'px-[var(--rui-menu-item-padding-x)] py-[var(--rui-menu-item-padding-y)]',
+          'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
@@ -238,9 +238,9 @@ function ContextMenuCheckboxItem({
           // Surface
           'rounded-sm',
           // Spacing
-          'py-[var(--rui-menu-item-padding-y)] pr-8 pl-[var(--rui-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
@@ -294,9 +294,9 @@ function ContextMenuRadioItem({
           // Surface
           'rounded-sm',
           // Spacing
-          'py-[var(--rui-menu-item-padding-y)] pr-8 pl-[var(--rui-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout

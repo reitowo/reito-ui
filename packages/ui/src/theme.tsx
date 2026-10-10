@@ -9,9 +9,14 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { themeTokens, type ColorPalette, type NeutralPalette } from '@reito/tokens/themes';
+import {
+  themeTokens,
+  type ColorPalette,
+  type NeutralPalette,
+  type ThemeTokenOverrides,
+} from '@reito/tokens/themes';
 
-export type { ColorPalette, NeutralPalette } from '@reito/tokens/themes';
+export type { ColorPalette, NeutralPalette, ThemeTokenOverrides } from '@reito/tokens/themes';
 export type ThemeMode = 'dark' | 'light' | 'system';
 export type ThemeColor =
   | ColorPalette
@@ -34,6 +39,7 @@ type ThemeState = {
   scheme: 'dark' | 'light';
   density: 'compact' | 'comfortable';
   colors: ThemeColors;
+  tokens: ThemeTokenOverrides;
   style: CSSProperties;
   documentRoot: boolean;
 };
@@ -67,10 +73,28 @@ const aliases = (values: Record<string, string>): CSSProperties =>
     ]),
   ]) as CSSProperties;
 
-function themeStyle(scheme: 'dark' | 'light', colors: ThemeColors) {
+function mergeTokens(
+  parent?: ThemeTokenOverrides,
+  local?: ThemeTokenOverrides,
+): ThemeTokenOverrides {
+  const components = { ...parent?.components };
+  for (const key of Object.keys(local?.components ?? {}) as Array<keyof typeof components>) {
+    Object.assign(components, { [key]: { ...components[key], ...local?.components?.[key] } });
+  }
+  return { semantic: { ...parent?.semantic, ...local?.semantic }, components };
+}
+
+function themeStyle(
+  scheme: 'dark' | 'light',
+  colors: ThemeColors,
+  density: 'compact' | 'comfortable',
+  tokens: ThemeTokenOverrides,
+) {
   const values = {
-    ...themeTokens.themes[scheme],
-    ...(colors.neutral === 'graphite' ? {} : themeTokens.neutrals[colors.neutral][scheme]),
+    ...themeTokens.bindings,
+    ...themeTokens.densityBindings[density],
+    ...themeTokens.themeBindings[scheme],
+    ...(colors.neutral === 'graphite' ? {} : themeTokens.neutralBindings[colors.neutral][scheme]),
   };
   // Neutral actions invert the current neutral surface; status colors remain independent.
   if (colors.neutral !== 'graphite') {
@@ -78,7 +102,7 @@ function themeStyle(scheme: 'dark' | 'light', colors: ThemeColors) {
     values['on-primary'] = values.bg;
   }
   if (colors.primary !== 'neutral') {
-    const color = themeTokens.colors[colors.primary][scheme];
+    const color = themeTokens.colorBindings[colors.primary][scheme];
     values.primary = color.solid;
     values['on-primary'] = color['on-solid'];
     values['primary-hover'] = color.hover;
@@ -87,10 +111,16 @@ function themeStyle(scheme: 'dark' | 'light', colors: ThemeColors) {
     values['on-action-accent'] = color['on-solid'];
   }
   for (const role of ['success', 'warning', 'danger', 'info'] as const) {
-    const color = themeTokens.colors[colors[role]][scheme];
+    const color = themeTokens.colorBindings[colors[role]][scheme];
     const key = role === 'info' ? 'accent' : role;
     values[key] = color.text;
     values[key + '-soft'] = color.soft;
+  }
+  Object.assign(values, tokens.semantic);
+  for (const [component, overrides] of Object.entries(tokens.components ?? {})) {
+    for (const [key, value] of Object.entries(overrides ?? {})) {
+      values[`component-${component}-${key}`] = value;
+    }
   }
   return { ...aliases(values), colorScheme: scheme };
 }
@@ -100,6 +130,7 @@ export function ReitoThemeProvider({
   mode,
   colors,
   density,
+  tokens,
   root = false,
   children,
   style,
@@ -109,6 +140,7 @@ export function ReitoThemeProvider({
   mode?: ThemeMode;
   colors?: Partial<ThemeColors>;
   density?: 'compact' | 'comfortable';
+  tokens?: ThemeTokenOverrides;
   root?: boolean;
   children?: ReactNode;
 }) {
@@ -122,12 +154,15 @@ export function ReitoThemeProvider({
   const scheme = selectedMode === 'system' ? systemScheme : selectedMode;
   const state = useMemo<ThemeState>(() => {
     const merged = { ...defaults, ...parent?.colors, ...colors };
+    const mergedTokens = mergeTokens(parent?.tokens, tokens);
+    const mergedDensity = density ?? parent?.density ?? 'compact';
     return {
       mode: selectedMode,
       scheme,
-      density: density ?? parent?.density ?? 'compact',
+      density: mergedDensity,
       colors: merged,
-      style: themeStyle(scheme, merged),
+      tokens: mergedTokens,
+      style: themeStyle(scheme, merged, mergedDensity, mergedTokens),
       documentRoot: root,
     };
   }, [
@@ -141,6 +176,7 @@ export function ReitoThemeProvider({
     colors?.warning,
     colors?.danger,
     colors?.info,
+    tokens,
     root,
   ]);
   useBrowserLayoutEffect(() => {
@@ -231,8 +267,8 @@ export function useThemeColor(color?: ThemeColor): CSSProperties | undefined {
       'color-soft': 'var(--rui-hover)',
       'color-border': 'var(--rui-border-strong)',
     });
-  const light = themeTokens.colors[family].light,
-    dark = themeTokens.colors[family].dark;
+  const light = themeTokens.colorBindings[family].light,
+    dark = themeTokens.colorBindings[family].dark;
   const value = (role: string) => `light-dark(${light[role]}, ${dark[role]})`;
   return aliases({
     primary: value('solid'),

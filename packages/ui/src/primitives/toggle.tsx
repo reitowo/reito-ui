@@ -24,11 +24,10 @@ const toggleVariants = cva(
     // Disabled state
     'disabled:pointer-events-none disabled:opacity-[var(--rui-opacity-disabled)]',
     // Validation state
-    'aria-invalid:border-destructive aria-invalid:ring-destructive/20',
+    'rui-validation',
     // Component state
     'aria-pressed:bg-muted data-[state=on]:bg-muted',
     // Validation state
-    'dark:aria-invalid:ring-destructive/40',
     // Child and composition rules
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   ],

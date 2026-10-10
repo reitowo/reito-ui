@@ -39,11 +39,10 @@ function Switch({
           // Keyboard focus
           'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
           // Validation state
-          'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20',
+          'rui-validation',
           // Component state
           'data-[size=default]:h-[var(--rui-switch-height)] data-[size=default]:w-[var(--rui-switch-width)] data-[size=sm]:h-[var(--rui-switch-height-sm)] data-[size=sm]:w-[var(--rui-switch-width-sm)]',
           // Validation state
-          'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
           // Component state
           'data-checked:bg-primary data-unchecked:bg-input',
           // Dark theme

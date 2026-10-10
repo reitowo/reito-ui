@@ -119,9 +119,9 @@ function MenubarItem({
           // Surface
           'rounded-sm',
           // Spacing
-          'px-[var(--rui-menu-item-padding-x)] py-[var(--rui-menu-item-padding-y)]',
+          'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground',
           // Component state
@@ -164,9 +164,9 @@ function MenubarCheckboxItem({
           // Surface
           'rounded-sm',
           // Spacing
-          'py-[var(--rui-menu-item-padding-y)] pr-[var(--rui-menu-item-padding-x)] pl-7',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-7',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
@@ -220,9 +220,9 @@ function MenubarRadioItem({
           // Surface
           'rounded-sm',
           // Spacing
-          'py-[var(--rui-menu-item-padding-y)] pr-[var(--rui-menu-item-padding-x)] pl-7',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-7',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
@@ -262,7 +262,7 @@ function MenubarLabel({
       data-slot="menubar-label"
       data-inset={inset}
       className={cn(
-        'px-[var(--rui-menu-item-padding-x)] py-[var(--rui-menu-item-padding-y)] text-xs font-medium data-inset:pl-7',
+        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium data-inset:pl-7',
         className,
       )}
       {...props}
@@ -315,7 +315,12 @@ function MenubarSubTrigger({
       data-slot="menubar-sub-trigger"
       data-inset={inset}
       className={cn(
-        "gap-1.5 rounded-sm px-[var(--rui-menu-item-padding-x)] py-[var(--rui-menu-item-padding-y)] text-[length:var(--rui-menu-font-size)] leading-5 focus:bg-accent focus:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg:not([class*='size-'])]:size-4",
+        [
+          'gap-1.5 rounded-sm px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
+          'focus:bg-accent focus:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground',
+          "[&_svg:not([class*='size-'])]:size-4",
+        ],
         className,
       )}
       {...props}

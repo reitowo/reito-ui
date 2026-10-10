@@ -8,9 +8,9 @@ const buttonVariants = cva(
     // Layout
     'group/button inline-flex shrink-0 items-center justify-center',
     // Surface
-    'rounded-sm border border-transparent bg-clip-padding',
+    'rounded-[var(--rui-component-button-radius)] border border-transparent bg-clip-padding',
     // Typography
-    'text-[length:var(--rui-action-font-size)] font-normal whitespace-nowrap',
+    'text-[length:var(--rui-component-button-font-size)] font-normal whitespace-nowrap',
     // Motion
     'transition-all',
     // Surface
@@ -24,7 +24,7 @@ const buttonVariants = cva(
     // Disabled state
     'disabled:pointer-events-none disabled:opacity-[var(--rui-opacity-disabled)]',
     // Validation state
-    'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+    'rui-validation',
     // Child and composition rules
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   ],
@@ -46,12 +46,12 @@ const buttonVariants = cva(
       },
       size: {
         default:
-          "h-[var(--rui-button-height)] gap-1.5 px-[var(--rui-button-padding-x)] [&_svg:not([class*='size-'])]:size-3.5",
+          "h-[var(--rui-component-button-height)] gap-1.5 px-[var(--rui-component-button-padding-x)] [&_svg:not([class*='size-'])]:size-3.5",
         xs: "text-sm h-[var(--rui-control-height-xs)] gap-1 px-2 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-[var(--rui-control-height-sm)] gap-1 px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         md: 'h-[var(--rui-control-height)] gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
         lg: 'h-[var(--rui-control-height-lg)] gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
-        icon: "size-[var(--rui-button-height)] [&_svg:not([class*='size-'])]:size-3.5",
+        icon: "size-[var(--rui-component-button-height)] [&_svg:not([class*='size-'])]:size-3.5",
         'icon-xs': "size-[var(--rui-control-height-xs)] [&_svg:not([class*='size-'])]:size-3",
         'icon-sm': "size-[var(--rui-control-height-sm)] [&_svg:not([class*='size-'])]:size-3.5",
         'icon-md': 'size-[var(--rui-control-height)]',

@@ -58,7 +58,7 @@ export function NumberField({
           // Disabled state
           'data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Validation state
-          'has-[input[aria-invalid=true]]:border-destructive has-[input[aria-invalid=true]]:ring-[length:var(--rui-outline-width)] has-[input[aria-invalid=true]]:ring-destructive/20',
+          'rui-validation',
           // Dark theme
           'dark:bg-input/30',
         ])}

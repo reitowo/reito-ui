@@ -10,6 +10,8 @@ export default defineConfig({
     'data-table-controlled.spec.ts', 'data-table-editing.spec.ts', 'data-table-preferences.spec.ts',
     'dynamic-form.spec.ts', 'form.spec.ts', 'key-value-editor-rich.spec.ts',
     'key-value-editor-transaction.spec.ts', 'property-list-rich.spec.ts',
+    'component-tokens.spec.ts', 'menu-density.spec.ts', 'token-contract.spec.ts',
+    'token-generation.spec.ts', 'validation-glow.spec.ts', 'scroll-area-insets.spec.ts',
   ],
   reporter: 'list',
   use: { baseURL: 'http://127.0.0.1:5173', headless: true, viewport: { width: 1440, height: 1000 }, trace: 'retain-on-failure', screenshot: 'only-on-failure' },

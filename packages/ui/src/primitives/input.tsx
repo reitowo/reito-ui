@@ -10,13 +10,13 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
       className={cn(
         [
           // Layout
-          'h-[var(--rui-control-height)] w-full min-w-0',
+          'h-[var(--rui-component-input-height)] w-full min-w-0',
           // Surface
-          'rounded-lg border border-input bg-transparent',
+          'rounded-[var(--rui-component-input-radius)] border border-input bg-transparent',
           // Spacing
-          'px-2.5 py-1',
+          'px-[var(--rui-component-input-padding-x)] py-1',
           // Typography
-          'text-sm',
+          'text-[length:var(--rui-component-input-font-size)]',
           // Motion
           'transition-colors',
           // Surface
@@ -27,14 +27,12 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
           'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
           // Disabled state
           'disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-[var(--rui-opacity-disabled)]',
-          // Validation state
-          'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20',
           // Dark theme
           'dark:bg-input/30',
           // Disabled state
           'dark:disabled:bg-input/80',
           // Validation state
-          'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+          'rui-validation',
         ],
         className,
       )}

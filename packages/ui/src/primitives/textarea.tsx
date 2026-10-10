@@ -25,14 +25,12 @@ function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
           'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
           // Disabled state
           'disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-[var(--rui-opacity-disabled)]',
-          // Validation state
-          'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20',
           // Dark theme
           'dark:bg-input/30',
           // Disabled state
           'dark:disabled:bg-input/80',
           // Validation state
-          'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+          'rui-validation',
         ],
         className,
       )}

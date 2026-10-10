@@ -1041,7 +1041,7 @@ export function ScrollAreaDemo({
         {Array.from({ length: Math.max(1, Math.min(50, Math.floor(rowCount))) }, (_, index) => (
           <div
             key={index}
-            className="flex items-center gap-[var(--rui-content-gap-sm)] py-[var(--rui-cell-padding-y)] text-sm"
+            className="flex items-center gap-[var(--rui-content-gap-sm)] py-[var(--rui-component-menu-item-padding-y)] text-sm leading-[var(--rui-component-menu-item-line-height)]"
           >
             <FileText className="size-4 text-muted-foreground" />
             component-{String(index + 1).padStart(2, '0')}.tsx

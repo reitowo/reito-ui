@@ -45,12 +45,10 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
           'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
           // Disabled state
           'disabled:cursor-not-allowed disabled:opacity-[var(--rui-opacity-disabled)]',
-          // Validation state
-          'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary',
           // Dark theme
           'dark:bg-input/30',
           // Validation state
-          'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+          'rui-validation',
           // Component state
           'data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground',
           // Keyboard focus

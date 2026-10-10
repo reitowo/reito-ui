@@ -35,7 +35,7 @@ for(const scheme of ['dark','light']) test('theme guide reacts to global and loc
  await expect(local).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
  const style=await local.evaluate(n=>({fg:getComputedStyle(n).color,bg:getComputedStyle(n.closest('[data-rui-theme]')!).backgroundColor}));
  expect(contrast(style.fg,style.bg)).toBeGreaterThanOrEqual(4.5);
- await save.click();await expect(page.getByRole('status')).toHaveText('已保存在当前示例中。');
+ await save.click();await expect(preview.getByRole('status')).toHaveText('已保存在当前示例中。');
  await page.screenshot({path:'.logs/theme-guide-'+scheme+'.png',fullPage:true});
 });
 test('runtime palette combinations keep readable solid and soft text',async({page})=>{

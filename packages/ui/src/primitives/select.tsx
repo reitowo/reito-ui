@@ -65,7 +65,7 @@ function SelectTrigger({
           // Disabled state
           'disabled:cursor-not-allowed disabled:opacity-[var(--rui-opacity-disabled)]',
           // Validation state
-          'aria-invalid:border-destructive aria-invalid:ring-[length:var(--rui-outline-width)] aria-invalid:ring-destructive/20',
+          'rui-validation',
           // Component state
           'data-placeholder:text-muted-foreground data-[size=default]:h-[var(--rui-control-height)] data-[size=sm]:h-[var(--rui-control-height-sm)] data-[size=xs]:h-[var(--rui-button-height)] data-[size=xs]:py-0',
           'data-[size=xs]:rounded-sm',
@@ -78,7 +78,6 @@ function SelectTrigger({
           // Dark theme
           'dark:bg-input/30 dark:hover:bg-input/50',
           // Validation state
-          'dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         ],
@@ -158,7 +157,7 @@ function SelectLabel({ className, ...props }: SelectPrimitive.GroupLabel.Props) 
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
       className={cn(
-        'px-[var(--rui-menu-item-padding-x)] py-1 text-xs text-muted-foreground',
+        'px-[var(--rui-component-menu-item-padding-x)] py-1 text-xs text-muted-foreground',
         className,
       )}
       {...props}
@@ -173,15 +172,15 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
       className={cn(
         [
           // Layout
-          'relative flex min-h-[var(--rui-control-height-sm)] w-full cursor-default items-center',
+          'relative flex min-h-[var(--rui-component-menu-item-height)] w-full cursor-default items-center',
           // Spacing
           'gap-1.5',
           // Surface
           'rounded-md',
           // Spacing
-          'py-[var(--rui-menu-item-padding-y)] pr-8 pl-[var(--rui-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
-          'text-[length:var(--rui-menu-font-size)] leading-5',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout

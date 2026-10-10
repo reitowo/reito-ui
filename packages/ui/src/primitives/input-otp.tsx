@@ -30,10 +30,7 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="input-otp-group"
-      className={cn(
-        'flex items-center rounded-lg has-aria-invalid:border-destructive has-aria-invalid:ring-[length:var(--rui-outline-width)] has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40',
-        className,
-      )}
+      className={cn('flex items-center rounded-lg rui-validation', className)}
       {...props}
     />
   );
@@ -68,15 +65,12 @@ function InputOTPSlot({
           // Layout
           'first:rounded-l-lg first:border-l last:rounded-r-lg',
           // Validation state
-          'aria-invalid:border-destructive',
+          'rui-validation',
           // Component state
           'data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-[length:var(--rui-outline-width)] data-[active=true]:ring-ring/50',
-          // Validation state
-          'data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20',
           // Dark theme
           'dark:bg-input/30',
           // Validation state
-          'dark:data-[active=true]:aria-invalid:ring-destructive/40',
         ],
         className,
       )}

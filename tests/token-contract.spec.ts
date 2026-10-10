@@ -22,9 +22,11 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
 
   await page.goto('/?layer=basic&component=button');
   const button = page.getByRole('button', { name: '保存更改', exact: true });
+  await expect(button).toBeVisible();
   await page.evaluate(() => {
     const root = document.documentElement.style;
     root.setProperty('--rui-button-height', '44px');
+    root.setProperty('--rui-action-font-size', '18px');
     root.setProperty('--rui-font-interface', '18px');
     root.setProperty('--rui-radius-sm', '3px');
     root.setProperty('--rui-font-weight-regular', '600');
