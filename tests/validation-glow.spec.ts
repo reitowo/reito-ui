@@ -3,7 +3,7 @@ import { expect, test, type Locator } from '@playwright/test';
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
   test(`validation fades inward without geometry changes: ${theme}/${density}`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto(`http://127.0.0.1:6007/iframe.html?id=基础-input--validation-glow&viewMode=story&globals=theme:${theme};density:${density}`);
+    await page.goto(`${process.env.REITO_STORYBOOK_URL || 'http://127.0.0.1:6007'}/iframe.html?id=基础-input--validation-glow&viewMode=story&globals=theme:${theme};density:${density}`);
     const input = page.getByRole('textbox', { name: '渐变输入框', exact: true });
     const textarea = page.getByRole('textbox', { name: '渐变多行输入', exact: true });
     const select = page.getByRole('combobox', { name: '渐变选择器', exact: true });

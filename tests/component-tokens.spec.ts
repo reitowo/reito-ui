@@ -28,7 +28,7 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
     await page.emulateMedia({ reducedMotion: 'reduce' });
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(`http://127.0.0.1:6007/iframe.html?id=基础-theme--component-tokens&viewMode=story&args=mode:${mode}&globals=theme:${mode};density:${density}`);
+    await page.goto(`${process.env.REITO_STORYBOOK_URL || 'http://127.0.0.1:6007'}/iframe.html?id=基础-theme--component-tokens&viewMode=story&args=mode:${mode}&globals=theme:${mode};density:${density}`);
     const example = page.getByRole('region', { name: '组件 token 继承示例' });
     const save = example.getByRole('button', { name: 'Token 示例保存', exact: true });
     const trigger = example.getByRole('button', { name: 'Token 示例菜单', exact: true });

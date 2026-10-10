@@ -77,10 +77,10 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       return { top: inner.top - outer.top, left: inner.left - outer.left, bottom: outer.bottom - inner.bottom, right: outer.right - inner.right };
     });
     await expect(root).toHaveCSS('padding-left', x);
-    await expect(root).toHaveCSS('padding-top', y);
+    await expect(root).toHaveCSS('padding-top', '4px');
     const before = await geometry();
     const border = await root.evaluate(node => parseFloat(getComputedStyle(node).borderTopWidth));
-    expect(before.top).toBe(parseFloat(y) + border);
+    expect(before.top).toBe(4 + border);
     expect(before.left).toBe(parseFloat(x) + border);
     expect(before.bottom).toBeCloseTo(before.top);
     expect(before.right).toBeCloseTo(before.left);
@@ -93,7 +93,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await expect.poll(() => viewport.evaluate(node => node.scrollTop)).toBe(0);
     await page.evaluate(() => {
       document.documentElement.style.setProperty('--rui-compact-surface-padding-x', '20px');
-      document.documentElement.style.setProperty('--rui-compact-surface-padding-y', '5px');
+      document.documentElement.style.setProperty('--rui-component-scroll-area-padding-y', '5px');
     });
     await expect(root).toHaveCSS('padding-left', '20px');
     await expect(root).toHaveCSS('padding-top', '5px');
