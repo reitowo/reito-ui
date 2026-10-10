@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Eye, EyeOff, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../primitives/field.js';
@@ -133,6 +133,7 @@ export function KeyValueEditor({
   const serial = useRef(0);
   const addButton = useRef<HTMLButtonElement>(null);
   const rowRefs = useRef(new Map<string, HTMLLIElement>());
+  const pendingErrorFocus = useRef<string | undefined>(undefined);
   const baseline = useRef(cloneEntries(value));
   const baselineIdentity = useRef(baselineKey);
   const inFlight = useRef(false);
@@ -143,6 +144,14 @@ export function KeyValueEditor({
   const [submissionError, setSubmissionError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState('');
   const [, setBaselineRevision] = useState(0);
+
+  useEffect(() => {
+    if (saving || !pendingErrorFocus.current) return;
+    const id = pendingErrorFocus.current;
+    pendingErrorFocus.current = undefined;
+    // Error rows become programmatically focusable in this committed render.
+    if (entryErrors[id]?.key || entryErrors[id]?.value) rowRefs.current.get(id)?.focus();
+  }, [entryErrors, saving]);
 
   if (!Object.is(baselineIdentity.current, baselineKey)) {
     baselineIdentity.current = baselineKey;
@@ -245,7 +254,7 @@ export function KeyValueEditor({
 
   function focusFirstError(nextErrors: KeyValueEntryErrors) {
     const id = value.find((entry) => nextErrors[entry.id]?.key || nextErrors[entry.id]?.value)?.id;
-    if (id) requestAnimationFrame(() => rowRefs.current.get(id)?.focus());
+    pendingErrorFocus.current = id;
   }
 
   async function submit() {

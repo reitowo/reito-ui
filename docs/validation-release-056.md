@@ -29,6 +29,13 @@ showed a transient static import failure, overlapping axe scans and the missing
 Workbench server. Those checks are rerun after the explicit environment and
 contract corrections; original diagnostics are preserved.
 
+The 11 targeted repair checks passed across both themes and densities. The
+v0.5.5 cloud run completed 233/239 checks and also exposed a KeyValueEditor focus
+race: requestAnimationFrame could run before React committed the error row's
+tabindex. Error focus now runs after the committed error render and saving state
+clears. Its existing cross-row and asynchronous error checks are repeated before
+tagging 0.5.6.
+
 Final publication requires the GitHub release workflow to pass and both official
 npm package versions and integrity values to match its verified artifacts.
 Per-change visual references and theme/density observations remain in the
