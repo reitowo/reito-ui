@@ -3,7 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Transfer } from '../../../../packages/ui/src/complex/transfer.js';
 import { TransferDemo, transferItems } from '../../../../packages/ui/src/complex/catalog.js';
-import { booleanControl, textControl } from '../feature-controls.js';
+import { booleanControl, textControl, choiceControl } from '../feature-controls.js';
 
 const meta = { id: "复杂-transfer-穿梭选择",
   title: "复杂/Transfer 穿梭选择",
@@ -15,11 +15,13 @@ const meta = { id: "复杂-transfer-穿梭选择",
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-type PlaygroundArgs = Pick<ComponentProps<typeof Transfer>, 'value' | 'sourceLabel' | 'targetLabel' | 'sourceQuery' | 'targetQuery' | 'searchable' | 'bulkActions' | 'disabled' | 'readOnly' | 'loading'>;
+type PlaygroundArgs = Pick<ComponentProps<typeof Transfer>, 'descriptionLayout' | 'value' | 'sourceLabel' | 'targetLabel' | 'sourceQuery' | 'targetQuery' | 'searchable' | 'bulkActions' | 'disabled' | 'readOnly' | 'loading'> & { showIcons: boolean };
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: "参数调试",
-  args: { value: ['read'], sourceLabel: '可用权限', targetLabel: '已授予权限', sourceQuery: '', targetQuery: '', searchable: true, bulkActions: true, disabled: false, readOnly: false, loading: false },
+  args: { showIcons: true, descriptionLayout: 'inline', value: ['read'], sourceLabel: '可用权限', targetLabel: '已授予权限', sourceQuery: '', targetQuery: '', searchable: true, bulkActions: true, disabled: false, readOnly: false, loading: false },
   argTypes: {
+    showIcons: booleanControl,
+    descriptionLayout: choiceControl(['inline','stacked']),
     value: { control: { type: 'check' }, options: transferItems.map(item => item.value) },
     sourceLabel: textControl,
     targetLabel: textControl,
@@ -31,10 +33,11 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     readOnly: booleanControl,
     loading: booleanControl,
   },
-  parameters: { controls: { include: ['value', 'sourceLabel', 'targetLabel', 'sourceQuery', 'targetQuery', 'searchable', 'bulkActions', 'disabled', 'readOnly', 'loading'] } },
+  parameters: { controls: { include: ['showIcons','descriptionLayout','value', 'sourceLabel', 'targetLabel', 'sourceQuery', 'targetQuery', 'searchable', 'bulkActions', 'disabled', 'readOnly', 'loading'] } },
   render: function Render(args) {
     const [, update] = useArgs<PlaygroundArgs>();
-    return <Transfer items={transferItems} {...args} onValueChange={next => update({ value: next })} onSourceQueryChange={next => update({ sourceQuery: next })} onTargetQueryChange={next => update({ targetQuery: next })} />;
+    const { showIcons, ...componentArgs } = args;
+    return <Transfer {...componentArgs} items={showIcons ? transferItems : transferItems.map(({ icon, ...item }) => item)} onValueChange={next => update({ value: next })} onSourceQueryChange={next => update({ sourceQuery: next })} onTargetQueryChange={next => update({ targetQuery: next })} />;
   },
 };
 
@@ -56,3 +59,6 @@ export const NoSearch: Story = { name: "无搜索栏", render: () => <Transfer i
 export const NoBulk: Story = { name: "仅移动所选", render: () => <Transfer items={transferItems} bulkActions={false} /> };
 export const Narrow: Story = { name: "窄容器", render: () => <div className="max-w-sm"><Transfer items={transferItems} defaultValue={['read']} /></div> };
 export const LongContent: Story = { name: "长内容", render: () => <Transfer items={[...transferItems, { value: 'long', label: '读取非常长的跨工作区资源名称与相关元数据', description: '长内容保持在自己的列表面板内，不挤压转移操作。' }]} /> };
+
+export const MixedIcons: Story = { name: "图标 · 混合选项", render: () => <Transfer items={transferItems.map(item => item.value === 'browser' ? { ...item, icon: undefined } : item)} defaultValue={['read']} /> };
+export const WithoutIcons: Story = { name: "图标 · 无图标", render: () => <Transfer items={transferItems.map(({ icon, ...item }) => item)} defaultValue={['read']} /> };

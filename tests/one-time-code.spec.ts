@@ -1,3 +1,4 @@
+import { chooseThemeMode } from './theme-menu';
 import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
@@ -80,7 +81,7 @@ test('unlocking again before an old callback settles does not restore its feedba
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
   test(`${theme}/${density}: token height, keyboard copying and narrow containment`, async ({ page }) => {
-    if (theme === 'light') await page.getByRole('button', { name: '切换明暗主题' }).click();
+    if (theme === 'light') await chooseThemeMode(page,'light');
     if (density === 'comfortable') await page.getByRole('button', { name: '切换组件密度' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('html')).toHaveAttribute('data-density', density);

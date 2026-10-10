@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { TreeView, type TreeViewNode } from './tree-view.js';
-import { WorkspacePreset, type WorkspacePresetProps, type WorkspacePresetView } from './workspace.js';
+import {
+  WorkspacePreset,
+  type WorkspacePresetProps,
+  type WorkspacePresetView,
+} from './workspace.js';
 import { cx } from './shared.js';
 
 export interface ContentNavigationSection {
@@ -14,7 +18,8 @@ export interface ContentNavigationSection {
 export interface ContentNavigationChangeMeta {
   reason: 'navigation' | 'scroll';
 }
-export interface ContentNavigationProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'children' | 'onChange'> {
+export interface ContentNavigationProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'children' | 'onChange'> {
   sections: ContentNavigationSection[];
   value?: string;
   defaultValue?: string;
@@ -39,14 +44,14 @@ interface FlatContentSection {
 }
 
 function flattenSections(sections: ContentNavigationSection[], level = 1): FlatContentSection[] {
-  return sections.flatMap(section => [
+  return sections.flatMap((section) => [
     { section, level },
     ...flattenSections(section.children ?? [], level + 1),
   ]);
 }
 
 function toTreeNodes(sections: ContentNavigationSection[]): TreeViewNode[] {
-  return sections.map(section => ({
+  return sections.map((section) => ({
     id: section.id,
     label: section.title,
     description: section.description,
@@ -56,7 +61,9 @@ function toTreeNodes(sections: ContentNavigationSection[]): TreeViewNode[] {
 }
 
 function sectionTop(viewport: HTMLElement, section: HTMLElement) {
-  return section.getBoundingClientRect().top - viewport.getBoundingClientRect().top + viewport.scrollTop;
+  return (
+    section.getBoundingClientRect().top - viewport.getBoundingClientRect().top + viewport.scrollTop
+  );
 }
 
 /** A host-neutral table of contents synchronized with one document scroll region. */
@@ -82,9 +89,12 @@ export function ContentNavigation({
 }: ContentNavigationProps) {
   const flat = React.useMemo(() => flattenSections(sections), [sections]);
   const tree = React.useMemo(() => toTreeNodes(sections), [sections]);
-  const branchIds = React.useMemo(() => flat.filter(item => item.section.children).map(item => item.section.id), [flat]);
-  const knownIds = React.useMemo(() => new Set(flat.map(item => item.section.id)), [flat]);
-  const firstEnabledId = flat.find(item => !item.section.disabled)?.section.id;
+  const branchIds = React.useMemo(
+    () => flat.filter((item) => item.section.children).map((item) => item.section.id),
+    [flat],
+  );
+  const knownIds = React.useMemo(() => new Set(flat.map((item) => item.section.id)), [flat]);
+  const firstEnabledId = flat.find((item) => !item.section.disabled)?.section.id;
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? firstEnabledId);
   const selected = value ?? internalValue;
   const current = selected && knownIds.has(selected) ? selected : firstEnabledId;
@@ -95,25 +105,33 @@ export function ContentNavigation({
   const programmaticTarget = React.useRef<string | undefined>(undefined);
   const headingPrefix = React.useId();
 
-  const emit = React.useCallback((id: string, reason: ContentNavigationChangeMeta['reason']) => {
-    if (value === undefined) setInternalValue(id);
-    pendingControlledValue.current = id;
-    onValueChange?.(id, { reason });
-  }, [onValueChange, value]);
+  const emit = React.useCallback(
+    (id: string, reason: ContentNavigationChangeMeta['reason']) => {
+      if (value === undefined) setInternalValue(id);
+      pendingControlledValue.current = id;
+      onValueChange?.(id, { reason });
+    },
+    [onValueChange, value],
+  );
 
-  const scrollToSection = React.useCallback((id: string, behavior: ScrollBehavior) => {
-    const viewport = viewportRef.current;
-    const section = sectionRefs.current.get(id);
-    if (!viewport || !section) return;
-    programmaticTarget.current = id;
-    viewport.scrollTo({ top: sectionTop(viewport, section), behavior });
-    requestAnimationFrame(() => {
-      const lastId = flat.at(-1)?.section.id;
-      const atEnd = viewport.scrollTop + viewport.clientHeight >= viewport.scrollHeight - 1;
-      const reached = Math.abs(viewport.scrollTop - sectionTop(viewport, section)) <= 1 || (atEnd && id === lastId);
-      if (reached && programmaticTarget.current === id) programmaticTarget.current = undefined;
-    });
-  }, [flat]);
+  const scrollToSection = React.useCallback(
+    (id: string, behavior: ScrollBehavior) => {
+      const viewport = viewportRef.current;
+      const section = sectionRefs.current.get(id);
+      if (!viewport || !section) return;
+      programmaticTarget.current = id;
+      viewport.scrollTo({ top: sectionTop(viewport, section), behavior });
+      requestAnimationFrame(() => {
+        const lastId = flat.at(-1)?.section.id;
+        const atEnd = viewport.scrollTop + viewport.clientHeight >= viewport.scrollHeight - 1;
+        const reached =
+          Math.abs(viewport.scrollTop - sectionTop(viewport, section)) <= 1 ||
+          (atEnd && id === lastId);
+        if (reached && programmaticTarget.current === id) programmaticTarget.current = undefined;
+      });
+    },
+    [flat],
+  );
 
   React.useEffect(() => {
     if (!value || !knownIds.has(value)) return;
@@ -124,9 +142,12 @@ export function ContentNavigation({
     scrollToSection(value, scrollBehavior);
   }, [knownIds, scrollBehavior, scrollToSection, value]);
 
-  React.useEffect(() => () => {
-    if (frameRef.current !== undefined) cancelAnimationFrame(frameRef.current);
-  }, []);
+  React.useEffect(
+    () => () => {
+      if (frameRef.current !== undefined) cancelAnimationFrame(frameRef.current);
+    },
+    [],
+  );
 
   const synchronizeScroll = React.useCallback(() => {
     if (frameRef.current !== undefined) cancelAnimationFrame(frameRef.current);
@@ -148,7 +169,10 @@ export function ContentNavigation({
       if (target) {
         const targetElement = sectionRefs.current.get(target);
         const lastId = flat.at(-1)?.section.id;
-        const reached = Boolean(targetElement) && (Math.abs(viewport.scrollTop - sectionTop(viewport, targetElement!)) <= 1 || (atEnd && target === lastId));
+        const reached =
+          Boolean(targetElement) &&
+          (Math.abs(viewport.scrollTop - sectionTop(viewport, targetElement!)) <= 1 ||
+            (atEnd && target === lastId));
         if (reached) programmaticTarget.current = undefined;
         return;
       }
@@ -169,45 +193,82 @@ export function ContentNavigation({
     scrollToSection(id, scrollBehavior);
   };
 
-  const navigation = <TreeView
-    nodes={tree}
-    value={current}
-    currentId={current}
-    defaultExpanded={branchIds}
-    onValueChange={choose}
-    label={navigationLabel}
-    emptyMessage={emptyMessage}
-  />;
-  const document = flat.length ? <article aria-label={contentLabel} className="min-w-0 p-[var(--rui-preview-padding)]">
-    {flat.map(({ section, level }) => {
-      const Heading = `h${Math.min(6, level + 1)}` as keyof React.JSX.IntrinsicElements;
-      const headingId = `${headingPrefix}-${section.id}-heading`;
-      return <section
-        key={section.id}
-        ref={element => { if (element) sectionRefs.current.set(section.id, element); else sectionRefs.current.delete(section.id); }}
-        data-current={current === section.id || undefined}
-        aria-labelledby={headingId}
-        className="min-w-0 border-l-[length:var(--rui-outline-width)] border-transparent py-[var(--rui-space-3)] pl-[var(--rui-content-padding)] first:pt-0 data-current:border-primary"
-      >
-        <Heading id={headingId} className={cx('break-words font-semibold tracking-tight', level === 1 ? 'text-base' : 'text-sm')}>{section.title}</Heading>
-        {section.description && <p className="mt-[var(--rui-space-1)] text-xs text-muted-foreground">{section.description}</p>}
-        <div className="mt-[var(--rui-space-2)] min-w-0 text-sm leading-relaxed">{section.content ?? <p className="text-muted-foreground">{emptySectionMessage}</p>}</div>
-      </section>;
-    })}
-  </article> : <p role="status" className="p-[var(--rui-empty-padding)] text-center text-sm text-muted-foreground">{emptyMessage}</p>;
-
-  return <div {...props} data-slot="content-navigation" className={cx('min-h-0 min-w-0', className)}>
-    <WorkspacePreset
-      className="h-full rounded-none"
-      mode={layoutMode}
-      title={title}
-      navigation={{ title: navigationTitle, content: navigation }}
-      workspace={{ title: contentTitle, content: document, bodyRef: viewportRef }}
-      view={layoutView}
-      defaultView={{ navigationOpen: true, inspectorOpen: false, activePanel: 'workspace', ...defaultLayoutView }}
-      onViewChange={onLayoutViewChange}
-      navigationLabel="目录"
-      workspaceLabel="正文"
+  const navigation = (
+    <TreeView
+      nodes={tree}
+      value={current}
+      currentId={current}
+      defaultExpanded={branchIds}
+      onValueChange={choose}
+      label={navigationLabel}
+      emptyMessage={emptyMessage}
     />
-  </div>;
+  );
+  const document = flat.length ? (
+    <article aria-label={contentLabel} className="min-w-0 p-[var(--rui-preview-padding)]">
+      {flat.map(({ section, level }) => {
+        const Heading = `h${Math.min(6, level + 1)}` as keyof React.JSX.IntrinsicElements;
+        const headingId = `${headingPrefix}-${section.id}-heading`;
+        return (
+          <section
+            key={section.id}
+            ref={(element) => {
+              if (element) sectionRefs.current.set(section.id, element);
+              else sectionRefs.current.delete(section.id);
+            }}
+            data-current={current === section.id || undefined}
+            aria-labelledby={headingId}
+            className="min-w-0 rounded-sm py-[var(--rui-space-3)] pl-[var(--rui-content-padding)] first:pt-0 data-current:bg-muted/40"
+          >
+            <Heading
+              id={headingId}
+              className={cx(
+                'break-words font-semibold tracking-tight',
+                level === 1 ? 'text-base' : 'text-sm',
+              )}
+            >
+              {section.title}
+            </Heading>
+            {section.description && (
+              <p className="mt-[var(--rui-space-1)] text-xs text-muted-foreground">
+                {section.description}
+              </p>
+            )}
+            <div className="mt-[var(--rui-space-2)] min-w-0 text-sm leading-relaxed">
+              {section.content ?? <p className="text-muted-foreground">{emptySectionMessage}</p>}
+            </div>
+          </section>
+        );
+      })}
+    </article>
+  ) : (
+    <p
+      role="status"
+      className="p-[var(--rui-empty-padding)] text-center text-sm text-muted-foreground"
+    >
+      {emptyMessage}
+    </p>
+  );
+
+  return (
+    <div {...props} data-slot="content-navigation" className={cx('min-h-0 min-w-0', className)}>
+      <WorkspacePreset
+        className="h-full rounded-none"
+        mode={layoutMode}
+        title={title}
+        navigation={{ title: navigationTitle, content: navigation }}
+        workspace={{ title: contentTitle, content: document, bodyRef: viewportRef }}
+        view={layoutView}
+        defaultView={{
+          navigationOpen: true,
+          inspectorOpen: false,
+          activePanel: 'workspace',
+          ...defaultLayoutView,
+        }}
+        onViewChange={onLayoutViewChange}
+        navigationLabel="目录"
+        workspaceLabel="正文"
+      />
+    </div>
+  );
 }

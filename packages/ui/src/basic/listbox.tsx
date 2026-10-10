@@ -18,13 +18,22 @@ export interface ListboxOption {
 }
 
 export type ListboxSelectionMode = 'single' | 'multiple';
+export type ListboxDescriptionLayout = 'inline' | 'stacked';
 export type ListboxValue = string | string[] | null;
-export interface ListboxRange { startIndex: number; endIndex: number; visibleStartIndex: number; visibleEndIndex: number }
+export interface ListboxRange {
+  startIndex: number;
+  endIndex: number;
+  visibleStartIndex: number;
+  visibleEndIndex: number;
+}
 
-export interface ListboxProps extends Omit<React.ComponentProps<'div'>, 'defaultValue' | 'onChange'> {
+export interface ListboxProps
+  extends Omit<React.ComponentProps<'div'>, 'defaultValue' | 'onChange'> {
   label: string;
   options: readonly ListboxOption[];
   selectionMode?: ListboxSelectionMode;
+  /** Short descriptions share the title row; stacked is for deliberate rich detail. */
+  descriptionLayout?: ListboxDescriptionLayout;
   value?: ListboxValue;
   defaultValue?: ListboxValue;
   onValueChange?: (value: ListboxValue) => void;
@@ -63,7 +72,7 @@ function textOf(value: React.ReactNode) {
 
 function normalizeValue(value: ListboxValue | undefined, mode: ListboxSelectionMode) {
   if (mode === 'multiple') return Array.isArray(value) ? value : value ? [value] : [];
-  return Array.isArray(value) ? value[0] ?? null : value ?? null;
+  return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
 }
 
 /** Persistent single or multi-select list with grouped rich options and active-descendant focus. */
@@ -71,6 +80,7 @@ export function Listbox({
   label,
   options,
   selectionMode = 'single',
+  descriptionLayout = 'inline',
   value,
   defaultValue = selectionMode === 'multiple' ? [] : null,
   onValueChange,
@@ -109,9 +119,15 @@ export function Listbox({
   const id = suppliedId ?? `listbox-${generatedId}`;
   const descriptionId = `${id}-description`;
   const errorId = `${id}-error`;
-  const [internalValue, setInternalValue] = React.useState<ListboxValue>(() => normalizeValue(defaultValue, selectionMode));
+  const [internalValue, setInternalValue] = React.useState<ListboxValue>(() =>
+    normalizeValue(defaultValue, selectionMode),
+  );
   const selectedValue = normalizeValue(value === undefined ? internalValue : value, selectionMode);
-  const selected = React.useMemo(() => new Set(Array.isArray(selectedValue) ? selectedValue : selectedValue ? [selectedValue] : []), [selectedValue]);
+  const selected = React.useMemo(
+    () =>
+      new Set(Array.isArray(selectedValue) ? selectedValue : selectedValue ? [selectedValue] : []),
+    [selectedValue],
+  );
   const [internalQuery, setInternalQuery] = React.useState(defaultQuery);
   const searchQuery = query ?? internalQuery;
   const [internalActive, setInternalActive] = React.useState<string | null>(defaultActiveValue);
@@ -127,48 +143,80 @@ export function Listbox({
   const visibleOptions = React.useMemo(() => {
     const term = searchQuery.trim().toLocaleLowerCase();
     if (!term) return [...options];
-    return options.filter(option => [option.label, textOf(option.description), ...(option.keywords ?? [])].join(' ').toLocaleLowerCase().includes(term));
+    return options.filter((option) =>
+      [option.label, textOf(option.description), ...(option.keywords ?? [])]
+        .join(' ')
+        .toLocaleLowerCase()
+        .includes(term),
+    );
   }, [options, searchQuery]);
-  const enabledOptions = React.useMemo(() => visibleOptions.filter(option => !option.disabled), [visibleOptions]);
-  const optionIndex = React.useMemo(() => new Map(options.map((option, index) => [option.value, index])), [options]);
+  const hasOptionIcons = React.useMemo(
+    () => options.some((option) => Boolean(option.icon)),
+    [options],
+  );
+  const enabledOptions = React.useMemo(
+    () => visibleOptions.filter((option) => !option.disabled),
+    [visibleOptions],
+  );
+  const optionIndex = React.useMemo(
+    () => new Map(options.map((option, index) => [option.value, index])),
+    [options],
+  );
   const optionId = (option: ListboxOption) => `${id}-option-${optionIndex.get(option.value) ?? 0}`;
-  const activeIndex = visibleOptions.findIndex(option => option.value === currentActive);
+  const activeIndex = visibleOptions.findIndex((option) => option.value === currentActive);
   const virtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>({
     count: visibleOptions.length,
     getScrollElement: () => viewportRef.current,
     estimateSize: React.useCallback(() => estimatedRowHeight || 1, [estimatedRowHeight]),
-    getItemKey: React.useCallback((index: number) => visibleOptions[index]?.value ?? index, [visibleOptions]),
+    getItemKey: React.useCallback(
+      (index: number) => visibleOptions[index]?.value ?? index,
+      [visibleOptions],
+    ),
     overscan: Math.max(0, Math.floor(Number.isFinite(overscan) ? overscan : 0)),
     enabled: virtual && estimatedRowHeight > 0 && !loadError,
-    rangeExtractor: React.useCallback((range: Range) => {
-      const indexes = defaultRangeExtractor(range);
-      return activeIndex >= 0 && !indexes.includes(activeIndex) ? [...indexes, activeIndex].sort((a, b) => a - b) : indexes;
-    }, [activeIndex]),
+    rangeExtractor: React.useCallback(
+      (range: Range) => {
+        const indexes = defaultRangeExtractor(range);
+        return activeIndex >= 0 && !indexes.includes(activeIndex)
+          ? [...indexes, activeIndex].sort((a, b) => a - b)
+          : indexes;
+      },
+      [activeIndex],
+    ),
   });
 
-  const setActive = React.useCallback((next: string | null) => {
-    if (activeValue === undefined) setInternalActive(next);
-    onActiveValueChange?.(next);
-  }, [activeValue, onActiveValueChange]);
-  const emitValue = React.useCallback((next: ListboxValue) => {
-    if (value === undefined) setInternalValue(next);
-    onValueChange?.(next);
-  }, [onValueChange, value]);
+  const setActive = React.useCallback(
+    (next: string | null) => {
+      if (activeValue === undefined) setInternalActive(next);
+      onActiveValueChange?.(next);
+    },
+    [activeValue, onActiveValueChange],
+  );
+  const emitValue = React.useCallback(
+    (next: ListboxValue) => {
+      if (value === undefined) setInternalValue(next);
+      onValueChange?.(next);
+    },
+    [onValueChange, value],
+  );
   const setSearchQuery = (next: string) => {
     if (query === undefined) setInternalQuery(next);
     onQueryChange?.(next);
   };
 
   React.useEffect(() => {
-    if (currentActive && enabledOptions.some(option => option.value === currentActive)) return;
-    const selectedCandidate = enabledOptions.find(option => selected.has(option.value));
+    if (currentActive && enabledOptions.some((option) => option.value === currentActive)) return;
+    const selectedCandidate = enabledOptions.find((option) => selected.has(option.value));
     setActive(selectedCandidate?.value ?? enabledOptions[0]?.value ?? null);
   }, [currentActive, enabledOptions, selected, setActive]);
   React.useEffect(() => {
     if (!currentActive) return;
     const frame = requestAnimationFrame(() => {
       if (virtual && activeIndex >= 0) virtualizer.scrollToIndex(activeIndex, { align: 'auto' });
-      else document.getElementById(optionId({ value: currentActive, label: '' }))?.scrollIntoView({ block: 'nearest' });
+      else
+        document
+          .getElementById(optionId({ value: currentActive, label: '' }))
+          ?.scrollIntoView({ block: 'nearest' });
     });
     return () => cancelAnimationFrame(frame);
   }, [activeIndex, currentActive, optionIndex, virtual, virtualizer]);
@@ -181,6 +229,10 @@ export function Listbox({
     observer.observe(probe);
     return () => observer.disconnect();
   }, []);
+  React.useLayoutEffect(() => {
+    // Density/layout changes invalidate the cached row estimates as well as the probe.
+    if (virtual && estimatedRowHeight > 0) virtualizer.measure();
+  }, [virtual, estimatedRowHeight, virtualizer]);
   const virtualItems = virtualizer.getVirtualItems();
   const rangeCallback = React.useRef(onRangeChange);
   rangeCallback.current = onRangeChange;
@@ -189,7 +241,13 @@ export function Listbox({
   const visibleStart = virtualizer.range?.startIndex ?? -1;
   const visibleEnd = virtualizer.range?.endIndex ?? -1;
   React.useEffect(() => {
-    if (virtual) rangeCallback.current?.({ startIndex: rangeStart, endIndex: rangeEnd, visibleStartIndex: visibleStart, visibleEndIndex: visibleEnd });
+    if (virtual)
+      rangeCallback.current?.({
+        startIndex: rangeStart,
+        endIndex: rangeEnd,
+        visibleStartIndex: visibleStart,
+        visibleEndIndex: visibleEnd,
+      });
   }, [rangeEnd, rangeStart, virtual, visibleEnd, visibleStart]);
   React.useEffect(() => () => window.clearTimeout(typeaheadTimer.current), []);
 
@@ -202,20 +260,27 @@ export function Listbox({
     }
     const next = new Set(selected);
     if (withRange && rangeSelection && anchor.current) {
-      const anchorIndex = enabledOptions.findIndex(item => item.value === anchor.current);
-      const targetIndex = enabledOptions.findIndex(item => item.value === option.value);
+      const anchorIndex = enabledOptions.findIndex((item) => item.value === anchor.current);
+      const targetIndex = enabledOptions.findIndex((item) => item.value === option.value);
       if (anchorIndex >= 0 && targetIndex >= 0) {
-        for (const item of enabledOptions.slice(Math.min(anchorIndex, targetIndex), Math.max(anchorIndex, targetIndex) + 1)) next.add(item.value);
+        for (const item of enabledOptions.slice(
+          Math.min(anchorIndex, targetIndex),
+          Math.max(anchorIndex, targetIndex) + 1,
+        ))
+          next.add(item.value);
       }
     } else if (next.has(option.value)) next.delete(option.value);
     else next.add(option.value);
     anchor.current = option.value;
-    emitValue(options.filter(item => next.has(item.value)).map(item => item.value));
+    emitValue(options.filter((item) => next.has(item.value)).map((item) => item.value));
   };
   const move = (delta: number, extend = false) => {
     if (!enabledOptions.length) return;
-    const index = enabledOptions.findIndex(option => option.value === currentActive);
-    const next = enabledOptions[Math.max(0, Math.min(enabledOptions.length - 1, (index < 0 ? 0 : index) + delta))];
+    const index = enabledOptions.findIndex((option) => option.value === currentActive);
+    const next =
+      enabledOptions[
+        Math.max(0, Math.min(enabledOptions.length - 1, (index < 0 ? 0 : index) + delta))
+      ];
     if (!next) return;
     setActive(next.value);
     if (extend && selectionMode === 'multiple' && rangeSelection) choose(next, true);
@@ -240,24 +305,52 @@ export function Listbox({
     }
     if ((event.key === ' ' || event.key === 'Enter') && currentActive) {
       event.preventDefault();
-      const option = enabledOptions.find(item => item.value === currentActive);
+      const option = enabledOptions.find((item) => item.value === currentActive);
       if (option) choose(option, event.shiftKey);
       return;
     }
-    if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 'a' && selectionMode === 'multiple' && bulkSelection && !readOnly) {
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      event.key.toLocaleLowerCase() === 'a' &&
+      selectionMode === 'multiple' &&
+      bulkSelection &&
+      !readOnly
+    ) {
       event.preventDefault();
-      const allSelected = enabledOptions.every(option => selected.has(option.value));
-      emitValue(allSelected ? [] : options.filter(option => !option.disabled && visibleOptions.includes(option)).map(option => option.value));
+      const allSelected = enabledOptions.every((option) => selected.has(option.value));
+      emitValue(
+        allSelected
+          ? []
+          : options
+              .filter((option) => !option.disabled && visibleOptions.includes(option))
+              .map((option) => option.value),
+      );
       return;
     }
-    if (!searchable && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (
+      !searchable &&
+      event.key.length === 1 &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey
+    ) {
       typeahead.current += event.key.toLocaleLowerCase();
       window.clearTimeout(typeaheadTimer.current);
-      typeaheadTimer.current = window.setTimeout(() => { typeahead.current = ''; }, 600);
-      const start = Math.max(0, enabledOptions.findIndex(option => option.value === currentActive) + 1);
+      typeaheadTimer.current = window.setTimeout(() => {
+        typeahead.current = '';
+      }, 600);
+      const start = Math.max(
+        0,
+        enabledOptions.findIndex((option) => option.value === currentActive) + 1,
+      );
       const ordered = [...enabledOptions.slice(start), ...enabledOptions.slice(0, start)];
-      const match = ordered.find(option => option.label.toLocaleLowerCase().startsWith(typeahead.current));
-      if (match) { event.preventDefault(); setActive(match.value); }
+      const match = ordered.find((option) =>
+        option.label.toLocaleLowerCase().startsWith(typeahead.current),
+      );
+      if (match) {
+        event.preventDefault();
+        setActive(match.value);
+      }
     }
   };
 
@@ -265,67 +358,348 @@ export function Listbox({
     const result: Array<{ group: string | null; options: ListboxOption[] }> = [];
     for (const option of visibleOptions) {
       const group = option.group ?? null;
-      let entry = result.find(item => item.group === group);
-      if (!entry) { entry = { group, options: [] }; result.push(entry); }
+      let entry = result.find((item) => item.group === group);
+      if (!entry) {
+        entry = { group, options: [] };
+        result.push(entry);
+      }
       entry.options.push(option);
     }
     return result;
   }, [visibleOptions]);
-  const describedBy = [description && descriptionId, error && errorId].filter(Boolean).join(' ') || undefined;
+  const describedBy =
+    [description && descriptionId, error && errorId].filter(Boolean).join(' ') || undefined;
   const selectedCount = selected.size;
-  const renderOption = (option: ListboxOption, virtualIndex?: number, style?: React.CSSProperties) => {
+  const renderOption = (
+    option: ListboxOption,
+    virtualIndex?: number,
+    style?: React.CSSProperties,
+  ) => {
     const isSelected = selected.has(option.value);
     const isActive = currentActive === option.value;
-    return <div key={option.value} id={optionId(option)} role="option" aria-selected={isSelected} aria-disabled={option.disabled || undefined} aria-posinset={virtual ? virtualIndex! + 1 : undefined} aria-setsize={virtual ? visibleOptions.length : undefined} data-index={virtualIndex} data-slot="listbox-option" data-active={isActive || undefined} data-selected={isSelected || undefined} data-disabled={option.disabled || undefined} onPointerMove={() => { if (!option.disabled) setActive(option.value); }} onClick={event => {
-      listRef.current?.focus(); setActive(option.value); choose(option, event.shiftKey);
-    }} style={style} className={cn('flex min-h-[var(--rui-control-height)] min-w-0 cursor-default items-center gap-[var(--rui-space-2)] rounded-md px-[var(--rui-space-2)] py-[var(--rui-space-1)] leading-tight outline-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-[var(--rui-opacity-disabled)] data-[selected=true]:font-medium', virtual && 'absolute left-0 top-0 w-full')}>
-      {option.icon && <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground [&_svg]:size-full" aria-hidden="true">{option.icon}</span>}
-      <span className="grid min-w-0 flex-1 gap-0.5">
-        <span className="block truncate leading-none">{option.label}</span>
-        {option.description && <span className="block truncate text-xs font-normal leading-none text-muted-foreground">{option.description}</span>}
-      </span>
-      <Check aria-hidden="true" className={cn('size-3.5 shrink-0 text-primary', !isSelected && 'invisible')} />
-    </div>;
+    return (
+      <div
+        key={option.value}
+        id={optionId(option)}
+        role="option"
+        aria-selected={isSelected}
+        aria-disabled={option.disabled || undefined}
+        aria-posinset={virtual ? virtualIndex! + 1 : undefined}
+        aria-setsize={virtual ? visibleOptions.length : undefined}
+        data-index={virtualIndex}
+        data-slot="listbox-option"
+        data-active={isActive || undefined}
+        data-selected={isSelected || undefined}
+        data-disabled={option.disabled || undefined}
+        onPointerMove={() => {
+          if (!option.disabled) setActive(option.value);
+        }}
+        onClick={(event) => {
+          listRef.current?.focus();
+          setActive(option.value);
+          choose(option, event.shiftKey);
+        }}
+        style={style}
+        className={cn(
+          [
+            // Layout
+            'flex min-h-[var(--rui-control-height)] min-w-0 cursor-default items-center',
+            // Spacing
+            'gap-[var(--rui-space-2)]',
+            // Surface
+            'rounded-md',
+            // Spacing
+            'px-[var(--rui-menu-item-padding-x)] py-[var(--rui-cell-padding-y)]',
+            // Typography
+            'leading-5',
+            // Surface
+            'outline-none',
+            // Component state
+            'data-[active=true]:bg-accent data-[active=true]:text-accent-foreground',
+            // Disabled state
+            'data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-[var(--rui-opacity-disabled)]',
+            // Component state
+            'data-[selected=true]:font-medium',
+          ],
+          virtual && 'absolute left-0 top-0 w-full',
+        )}
+      >
+        {hasOptionIcons && (
+          <span
+            data-slot="listbox-option-icon"
+            className="flex size-4 shrink-0 items-center justify-center text-muted-foreground [&_svg]:size-full"
+            aria-hidden="true"
+          >
+            {option.icon}
+          </span>
+        )}
+        <span
+          data-slot="listbox-option-content"
+          className={cn(
+            'min-w-0 flex-1',
+            descriptionLayout === 'stacked'
+              ? 'grid gap-1'
+              : 'flex items-center gap-x-[var(--rui-content-gap)] gap-y-1',
+            descriptionLayout === 'inline' && !virtual && 'flex-wrap',
+          )}
+        >
+          <span
+            data-slot="listbox-option-label"
+            className={cn(
+              'min-w-0 leading-5',
+              virtual ? 'truncate' : 'max-w-full break-words',
+              descriptionLayout === 'inline' && 'shrink-0',
+              descriptionLayout === 'inline' &&
+                virtual &&
+                Boolean(option.description) &&
+                'max-w-1/2',
+            )}
+          >
+            {option.label}
+          </span>
+          {option.description && (
+            <span
+              data-slot="listbox-option-description"
+              className={cn(
+                'min-w-0 text-xs font-normal text-muted-foreground',
+                descriptionLayout === 'stacked' ? 'leading-4' : 'flex-1 leading-5',
+                virtual ? 'truncate' : 'break-words',
+                descriptionLayout === 'inline' && !virtual && 'min-w-16',
+              )}
+            >
+              {option.description}
+            </span>
+          )}
+        </span>
+        <Check
+          aria-hidden="true"
+          className={cn('size-3.5 shrink-0 text-primary', !isSelected && 'invisible')}
+        />
+      </div>
+    );
   };
 
-  return <Field data-slot="listbox-field" data-disabled={disabled || undefined} data-invalid={Boolean(error) || undefined} className={className}>
-    <div className="flex min-w-0 items-center justify-between gap-[var(--rui-space-2)]">
-      <FieldLabel id={`${id}-label`} htmlFor={id}>{label}</FieldLabel>
-      <div className="flex shrink-0 items-center gap-[var(--rui-space-1)] text-xs text-muted-foreground">
-        {selectionMode === 'multiple' && <output aria-live="polite">已选 {selectedCount} 项</output>}
-        {clearable && selectedCount > 0 && <Button type="button" variant="ghost" size="xs" onClick={clear} disabled={disabled || readOnly}><X aria-hidden="true" />清除</Button>}
+  return (
+    <Field
+      data-slot="listbox-field"
+      data-disabled={disabled || undefined}
+      data-invalid={Boolean(error) || undefined}
+      className={className}
+    >
+      <div className="flex min-w-0 items-center justify-between gap-[var(--rui-space-2)]">
+        <FieldLabel id={`${id}-label`} htmlFor={id}>
+          {label}
+        </FieldLabel>
+        <div className="flex shrink-0 items-center gap-[var(--rui-space-1)] text-xs text-muted-foreground">
+          {selectionMode === 'multiple' && (
+            <output aria-live="polite">已选 {selectedCount} 项</output>
+          )}
+          {clearable && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              onClick={clear}
+              disabled={disabled || readOnly || selectedCount === 0}
+            >
+              <X aria-hidden="true" />
+              清除
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
-    {searchable && <div className="relative">
-      <Search aria-hidden="true" className="pointer-events-none absolute left-[var(--rui-space-2)] top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-      <Input value={searchQuery} onChange={event => setSearchQuery(event.currentTarget.value)} onKeyDown={event => {
-        if (event.key === 'ArrowDown') { event.preventDefault(); listRef.current?.focus(); setActive(enabledOptions[0]?.value ?? null); }
-      }} disabled={disabled} readOnly={readOnly} aria-label={`搜索${label}`} placeholder={placeholder} className="pl-[calc(var(--rui-space-2)+var(--rui-space-4))]" />
-    </div>}
-    <div ref={viewportRef} data-slot="listbox-viewport" data-disabled={disabled || undefined} data-empty={!visibleOptions.length || undefined} data-virtual={virtual || undefined} className={cn('relative max-h-64 min-w-0 overflow-y-auto rounded-lg border border-border bg-background p-[var(--rui-space-1)] text-sm focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring', virtual && 'h-64', listClassName)}>
-    <div ref={probeRef} aria-hidden="true" className="pointer-events-none invisible absolute flex min-h-[var(--rui-control-height)] items-center py-[var(--rui-space-1)]"><span className="grid gap-0.5"><span className="leading-none">项目</span><span className="text-xs leading-none">说明</span></span></div>
-    <div {...props} ref={listRef} id={id} role="listbox" tabIndex={0} aria-labelledby={`${id}-label`} aria-describedby={describedBy} aria-multiselectable={selectionMode === 'multiple' || undefined} aria-activedescendant={currentActive ? optionId({ value: currentActive, label: '' }) : undefined} aria-disabled={disabled || undefined} aria-readonly={readOnly || undefined} aria-required={required || undefined} aria-invalid={Boolean(error) || undefined} aria-busy={loading || undefined} data-slot="listbox" data-empty={!visibleOptions.length || undefined} onFocus={() => {
-      if (!currentActive) setActive(enabledOptions.find(option => selected.has(option.value))?.value ?? enabledOptions[0]?.value ?? null);
-    }} onKeyDown={keyDown} className="min-h-[var(--rui-border-width)] min-w-0 outline-none">
-      {visibleOptions.length && virtual ? <div role="presentation" className="relative min-w-0" style={{ height: virtualizer.getTotalSize() }}>
-        {virtualItems.map(row => {
-          const option = visibleOptions[row.index];
-          return option ? renderOption(option, row.index, { height: row.size, transform: `translateY(${row.start}px)` }) : null;
-        })}
-      </div> : visibleOptions.length ? grouped.map(({ group, options: groupOptions }, groupIndex) => {
-        const groupId = `${id}-group-${groupIndex}`;
-        return <div key={group ?? 'ungrouped'} role={group ? 'group' : 'presentation'} aria-labelledby={group ? groupId : undefined} className="min-w-0">
-          {group && <div id={groupId} role="presentation" className="px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-xs font-medium text-muted-foreground">{group}</div>}
-          {groupOptions.map(option => renderOption(option))}
-        </div>;
-      }) : null}
-    </div>
-    {!visibleOptions.length && !loadError && <div role="status" className="px-[var(--rui-space-2)] py-[var(--rui-content-padding)] text-center text-sm text-muted-foreground">{loading ? loadingMessage : emptyMessage}</div>}
-    {loading && visibleOptions.length > 0 && <div role="status" className="sticky bottom-0 flex items-center justify-center gap-[var(--rui-space-2)] border-t border-border bg-background/95 px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-xs text-muted-foreground"><Spinner aria-hidden="true" />{loadingMessage}</div>}
-    {loadError && <div className="grid gap-[var(--rui-space-2)] p-[var(--rui-content-padding)]"><p role="alert" className="flex items-start gap-[var(--rui-space-2)] text-sm text-destructive"><AlertCircle aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />{loadError}</p>{onRetry && <Button type="button" variant="outline" size="xs" className="justify-self-start" onClick={onRetry}><RotateCcw aria-hidden="true" />重试</Button>}</div>}
-    </div>
-    {name && (selectionMode === 'multiple' ? [...selected].map(item => <input key={item} type="hidden" name={name} form={form} value={item} disabled={disabled} />) : <input type="hidden" name={name} form={form} value={Array.isArray(selectedValue) ? selectedValue[0] ?? '' : selectedValue ?? ''} disabled={disabled} />)}
-    {description && <FieldDescription id={descriptionId}>{description}</FieldDescription>}
-    {error && <FieldError id={errorId}>{error}</FieldError>}
-  </Field>;
+      {searchable && (
+        <div className="relative">
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute left-[var(--rui-space-2)] top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.currentTarget.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                listRef.current?.focus();
+                setActive(enabledOptions[0]?.value ?? null);
+              }
+            }}
+            disabled={disabled}
+            readOnly={readOnly}
+            aria-label={`搜索${label}`}
+            placeholder={placeholder}
+            className="pl-[calc(var(--rui-space-2)+var(--rui-space-4))]"
+          />
+        </div>
+      )}
+      <div
+        ref={viewportRef}
+        data-slot="listbox-viewport"
+        data-description-layout={descriptionLayout}
+        data-disabled={disabled || undefined}
+        data-empty={!visibleOptions.length || undefined}
+        data-virtual={virtual || undefined}
+        className={cn(
+          'relative max-h-64 min-w-0 overflow-y-auto rounded-lg border border-border bg-background p-[var(--rui-space-1)] text-sm focus-within:ring-[length:var(--rui-focus-width)] focus-within:ring-ring',
+          virtual && 'h-64',
+          listClassName,
+        )}
+      >
+        <div
+          ref={probeRef}
+          aria-hidden="true"
+          className="pointer-events-none invisible absolute flex min-h-[var(--rui-control-height)] items-center py-[var(--rui-cell-padding-y)]"
+        >
+          <span
+            className={cn(
+              descriptionLayout === 'stacked'
+                ? 'grid gap-1'
+                : 'flex items-center gap-x-[var(--rui-content-gap)]',
+            )}
+          >
+            <span className="leading-5">项目</span>
+            <span
+              className={cn('text-xs', descriptionLayout === 'stacked' ? 'leading-4' : 'leading-5')}
+            >
+              说明
+            </span>
+          </span>
+        </div>
+        <div
+          {...props}
+          ref={listRef}
+          id={id}
+          role="listbox"
+          tabIndex={0}
+          aria-labelledby={`${id}-label`}
+          aria-describedby={describedBy}
+          aria-multiselectable={selectionMode === 'multiple' || undefined}
+          aria-activedescendant={
+            currentActive ? optionId({ value: currentActive, label: '' }) : undefined
+          }
+          aria-disabled={disabled || undefined}
+          aria-readonly={readOnly || undefined}
+          aria-required={required || undefined}
+          aria-invalid={Boolean(error) || undefined}
+          aria-busy={loading || undefined}
+          data-slot="listbox"
+          data-empty={!visibleOptions.length || undefined}
+          onFocus={() => {
+            if (!currentActive)
+              setActive(
+                enabledOptions.find((option) => selected.has(option.value))?.value ??
+                  enabledOptions[0]?.value ??
+                  null,
+              );
+          }}
+          onKeyDown={keyDown}
+          className="min-h-[var(--rui-border-width)] min-w-0 outline-none"
+        >
+          {visibleOptions.length && virtual ? (
+            <div
+              role="presentation"
+              className="relative min-w-0"
+              style={{ height: virtualizer.getTotalSize() }}
+            >
+              {virtualItems.map((row) => {
+                const option = visibleOptions[row.index];
+                return option
+                  ? renderOption(option, row.index, {
+                      height: row.size,
+                      transform: `translateY(${row.start}px)`,
+                    })
+                  : null;
+              })}
+            </div>
+          ) : visibleOptions.length ? (
+            grouped.map(({ group, options: groupOptions }, groupIndex) => {
+              const groupId = `${id}-group-${groupIndex}`;
+              return (
+                <div
+                  key={group ?? 'ungrouped'}
+                  role={group ? 'group' : 'presentation'}
+                  aria-labelledby={group ? groupId : undefined}
+                  className="min-w-0"
+                >
+                  {group && (
+                    <div
+                      id={groupId}
+                      role="presentation"
+                      className="px-[var(--rui-menu-item-padding-x)] py-[var(--rui-space-1)] text-xs font-medium text-muted-foreground"
+                    >
+                      {group}
+                    </div>
+                  )}
+                  {groupOptions.map((option) => renderOption(option))}
+                </div>
+              );
+            })
+          ) : null}
+        </div>
+        {!visibleOptions.length && !loadError && (
+          <div
+            role="status"
+            className="px-[var(--rui-space-2)] py-[var(--rui-content-padding)] text-center text-sm text-muted-foreground"
+          >
+            {loading ? loadingMessage : emptyMessage}
+          </div>
+        )}
+        {loading && visibleOptions.length > 0 && (
+          <div
+            role="status"
+            className="sticky bottom-0 flex items-center justify-center gap-[var(--rui-space-2)] border-t border-border bg-background/95 px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-xs text-muted-foreground"
+          >
+            <Spinner aria-hidden="true" />
+            {loadingMessage}
+          </div>
+        )}
+        {loadError && (
+          <div className="grid gap-[var(--rui-space-2)] p-[var(--rui-content-padding)]">
+            <p
+              role="alert"
+              className="flex items-start gap-[var(--rui-space-2)] text-sm text-destructive"
+            >
+              <AlertCircle aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+              {loadError}
+            </p>
+            {onRetry && (
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                className="justify-self-start"
+                onClick={onRetry}
+              >
+                <RotateCcw aria-hidden="true" />
+                重试
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+      {name &&
+        (selectionMode === 'multiple' ? (
+          [...selected].map((item) => (
+            <input
+              key={item}
+              type="hidden"
+              name={name}
+              form={form}
+              value={item}
+              disabled={disabled}
+            />
+          ))
+        ) : (
+          <input
+            type="hidden"
+            name={name}
+            form={form}
+            value={Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : (selectedValue ?? '')}
+            disabled={disabled}
+          />
+        ))}
+      {description && <FieldDescription id={descriptionId}>{description}</FieldDescription>}
+      {error && <FieldError id={errorId}>{error}</FieldError>}
+    </Field>
+  );
 }

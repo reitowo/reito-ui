@@ -84,7 +84,7 @@ import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
 | `asChild` 的 Radix 组合 | 阅读相应 Base UI `render` API，不机械替换 |
 | `rui-*` 组件选择器 | 不从页面依赖内部选择器，使用公开 props、className、语义 tokens |
 
-组件高度 XS/SM/default/LG：compact 为 24/28/32/36px，comfortable 为 32/36/40/44px（16px 根字号）。基础 Button 的尺寸由共享样式与 `data-size` 控制；图标按钮宽高同步。日历单元格等专用控件保持各自组合契约。
+组件高度 XS/SM/default/LG：compact 为 24/28/32/36px，comfortable 为 32/36/40/44px（16px 根字号）。工作区源码中 Button 的默认文字 / 图标按钮为28 / 36px，显式 md / icon-md 保留此前32 / 40px高度；XS 是兼容的小尺寸。Button 的默认高度由 button-height 角色控制，输入框保持原通用高度。日历单元格等专用控件保持各自组合契约。
 
 0.3 之前的工作文件已备份到 `.logs/v0.2-before-shadcn`，旧组件实现不作为并行公开 API 保留。消费工程应逐项迁移并检查自己的流程。
 
@@ -103,3 +103,7 @@ Storybook 按“基础 / 复杂 / AI → 组件 → 参数调试”浏览。在�
 更新 tokens 后运行 `npm run tokens:build`，同时生成 CSS、Tailwind 桥接与数字 API 的 `@reito/tokens/metrics`。`npm run tokens:audit` 可单独检查所有组件和示例中的视觉硬编码，已纳入 `npm run check`；查看 [全组件审计与允许例外](token-audit.md)。完成 `npm run check`、相关 Playwright / Storybook 检查、`npm run build` 后再打包；根构建包含 UI、Lab、Storybook 和 Workbench。Storybook 四组合扫描包含页面错误、console error、交互 play、完整 iframe body 的 axe（包括仍打开的 portal）和页面溢出；它不等于完整手工无障碍验收。各次实际结果记录在 [validation.md](validation.md)，这些流程说明不代表本次检查已经通过。
 
 打包时 UI 与 tokens 精确版本必须同步。第三方声明随 UI 包发布，禁止把 Multica 受限源码、产品品牌素材或私有字体夹入包中。
+
+## 运行时主题
+
+当前工作区的 `@reito/ui` 与 `@reito/ui/basic` 导出 `ReitoThemeProvider`、`useReitoTheme` 及 ThemeMode / ThemeColors / ThemeColor 等类型。使用 `root mode="system" colors={{primary:'violet',neutral:'zinc'}}` 即可主题化整个应用；嵌套 Provider 控制局部内容并传递到共享 Portal。`Button color="green" variant="outline"` 可以独立配色。配色默认灰白 / Graphite，Provider 默认紧凑；存储由应用管理。完整示例、可配色基础组件、色阶来源及未实现项见 [theme-guide.md](theme-guide.md)。这部分尚未随新版本发布。

@@ -27,13 +27,15 @@ export const Overview: Story = {
 function WorkspaceCard({
   size = "default",
   footer = false,
+  divided = false,
 }: {
   size?: "default" | "sm";
   footer?: boolean;
+  divided?: boolean;
 }) {
   return (
     <P.Card size={size} className="w-full max-w-sm">
-      <P.CardHeader>
+      <P.CardHeader className={divided ? "border-b" : undefined}>
         <P.CardTitle>本地工作区</P.CardTitle>
         <P.CardDescription>共享主题与组件的示例项目。</P.CardDescription>
       </P.CardHeader>
@@ -59,17 +61,23 @@ export const WithFooter: Story = {
   render: () => <WorkspaceCard footer />,
 };
 
-type PlaygroundArgs = { size: "default" | "sm"; title: string; description: string; content: string; footer: boolean };
+export const DividedRegions: Story = {
+  name: "组合 · 分区留白",
+  render: () => <WorkspaceCard footer divided />,
+};
+
+type PlaygroundArgs = { divided: boolean; size: "default" | "sm"; title: string; description: string; content: string; footer: boolean };
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: "参数调试",
-  args: { size: "default", title: "本地工作区", description: "共享主题与组件的示例项目。", content: "基础、复杂与 AI 组件保持一致。", footer: false },
+  args: { divided: false, size: "default", title: "本地工作区", description: "共享主题与组件的示例项目。", content: "基础、复杂与 AI 组件保持一致。", footer: false },
   argTypes: {
+    divided: { control: "boolean", description: "标题区显示分隔线，各分区独立提供内距", table: { category: "组合示例" } },
     size: { control: "select", options: ["default", "sm"] },
     title: { control: "text", description: "CardTitle.children", table: { category: "组合示例" } },
     description: { control: "text", description: "CardDescription.children", table: { category: "组合示例" } },
     content: { control: "text", description: "CardContent.children", table: { category: "组合示例" } },
     footer: { control: "boolean", description: "显示 CardFooter", table: { category: "组合示例" } },
   },
-  parameters: { controls: { include: ["size", "title", "description", "content", "footer"] } },
-  render: (args) => <P.Card size={args.size} className="w-full max-w-sm"><P.CardHeader><P.CardTitle>{args.title}</P.CardTitle>{args.description && <P.CardDescription>{args.description}</P.CardDescription>}</P.CardHeader><P.CardContent>{args.content}</P.CardContent>{args.footer && <P.CardFooter><P.Badge variant="secondary">草稿</P.Badge></P.CardFooter>}</P.Card>,
+  parameters: { controls: { include: ["divided", "size", "title", "description", "content", "footer"] } },
+  render: (args) => <P.Card size={args.size} className="w-full max-w-sm"><P.CardHeader className={args.divided ? "border-b" : undefined}><P.CardTitle>{args.title}</P.CardTitle>{args.description && <P.CardDescription>{args.description}</P.CardDescription>}</P.CardHeader><P.CardContent>{args.content}</P.CardContent>{args.footer && <P.CardFooter><P.Badge variant="secondary">草稿</P.Badge></P.CardFooter>}</P.Card>,
 };

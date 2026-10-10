@@ -105,7 +105,8 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await region.getByRole('button', { name: '展开记录 VIRTUAL-000001' }).click();
   const first = region.locator('[data-row-id="VIRTUAL-000001"]');
   const rowHeight = await first.evaluate(element => element.getBoundingClientRect().height);
-  expect(rowHeight).toBeLessThan(density === 'compact' ? 42 : 50);
+  // Expansion keeps the same token-based row height as ordinary rows.
+  expect(rowHeight).toBe(density === 'compact' ? 37 : 53);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

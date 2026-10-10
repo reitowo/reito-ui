@@ -34,7 +34,7 @@ function flatten(group, prefix = '') {
     '$value' in value ? [[`${prefix}${key}`, resolve(value)]] : flatten(value, `${prefix}${key}-`));
 }
 const declarations = (values) => values.map(([name, value]) => `  --rui-${name}: ${value};`).join('\n');
-const css = `/* Generated from src/tokens.json. Run npm run tokens:build. */\n:root {\n${declarations(flatten(source.foundation))}\n}\n\n:root, [data-theme="dark"] {\n  color-scheme: dark;\n${declarations(flatten(source.themes.dark))}\n}\n\n[data-theme="light"] {\n  color-scheme: light;\n${declarations(flatten(source.themes.light))}\n}\n\n:root, [data-density="compact"] {\n${declarations(flatten(source.density.compact))}\n}\n\n[data-density="comfortable"] {\n${declarations(flatten(source.density.comfortable))}\n}\n\n@media (prefers-reduced-motion: reduce) {\n  :root { --rui-duration-fast: 0ms; --rui-duration-normal: 0ms; }\n}\n`;
+const css = `/* Generated from src/tokens.json. Run npm run tokens:build. */\n:root {\n${declarations(flatten(source.foundation))}\n${declarations(flatten(source.colorScales, 'palette-'))}\n}\n\n:root, [data-theme="dark"] {\n  color-scheme: dark;\n${declarations(flatten(source.themes.dark))}\n}\n\n[data-theme="light"] {\n  color-scheme: light;\n${declarations(flatten(source.themes.light))}\n}\n\n:root, [data-density="compact"] {\n${declarations(flatten(source.density.compact))}\n}\n\n[data-density="comfortable"] {\n${declarations(flatten(source.density.comfortable))}\n}\n\n@media (prefers-reduced-motion: reduce) {\n  :root { --rui-duration-fast: 0ms; --rui-duration-normal: 0ms; }\n}\n`;
 const roles = {
   background:'bg', foreground:'text', card:'surface', 'card-foreground':'text',
   popover:'elevated', 'popover-foreground':'text', primary:'primary', 'primary-foreground':'on-primary',
@@ -47,6 +47,13 @@ const roles = {
   'chart-1':'accent', 'chart-2':'success', 'chart-3':'warning', 'chart-4':'danger', 'chart-5':'text-secondary',
 };
 const aliases = `\n/* shadcn roles: accent is an interaction surface; info is the blue status color. */\n:root {\n${Object.entries(roles).map(([name,target])=>`  --${name}: var(--rui-${target});`).join('\n')}\n  --radius: var(--rui-radius-lg);\n}\n`;
+// Public runtime presets are resolved from the same token source as CSS.
+const runtimeThemes = Object.fromEntries(Object.entries(source.themes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values))]));
+const runtimeNeutral = Object.fromEntries(Object.entries(source.colorThemes.neutral).map(([family, modes]) => [family, Object.fromEntries(Object.entries(modes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values))]))]));
+const runtimeColors = Object.fromEntries(Object.entries(source.colorThemes.color).map(([family, modes]) => [family, Object.fromEntries(Object.entries(modes).map(([mode, values]) => [mode, Object.fromEntries(flatten(values))]))]));
+const runtimeScales = Object.fromEntries(Object.entries(source.colorScales).map(([family, values]) => [family, Object.fromEntries(flatten(values))]));
+const paletteVariables = Object.fromEntries(Object.entries(runtimeScales).map(([family, scale]) => [family, Object.fromEntries(Object.keys(scale).map(step => [step, `var(--rui-palette-${family}-${step})`]))]));
+const runtime = { paletteVariables, themes: runtimeThemes, neutrals: runtimeNeutral, colors: runtimeColors, scales: runtimeScales, aliases: roles };
 const bridge = {
   'font-sans': 'font-sans', 'font-heading': 'font-sans', 'font-mono': 'font-mono', spacing: 'space-1',
   'text-xs': 'font-caption', 'text-sm': 'font-interface', 'text-base': 'font-reading', 'text-lg': 'font-subheading', 'text-xl': 'text-xl', 'text-2xl': 'font-heading', 'text-3xl': 'font-display',
@@ -75,7 +82,9 @@ const metrics = Object.fromEntries(flatten(source.foundation).flatMap(([name, va
   return [[name, Number(match.groups.value) * (match.groups.unit === 'rem' ? 16 : match.groups.unit === 's' ? 1000 : 1)]];
 }));
 const outputs = [
-  [new URL('packages/tokens/dist/tokens.css', root), css + aliases],
+  [new URL('packages/tokens/dist/themes.js', root), `/* Generated runtime color presets. Edit src/tokens.json. */\nexport const themeTokens = ${JSON.stringify(runtime, null, 2)};\n`],
+  [new URL('packages/tokens/dist/themes.d.ts', root), `export type ColorPalette = ${Object.keys(runtimeColors).map(v=>JSON.stringify(v)).join(' | ')};\nexport type NeutralPalette = 'graphite' | ${Object.keys(runtimeNeutral).map(v=>JSON.stringify(v)).join(' | ')};\nexport declare const themeTokens: { themes: Record<'dark' | 'light', Record<string, string>>; neutrals: Record<Exclude<NeutralPalette, 'graphite'>, Record<'dark' | 'light', Record<string, string>>>; colors: Record<ColorPalette, Record<'dark' | 'light', Record<string, string>>>; scales: Record<string, Record<string, string>>; paletteVariables: Record<string, Record<string, string>>; aliases: Record<string, string> };\n`],
+  [new URL('packages/tokens/dist/tokens.css', root), css + aliases + `\n:root { --rui-color-text: var(--rui-text); --rui-color-soft: var(--rui-hover); --rui-color-border: var(--rui-border-strong); }\n`],
   [new URL('packages/tokens/dist/tailwind.css', root), tailwind],
   [new URL('packages/tokens/dist/metrics.js', root), `/* Generated numeric API defaults; px and ms, rem at a 16px root. */\nexport const tokenMetrics = Object.freeze(${JSON.stringify(metrics, null, 2)});\n`],
   [new URL('packages/tokens/dist/metrics.d.ts', root), `export declare const tokenMetrics: Readonly<{\n${Object.keys(metrics).map(name=>`  readonly '${name}': number;`).join('\n')}\n}>;\n`],

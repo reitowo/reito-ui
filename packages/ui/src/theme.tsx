@@ -1,0 +1,248 @@
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useSyncExternalStore,
+  type CSSProperties,
+  type HTMLAttributes,
+  type ReactNode,
+} from 'react';
+import { themeTokens, type ColorPalette, type NeutralPalette } from '@reito/tokens/themes';
+
+export type { ColorPalette, NeutralPalette } from '@reito/tokens/themes';
+export type ThemeMode = 'dark' | 'light' | 'system';
+export type ThemeColor =
+  | ColorPalette
+  | 'primary'
+  | 'neutral'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'info';
+export type ThemeColors = {
+  primary: ColorPalette | 'neutral';
+  neutral: NeutralPalette;
+  success: ColorPalette;
+  warning: ColorPalette;
+  danger: ColorPalette;
+  info: ColorPalette;
+};
+type ThemeState = {
+  mode: ThemeMode;
+  scheme: 'dark' | 'light';
+  density: 'compact' | 'comfortable';
+  colors: ThemeColors;
+  style: CSSProperties;
+  documentRoot: boolean;
+};
+const defaults: ThemeColors = {
+  primary: 'neutral',
+  neutral: 'graphite',
+  success: 'green',
+  warning: 'amber',
+  danger: 'red',
+  info: 'blue',
+};
+const ThemeContext = createContext<ThemeState | null>(null);
+const getSystemScheme = (): 'dark' | 'light' =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches
+    ? 'light'
+    : 'dark';
+const getServerScheme = () => 'dark' as const;
+const noSubscribe = () => () => {};
+const subscribeSystem = (onChange: () => void) => {
+  const media = window.matchMedia('(prefers-color-scheme: light)');
+  media.addEventListener('change', onChange);
+  return () => media.removeEventListener('change', onChange);
+};
+const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const aliases = (values: Record<string, string>): CSSProperties =>
+  Object.fromEntries([
+    ...Object.entries(values).map(([key, value]) => ['--rui-' + key, value]),
+    ...Object.entries(themeTokens.aliases).map(([key, value]) => [
+      '--' + key,
+      `var(--rui-${value})`,
+    ]),
+  ]) as CSSProperties;
+
+function themeStyle(scheme: 'dark' | 'light', colors: ThemeColors) {
+  const values = {
+    ...themeTokens.themes[scheme],
+    ...(colors.neutral === 'graphite' ? {} : themeTokens.neutrals[colors.neutral][scheme]),
+  };
+  // Neutral actions invert the current neutral surface; status colors remain independent.
+  if (colors.neutral !== 'graphite') {
+    values.primary = values.text;
+    values['on-primary'] = values.bg;
+  }
+  if (colors.primary !== 'neutral') {
+    const color = themeTokens.colors[colors.primary][scheme];
+    values.primary = color.solid;
+    values['on-primary'] = color['on-solid'];
+    values['primary-hover'] = color.hover;
+    values['action-accent'] = color.solid;
+    values['action-accent-hover'] = color.hover;
+    values['on-action-accent'] = color['on-solid'];
+  }
+  for (const role of ['success', 'warning', 'danger', 'info'] as const) {
+    const color = themeTokens.colors[colors[role]][scheme];
+    const key = role === 'info' ? 'accent' : role;
+    values[key] = color.text;
+    values[key + '-soft'] = color.soft;
+  }
+  return { ...aliases(values), colorScheme: scheme };
+}
+
+/** A theme scope. `root` also themes document chrome and non-React surfaces. */
+export function ReitoThemeProvider({
+  mode,
+  colors,
+  density,
+  root = false,
+  children,
+  style,
+  className,
+  ...props
+}: Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
+  mode?: ThemeMode;
+  colors?: Partial<ThemeColors>;
+  density?: 'compact' | 'comfortable';
+  root?: boolean;
+  children?: ReactNode;
+}) {
+  const parent = useContext(ThemeContext);
+  const selectedMode = mode ?? parent?.mode ?? 'dark';
+  const systemScheme = useSyncExternalStore(
+    selectedMode === 'system' ? subscribeSystem : noSubscribe,
+    getSystemScheme,
+    getServerScheme,
+  );
+  const scheme = selectedMode === 'system' ? systemScheme : selectedMode;
+  const state = useMemo<ThemeState>(() => {
+    const merged = { ...defaults, ...parent?.colors, ...colors };
+    return {
+      mode: selectedMode,
+      scheme,
+      density: density ?? parent?.density ?? 'compact',
+      colors: merged,
+      style: themeStyle(scheme, merged),
+      documentRoot: root,
+    };
+  }, [
+    selectedMode,
+    scheme,
+    density,
+    parent,
+    colors?.primary,
+    colors?.neutral,
+    colors?.success,
+    colors?.warning,
+    colors?.danger,
+    colors?.info,
+    root,
+  ]);
+  useBrowserLayoutEffect(() => {
+    if (!root) return;
+    const html = document.documentElement;
+    const oldTheme = html.getAttribute('data-theme'),
+      oldDensity = html.getAttribute('data-density');
+    const entries = Object.entries(state.style);
+    const previous = entries.map(([key]) => [
+      key,
+      html.style.getPropertyValue(key === 'colorScheme' ? 'color-scheme' : key),
+    ]);
+    html.dataset.theme = state.scheme;
+    html.dataset.density = state.density;
+    for (const [key, value] of entries)
+      html.style.setProperty(key === 'colorScheme' ? 'color-scheme' : key, String(value));
+    return () => {
+      for (const [key, value] of previous) {
+        const cssKey = key === 'colorScheme' ? 'color-scheme' : key;
+        if (value) html.style.setProperty(cssKey, value);
+        else html.style.removeProperty(cssKey);
+      }
+      if (oldTheme === null) html.removeAttribute('data-theme');
+      else html.setAttribute('data-theme', oldTheme);
+      if (oldDensity === null) html.removeAttribute('data-density');
+      else html.setAttribute('data-density', oldDensity);
+    };
+  }, [root, state]);
+  return (
+    <ThemeContext.Provider value={state}>
+      <div
+        {...props}
+        className={'reito-root' + (className ? ' ' + className : '')}
+        data-rui-theme=""
+        data-theme={root ? undefined : scheme}
+        data-density={!root && density ? density : undefined}
+        style={{ display: 'contents', ...(!root ? state.style : {}), ...style }}
+      >
+        {children}
+      </div>
+    </ThemeContext.Provider>
+  );
+}
+
+/** Carries the nearest React theme through a Base UI portal without adding layout. */
+export function ThemePortalScope({ children }: { children: ReactNode }) {
+  const theme = useContext(ThemeContext);
+  if (!theme) return children;
+  return (
+    <div
+      className="reito-root contents"
+      data-rui-theme="portal"
+      data-theme={theme.documentRoot ? undefined : theme.scheme}
+      data-density={
+        theme.density === document.documentElement.dataset.density ? undefined : theme.density
+      }
+      style={theme.documentRoot ? undefined : theme.style}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function useReitoTheme() {
+  return useContext(ThemeContext);
+}
+
+/** Shared component color recipe; explicit colors never alter geometry or focus. */
+export function useThemeColor(color?: ThemeColor): CSSProperties | undefined {
+  const theme = useContext(ThemeContext);
+  if (!color) return undefined;
+  const settings = theme?.colors ?? defaults;
+  const family =
+    color === 'primary'
+      ? settings.primary
+      : color === 'success' || color === 'warning' || color === 'danger' || color === 'info'
+        ? settings[color]
+        : color;
+  if (family === 'neutral')
+    return aliases({
+      primary: 'var(--rui-text)',
+      'primary-hover': 'var(--rui-text-secondary)',
+      'action-accent-hover': 'var(--rui-text-secondary)',
+      'on-primary': 'var(--rui-bg)',
+      'action-accent': 'var(--rui-text)',
+      'on-action-accent': 'var(--rui-bg)',
+      'color-text': 'var(--rui-text)',
+      'color-soft': 'var(--rui-hover)',
+      'color-border': 'var(--rui-border-strong)',
+    });
+  const light = themeTokens.colors[family].light,
+    dark = themeTokens.colors[family].dark;
+  const value = (role: string) => `light-dark(${light[role]}, ${dark[role]})`;
+  return aliases({
+    primary: value('solid'),
+    'primary-hover': value('hover'),
+    'action-accent-hover': value('hover'),
+    'on-primary': value('on-solid'),
+    'color-text': value('text'),
+    'color-soft': value('soft'),
+    'color-border': value('border'),
+    'action-accent': value('solid'),
+    'on-action-accent': value('on-solid'),
+  });
+}

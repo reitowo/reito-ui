@@ -10,8 +10,8 @@ const meta = { id: "基础-button",
   tags: ["autodocs"],
   args: { variant: "default", size: "default", disabled: false, children: "保存更改" },
   argTypes: {
-    variant: { control: "select", options: ["default", "secondary", "outline", "ghost", "link", "destructive"] },
-    size: { control: "select", options: ["xs", "sm", "default", "lg", "icon-xs", "icon-sm", "icon", "icon-lg"] },
+    variant: { control: "select", options: ["default", "accent", "secondary", "outline", "ghost", "link", "destructive"] },
+    size: { control: "select", options: ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-md", "icon-lg"] },
     disabled: { control: "boolean" },
     children: { control: "text", description: "按钮文字；图标尺寸下作为可访问名称。" },
   },
@@ -24,7 +24,7 @@ const meta = { id: "基础-button",
     docs: {
       description: {
         component:
-          "六种操作层级、尺寸、禁用与加载状态。 使用官方 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
+          "七种操作层级、尺寸、禁用与加载状态。Accent 用于需要强调的蓝色动作。使用 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
       },
     },
   },
@@ -44,6 +44,10 @@ export const Default: Story = {
 export const Secondary: Story = {
   name: "样式 · 次要操作",
   args: { variant: "secondary", children: "稍后处理" },
+};
+export const Accent: Story = {
+  name: "样式 · 强调操作",
+  args: { variant: "accent", children: "允许", size: "xs" },
 };
 export const Outline: Story = {
   name: "样式 · 描边",
@@ -116,3 +120,6 @@ export const Playground: Story = {
   args: { variant: "default", size: "default", disabled: false, children: "保存更改" },
   parameters: { controls: { include: ["variant", "size", "disabled", "children"] } },
 };
+
+export const Medium: Story = { name: "尺寸 · 文字 MD", args: { size: "md", children: "保存更改" } };
+export const IconMedium: Story = { name: "尺寸 · 图标 MD", args: { size: "icon-md", children: <Plus />, "aria-label": "添加项目" } };

@@ -1,3 +1,6 @@
+import { ThemeControls, useThemePreferences } from './ThemeControls';
+import { readThemeMode } from './theme-preferences';
+import { ReitoThemeProvider } from '@reito/ui/basic';
 import { useEffect, useState } from 'react';
 import { ArrowRight, Blocks, Braces, Check, CheckCheck, Code2, ExternalLink, Moon, PanelLeft, Search, Sparkles, Sun } from 'lucide-react';
 import { Badge, Button, Input, Label, Progress, Switch, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Tabs, TabsContent, TabsList, TabsTrigger, TooltipProvider } from '@reito/ui/basic';
@@ -48,19 +51,20 @@ function WorkspacePreview() {
 }
 
 export function Home() {
-  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+  const [colors, setColors] = useThemePreferences();
+  const [theme, setTheme] = useState(readThemeMode);
   const [tokensOpen, setTokensOpen] = useState(false);
   useEffect(() => {
     document.title = 'Reito UI · 为你的工具构建一致的界面';
-    document.documentElement.dataset.theme = theme;
+
     document.documentElement.dataset.density = 'compact';
-    document.documentElement.style.colorScheme = theme;
+
     try { localStorage.setItem('reito-theme', theme); } catch { /* Session theme remains available. */ }
   }, [theme]);
   const linkClass = 'home-link';
-  return <TooltipProvider><div className="reito-root home-page">
+  return <ReitoThemeProvider root mode={theme} density="compact" colors={colors}><TooltipProvider><div className="reito-root home-page">
     <a className="home-skip" href="#home-main">跳到主要内容</a>
-    <header className="home-header"><a href={siteBase} className="home-logo" aria-label="Reito UI 首页"><PanelLeft className="size-5" /><span>Reito UI</span></a><nav aria-label="主导航" className="order-last w-full justify-center sm:order-none sm:w-auto"><a href="#components">组件</a><a href="#design">设计语言</a><a href="#start">快速开始</a></nav><div className="flex items-center gap-2"><Button variant="ghost" size="icon-sm" aria-label="切换明暗主题" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun /> : <Moon />}</Button><a className="home-github" href={repository} target="_blank" rel="noreferrer" aria-label="GitHub 源码"><Code2 className="size-4" /></a></div></header>
+    <header className="home-header"><a href={siteBase} className="home-logo" aria-label="Reito UI 首页"><PanelLeft className="size-5" /><span>Reito UI</span></a><nav aria-label="主导航" className="order-last w-full justify-center sm:order-none sm:w-auto"><a href={siteBase + "?view=overview"}>Component atlas</a><a href="#components">组件</a><a href="#design">设计语言</a><a href="#start">快速开始</a></nav><div className="flex items-center gap-2"><ThemeControls colors={colors} onChange={setColors} mode={theme} onModeChange={setTheme}/><a className="home-github" href={repository} target="_blank" rel="noreferrer" aria-label="GitHub 源码"><Code2 className="size-4" /></a></div></header>
     <main id="home-main">
       <section className="home-hero"><a href={`${repository}/commits/main`} className="home-version" target="_blank" rel="noreferrer"><span className="size-2 rounded-full bg-foreground" />Reito UI {version}<ArrowRight className="size-3" /></a><h1 className="text-3xl sm:text-[length:calc(var(--rui-font-display)*2)]">为你的工具，<br /><span className="text-muted-foreground">构建一致的界面。</span></h1><p>从基础控件到 AI 工作流，一套可复用的 React 组件。<br className="hidden sm:block" />紧凑、清晰，让每个界面说同一种设计语言。</p><div className="home-hero-actions"><a href={`${siteBase}?layer=basic&component=button`} className="home-primary-link">浏览组件<ArrowRight className="size-4" /></a><a href="#start" className="home-secondary-link">开始使用<Code2 className="size-4" /></a></div><div className="home-stack"><span>React</span><span>TypeScript</span><span>Tailwind CSS</span><span>Base UI</span><span>Storybook</span></div></section>
       <section className="home-container" aria-label="交互工作区展示"><WorkspacePreview /></section>
@@ -75,5 +79,5 @@ export function Home() {
     </main>
     <footer className="home-footer home-container"><a href={siteBase} className="home-logo"><PanelLeft className="size-4" />Reito UI</a><span>Graphite · 为个人工具而构建</span><a href={repository} target="_blank" rel="noreferrer">GitHub<ExternalLink className="size-3" /></a></footer>
     <TokenReference open={tokensOpen} onOpenChange={setTokensOpen} />
-  </div></TooltipProvider>;
+  </div></TooltipProvider></ReitoThemeProvider>;
 }

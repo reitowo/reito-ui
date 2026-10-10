@@ -36,10 +36,10 @@ export const Small: Story = { name: "小尺寸", render: () => <FormattingGroup 
 export const Large: Story = { name: "大尺寸", render: () => <FormattingGroup size="lg" /> };
 export const Vertical: Story = { name: "纵向", render: () => <FormattingGroup orientation="vertical" /> };
 
-type ToggleGroupPlaygroundArgs = { variant: 'default' | 'outline'; size: 'default' | 'sm' | 'lg'; multiple: boolean; disabled: boolean; orientation: 'horizontal' | 'vertical'; value: string[]; spacing: number };
+type ToggleGroupPlaygroundArgs = { variant: 'default' | 'outline'; size: 'default' | 'sm' | 'md' | 'lg'; multiple: boolean; disabled: boolean; orientation: 'horizontal' | 'vertical'; value: string[]; spacing: number };
 export const Playground: StoryObj<ToggleGroupPlaygroundArgs> = {
   name: "参数调试", args: { variant: 'default', size: 'default', multiple: true, disabled: false, orientation: 'horizontal', value: ['bold'], spacing: 2 },
-  argTypes: { variant: { control: 'select', options: ['default', 'outline'] }, size: { control: 'select', options: ['default', 'sm', 'lg'] }, multiple: { control: 'boolean' }, disabled: { control: 'boolean' }, orientation: { control: 'select', options: ['horizontal', 'vertical'] }, value: { control: 'check', options: ['bold', 'italic', 'underline'], description: '单选模式仅保留最后一个选项。' }, spacing: { control: { type: 'number', min: 0, max: 6, step: 1 } } },
+  argTypes: { variant: { control: 'select', options: ['default', 'outline'] }, size: { control: 'select', options: ['default', 'sm', 'md', 'lg'] }, multiple: { control: 'boolean' }, disabled: { control: 'boolean' }, orientation: { control: 'select', options: ['horizontal', 'vertical'] }, value: { control: 'check', options: ['bold', 'italic', 'underline'], description: '单选模式仅保留最后一个选项。' }, spacing: { control: { type: 'number', min: 0, max: 6, step: 1 } } },
   parameters: { controls: { include: ['variant', 'size', 'multiple', 'disabled', 'orientation', 'value', 'spacing'] } },
   render: function Render(args) { const [, updateArgs] = useArgs(); useEffect(() => { if (!args.multiple && args.value.length > 1) updateArgs({ value: args.value.slice(-1) }); }, [args.multiple, args.value, updateArgs]); return <ToggleGroup {...args} aria-label="文字格式" onValueChange={value => updateArgs({ value })}><ToggleGroupItem value="bold" aria-label="粗体"><Bold /></ToggleGroupItem><ToggleGroupItem value="italic" aria-label="斜体"><Italic /></ToggleGroupItem><ToggleGroupItem value="underline" aria-label="下划线"><Underline /></ToggleGroupItem></ToggleGroup>; },
 };

@@ -425,3 +425,35 @@ DATERANGE-02 核对 PrimeVue 5 [DatePicker](https://primevue.dev/datepicker/) �
 ## 组件库首页（2026-09-09）
 
 根据用户要求参考 [PrimeVue 官网首页](https://primevue.dev/) 的主标题、双入口、交互工作台、快速开始与主题介绍结构，实际查看浅色桌面截图。Reito 使用自己的 Graphite tokens、中文文案与现有组件，未复制上游源码、品牌、客户标志或商业数据。布局差异及本地验证见 [首页说明](homepage.md)。
+
+## Cursor Web 确认与控件参考（2026-10-09）
+
+实际检查用户指定的 Cursor Web Agent 页面，读取可见按钮、搜索弹窗的 DOM 和 computed styles，另查看用户提供的通知确认截图。网页内容包含私人任务，本项目不保存或发布其对话截图与 URL 标识。公开产品入口为 [Cursor Agents](https://cursor.com/agents)。
+
+实际观察：Review 工具按钮为 24 CSS px 高、13px 字号、400 字重、6px 圆角；搜索弹窗宽 520px、8px 圆角、深灰层和轻边界；当时 Chrome 的 devicePixelRatio 为 1.5。原通知弹窗当时未出现，截图中的标题、footer 内距与宽度没有获得 DOM 量度。不能把搜索弹窗的值称为通知弹窗的实际尺寸，也不能直接将截图像素当作 CSS px。
+
+Reito 据此调整自己的共享灰阶与界面尺度，并添加蓝色强调按钮、紧凑确认变体和组件总览。蓝色、字体、间距和阴影由本库原有 token 体系定义；保留开源 Inter Variable，不复制 Cursor 的 X VF Mark 字体、品牌、图像、源代码或完整 CSS。总览是本库的组件检查页面，结构不同于 Cursor Agent 应用，亦不是官方 Cursor tokens 的交付。
+
+2026-10-10 的后续留白修正另使用用户提供的本库 Alert / Spinner / ScrollArea 总览标注和本库右键菜单裁图作为现状证据。菜单横纵内距和固定滚动边缘是本库原创共享规则，不是 Cursor 官方尺寸。Chrome 实际比较记录见 overview.md 第三轮反馈。
+
+## 任务卡片留白参考（2026-10-10）
+
+用户提供的一张深色任务提案卡片裁图，用于实际比较状态标题区、正文区、底部动作区的内距、分隔线和相关文字间隔；另提供本库 ToolCall 展开错误区的标注裁图作为待修现状。参考裁图未提供 DOM、缩放比例或 CSS 尺寸，因此不将图像像素称为上游 token。仓库不复制或发布参考图中的私人任务标识和正文，不采用其品牌、字体或实现源码。本库的 16/12px 卡片内距及 8px 相关文字间隔由自己的共享 tokens 定义。验证范围和差异记录在 validation-card-regions.md。
+
+## 穿梭选择器列表留白（2026-10-10）
+
+用户提供本库 Transfer 的深色裁图，指出短说明被固定双行、条目留白过小。实际检查当前总览的组件、行盒和两侧标题位置；修正共享 Listbox 及 Transfer 的组合对齐。没有从未知产品推断 CSS 数值；本库复用已有菜单横向内距、单元格纵向内距和内容间距 tokens。比较与验证见 validation-listbox-insets.md。
+
+## 动态配色说明页（2026-10-10）
+
+根据前述官方文档调研制作本地交互说明页，介绍 Nuxt UI 的颜色与样式分离、PrimeVue 的主色 / 表面色分层关系。原始来源见 theme-guide.md；新增有限示例色与冷暖中性色值由 Reito token 源定义，未复制参考图库、品牌或完整样式。内部示例作用域不作为已完成的公开主题引擎。用户浏览器检查深色桌面，并检查浅色和窄屏产物。
+
+## 命名色阶与运行时主题（2026-10-10）
+
+用户确认 Gray / Zinc 一类中性色板之后，正式配色接口采用 Graphite、Gray、Zinc、Slate、Stone、Neutral，并提供 17 套彩色主色。命名 50–950 色阶读取自本机实际安装的 Tailwind CSS 4.3.3（https://github.com/tailwindlabs/tailwindcss，MIT），从 OKLCH 转为裁剪 sRGB 后保存在 DTCG token 源中；许可证完整文本见 packages/tokens/THIRD_PARTY_NOTICES.md。Graphite 保持原创；层级映射、主题作用域、组件颜色与布局由 Reito 实现。不会将这些可选色阶称为全部原创，也不复制 Nuxt、Prime 或 Cursor 的完整主题 CSS、品牌和私有素材。实际比较 dark/compact Zinc + Violet 与局部 Stone + Rose 弹窗，记录在 theme-guide.md。
+
+2026-10-10 的动作尺寸调整使用用户提供的本库 theme-guide 局部浅色面板裁图，实际测量其按钮与菜单后修改共享高度、文字和内距 tokens。不是 Cursor 或其他产品的官方尺寸；比较与验证见 validation-action-size.md。
+
+## 顶栏主题菜单（2026-10-10）
+
+实际打开 https://ui.nuxt.com/ 的 Default theme 菜单，观察 Primary / Neutral 的带色点子菜单、当前值及选中勾选，以及 Light / Dark / System 的横排图标选择。主页当时显示 v4.11.3；该版本标识仅记录观察，不据搜索结果推断最新版本。Reito 的实现复用现有 Base UI DropdownMenu 与共享 token，沿用菜单结构和交互思路；使用自己的14px菜单文字、36 / 40px行高、字体、边界和色阶，不复制上游品牌或完整样式。字体、图标库和圆角配置不纳入本轮入口；详情见 validation-theme-menu.md。

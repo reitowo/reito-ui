@@ -3,7 +3,13 @@ import type { Locale } from 'react-day-picker';
 import { FieldDescription, FieldError, FieldLegend, FieldSet } from '../primitives/field.js';
 import { cn } from '../lib/utils.js';
 import { InputDate, formatLocalDate, parseLocalDate, type DateOrder } from './input-date.js';
-import { InputTime, formatTimeValue, parseTimeValue, type TimePrecision, type TimeValue } from './input-time.js';
+import {
+  InputTime,
+  formatTimeValue,
+  parseTimeValue,
+  type TimePrecision,
+  type TimeValue,
+} from './input-time.js';
 
 export interface LocalDateTimeValue {
   date: Date;
@@ -51,7 +57,10 @@ export function compareLocalDateTime(left: LocalDateTimeValue, right: LocalDateT
   return dateComparison || secondsOf(left.time) - secondsOf(right.time);
 }
 
-export function formatLocalDateTime(value: LocalDateTimeValue | null | undefined, precision: TimePrecision = 'minute') {
+export function formatLocalDateTime(
+  value: LocalDateTimeValue | null | undefined,
+  precision: TimePrecision = 'minute',
+) {
   if (!value) return '';
   const date = formatLocalDate(value.date);
   const time = formatTimeValue(value.time, precision);
@@ -101,7 +110,9 @@ export function DateTimePicker({
   const currentKey = formatLocalDateTime(currentValue, precision);
   const [draftDate, setDraftDate] = React.useState<Date | null>(currentValue?.date ?? null);
   const [draftTime, setDraftTime] = React.useState<TimeValue | null>(currentValue?.time ?? null);
-  const [committedValue, setCommittedValue] = React.useState<LocalDateTimeValue | null>(currentValue);
+  const [committedValue, setCommittedValue] = React.useState<LocalDateTimeValue | null>(
+    currentValue,
+  );
   const editingRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -116,7 +127,10 @@ export function DateTimePicker({
 
   const emit = (date: Date | null, time: TimeValue | null, commit: boolean) => {
     const next = date && time ? { date, time } : null;
-    const valid = next && !(min && compareLocalDateTime(next, min) < 0) && !(max && compareLocalDateTime(next, max) > 0);
+    const valid =
+      next &&
+      !(min && compareLocalDateTime(next, min) < 0) &&
+      !(max && compareLocalDateTime(next, max) > 0);
     if (valid || !next) {
       if (!controlled) setInternalValue(valid ? next : null);
       onValueChange?.(valid ? next : null);
@@ -148,14 +162,67 @@ export function DateTimePicker({
     editingRef.current = false;
   };
 
-  return <FieldSet disabled={disabled} data-slot="date-time-picker" data-invalid={visibleError ? true : undefined} aria-describedby={[description ? `${id}-description` : undefined, visibleError ? `${id}-error` : undefined].filter(Boolean).join(' ') || undefined} className={cn('min-w-0 gap-[var(--rui-content-gap-sm)]', className)}>
-    <FieldLegend variant="label">{label}</FieldLegend>
-    <div className="grid min-w-0 gap-[var(--rui-content-gap-sm)] sm:grid-cols-2">
-      <InputDate id={`${id}-date`} form={form} label={dateLabel} value={draftDate} onValueChange={changeDate} onValueCommit={commitDate} locale={locale} order={order} min={min?.date} max={max?.date} isDateDisabled={isDateDisabled} disabled={disabled} readOnly={readOnly} required={required} clearable={!required} />
-      <InputTime id={`${id}-time`} form={form} label={timeLabel} value={draftTime} onValueChange={changeTime} onValueCommit={commitTime} hourCycle={hourCycle} precision={precision} minuteStep={minuteStep} secondStep={secondStep} min={minTime} max={maxTime} disabled={disabled} readOnly={readOnly} required={required} clearable={!required} />
-    </div>
-    {name && <input type="hidden" name={name} form={form} value={formatLocalDateTime(committedValue, precision)} disabled={disabled} />}
-    {description && <FieldDescription id={`${id}-description`}>{description}</FieldDescription>}
-    {visibleError && <FieldError id={`${id}-error`}>{visibleError}</FieldError>}
-  </FieldSet>;
+  return (
+    <FieldSet
+      disabled={disabled}
+      data-slot="date-time-picker"
+      data-invalid={visibleError ? true : undefined}
+      aria-describedby={
+        [description ? `${id}-description` : undefined, visibleError ? `${id}-error` : undefined]
+          .filter(Boolean)
+          .join(' ') || undefined
+      }
+      className={cn('min-w-0 gap-[var(--rui-content-gap-sm)]', className)}
+    >
+      <FieldLegend variant="label">{label}</FieldLegend>
+      <div className="grid min-w-0 gap-[var(--rui-content-gap-sm)] sm:grid-cols-2">
+        <InputDate
+          id={`${id}-date`}
+          form={form}
+          label={dateLabel}
+          value={draftDate}
+          onValueChange={changeDate}
+          onValueCommit={commitDate}
+          locale={locale}
+          order={order}
+          min={min?.date}
+          max={max?.date}
+          isDateDisabled={isDateDisabled}
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+          clearable={!required}
+        />
+        <InputTime
+          id={`${id}-time`}
+          form={form}
+          label={timeLabel}
+          value={draftTime}
+          onValueChange={changeTime}
+          onValueCommit={commitTime}
+          hourCycle={hourCycle}
+          precision={precision}
+          minuteStep={minuteStep}
+          secondStep={secondStep}
+          min={minTime}
+          max={maxTime}
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+          clearable={!required}
+        />
+      </div>
+      {name && (
+        <input
+          type="hidden"
+          name={name}
+          form={form}
+          value={formatLocalDateTime(committedValue, precision)}
+          disabled={disabled}
+        />
+      )}
+      {description && <FieldDescription id={`${id}-description`}>{description}</FieldDescription>}
+      {visibleError && <FieldError id={`${id}-error`}>{visibleError}</FieldError>}
+    </FieldSet>
+  );
 }

@@ -100,6 +100,12 @@ export const Loading: Story = {
 };
 
 type PlaygroundArgs = { open: boolean; showCloseButton: boolean; busy: boolean; title: string; description: string };
+export const CompactConfirmation: Story = {
+  name: "布局 · 紧凑确认",
+  render: function CompactConfirmation() {
+    return <P.Dialog><P.DialogTrigger render={<P.Button variant="secondary" size="xs" />}>打开紧凑确认</P.DialogTrigger><P.DialogContent variant="compact" showCloseButton={false}><P.DialogHeader><P.DialogTitle>启用任务通知</P.DialogTitle><P.DialogDescription>任务结束时，显示本地提醒。此示例不申请浏览器权限。</P.DialogDescription></P.DialogHeader><P.DialogFooter variant="compact"><P.DialogClose render={<P.Button variant="ghost" size="xs" />}>不再询问</P.DialogClose><P.DialogClose render={<P.Button variant="secondary" size="xs" />}>暂不</P.DialogClose><P.DialogClose render={<P.Button variant="accent" size="xs" />}>允许</P.DialogClose></P.DialogFooter></P.DialogContent></P.Dialog>;
+  },
+};
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: "参数调试",
   args: { open: false, showCloseButton: true, busy: false, title: "编辑项目", description: "更新本地示例的显示名称。" },

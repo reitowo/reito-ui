@@ -1,0 +1,173 @@
+/* Tiptap document typography; toolbar and host layout stay in their components. */
+@layer components {
+  .rui-editor-document {
+    min-height: var(--rui-editor-min-height);
+    padding: var(--rui-content-padding);
+    font-size: var(--rui-font-interface);
+    line-height: var(--rui-leading-relaxed);
+    color: var(--rui-text);
+    outline: none;
+  }
+
+  .rui-editor-document-with-block-controls {
+    padding-left: calc(var(--rui-content-padding) + var(--rui-control-height-xs));
+  }
+
+  /* Paragraphs and headings. */
+  .rui-editor-document p {
+    margin-block: var(--rui-space-2);
+  }
+
+  .rui-editor-document p:first-child,
+  .rui-editor-document h1:first-child,
+  .rui-editor-document h2:first-child,
+  .rui-editor-document h3:first-child {
+    margin-top: 0;
+  }
+
+  .rui-editor-document p:last-child {
+    margin-bottom: 0;
+  }
+
+  .rui-editor-document h1,
+  .rui-editor-document h2 {
+    margin-block: var(--rui-space-3);
+    font-weight: var(--rui-font-weight-semibold);
+  }
+
+  .rui-editor-document h1 {
+    font-size: var(--rui-font-subheading);
+    line-height: var(--rui-text-2xl);
+    letter-spacing: var(--rui-tracking-tight);
+  }
+
+  .rui-editor-document h2 {
+    font-size: var(--rui-font-reading);
+    line-height: var(--rui-line-reading);
+  }
+
+  .rui-editor-document h3 {
+    margin-block: var(--rui-space-2);
+    font-weight: var(--rui-font-weight-semibold);
+  }
+
+  /* Lists and editable task items. */
+  .rui-editor-document ul,
+  .rui-editor-document ol {
+    margin-block: var(--rui-space-2);
+    padding-left: var(--rui-space-5);
+  }
+
+  .rui-editor-document ul {
+    list-style-type: disc;
+  }
+  .rui-editor-document ol {
+    list-style-type: decimal;
+  }
+  .rui-editor-document li {
+    margin-block: var(--rui-space-1);
+  }
+  .rui-editor-document li > p {
+    margin-block: 0;
+  }
+
+  .rui-editor-document ul[data-type='taskList'] {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  .rui-editor-document li[data-type='taskItem'] {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--rui-space-2);
+  }
+
+  .rui-editor-document li[data-type='taskItem'] > label {
+    display: flex;
+    height: var(--rui-control-height-xs);
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .rui-editor-document li[data-type='taskItem'] > label > input {
+    width: var(--rui-space-4);
+    height: var(--rui-space-4);
+    accent-color: var(--rui-primary);
+  }
+
+  .rui-editor-document li[data-type='taskItem'] > div {
+    min-width: 0;
+    flex: 1;
+  }
+
+  /* Quotes, code and links. */
+  .rui-editor-document blockquote {
+    margin-block: var(--rui-space-3);
+    border-left: var(--rui-outline-width) solid var(--rui-border);
+    padding-left: var(--rui-space-3);
+    color: var(--rui-text-muted);
+  }
+
+  .rui-editor-document pre {
+    margin-block: var(--rui-space-3);
+    overflow: auto;
+    border: var(--rui-border-width) solid var(--rui-border);
+    border-radius: var(--rui-radius-md);
+    background-color: var(--rui-surface);
+    padding: var(--rui-content-padding);
+    font-family: var(--rui-font-mono);
+    font-size: var(--rui-font-caption);
+    line-height: var(--rui-line-caption);
+  }
+
+  .rui-editor-document code {
+    border-radius: var(--rui-radius-sm);
+    background-color: var(--rui-surface);
+    padding-inline: var(--rui-space-1);
+    font-family: var(--rui-font-mono);
+    font-size: var(--rui-font-caption);
+    line-height: var(--rui-line-caption);
+  }
+
+  .rui-editor-document pre code {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .rui-editor-document a {
+    color: var(--rui-primary);
+    text-decoration-line: underline;
+    text-underline-offset: var(--rui-space-1);
+  }
+
+  /* Mentions, media and editor selection. */
+  .rui-editor-document span[data-type='mention'] {
+    border-radius: var(--rui-radius-sm);
+    background-color: var(--rui-surface);
+    padding-inline: var(--rui-space-1);
+    font-weight: var(--rui-font-weight-medium);
+  }
+
+  .rui-editor-document img {
+    margin-block: var(--rui-space-3);
+    max-width: 100%;
+    border: var(--rui-border-width) solid var(--rui-border);
+    border-radius: var(--rui-radius-md);
+    background-color: color-mix(in oklab, var(--rui-surface) 30%, transparent);
+  }
+
+  .rui-editor-document .rich-text-editor-suggestion {
+    border-radius: var(--rui-radius-sm);
+    background-color: var(--rui-hover);
+  }
+
+  .rui-editor-document .ProseMirror-selectednode {
+    outline: var(--rui-outline-width) solid var(--rui-focus);
+    outline-offset: var(--rui-space-1);
+  }
+
+  .rui-editor-document hr {
+    margin-block: var(--rui-space-4);
+    border-color: var(--rui-border);
+  }
+}

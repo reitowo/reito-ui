@@ -61,8 +61,14 @@ test('async failure keeps editor open, exposes alert text and allows retry', asy
 });
 
 test('pending submission blocks repeats while cancel aborts and restores display', async ({ page }) => {
-  let inlineEdit = await open(page, 'async-pending');
+  let inlineEdit = await open(page, 'required-error');
+  const idleSave = inlineEdit.getByRole('button', { name: '保存' });
+  const idleWidth = await idleSave.evaluate(n => n.getBoundingClientRect().width);
+  const idleCancel = await inlineEdit.getByRole('button', { name: '取消' }).evaluate(n => n.getBoundingClientRect().left);
+  inlineEdit = await open(page, 'async-pending');
   await expect(inlineEdit).toHaveAttribute('aria-busy', 'true');
+  expect(await inlineEdit.getByRole('button', { name: '正在保存…' }).evaluate(n => n.getBoundingClientRect().width)).toBe(idleWidth);
+  expect(await inlineEdit.getByRole('button', { name: '取消' }).evaluate(n => n.getBoundingClientRect().left)).toBe(idleCancel);
   await expect(inlineEdit.getByRole('button', { name: '正在保存…' })).toBeDisabled();
   await inlineEdit.getByRole('button', { name: '取消' }).click();
   inlineEdit = page.locator('[data-slot="inline-edit"]');

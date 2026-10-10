@@ -4,7 +4,7 @@
 .home-logo { display: inline-flex; align-items: center; gap: var(--rui-space-2); font-weight: var(--rui-font-weight-semibold); }
 .home-header nav { display: flex; flex-wrap: wrap; gap: var(--rui-space-6); font-size: var(--rui-text-sm); color: var(--rui-text-secondary); }
 .home-github { padding: var(--rui-space-2); }
-.home-page a:focus-visible { outline: var(--rui-outline-width) solid var(--rui-focus); outline-offset: var(--rui-space-1); }
+.home-page a:focus-visible { outline: var(--rui-focus-width) solid var(--rui-focus); outline-offset: var(--rui-space-1); }
 .home-page a:hover { color: var(--rui-text); }
 .home-skip { position: fixed; inset-block-start: var(--rui-space-2); inset-inline-start: var(--rui-space-2); transform: translateY(-200%); background: var(--rui-elevated); padding: var(--rui-space-2); z-index: var(--rui-z-toast); }
 .home-skip:focus { transform: none; }

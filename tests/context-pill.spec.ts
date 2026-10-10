@@ -41,11 +41,11 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await page.goto('/?layer=ai&component=composer');
     const input = page.getByRole('textbox', { name: '消息草稿', exact: true });
     await input.fill('删除上下文后继续编辑');
-    const context = page.getByTitle('design-language.md', { exact: true }).locator('..');
+    const context = page.getByTitle('当前工作区', { exact: true }).locator('..');
     await expect(context).toHaveCSS('height', `${expectedHeight}px`);
-    await page.getByRole('button', { name: '移除design-language.md', exact: true }).press('Enter');
+    await page.getByRole('button', { name: '移除当前工作区', exact: true }).press('Enter');
     await expect(context).toHaveCount(0);
     await expect(input).toHaveValue('删除上下文后继续编辑');
-    await expect(page.locator('.lab-demo').getByRole('status')).toHaveText('写下请求，检查多行输入与工具栏。');
+    await expect(page.locator('.lab-demo').getByRole('status')).toHaveText('输入 / 或 @ 检查结构化草稿。');
   });
 }

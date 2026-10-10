@@ -73,7 +73,7 @@ export function Banner({
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const currentOpen = open ?? internalOpen;
   if (!currentOpen) return null;
-  const visibleIcon = icon === false ? null : icon ?? defaultIcon[tone];
+  const visibleIcon = icon === false ? null : (icon ?? defaultIcon[tone]);
   const role = live === 'assertive' ? 'alert' : live === 'polite' ? 'status' : 'region';
 
   function dismiss() {
@@ -82,29 +82,59 @@ export function Banner({
     onOpenChange?.(false);
   }
 
-  return <Alert
-    role={role}
-    aria-label={role === 'region' ? label : undefined}
-    data-slot="banner"
-    data-tone={tone}
-    className={cx(
-      'grid items-start gap-[var(--rui-content-gap-sm)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]',
-      visibleIcon ? 'grid-cols-[auto_minmax(0,1fr)_auto]' : 'grid-cols-[minmax(0,1fr)_auto]',
-      toneClass[tone],
-      className,
-    )}
-  >
-    {visibleIcon && <span className={cx('mt-[var(--rui-space-1)] [&_svg]:size-4', iconClass[tone])}>{visibleIcon}</span>}
-    <div className="min-w-0">
-      <AlertTitle>{title}</AlertTitle>
-      {description && <AlertDescription className="text-pretty">{description}</AlertDescription>}
-    </div>
-    {(action || onDismiss) && <div className="flex min-w-0 flex-wrap items-center justify-end gap-[var(--rui-space-1)]">
-      {action && <Button type="button" size="xs" variant="ghost" disabled={action.disabled || action.loading} aria-busy={action.loading || undefined} onClick={action.onSelect}>
-        {action.loading && <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />}
-        {action.label}
-      </Button>}
-      {onDismiss && <Button type="button" size="icon-xs" variant="ghost" aria-label={dismissLabel} title={dismissLabel} onClick={dismiss}><X aria-hidden="true" /></Button>}
-    </div>}
-  </Alert>;
+  return (
+    <Alert
+      role={role}
+      aria-label={role === 'region' ? label : undefined}
+      data-slot="banner"
+      data-tone={tone}
+      className={cx(
+        'grid items-start gap-[var(--rui-content-gap-sm)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]',
+        visibleIcon ? 'grid-cols-[auto_minmax(0,1fr)_auto]' : 'grid-cols-[minmax(0,1fr)_auto]',
+        toneClass[tone],
+        className,
+      )}
+    >
+      {visibleIcon && (
+        <span className={cx('mt-[var(--rui-space-1)] [&_svg]:size-4', iconClass[tone])}>
+          {visibleIcon}
+        </span>
+      )}
+      <div className="min-w-0">
+        <AlertTitle>{title}</AlertTitle>
+        {description && <AlertDescription className="text-pretty">{description}</AlertDescription>}
+      </div>
+      {(action || onDismiss) && (
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-[var(--rui-space-1)]">
+          {action && (
+            <Button
+              type="button"
+              size="xs"
+              variant="ghost"
+              disabled={action.disabled || action.loading}
+              aria-busy={action.loading || undefined}
+              onClick={action.onSelect}
+            >
+              {action.loading && (
+                <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+              )}
+              {action.label}
+            </Button>
+          )}
+          {onDismiss && (
+            <Button
+              type="button"
+              size="icon-xs"
+              variant="ghost"
+              aria-label={dismissLabel}
+              title={dismissLabel}
+              onClick={dismiss}
+            >
+              <X aria-hidden="true" />
+            </Button>
+          )}
+        </div>
+      )}
+    </Alert>
+  );
 }

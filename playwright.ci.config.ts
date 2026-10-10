@@ -3,7 +3,8 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests', timeout: 45_000, workers: 2,
   testMatch: [
-    'home.spec.ts', 'scroll-focus.spec.ts', 'select-input.spec.ts',
+    'overview.spec.ts', 'overview-catalog.spec.ts', 'surface-consistency.spec.ts', 'overview-loading.spec.ts', 'button-card-defaults.spec.ts', 'component-geometry-audit.spec.ts', 'tree-row-focus.spec.ts', 'neutral-focus-contract.spec.ts', 'state-stability.spec.ts', 'catalog-state-probes.spec.ts',
+    'home.spec.ts', 'theme-guide.spec.ts', 'scroll-focus.spec.ts', 'select-input.spec.ts',
     'popover-list.spec.ts', 'tabs-table-focus.spec.ts', 'settings-composition.spec.ts',
     'data-table-column-filters.spec.ts', 'data-table-column-management.spec.ts',
     'data-table-controlled.spec.ts', 'data-table-editing.spec.ts', 'data-table-preferences.spec.ts',

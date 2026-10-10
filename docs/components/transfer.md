@@ -26,3 +26,16 @@ value / defaultValue 决定目标集合。向右移动会按来源 items 的顺�
 disabled、readOnly 和 loading 都会阻止转移；loading 由宿主控制，只表达 items 数据尚未就绪。组件不发起请求，也不自动保存目标值。
 
 [Storybook 参数调试](http://127.0.0.1:6006/?path=/story/复杂-transfer-穿梭选择--playground) 可在同一 Canvas 中调整目标值、两侧查询、标签、搜索、批量操作与状态。[Lab](http://127.0.0.1:5173/?layer=complex&component=transfer) 使用相同实现。
+
+## 选项图标
+
+每个 TransferItem 沿用 ListboxOption.icon，可传 ReactNode（例如 Lucide 图标）。无需额外的组件级开关：icon 随 items 中的同一稳定 value 一起在两侧移动。
+
+```tsx
+const permissionItems = [
+  { value: 'read', label: '读取文件', description: '查看工作区内容', icon: <FileText /> },
+  { value: 'terminal', label: '运行终端', description: '执行本地命令', icon: <Terminal /> },
+];
+```
+
+图标使用共享 16px 尺度、次级语义颜色，与名称相隔 space-2（8px），不改变单行 32/40px 高度。图标是装饰内容，aria-hidden，不替代选项名称。一个列表内只要有选项带图标，其他项保留同宽空列，使文字对齐；全部无图标时不占图标列。Storybook 参数调试的 showIcons 是示例开关，不是 Transfer 的新公共 prop。

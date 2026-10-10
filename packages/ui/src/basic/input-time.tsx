@@ -7,7 +7,11 @@ import { Button } from '../primitives/button.js';
 import { SelectInput } from './select-input.js';
 import { cn } from '../lib/utils.js';
 
-export interface TimeValue { hour: number; minute: number; second?: number }
+export interface TimeValue {
+  hour: number;
+  minute: number;
+  second?: number;
+}
 export type TimePrecision = 'minute' | 'second';
 type TimeSegment = 'hour' | 'minute' | 'second';
 type TimeParts = Record<TimeSegment, string>;
@@ -41,17 +45,31 @@ export interface InputTimeProps {
 const emptyParts: TimeParts = { hour: '', minute: '', second: '' };
 const segmentNames: Record<TimeSegment, string> = { hour: '时', minute: '分', second: '秒' };
 const pad = (value: number) => String(value).padStart(2, '0');
-const normalizeStep = (value: number | undefined) => Math.max(1, Math.min(60, Math.floor(value ?? 1)));
+const normalizeStep = (value: number | undefined) =>
+  Math.max(1, Math.min(60, Math.floor(value ?? 1)));
 
 function secondsOf(value: TimeValue) {
   return value.hour * 3600 + value.minute * 60 + (value.second ?? 0);
 }
 
 function validTime(value: TimeValue) {
-  return Number.isInteger(value.hour) && value.hour >= 0 && value.hour <= 23 && Number.isInteger(value.minute) && value.minute >= 0 && value.minute <= 59 && Number.isInteger(value.second ?? 0) && (value.second ?? 0) >= 0 && (value.second ?? 0) <= 59;
+  return (
+    Number.isInteger(value.hour) &&
+    value.hour >= 0 &&
+    value.hour <= 23 &&
+    Number.isInteger(value.minute) &&
+    value.minute >= 0 &&
+    value.minute <= 59 &&
+    Number.isInteger(value.second ?? 0) &&
+    (value.second ?? 0) >= 0 &&
+    (value.second ?? 0) <= 59
+  );
 }
 
-export function formatTimeValue(value: TimeValue | null | undefined, precision: TimePrecision = 'minute') {
+export function formatTimeValue(
+  value: TimeValue | null | undefined,
+  precision: TimePrecision = 'minute',
+) {
   if (!value || !validTime(value)) return '';
   return `${pad(value.hour)}:${pad(value.minute)}${precision === 'second' ? `:${pad(value.second ?? 0)}` : ''}`;
 }
@@ -69,14 +87,21 @@ function valueToParts(value: TimeValue | null | undefined, hourCycle: 12 | 24): 
   return { hour: pad(hour), minute: pad(value.minute), second: pad(value.second ?? 0) };
 }
 
-function partsToValue(parts: TimeParts, period: Period, hourCycle: 12 | 24, precision: TimePrecision, minuteStep: number, secondStep: number) {
+function partsToValue(
+  parts: TimeParts,
+  period: Period,
+  hourCycle: 12 | 24,
+  precision: TimePrecision,
+  minuteStep: number,
+  secondStep: number,
+) {
   if (!parts.hour || !parts.minute || (precision === 'second' && !parts.second)) return null;
   let hour = Number(parts.hour);
   const minute = Number(parts.minute);
   const second = precision === 'second' ? Number(parts.second) : 0;
   if (hourCycle === 12) {
     if (hour < 1 || hour > 12) return null;
-    hour = hour % 12 + (period === 'pm' ? 12 : 0);
+    hour = (hour % 12) + (period === 'pm' ? 12 : 0);
   }
   const value = { hour, minute, second };
   return validTime(value) && minute % minuteStep === 0 && second % secondStep === 0 ? value : null;
@@ -84,7 +109,11 @@ function partsToValue(parts: TimeParts, period: Period, hourCycle: 12 | 24, prec
 
 function valueFromSeconds(total: number): TimeValue {
   const normalized = ((total % 86400) + 86400) % 86400;
-  return { hour: Math.floor(normalized / 3600), minute: Math.floor((normalized % 3600) / 60), second: normalized % 60 };
+  return {
+    hour: Math.floor(normalized / 3600),
+    minute: Math.floor((normalized % 3600) / 60),
+    second: normalized % 60,
+  };
 }
 
 export function InputTime({
@@ -123,11 +152,14 @@ export function InputTime({
   const minuteStep = normalizeStep(minuteStepProp);
   const secondStep = normalizeStep(secondStepProp);
   const [parts, setParts] = React.useState(() => valueToParts(currentValue, hourCycle));
-  const [period, setPeriod] = React.useState<Period>(() => currentValue && currentValue.hour >= 12 ? 'pm' : 'am');
+  const [period, setPeriod] = React.useState<Period>(() =>
+    currentValue && currentValue.hour >= 12 ? 'pm' : 'am',
+  );
   const [committedValue, setCommittedValue] = React.useState<TimeValue | null>(currentValue);
   const editingRef = React.useRef(false);
   const refs = React.useRef<Partial<Record<TimeSegment, HTMLInputElement | null>>>({});
-  const segments: TimeSegment[] = precision === 'second' ? ['hour', 'minute', 'second'] : ['hour', 'minute'];
+  const segments: TimeSegment[] =
+    precision === 'second' ? ['hour', 'minute', 'second'] : ['hour', 'minute'];
 
   React.useEffect(() => {
     setParts(valueToParts(currentValue, hourCycle));
@@ -136,11 +168,19 @@ export function InputTime({
   }, [currentValue, hourCycle]);
 
   const parsed = partsToValue(parts, period, hourCycle, precision, minuteStep, secondStep);
-  const complete = segments.every(segment => Boolean(parts[segment]));
-  const outOfRange = parsed && ((min && secondsOf(parsed) < secondsOf(min)) || (max && secondsOf(parsed) > secondsOf(max)));
-  const internalError = complete && !parsed ? `请输入有效时间，并按 ${minuteStep} 分钟${precision === 'second' ? ` / ${secondStep} 秒` : ''}步进。` : outOfRange ? `时间需在 ${min ? formatTimeValue(min, precision) : '不限'} 至 ${max ? formatTimeValue(max, precision) : '不限'} 之间。` : undefined;
+  const complete = segments.every((segment) => Boolean(parts[segment]));
+  const outOfRange =
+    parsed &&
+    ((min && secondsOf(parsed) < secondsOf(min)) || (max && secondsOf(parsed) > secondsOf(max)));
+  const internalError =
+    complete && !parsed
+      ? `请输入有效时间，并按 ${minuteStep} 分钟${precision === 'second' ? ` / ${secondStep} 秒` : ''}步进。`
+      : outOfRange
+        ? `时间需在 ${min ? formatTimeValue(min, precision) : '不限'} 至 ${max ? formatTimeValue(max, precision) : '不限'} 之间。`
+        : undefined;
   const visibleError = error ?? internalError;
-  const describedBy = [descriptionId, visibleError ? errorId : undefined].filter(Boolean).join(' ') || undefined;
+  const describedBy =
+    [descriptionId, visibleError ? errorId : undefined].filter(Boolean).join(' ') || undefined;
 
   const emitValue = (next: TimeValue | null, commit = false) => {
     if (!controlled) setInternalValue(next);
@@ -157,7 +197,7 @@ export function InputTime({
 
   const commit = () => {
     if (parsed && !outOfRange) applyValue(parsed, true);
-    else if (!complete && segments.every(segment => !parts[segment])) applyValue(null, true);
+    else if (!complete && segments.every((segment) => !parts[segment])) applyValue(null, true);
     editingRef.current = false;
   };
 
@@ -170,7 +210,10 @@ export function InputTime({
     const next = { ...parts, [segment]: raw.replace(/\D/g, '').slice(0, 2) };
     setParts(next);
     const nextValue = partsToValue(next, period, hourCycle, precision, minuteStep, secondStep);
-    const allowed = nextValue && !(min && secondsOf(nextValue) < secondsOf(min)) && !(max && secondsOf(nextValue) > secondsOf(max));
+    const allowed =
+      nextValue &&
+      !(min && secondsOf(nextValue) < secondsOf(min)) &&
+      !(max && secondsOf(nextValue) > secondsOf(max));
     if (allowed) emitValue(nextValue);
     if (next[segment].length === 2) {
       const index = segments.indexOf(segment);
@@ -192,7 +235,12 @@ export function InputTime({
     const nextPeriod = period === 'am' ? 'pm' : 'am';
     setPeriod(nextPeriod);
     const next = partsToValue(parts, nextPeriod, hourCycle, precision, minuteStep, secondStep);
-    if (next && !(min && secondsOf(next) < secondsOf(min)) && !(max && secondsOf(next) > secondsOf(max))) applyValue(next, true);
+    if (
+      next &&
+      !(min && secondsOf(next) < secondsOf(min)) &&
+      !(max && secondsOf(next) > secondsOf(max))
+    )
+      applyValue(next, true);
   };
 
   const clear = () => {
@@ -206,66 +254,284 @@ export function InputTime({
   // Enumerate valid choices once per constraint change, including partial boundary hours.
   const choices = React.useMemo(() => {
     const result: TimeValue[] = [];
-    for (let hour = 0; hour < 24; hour++) for (let minute = 0; minute < 60; minute += minuteStep) {
-      for (let second = 0; second < (precision === 'second' ? 60 : 1); second += secondStep) {
-        const next = { hour, minute, second };
-        if ((!min || secondsOf(next) >= secondsOf(min)) && (!max || secondsOf(next) <= secondsOf(max))) result.push(next);
+    for (let hour = 0; hour < 24; hour++)
+      for (let minute = 0; minute < 60; minute += minuteStep) {
+        for (let second = 0; second < (precision === 'second' ? 60 : 1); second += secondStep) {
+          const next = { hour, minute, second };
+          if (
+            (!min || secondsOf(next) >= secondsOf(min)) &&
+            (!max || secondsOf(next) <= secondsOf(max))
+          )
+            result.push(next);
+        }
       }
-    }
     return result;
-  }, [minuteStep, secondStep, precision, min?.hour, min?.minute, min?.second, max?.hour, max?.minute, max?.second]);
-  const validPickerValue = pickerValue && choices.some(next => secondsOf(next) === secondsOf(pickerValue));
+  }, [
+    minuteStep,
+    secondStep,
+    precision,
+    min?.hour,
+    min?.minute,
+    min?.second,
+    max?.hour,
+    max?.minute,
+    max?.second,
+  ]);
+  const validPickerValue =
+    pickerValue && choices.some((next) => secondsOf(next) === secondsOf(pickerValue));
   const openPicker = (open: boolean) => {
     if (open && (disabled || readOnly)) return;
     if (open) {
       const base = parsed ?? currentValue;
-      setPickerValue((base && choices.find(next => secondsOf(next) === secondsOf(base))) || choices[0] || null);
+      setPickerValue(
+        (base && choices.find((next) => secondsOf(next) === secondsOf(base))) || choices[0] || null,
+      );
     }
     setPickerOpen(open);
   };
   const chooseSegment = (segment: TimeSegment, value: number) => {
     const base = pickerValue ?? choices[0];
     if (!base) return;
-    const candidates = choices.filter(next => next[segment] === value && (segment === 'hour' || next.hour === base.hour) && (segment !== 'second' || next.minute === base.minute));
+    const candidates = choices.filter(
+      (next) =>
+        next[segment] === value &&
+        (segment === 'hour' || next.hour === base.hour) &&
+        (segment !== 'second' || next.minute === base.minute),
+    );
     const target = secondsOf({ ...base, [segment]: value });
-    const nearest = candidates.reduce<TimeValue | null>((best, next) => !best || Math.abs(secondsOf(next) - target) < Math.abs(secondsOf(best) - target) ? next : best, null);
+    const nearest = candidates.reduce<TimeValue | null>(
+      (best, next) =>
+        !best || Math.abs(secondsOf(next) - target) < Math.abs(secondsOf(best) - target)
+          ? next
+          : best,
+      null,
+    );
     if (nearest) setPickerValue(nearest);
   };
-  const optionsFor = (segment: TimeSegment) => [...new Set(choices.filter(next => segment === 'hour' || (next.hour === pickerValue?.hour && (segment !== 'second' || next.minute === pickerValue?.minute))).map(next => next[segment] ?? 0))].map(value => ({ value, label: segment === 'hour' && hourCycle === 12 ? `${value < 12 ? '上午' : '下午'} ${pad(value % 12 || 12)}` : pad(value) }));
+  const optionsFor = (segment: TimeSegment) =>
+    [
+      ...new Set(
+        choices
+          .filter(
+            (next) =>
+              segment === 'hour' ||
+              (next.hour === pickerValue?.hour &&
+                (segment !== 'second' || next.minute === pickerValue?.minute)),
+          )
+          .map((next) => next[segment] ?? 0),
+      ),
+    ].map((value) => ({
+      value,
+      label:
+        segment === 'hour' && hourCycle === 12
+          ? `${value < 12 ? '上午' : '下午'} ${pad(value % 12 || 12)}`
+          : pad(value),
+    }));
 
   const keyDown = (event: React.KeyboardEvent<HTMLInputElement>, segment: TimeSegment) => {
     const index = segments.indexOf(segment);
-    if (event.key === 'ArrowLeft' && event.currentTarget.selectionStart === 0 && index > 0) { event.preventDefault(); refs.current[segments[index - 1]]?.focus(); refs.current[segments[index - 1]]?.select(); }
-    else if (event.key === 'ArrowRight' && event.currentTarget.selectionStart === event.currentTarget.value.length && index < segments.length - 1) { event.preventDefault(); refs.current[segments[index + 1]]?.focus(); refs.current[segments[index + 1]]?.select(); }
-    else if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !readOnly) { event.preventDefault(); adjust(segment, event.key === 'ArrowUp' ? 1 : -1); }
-    else if (event.key === 'Home') { event.preventDefault(); refs.current.hour?.focus(); refs.current.hour?.select(); }
-    else if (event.key === 'End') { event.preventDefault(); refs.current[segments.at(-1)!]?.focus(); refs.current[segments.at(-1)!]?.select(); }
-    else if (event.key === 'Enter') { event.preventDefault(); commit(); }
-    else if (event.key === 'Escape') { event.preventDefault(); restore(); }
-    else if (event.key === 'Backspace' && !event.currentTarget.value && index > 0 && !readOnly) refs.current[segments[index - 1]]?.focus();
+    if (event.key === 'ArrowLeft' && event.currentTarget.selectionStart === 0 && index > 0) {
+      event.preventDefault();
+      refs.current[segments[index - 1]]?.focus();
+      refs.current[segments[index - 1]]?.select();
+    } else if (
+      event.key === 'ArrowRight' &&
+      event.currentTarget.selectionStart === event.currentTarget.value.length &&
+      index < segments.length - 1
+    ) {
+      event.preventDefault();
+      refs.current[segments[index + 1]]?.focus();
+      refs.current[segments[index + 1]]?.select();
+    } else if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !readOnly) {
+      event.preventDefault();
+      adjust(segment, event.key === 'ArrowUp' ? 1 : -1);
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      refs.current.hour?.focus();
+      refs.current.hour?.select();
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      refs.current[segments.at(-1)!]?.focus();
+      refs.current[segments.at(-1)!]?.select();
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      commit();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      restore();
+    } else if (event.key === 'Backspace' && !event.currentTarget.value && index > 0 && !readOnly)
+      refs.current[segments[index - 1]]?.focus();
   };
 
-  return <Field data-disabled={disabled || undefined} data-invalid={visibleError ? true : undefined} className={className}>
-    <FieldLabel htmlFor={id}>{label}</FieldLabel>
-    <InputGroup data-slot="input-time" aria-label={label}>
-      <div className="flex min-w-0 flex-1 items-center px-2">
-        {segments.map((segment, index) => <React.Fragment key={segment}>{index > 0 && <span aria-hidden="true" className="text-sm text-muted-foreground">:</span>}<input ref={node => { refs.current[segment] = node; }} id={segment === 'hour' ? id : undefined} data-slot="input-time-segment" data-segment={segment} type="text" inputMode="numeric" autoComplete="off" aria-label={`${label}${segmentNames[segment]}`} aria-invalid={visibleError ? true : undefined} aria-describedby={describedBy} placeholder={segment === 'hour' ? 'HH' : segment === 'minute' ? 'MM' : 'SS'} value={parts[segment]} maxLength={2} disabled={disabled} readOnly={readOnly} required={required} form={form} className="h-full w-8 bg-transparent text-center text-sm tabular-nums text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed" onChange={event => updatePart(segment, event.target.value)} onFocus={event => { if (!editingRef.current) setCommittedValue(currentValue); editingRef.current = true; event.currentTarget.select(); }} onKeyDown={event => keyDown(event, segment)} onBlur={event => { if (!event.currentTarget.closest('[data-slot=input-time]')?.contains(event.relatedTarget)) commit(); }} /></React.Fragment>)}
-        {hourCycle === 12 && (readOnly ? <span className="ml-1 text-xs font-medium text-muted-foreground">{period.toUpperCase()}</span> : <InputGroupButton size="xs" aria-label="切换上午下午" aria-pressed={period === 'pm'} disabled={disabled} className="ml-1" onClick={togglePeriod}>{period.toUpperCase()}</InputGroupButton>)}
-      </div>
-      <InputGroupAddon align="inline-end">
-        {clearable && currentValue && !readOnly && <InputGroupButton size="icon-xs" aria-label={clearLabel} disabled={disabled} onClick={clear}><X aria-hidden="true" /></InputGroupButton>}
-        <Popover open={pickerOpen && !disabled && !readOnly} onOpenChange={openPicker}>
-          <PopoverTrigger render={<InputGroupButton size="icon-xs" aria-label="打开时间选择器" disabled={disabled || readOnly} />}><Clock3 aria-hidden="true" /></PopoverTrigger>
-          <PopoverContent align="end" aria-label={`${label}选择器`} className="max-w-[var(--available-width)]">
-            <div className="flex items-center justify-between gap-2"><span className="text-sm font-medium">选择时间</span><span className="font-mono text-xs text-muted-foreground">{formatTimeValue(pickerValue, precision)}</span></div>
-            {choices.length ? <div className="flex gap-2">{segments.map(segment => <label key={segment} className="grid min-w-0 flex-1 gap-1 text-xs text-muted-foreground">{segmentNames[segment]}<SelectInput aria-label={`选择${segmentNames[segment]}`} className="w-full" options={optionsFor(segment)} value={pickerValue?.[segment] ?? null} onValueChange={next => chooseSegment(segment, next)} /></label>)}</div> : <p role="status" className="text-sm text-muted-foreground">当前范围与步进下没有可选时间</p>}
-            <div className="flex justify-end gap-2"><Button type="button" size="sm" variant="ghost" onClick={() => setPickerOpen(false)}>取消</Button><Button type="button" size="sm" disabled={!validPickerValue} onClick={() => { if (validPickerValue) { editingRef.current = false; applyValue(pickerValue, true); setPickerOpen(false); } }}>确定</Button></div>
-          </PopoverContent>
-        </Popover>
-      </InputGroupAddon>
-    </InputGroup>
-    {name && <input type="hidden" name={name} form={form} value={formatTimeValue(committedValue, precision)} disabled={disabled} />}
-    {description && <FieldDescription id={descriptionId}>{description}</FieldDescription>}
-    {visibleError && <FieldError id={errorId}>{visibleError}</FieldError>}
-  </Field>;
+  return (
+    <Field
+      data-disabled={disabled || undefined}
+      data-invalid={visibleError ? true : undefined}
+      className={className}
+    >
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <InputGroup data-slot="input-time" aria-label={label}>
+        <div className="flex min-w-0 flex-1 items-center px-2">
+          {segments.map((segment, index) => (
+            <React.Fragment key={segment}>
+              {index > 0 && (
+                <span aria-hidden="true" className="text-sm text-muted-foreground">
+                  :
+                </span>
+              )}
+              <input
+                ref={(node) => {
+                  refs.current[segment] = node;
+                }}
+                id={segment === 'hour' ? id : undefined}
+                data-slot="input-time-segment"
+                data-segment={segment}
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                aria-label={`${label}${segmentNames[segment]}`}
+                aria-invalid={visibleError ? true : undefined}
+                aria-describedby={describedBy}
+                placeholder={segment === 'hour' ? 'HH' : segment === 'minute' ? 'MM' : 'SS'}
+                value={parts[segment]}
+                maxLength={2}
+                disabled={disabled}
+                readOnly={readOnly}
+                required={required}
+                form={form}
+                className="h-full w-8 bg-transparent text-center text-sm tabular-nums text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+                onChange={(event) => updatePart(segment, event.target.value)}
+                onFocus={(event) => {
+                  if (!editingRef.current) setCommittedValue(currentValue);
+                  editingRef.current = true;
+                  event.currentTarget.select();
+                }}
+                onKeyDown={(event) => keyDown(event, segment)}
+                onBlur={(event) => {
+                  if (
+                    !event.currentTarget
+                      .closest('[data-slot=input-time]')
+                      ?.contains(event.relatedTarget)
+                  )
+                    commit();
+                }}
+              />
+            </React.Fragment>
+          ))}
+          {hourCycle === 12 &&
+            (readOnly ? (
+              <span className="ml-1 text-xs font-medium text-muted-foreground">
+                {period.toUpperCase()}
+              </span>
+            ) : (
+              <InputGroupButton
+                size="xs"
+                aria-label="切换上午下午"
+                aria-pressed={period === 'pm'}
+                disabled={disabled}
+                className="ml-1"
+                onClick={togglePeriod}
+              >
+                {period.toUpperCase()}
+              </InputGroupButton>
+            ))}
+        </div>
+        <InputGroupAddon align="inline-end">
+          {clearable && currentValue && !readOnly && (
+            <InputGroupButton
+              size="icon-xs"
+              aria-label={clearLabel}
+              disabled={disabled}
+              onClick={clear}
+            >
+              <X aria-hidden="true" />
+            </InputGroupButton>
+          )}
+          <Popover open={pickerOpen && !disabled && !readOnly} onOpenChange={openPicker}>
+            <PopoverTrigger
+              render={
+                <InputGroupButton
+                  size="icon-xs"
+                  aria-label="打开时间选择器"
+                  disabled={disabled || readOnly}
+                />
+              }
+            >
+              <Clock3 aria-hidden="true" />
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              aria-label={`${label}选择器`}
+              className="max-w-[var(--available-width)]"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium">选择时间</span>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {formatTimeValue(pickerValue, precision)}
+                </span>
+              </div>
+              {choices.length ? (
+                <div className="flex gap-2">
+                  {segments.map((segment) => (
+                    <label
+                      key={segment}
+                      className="grid min-w-0 flex-1 gap-1 text-xs text-muted-foreground"
+                    >
+                      {segmentNames[segment]}
+                      <SelectInput
+                        aria-label={`选择${segmentNames[segment]}`}
+                        className="w-full"
+                        options={optionsFor(segment)}
+                        value={pickerValue?.[segment] ?? null}
+                        onValueChange={(next) => chooseSegment(segment, next)}
+                      />
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <p role="status" className="text-sm text-muted-foreground">
+                  当前范围与步进下没有可选时间
+                </p>
+              )}
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setPickerOpen(false)}
+                >
+                  取消
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={!validPickerValue}
+                  onClick={() => {
+                    if (validPickerValue) {
+                      editingRef.current = false;
+                      applyValue(pickerValue, true);
+                      setPickerOpen(false);
+                    }
+                  }}
+                >
+                  确定
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </InputGroupAddon>
+      </InputGroup>
+      {name && (
+        <input
+          type="hidden"
+          name={name}
+          form={form}
+          value={formatTimeValue(committedValue, precision)}
+          disabled={disabled}
+        />
+      )}
+      {description && <FieldDescription id={descriptionId}>{description}</FieldDescription>}
+      {visibleError && <FieldError id={errorId}>{visibleError}</FieldError>}
+    </Field>
+  );
 }

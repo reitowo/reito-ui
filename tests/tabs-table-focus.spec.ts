@@ -11,19 +11,20 @@ const openStory = async (page: Page, theme = 'dark', density = 'compact') => {
 const quiet = async (surface: Locator) => {
   await expect(surface).toHaveCSS('outline-style', 'none');
   await expect(surface).toHaveCSS('box-shadow', 'none');
-  await expect(surface).toHaveCSS('border-inline-start-color', 'rgba(0, 0, 0, 0)');
+  await expect(surface).toHaveCSS('border-inline-start-width', '0px');
 };
 const keyboardMarker = async (surface: Locator) => {
   await expect(surface).toBeFocused();
-  await expect(surface).toHaveCSS('outline-style', 'none');
+  await expect(surface).toHaveCSS('outline-style', 'solid');
+  await expect(surface).toHaveCSS('outline-width', '1px');
+  await expect(surface).toHaveCSS('outline-offset', '-1px');
   await expect(surface).toHaveCSS('box-shadow', 'none');
-  await expect(surface).toHaveCSS('border-inline-start-style', 'solid');
-  await expect(surface).toHaveCSS('border-inline-start-width', '1px');
+  await expect(surface).toHaveCSS('border-inline-start-width', '0px');
 };
-const visibleLeadingMarker = async (page: Page, surface: Locator) => {
+const visibleNeutralOutline = async (page: Page, surface: Locator) => {
   const png = (await surface.screenshot()).toString('base64');
   const focusColor = await surface.evaluate(element => getComputedStyle(element).getPropertyValue('--rui-focus').trim());
-  const markerWidth = await surface.evaluate(element => Math.ceil(parseFloat(getComputedStyle(element).borderInlineStartWidth)));
+  const markerWidth = 1;
   const coverage = await page.evaluate(async ({ png, focusColor, markerWidth }) => {
     const image = new Image();
     image.src = `data:image/png;base64,${png}`;
@@ -36,11 +37,16 @@ const visibleLeadingMarker = async (page: Page, surface: Locator) => {
     const expected = context.getImageData(0, 0, 1, 1).data;
     context.drawImage(image, 0, 0);
     const pixels = context.getImageData(0, 2, markerWidth, image.height - 4).data;
+    const rightPixels = context.getImageData(image.width - markerWidth, 2, markerWidth, image.height - 4).data;
     let matched = 0;
     for (let index = 0; index < pixels.length; index += 4) {
       if ([0, 1, 2].every(channel => Math.abs(pixels[index + channel] - expected[channel]) <= 2)) matched += 1;
     }
-    return matched / (pixels.length / 4);
+    let rightMatched = 0;
+    for (let index = 0; index < rightPixels.length; index += 4) {
+      if ([0, 1, 2].every(channel => Math.abs(rightPixels[index + channel] - expected[channel]) <= 2)) rightMatched += 1;
+    }
+    return Math.min(matched / (pixels.length / 4), rightMatched / (rightPixels.length / 4));
   }, { png, focusColor, markerWidth });
   expect(coverage).toBeGreaterThan(0.8);
 };
@@ -60,7 +66,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await expect(notes).toBeFocused();
     await page.keyboard.press('Tab');
     await keyboardMarker(panel);
-    await visibleLeadingMarker(page, panel);
+    await visibleNeutralOutline(page, panel);
     await page.screenshot({ path: testInfo.outputPath('panel-keyboard-focus.png') });
     expect(await panel.boundingBox()).toEqual(bounds);
     await expect(notes).toHaveAttribute('aria-controls', (await panel.getAttribute('id'))!);
@@ -96,7 +102,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await expect(page.getByRole('tab', { name: '记录', exact: true })).toBeFocused();
   });
 
-  test(`Table keeps native scroll focus and a visible leading marker (${theme}/${density})`, async ({ page }, testInfo) => {
+  test(`Table keeps native scroll focus and a symmetric neutral outline (${theme}/${density})`, async ({ page }, testInfo) => {
     await openStory(page, theme, density);
     const tab = page.getByRole('tab', { name: '记录', exact: true });
     await tab.click();
@@ -114,13 +120,13 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await page.keyboard.press('Tab');
     await keyboardMarker(table);
     await quiet(panel);
-    await visibleLeadingMarker(page, table);
+    await visibleNeutralOutline(page, table);
     await page.screenshot({ path: testInfo.outputPath('table-keyboard-focus.png') });
     await page.keyboard.press('ArrowRight');
     await expect.poll(() => table.evaluate(element => element.scrollLeft)).toBeGreaterThan(0);
     await page.keyboard.press('ArrowDown');
     await expect.poll(() => table.evaluate(element => element.scrollTop)).toBeGreaterThan(0);
-    await visibleLeadingMarker(page, table);
+    await visibleNeutralOutline(page, table);
     await page.screenshot({ path: testInfo.outputPath('table-scrolled-keyboard-focus.png') });
     expect(await table.boundingBox()).toEqual(bounds);
     await page.keyboard.press('Shift+Tab');

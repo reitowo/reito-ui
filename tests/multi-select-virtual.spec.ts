@@ -78,6 +78,10 @@ test('changing the query cancels a pending page and rejects its stale results', 
 
 test('incremental load failure stays in the popup with a retry action', async ({ page }) => {
   await open(page, 'asyncmultiselect', 'virtual-load-failure', '远程资源');
+  // Loading the next page begins near the end, not merely when the menu opens.
+  await page.locator('[data-slot="combobox-list"][data-virtual="true"]').evaluate(element => {
+    element.scrollTop = element.scrollHeight;
+  });
   await expect(page.getByRole('alert')).toHaveText('无法加载下一页');
   await expect(page.getByRole('button', { name: '重试加载' })).toBeVisible();
   await page.getByRole('button', { name: '重试加载' }).click();

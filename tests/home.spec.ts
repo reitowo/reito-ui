@@ -1,3 +1,4 @@
+import { chooseThemeMode } from './theme-menu';
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const axe = readFileSync('node_modules/axe-core/axe.min.js', 'utf8');
@@ -29,8 +30,10 @@ for (const theme of ['dark', 'light']) for (const width of [1440, 390]) {
   test(`${theme}/${width}: readable layout, theme persistence and accessible controls`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
-    if (await page.locator('html').getAttribute('data-theme') !== theme) await page.getByRole('button', { name: '切换明暗主题' }).click();
+    await expect(page.getByRole('heading',{level:1})).toBeVisible({timeout:30_000});
+    if (await page.locator('html').getAttribute('data-theme') !== theme) await chooseThemeMode(page,theme as 'dark'|'light');
     await page.reload();
+    await expect(page.getByRole('heading',{level:1})).toBeVisible({timeout:30_000});
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

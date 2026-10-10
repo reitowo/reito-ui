@@ -97,14 +97,25 @@ function executionStatus(status: MessagePartStatus | undefined): ExecutionStatus
 function PartState({ part, onRetry }: { part: MessagePartBase; onRetry?: () => void }) {
   if (!part.status || part.status === 'complete') return null;
   const status = executionStatus(part.status);
-  return <div
-    role={part.status === 'error' ? 'alert' : 'status'}
-    className={classes('flex min-w-0 items-center gap-[var(--rui-content-gap-sm)] text-xs', part.status === 'error' ? 'text-destructive' : 'text-muted-foreground')}
-  >
-    <ExecutionIcon status={status} className="size-3.5" />
-    <span className="min-w-0 flex-1 break-words">{part.error || partStateLabels[part.status]}</span>
-    {part.status === 'error' && onRetry && <Button type="button" variant="ghost" size="xs" onClick={onRetry}>重试</Button>}
-  </div>;
+  return (
+    <div
+      role={part.status === 'error' ? 'alert' : 'status'}
+      className={classes(
+        'flex min-w-0 items-center gap-[var(--rui-content-gap-sm)] text-xs',
+        part.status === 'error' ? 'text-destructive' : 'text-muted-foreground',
+      )}
+    >
+      <ExecutionIcon status={status} className="size-3.5" />
+      <span className="min-w-0 flex-1 break-words">
+        {part.error || partStateLabels[part.status]}
+      </span>
+      {part.status === 'error' && onRetry && (
+        <Button type="button" variant="ghost" size="xs" onClick={onRetry}>
+          重试
+        </Button>
+      )}
+    </div>
+  );
 }
 
 function unknownPart(part: MessagePart): UnknownMessagePart {
@@ -112,9 +123,14 @@ function unknownPart(part: MessagePart): UnknownMessagePart {
   return {
     id: typeof record.id === 'string' ? record.id : 'unknown',
     type: 'unknown',
-    status: typeof record.status === 'string' ? record.status as MessagePartStatus : undefined,
+    status: typeof record.status === 'string' ? (record.status as MessagePartStatus) : undefined,
     error: typeof record.error === 'string' ? record.error : undefined,
-    originalType: typeof record.originalType === 'string' ? record.originalType : typeof record.type === 'string' ? record.type : undefined,
+    originalType:
+      typeof record.originalType === 'string'
+        ? record.originalType
+        : typeof record.type === 'string'
+          ? record.type
+          : undefined,
     label: typeof record.label === 'string' ? record.label : undefined,
     payload: record.payload,
   };
@@ -124,7 +140,9 @@ function unknownPart(part: MessagePart): UnknownMessagePart {
 export function MessageParts({
   parts,
   label = '消息内容',
-  empty = <p className="text-[length:var(--rui-font-interface)] text-muted-foreground">没有消息内容</p>,
+  empty = (
+    <p className="text-[length:var(--rui-font-interface)] text-muted-foreground">没有消息内容</p>
+  ),
   onRetryPart,
   onToolOpenChange,
   onAttachmentRemove,
@@ -135,75 +153,145 @@ export function MessageParts({
   renderUnknownPart,
   className,
 }: MessagePartsProps) {
-  return <div data-slot="message-parts" role="group" aria-label={label} className={classes('grid min-w-0 gap-[var(--rui-message-gap)]', className)}>
-    {parts.length ? parts.map(part => {
-      const retry = onRetryPart ? () => onRetryPart(part.id) : undefined;
-      let content: ReactNode;
+  return (
+    <div
+      data-slot="message-parts"
+      role="group"
+      aria-label={label}
+      className={classes('grid min-w-0 gap-[var(--rui-message-gap)]', className)}
+    >
+      {parts.length
+        ? parts.map((part) => {
+            const retry = onRetryPart ? () => onRetryPart(part.id) : undefined;
+            let content: ReactNode;
 
-      switch (part.type) {
-        case 'text': {
-          const body = part.format === 'plain'
-            ? <p aria-busy={part.status === 'streaming' || undefined} className="whitespace-pre-wrap break-words text-[length:var(--rui-font-interface)] leading-6">{part.text}</p>
-            : <MarkdownContent value={part.text} streaming={part.status === 'streaming'} streamKey={part.streamKey ?? part.id} />;
-          content = <>{body}<PartState part={part} onRetry={retry} /></>;
-          break;
-        }
-        case 'tool':
-          content = <ToolCall
-            title={part.title}
-            status={executionStatus(part.status)}
-            variant={part.variant}
-            open={part.open}
-            durationLabel={part.durationLabel}
-            onOpenChange={open => onToolOpenChange?.(part.id, open)}
-            onRetry={retry}
-          >{part.content}</ToolCall>;
-          break;
-        case 'source':
-          content = <><Sources items={part.items} /><PartState part={part} onRetry={retry} /></>;
-          break;
-        case 'attachment':
-          content = <><AttachmentList
-            items={part.items}
-            onRemove={onAttachmentRemove ? attachmentId => onAttachmentRemove(part.id, attachmentId) : undefined}
-            onRetry={onAttachmentRetry ? attachmentId => onAttachmentRetry(part.id, attachmentId) : undefined}
-          /><PartState part={part} onRetry={retry} /></>;
-          break;
-        case 'artifact':
-          content = <><ArtifactPanel
-            title={part.title}
-            versions={part.versions}
-            version={part.version}
-            view={part.view}
-            onVersionChange={version => onArtifactVersionChange?.(part.id, version)}
-            onViewChange={view => onArtifactViewChange?.(part.id, view)}
-            onClose={onArtifactClose ? () => onArtifactClose(part.id) : undefined}
-          /><PartState part={part} onRetry={retry} /></>;
-          break;
-        case 'unknown':
-        default: {
-          const unknown = unknownPart(part);
-          const fallback = renderUnknownPart?.(unknown) ?? <div role="note" className="rounded-md border border-dashed px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground">
-            {unknown.label || `暂不支持的消息部分${unknown.originalType ? `：${unknown.originalType}` : ''}`}
-          </div>;
-          content = <>{fallback}<PartState part={unknown} onRetry={retry} /></>;
-          break;
-        }
-      }
+            switch (part.type) {
+              case 'text': {
+                const body =
+                  part.format === 'plain' ? (
+                    <p
+                      aria-busy={part.status === 'streaming' || undefined}
+                      className="whitespace-pre-wrap break-words text-[length:var(--rui-font-interface)] leading-6"
+                    >
+                      {part.text}
+                    </p>
+                  ) : (
+                    <MarkdownContent
+                      value={part.text}
+                      streaming={part.status === 'streaming'}
+                      streamKey={part.streamKey ?? part.id}
+                    />
+                  );
+                content = (
+                  <>
+                    {body}
+                    <PartState part={part} onRetry={retry} />
+                  </>
+                );
+                break;
+              }
+              case 'tool':
+                content = (
+                  <ToolCall
+                    title={part.title}
+                    status={executionStatus(part.status)}
+                    variant={part.variant}
+                    open={part.open}
+                    durationLabel={part.durationLabel}
+                    onOpenChange={(open) => onToolOpenChange?.(part.id, open)}
+                    onRetry={retry}
+                  >
+                    {part.content}
+                  </ToolCall>
+                );
+                break;
+              case 'source':
+                content = (
+                  <>
+                    <Sources items={part.items} />
+                    <PartState part={part} onRetry={retry} />
+                  </>
+                );
+                break;
+              case 'attachment':
+                content = (
+                  <>
+                    <AttachmentList
+                      items={part.items}
+                      onRemove={
+                        onAttachmentRemove
+                          ? (attachmentId) => onAttachmentRemove(part.id, attachmentId)
+                          : undefined
+                      }
+                      onRetry={
+                        onAttachmentRetry
+                          ? (attachmentId) => onAttachmentRetry(part.id, attachmentId)
+                          : undefined
+                      }
+                    />
+                    <PartState part={part} onRetry={retry} />
+                  </>
+                );
+                break;
+              case 'artifact':
+                content = (
+                  <>
+                    <ArtifactPanel
+                      title={part.title}
+                      versions={part.versions}
+                      version={part.version}
+                      view={part.view}
+                      onVersionChange={(version) => onArtifactVersionChange?.(part.id, version)}
+                      onViewChange={(view) => onArtifactViewChange?.(part.id, view)}
+                      onClose={onArtifactClose ? () => onArtifactClose(part.id) : undefined}
+                    />
+                    <PartState part={part} onRetry={retry} />
+                  </>
+                );
+                break;
+              case 'unknown':
+              default: {
+                const unknown = unknownPart(part);
+                const fallback = renderUnknownPart?.(unknown) ?? (
+                  <div
+                    role="note"
+                    className="rounded-md border border-dashed px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground"
+                  >
+                    {unknown.label ||
+                      `暂不支持的消息部分${unknown.originalType ? `：${unknown.originalType}` : ''}`}
+                  </div>
+                );
+                content = (
+                  <>
+                    {fallback}
+                    <PartState part={unknown} onRetry={retry} />
+                  </>
+                );
+                break;
+              }
+            }
 
-      return <div
-        key={part.id}
-        data-slot="message-part"
-        data-message-part-id={part.id}
-        data-message-part-type={part.type}
-        data-status={part.status ?? 'complete'}
-        className="grid min-w-0 gap-[var(--rui-content-gap-sm)]"
-      >{content}</div>;
-    }) : empty}
-  </div>;
+            return (
+              <div
+                key={part.id}
+                data-slot="message-part"
+                data-message-part-id={part.id}
+                data-message-part-type={part.type}
+                data-status={part.status ?? 'complete'}
+                className="grid min-w-0 gap-[var(--rui-content-gap-sm)]"
+              >
+                {content}
+              </div>
+            );
+          })
+        : empty}
+    </div>
+  );
 }
 
-export interface StructuredMessageProps extends Omit<MessageProps, 'children'>, Omit<MessagePartsProps, 'className' | 'label'> {
+export interface StructuredMessageProps
+  extends Omit<MessageProps, 'children'>,
+    Omit<MessagePartsProps, 'className' | 'label'> {
   partsLabel?: string;
   partsClassName?: string;
 }
@@ -225,21 +313,23 @@ export function StructuredMessage({
   renderUnknownPart,
   ...messageProps
 }: StructuredMessageProps) {
-  const activeStreaming = streaming ?? parts.some(part => part.status === 'streaming');
-  return <Message {...messageProps} streaming={activeStreaming}>
-    <MessageParts
-      parts={parts}
-      label={partsLabel}
-      className={partsClassName}
-      empty={empty}
-      onRetryPart={onRetryPart}
-      onToolOpenChange={onToolOpenChange}
-      onAttachmentRemove={onAttachmentRemove}
-      onAttachmentRetry={onAttachmentRetry}
-      onArtifactVersionChange={onArtifactVersionChange}
-      onArtifactViewChange={onArtifactViewChange}
-      onArtifactClose={onArtifactClose}
-      renderUnknownPart={renderUnknownPart}
-    />
-  </Message>;
+  const activeStreaming = streaming ?? parts.some((part) => part.status === 'streaming');
+  return (
+    <Message {...messageProps} streaming={activeStreaming}>
+      <MessageParts
+        parts={parts}
+        label={partsLabel}
+        className={partsClassName}
+        empty={empty}
+        onRetryPart={onRetryPart}
+        onToolOpenChange={onToolOpenChange}
+        onAttachmentRemove={onAttachmentRemove}
+        onAttachmentRetry={onAttachmentRetry}
+        onArtifactVersionChange={onArtifactVersionChange}
+        onArtifactViewChange={onArtifactViewChange}
+        onArtifactClose={onArtifactClose}
+        renderUnknownPart={renderUnknownPart}
+      />
+    </Message>
+  );
 }

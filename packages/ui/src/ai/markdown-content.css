@@ -1,0 +1,205 @@
+/* Document typography stays scoped; consumer utility classes can override it. */
+@layer components {
+  .rui-markdown-content {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-size: var(--rui-font-interface);
+    line-height: var(--rui-line-reading);
+    color: var(--rui-text);
+  }
+
+  /* Paragraphs and heading hierarchy. */
+  .rui-markdown-content p {
+    margin-block: var(--rui-space-2);
+  }
+
+  .rui-markdown-content h1,
+  .rui-markdown-content h2 {
+    margin-block: var(--rui-space-3);
+    font-weight: var(--rui-font-weight-semibold);
+    letter-spacing: var(--rui-tracking-tight);
+    line-height: var(--rui-line-reading);
+  }
+
+  .rui-markdown-content h1 {
+    font-size: var(--rui-font-subheading);
+    line-height: var(--rui-text-2xl);
+  }
+
+  .rui-markdown-content h2 {
+    font-size: var(--rui-font-reading);
+  }
+
+  .rui-markdown-content h3,
+  .rui-markdown-content h4 {
+    margin-block: var(--rui-space-2);
+    font-size: var(--rui-font-interface);
+    line-height: var(--rui-line-interface);
+  }
+
+  .rui-markdown-content h3 {
+    font-weight: var(--rui-font-weight-semibold);
+  }
+
+  .rui-markdown-content h4 {
+    font-weight: var(--rui-font-weight-medium);
+  }
+
+  /* Lists retain semantic markers; task lists use a checkbox column. */
+  .rui-markdown-content ul,
+  .rui-markdown-content ol {
+    margin-block: var(--rui-space-2);
+    padding-left: var(--rui-space-5);
+  }
+
+  .rui-markdown-content ul {
+    list-style-type: disc;
+  }
+
+  .rui-markdown-content ol {
+    list-style-type: decimal;
+  }
+
+  .rui-markdown-content li,
+  .rui-markdown-content li > ul,
+  .rui-markdown-content li > ol {
+    margin-block: var(--rui-space-1);
+  }
+
+  .rui-markdown-content li > p {
+    margin-block: 0;
+  }
+
+  .rui-markdown-content ul.contains-task-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  .rui-markdown-content li.task-list-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--rui-space-2);
+  }
+
+  .rui-markdown-content li.task-list-item > input {
+    margin-top: var(--rui-space-1);
+    width: var(--rui-space-4);
+    height: var(--rui-space-4);
+    accent-color: var(--rui-primary);
+  }
+
+  /* Quoted content and navigation links. */
+  .rui-markdown-content blockquote {
+    margin-block: var(--rui-space-3);
+    border-left: var(--rui-outline-width) solid var(--rui-border);
+    padding-left: var(--rui-space-3);
+    color: var(--rui-text-muted);
+  }
+
+  .rui-markdown-content a {
+    font-weight: var(--rui-font-weight-medium);
+    color: var(--rui-primary);
+    text-decoration-line: underline;
+    text-underline-offset: var(--rui-space-1);
+  }
+
+  /* Inline code and the fallback pre. Fenced code keeps its own CodeBlock. */
+  .rui-markdown-content [data-slot='markdown-inline-code'] {
+    border-radius: var(--rui-radius-sm);
+    background-color: var(--rui-surface);
+    padding-inline: var(--rui-space-1);
+    font-family: var(--rui-font-mono);
+    font-size: var(--rui-font-caption);
+    line-height: var(--rui-line-caption);
+  }
+
+  .rui-markdown-content [data-slot='markdown-plain-pre'] {
+    margin-block: var(--rui-space-3);
+    overflow: auto;
+    border-radius: var(--rui-radius-md);
+    border: var(--rui-border-width) solid var(--rui-border);
+    background-color: var(--rui-surface);
+    padding: var(--rui-content-padding);
+    font-family: var(--rui-font-mono);
+    font-size: var(--rui-font-caption);
+    line-height: var(--rui-line-caption);
+  }
+
+  .rui-markdown-content .rui-markdown-code-block,
+  .rui-markdown-content .rui-markdown-table-scroll {
+    margin-block: var(--rui-space-3);
+  }
+
+  /* Wide tables scroll inside their own keyboard-accessible surface. */
+  .rui-markdown-table-scroll {
+    min-width: 0;
+    overflow-x: auto;
+    border-radius: var(--rui-radius-md);
+    border: var(--rui-border-width) solid var(--rui-border);
+  }
+
+  .rui-markdown-table-scroll:focus-visible {
+    outline: var(--rui-focus-width) solid var(--rui-focus);
+  }
+
+  .rui-markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: var(--rui-font-interface);
+    line-height: var(--rui-line-interface);
+  }
+
+  .rui-markdown-content th,
+  .rui-markdown-content td {
+    padding: var(--rui-cell-padding-y) var(--rui-cell-padding-x);
+  }
+
+  .rui-markdown-content th {
+    background-color: color-mix(in oklab, var(--rui-surface) 60%, transparent);
+    font-weight: var(--rui-font-weight-medium);
+  }
+
+  .rui-markdown-content td {
+    border-top: var(--rui-border-width) solid var(--rui-border);
+    vertical-align: top;
+  }
+
+  /* Supporting document content. */
+  .rui-markdown-content hr {
+    margin-block: var(--rui-space-4);
+    border-color: var(--rui-border);
+  }
+
+  .rui-markdown-content img {
+    margin-block: var(--rui-space-3);
+    max-width: 100%;
+    border-radius: var(--rui-radius-md);
+    border: var(--rui-border-width) solid var(--rui-border);
+    background-color: color-mix(in oklab, var(--rui-surface) 30%, transparent);
+  }
+
+  .rui-markdown-content del {
+    color: var(--rui-text-muted);
+  }
+
+  .rui-markdown-content section[data-footnotes] {
+    margin-top: var(--rui-space-4);
+    border-top: var(--rui-border-width) solid var(--rui-border);
+    padding-top: var(--rui-space-3);
+    font-size: var(--rui-font-caption);
+    line-height: var(--rui-line-caption);
+    color: var(--rui-text-muted);
+  }
+
+  /* Avoid extra space at the document boundary. */
+  .rui-markdown-content > :first-child {
+    margin-top: 0;
+  }
+
+  .rui-markdown-content > :last-child {
+    margin-bottom: 0;
+  }
+}

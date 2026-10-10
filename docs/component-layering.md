@@ -1,10 +1,12 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复杂组件族、24 个 AI 组件族**，共 137 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`MessageParts / StructuredMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace / WorkspacePreset` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+本库采用分层组合式设计系统：交互原语由底层库提供，基础层统一视觉与 API 适配，复杂和 AI 层组合基础能力，宿主负责业务执行与持久化。相关设计模式与源码组织规则见 [组件源码组织](component-source-policy.md)。组件族数量以[生成目录](../apps/lab/src/catalog-manifest.json)为准。
+
+Reito UI 工作区按应用场景提供 **72 个基础组件族、42 个复杂组件族、24 个 AI 组件族**，共 138 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`MessageParts / StructuredMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace / WorkspacePreset` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
-| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 71 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 21 个本地组合族；统一主题、尺寸和必要修复。 |
+| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 72 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 22 个本地组合族；统一主题、尺寸和必要修复。 |
 | 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 42 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、结构化 parts、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 24 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
@@ -12,9 +14,9 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 
 所有层都消费同一份语义主题。颜色、字体和密度的主源是 [`packages/tokens/src/tokens.json`](../packages/tokens/src/tokens.json)，基础组件不再使用旧版 `components.tsx` API。常规控件保留实际 Base UI 的 `render`、受控值和组合结构；日历、命令搜索、分栏分别依赖 React DayPicker、cmdk、react-resizable-panels，静态展示组件使用普通语义元素。不能把全部基础组件都描述成 Base UI 包装器。
 
-## 基础层：71 个组件族
+## 基础层：72 个组件族
 
-基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 21 个本地组合族，不能将它们标为 CLI 生成源码。
+基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 22 个本地组合族，不能将它们标为 CLI 生成源码。
 
 | 用途 | 组件族 |
 | --- | --- |
@@ -92,7 +94,7 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 
 [Dashboard 工作面配方](recipes/dashboard-workspace.md) 在 Storybook 中组合 Sidebar、AppShell、WorkspacePreset、DataTable、Form 与 ApplicationSearch，覆盖真实本地交互、偏好恢复和窄布局。[Content 工作面配方](recipes/content-workspace.md) 组合 ResourceView、ContentNavigation、MarkdownContent、Toolbar 与应用搜索，连接文档集合、目录、阅读和相邻操作。两者属于示例层，不新增公共 Dashboard / Content 原语，也不改变复杂层 40 个组件族的计数。
 
-## AI 层：21 个组件族
+## AI 层：24 个组件族
 
 公共导出见 [`ai/index.ts`](../packages/ui/src/ai/index.ts)，演示入口见 [`ai/catalog.tsx`](../packages/ui/src/ai/catalog.tsx)。这层没有模型客户端或后台 Agent；组件通过宿主传入的数据和回调工作。
 

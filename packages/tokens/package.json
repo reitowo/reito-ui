@@ -10,11 +10,16 @@
     "./metrics": {
       "types": "./dist/metrics.d.ts",
       "import": "./dist/metrics.js"
+    },
+    "./themes": {
+      "types": "./dist/themes.d.ts",
+      "import": "./dist/themes.js"
     }
   },
   "files": [
     "src/tokens.json",
-    "dist"
+    "dist",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "license": "MIT",
   "publishConfig": {

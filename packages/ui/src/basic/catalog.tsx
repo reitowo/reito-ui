@@ -1,7 +1,7 @@
-import { tokenMetrics } from "@reito/tokens/metrics";
+import { tokenMetrics } from '@reito/tokens/metrics';
 import { OneTimeCodeDemo } from './one-time-code-demo.js';
 import { ScrollTopDemo } from './scroll-top-demo.js';
-import * as React from "react";
+import * as React from 'react';
 import * as Native from '../native.js';
 import { SelectInput } from './select-input.js';
 import { ToastProvider, useToastManager } from './feedback.js';
@@ -17,7 +17,11 @@ import { Knob } from './knob.js';
 import { ColorPicker } from './color-picker.js';
 import { InputDate } from './input-date.js';
 import { InputTime, formatTimeValue, type TimeValue } from './input-time.js';
-import { DateTimePicker, formatLocalDateTime, type LocalDateTimeValue } from './date-time-picker.js';
+import {
+  DateTimePicker,
+  formatLocalDateTime,
+  type LocalDateTimeValue,
+} from './date-time-picker.js';
 import { PasswordInput, type PasswordRule } from './password-input.js';
 import { InputMask, formatMaskValue } from './input-mask.js';
 import { Listbox, type ListboxOption } from './listbox.js';
@@ -40,23 +44,17 @@ import {
   Terminal,
   Underline,
   X,
-} from "lucide-react";
-import * as P from "../primitives/index.js";
+} from 'lucide-react';
+import * as P from '../primitives/index.js';
 
 function Stack({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex w-full max-w-xl flex-col gap-4 text-sm">
-      {children}
-    </div>
-  );
+  return <div className="flex w-full max-w-xl flex-col gap-4 text-sm">{children}</div>;
 }
 function Row({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-wrap items-center gap-3">{children}</div>;
 }
 function Note({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-xs leading-relaxed text-muted-foreground">{children}</p>
-  );
+  return <p className="text-xs leading-relaxed text-muted-foreground">{children}</p>;
 }
 
 export function ButtonDemo() {
@@ -65,6 +63,7 @@ export function ButtonDemo() {
     <Stack>
       <Row>
         <P.Button onClick={() => setCount(count + 1)}>保存更改</P.Button>
+        <P.Button variant="accent">强调操作</P.Button>
         <P.Button variant="secondary">次要操作</P.Button>
         <P.Button variant="outline">描边按钮</P.Button>
         <P.Button variant="ghost">轻量操作</P.Button>
@@ -75,6 +74,7 @@ export function ButtonDemo() {
         <P.Button size="xs">XS</P.Button>
         <P.Button size="sm">Small</P.Button>
         <P.Button>Default</P.Button>
+        <P.Button size="md">Medium</P.Button>
         <P.Button size="lg">Large</P.Button>
         <P.Button size="icon" aria-label="添加项目">
           <Plus />
@@ -93,19 +93,11 @@ export function ButtonGroupDemo() {
   const [page, setPage] = React.useState(2);
   return (
     <P.ButtonGroup aria-label="浏览记录">
-      <P.Button
-        variant="outline"
-        disabled={page === 1}
-        onClick={() => setPage(page - 1)}
-      >
+      <P.Button variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>
         上一页
       </P.Button>
       <P.ButtonGroupText>{page} / 5</P.ButtonGroupText>
-      <P.Button
-        variant="outline"
-        disabled={page === 5}
-        onClick={() => setPage(page + 1)}
-      >
+      <P.Button variant="outline" disabled={page === 5} onClick={() => setPage(page + 1)}>
         下一页
       </P.Button>
     </P.ButtonGroup>
@@ -127,7 +119,7 @@ export function BadgeDemo() {
 }
 export function InputDemo() {
   const id = React.useId();
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState('');
   return (
     <Stack>
       <P.Field>
@@ -138,88 +130,190 @@ export function InputDemo() {
           value={value}
           onChange={(event) => setValue(event.target.value)}
         />
-        <P.FieldDescription>
-          支持中文输入；这里不会提交到外部服务。
-        </P.FieldDescription>
+        <P.FieldDescription>支持中文输入；这里不会提交到外部服务。</P.FieldDescription>
       </P.Field>
-      <P.Input
-        aria-label="无效项目名称"
-        aria-invalid="true"
-        defaultValue="已有同名项目"
-      />
+      <P.Input aria-label="无效项目名称" aria-invalid="true" defaultValue="已有同名项目" />
       <P.Input aria-label="只读项目编号" readOnly value="RUI-003" />
       <P.Input aria-label="禁用输入" disabled placeholder="不可编辑" />
-      <output>当前：{value || "尚未输入"}</output>
+      <output>当前：{value || '尚未输入'}</output>
     </Stack>
   );
 }
 export function InputTagsDemo() {
   const [value, setValue] = React.useState(['React', 'TypeScript']);
-  return <Stack>
-    <InputTags label="项目标签" value={value} onValueChange={setValue} maxTags={5} description="输入任意内容后按 Enter 或逗号创建；点击标签文字可编辑。" />
-    <output>当前标签：{value.join(', ') || '无'}</output>
-  </Stack>;
+  return (
+    <Stack>
+      <InputTags
+        label="项目标签"
+        value={value}
+        onValueChange={setValue}
+        maxTags={5}
+        description="输入任意内容后按 Enter 或逗号创建；点击标签文字可编辑。"
+      />
+      <output>当前标签：{value.join(', ') || '无'}</output>
+    </Stack>
+  );
 }
 export function ColorPickerDemo() {
   const [value, setValue] = React.useState('#4F7DFFFF');
-  return <Stack>
-    <ColorPicker label="界面强调色" value={value} onValueChange={setValue} allowAlpha presets={['#4F7DFF', '#29A36A', '#C58A21', '#B64655', '#8A63D2']} description="可直接输入 HEX、RGB 或 HSL；打开色板后调整区域、色相、透明度与通道。" />
-    <output className="font-mono text-xs text-muted-foreground">当前颜色：{value}</output>
-  </Stack>;
+  return (
+    <Stack>
+      <ColorPicker
+        label="界面强调色"
+        value={value}
+        onValueChange={setValue}
+        allowAlpha
+        presets={['#4F7DFF', '#29A36A', '#C58A21', '#B64655', '#8A63D2']}
+        description="可直接输入 HEX、RGB 或 HSL；打开色板后调整区域、色相、透明度与通道。"
+      />
+      <output className="font-mono text-xs text-muted-foreground">当前颜色：{value}</output>
+    </Stack>
+  );
 }
 export function InputDateDemo() {
   const [value, setValue] = React.useState<Date | null>(new Date(2026, 8, 7));
-  return <Stack>
-    <InputDate label="交付日期" value={value} onValueChange={setValue} min={new Date(2026, 0, 1)} max={new Date(2027, 11, 31)} description="分段输入本地日历日；方向键调整，日历与文本保持同步。" />
-    <output className="font-mono text-xs text-muted-foreground">当前日期：{value ? `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}` : '未选择'}</output>
-  </Stack>;
+  return (
+    <Stack>
+      <InputDate
+        label="交付日期"
+        value={value}
+        onValueChange={setValue}
+        min={new Date(2026, 0, 1)}
+        max={new Date(2027, 11, 31)}
+        description="分段输入本地日历日；方向键调整，日历与文本保持同步。"
+      />
+      <output className="font-mono text-xs text-muted-foreground">
+        当前日期：
+        {value
+          ? `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`
+          : '未选择'}
+      </output>
+    </Stack>
+  );
 }
 export function InputTimeDemo() {
   const [value, setValue] = React.useState<TimeValue | null>({ hour: 9, minute: 30, second: 0 });
-  return <Stack>
-    <InputTime label="提醒时间" value={value} onValueChange={setValue} minuteStep={5} description="纯时间值，不附带任意日期；方向键按分段与步进调整。" />
-    <output className="font-mono text-xs text-muted-foreground">当前时间：{formatTimeValue(value) || '未选择'}</output>
-  </Stack>;
+  return (
+    <Stack>
+      <InputTime
+        label="提醒时间"
+        value={value}
+        onValueChange={setValue}
+        minuteStep={5}
+        description="纯时间值，不附带任意日期；方向键按分段与步进调整。"
+      />
+      <output className="font-mono text-xs text-muted-foreground">
+        当前时间：{formatTimeValue(value) || '未选择'}
+      </output>
+    </Stack>
+  );
 }
 export function DateTimePickerDemo() {
-  const [value, setValue] = React.useState<LocalDateTimeValue | null>({ date: new Date(2026, 8, 7), time: { hour: 9, minute: 30 } });
-  return <Stack>
-    <DateTimePicker label="计划执行时间" value={value} onValueChange={setValue} minuteStep={5} description="本地日期时间；不隐式附加浏览器时区或 UTC 标记。" />
-    <output className="font-mono text-xs text-muted-foreground">当前：{formatLocalDateTime(value) || '未选择'}</output>
-  </Stack>;
+  const [value, setValue] = React.useState<LocalDateTimeValue | null>({
+    date: new Date(2026, 8, 7),
+    time: { hour: 9, minute: 30 },
+  });
+  return (
+    <Stack>
+      <DateTimePicker
+        label="计划执行时间"
+        value={value}
+        onValueChange={setValue}
+        minuteStep={5}
+        description="本地日期时间；不隐式附加浏览器时区或 UTC 标记。"
+      />
+      <output className="font-mono text-xs text-muted-foreground">
+        当前：{formatLocalDateTime(value) || '未选择'}
+      </output>
+    </Stack>
+  );
 }
 const passwordRules: PasswordRule[] = [
-  { id: 'length', label: '至少 10 个字符', test: value => value.length >= 10 },
+  { id: 'length', label: '至少 10 个字符', test: (value) => value.length >= 10 },
   { id: 'mixed-case', label: '同时包含大小写字母', test: /(?=.*[a-z])(?=.*[A-Z])/ },
   { id: 'number', label: '包含数字', test: /\d/ },
   { id: 'symbol', label: '包含符号', test: /[^\p{L}\p{N}]/u },
 ];
 export function PasswordInputDemo() {
   const [value, setValue] = React.useState('Graphite9!');
-  return <Stack>
-    <PasswordInput label="访问密码" value={value} onValueChange={setValue} rules={passwordRules} autoComplete="new-password" description="规则由宿主传入；强度随当前规则结果更新。" />
-    <output className="text-xs text-muted-foreground">已输入 {value.length} 个字符</output>
-  </Stack>;
+  return (
+    <Stack>
+      <PasswordInput
+        label="访问密码"
+        value={value}
+        onValueChange={setValue}
+        rules={passwordRules}
+        autoComplete="new-password"
+        description="规则由宿主传入；强度随当前规则结果更新。"
+      />
+      <output className="text-xs text-muted-foreground">已输入 {value.length} 个字符</output>
+    </Stack>
+  );
 }
 export function InputMaskDemo() {
   const [value, setValue] = React.useState('02155551234');
-  return <Stack>
-    <InputMask label="联系电话" mask="999-9999-9999? x99999" value={value} onValueChange={setValue} inputMode="numeric" placeholder="021-5555-1234" description="公开值不含格式符；问号后的分机段可选。" />
-    <output className="font-mono text-xs text-muted-foreground">raw={value || 'empty'} · display={formatMaskValue(value, '999-9999-9999? x99999') || 'empty'}</output>
-  </Stack>;
+  return (
+    <Stack>
+      <InputMask
+        label="联系电话"
+        mask="999-9999-9999? x99999"
+        value={value}
+        onValueChange={setValue}
+        inputMode="numeric"
+        placeholder="021-5555-1234"
+        description="公开值不含格式符；问号后的分机段可选。"
+      />
+      <output className="font-mono text-xs text-muted-foreground">
+        raw={value || 'empty'} · display=
+        {formatMaskValue(value, '999-9999-9999? x99999') || 'empty'}
+      </output>
+    </Stack>
+  );
 }
 const listboxOptions: ListboxOption[] = [
   { value: 'react', label: 'React', description: '界面组件', group: '应用', icon: <FileText /> },
-  { value: 'typescript', label: 'TypeScript', description: '类型系统', group: '应用', icon: <Terminal /> },
-  { value: 'storybook', label: 'Storybook', description: '组件工作台', group: '工具', icon: <Settings /> },
-  { value: 'legacy', label: '旧版构建器', description: '等待迁移', group: '工具', icon: <Folder />, disabled: true },
+  {
+    value: 'typescript',
+    label: 'TypeScript',
+    description: '类型系统',
+    group: '应用',
+    icon: <Terminal />,
+  },
+  {
+    value: 'storybook',
+    label: 'Storybook',
+    description: '组件工作台',
+    group: '工具',
+    icon: <Settings />,
+  },
+  {
+    value: 'legacy',
+    label: '旧版构建器',
+    description: '等待迁移',
+    group: '工具',
+    icon: <Folder />,
+    disabled: true,
+  },
 ];
 export function ListboxDemo() {
   const [value, setValue] = React.useState<string[]>(['react']);
-  return <Stack>
-    <Listbox label="项目技术栈" options={listboxOptions} selectionMode="multiple" value={value} onValueChange={next => setValue(Array.isArray(next) ? next : [])} searchable clearable description="方向键移动活动项；Space 切换，Shift 连选。" />
-    <output className="font-mono text-xs text-muted-foreground">value={JSON.stringify(value)}</output>
-  </Stack>;
+  return (
+    <Stack>
+      <Listbox
+        label="项目技术栈"
+        options={listboxOptions}
+        selectionMode="multiple"
+        value={value}
+        onValueChange={(next) => setValue(Array.isArray(next) ? next : [])}
+        searchable
+        clearable
+        description="方向键移动活动项；Space 切换，Shift 连选。"
+      />
+      <output className="font-mono text-xs text-muted-foreground">
+        value={JSON.stringify(value)}
+      </output>
+    </Stack>
+  );
 }
 const asyncTechnologyOptions: AsyncComboboxOption[] = [
   { value: 'react', label: 'React', description: '界面组件' },
@@ -230,15 +324,78 @@ const asyncTechnologyOptions: AsyncComboboxOption[] = [
 export function AsyncComboboxDemo() {
   const [value, setValue] = React.useState<string | null>(null);
   const [query, setQuery] = React.useState('');
-  return <Stack><AsyncCombobox label="异步查找技术栈" query={query} onQueryChange={setQuery} value={value} onValueChange={setValue} debounceMs={120} loadOptions={async (term, { signal }) => { await new Promise<void>((resolve, reject) => { const timer = window.setTimeout(resolve, 180); signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once: true }); }); return asyncTechnologyOptions.filter(option => option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase())); }} description="查询由宿主回调提供；组件取消旧请求并忽略过期结果。" /><output>query={JSON.stringify(query)} · value={value ?? 'null'}</output></Stack>;
+  return (
+    <Stack>
+      <AsyncCombobox
+        label="异步查找技术栈"
+        query={query}
+        onQueryChange={setQuery}
+        value={value}
+        onValueChange={setValue}
+        debounceMs={120}
+        loadOptions={async (term, { signal }) => {
+          await new Promise<void>((resolve, reject) => {
+            const timer = window.setTimeout(resolve, 180);
+            signal.addEventListener(
+              'abort',
+              () => {
+                window.clearTimeout(timer);
+                reject(new DOMException('Aborted', 'AbortError'));
+              },
+              { once: true },
+            );
+          });
+          return asyncTechnologyOptions.filter((option) =>
+            option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase()),
+          );
+        }}
+        description="查询由宿主回调提供；组件取消旧请求并忽略过期结果。"
+      />
+      <output>
+        query={JSON.stringify(query)} · value={value ?? 'null'}
+      </output>
+    </Stack>
+  );
 }
 export function AsyncMultiSelectDemo() {
   const [value, setValue] = React.useState(['react']);
   const [query, setQuery] = React.useState('');
-  return <Stack><AsyncMultiSelect label="异步选择技术栈" query={query} onQueryChange={setQuery} value={value} onValueChange={setValue} selectedOptions={asyncTechnologyOptions.filter(option => value.includes(option.value))} debounceMs={120} loadOptions={async (term, { signal }) => { await new Promise<void>((resolve, reject) => { const timer = window.setTimeout(resolve, 180); signal.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once: true }); }); return asyncTechnologyOptions.filter(option => option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase())); }} description="当前查询结果变化时，已选标签继续保留。" /><output>query={JSON.stringify(query)} · value={JSON.stringify(value)}</output></Stack>;
+  return (
+    <Stack>
+      <AsyncMultiSelect
+        label="异步选择技术栈"
+        query={query}
+        onQueryChange={setQuery}
+        value={value}
+        onValueChange={setValue}
+        selectedOptions={asyncTechnologyOptions.filter((option) => value.includes(option.value))}
+        debounceMs={120}
+        loadOptions={async (term, { signal }) => {
+          await new Promise<void>((resolve, reject) => {
+            const timer = window.setTimeout(resolve, 180);
+            signal.addEventListener(
+              'abort',
+              () => {
+                window.clearTimeout(timer);
+                reject(new DOMException('Aborted', 'AbortError'));
+              },
+              { once: true },
+            );
+          });
+          return asyncTechnologyOptions.filter((option) =>
+            option.label.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase()),
+          );
+        }}
+        description="当前查询结果变化时，已选标签继续保留。"
+      />
+      <output>
+        query={JSON.stringify(query)} · value={JSON.stringify(value)}
+      </output>
+    </Stack>
+  );
 }
 export function TextareaDemo() {
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState('');
   return (
     <Stack>
       <P.Textarea
@@ -248,11 +405,7 @@ export function TextareaDemo() {
         onChange={(event) => setValue(event.target.value)}
       />
       <Note>{value.length} 字 · 中文多行编辑</Note>
-      <P.Textarea
-        aria-label="不可编辑的说明"
-        disabled
-        defaultValue="已归档任务"
-      />
+      <P.Textarea aria-label="不可编辑的说明" disabled defaultValue="已归档任务" />
     </Stack>
   );
 }
@@ -335,7 +488,7 @@ export function CheckboxDemo() {
         <span>已锁定</span>
         <P.Checkbox aria-label="需要确认" aria-invalid="true" />
       </Row>
-      <output>{checked ? "草稿保存已开启" : "草稿保存已关闭"}</output>
+      <output>{checked ? '草稿保存已开启' : '草稿保存已关闭'}</output>
     </Stack>
   );
 }
@@ -350,31 +503,23 @@ export function SwitchDemo() {
         <P.Switch size="sm" aria-label="紧凑开关" defaultChecked />
         <P.Switch disabled aria-label="禁用开关" />
       </Row>
-      <output>{checked ? "自动保存开启" : "自动保存关闭"}</output>
+      <output>{checked ? '自动保存开启' : '自动保存关闭'}</output>
     </Stack>
   );
 }
 export function RadioGroupDemo() {
   const id = React.useId();
-  const [value, setValue] = React.useState("local");
+  const [value, setValue] = React.useState('local');
   return (
     <Stack>
-      <P.RadioGroup
-        aria-label="执行位置"
-        value={value}
-        onValueChange={setValue}
-      >
+      <P.RadioGroup aria-label="执行位置" value={value} onValueChange={setValue}>
         {[
-          ["local", "本地"],
-          ["worktree", "隔离工作区"],
-          ["cloud", "云端（不可用）"],
+          ['local', '本地'],
+          ['worktree', '隔离工作区'],
+          ['cloud', '云端（不可用）'],
         ].map(([key, label]) => (
           <Row key={key}>
-            <P.RadioGroupItem
-              id={`${id}-${key}`}
-              value={key}
-              disabled={key === "cloud"}
-            />
+            <P.RadioGroupItem id={`${id}-${key}`} value={key} disabled={key === 'cloud'} />
             <P.Label htmlFor={`${id}-${key}`}>{label}</P.Label>
           </Row>
         ))}
@@ -416,7 +561,7 @@ export function ToggleGroupDemo() {
   return (
     <P.ToggleGroup
       multiple
-      defaultValue={["bold"]}
+      defaultValue={['bold']}
       aria-label="文字格式"
       variant="outline"
       spacing={0}
@@ -434,16 +579,22 @@ export function ToggleGroupDemo() {
   );
 }
 export function SelectDemo() {
-  const [value, setValue] = React.useState<string | null>("local");
+  const [value, setValue] = React.useState<string | null>('local');
   const options = [
-    { value: "local", label: "本地工作区" },
-    { value: "worktree", label: "隔离工作区" },
-    { value: "cloud", label: "云端（不可用）" },
+    { value: 'local', label: '本地工作区' },
+    { value: 'worktree', label: '隔离工作区' },
+    { value: 'cloud', label: '云端（不可用）' },
   ];
   return (
     <Stack>
-      <SelectInput aria-label="选择执行位置" className="w-60" value={value} onValueChange={setValue}
-        options={options.map(option => ({ ...option, disabled: option.value === 'cloud' }))} placeholder="选择位置" />
+      <SelectInput
+        aria-label="选择执行位置"
+        className="w-60"
+        value={value}
+        onValueChange={setValue}
+        options={options.map((option) => ({ ...option, disabled: option.value === 'cloud' }))}
+        placeholder="选择位置"
+      />
       <P.Select disabled>
         <P.SelectTrigger aria-label="禁用选择器">
           <P.SelectValue placeholder="当前不可用" />
@@ -454,16 +605,12 @@ export function SelectDemo() {
   );
 }
 export function ComboboxDemo() {
-  const items = ["React", "TypeScript", "Tailwind CSS", "Storybook", "Base UI"];
+  const items = ['React', 'TypeScript', 'Tailwind CSS', 'Storybook', 'Base UI'];
   const [value, setValue] = React.useState<string | null>(null);
   return (
     <Stack>
       <P.Combobox items={items} value={value} onValueChange={setValue}>
-        <P.ComboboxInput
-          aria-label="查找技术栈"
-          placeholder="输入名称筛选…"
-          showClear
-        />
+        <P.ComboboxInput aria-label="查找技术栈" placeholder="输入名称筛选…" showClear />
         <P.ComboboxContent>
           <P.ComboboxEmpty>没有匹配项</P.ComboboxEmpty>
           <P.ComboboxList>
@@ -475,13 +622,13 @@ export function ComboboxDemo() {
           </P.ComboboxList>
         </P.ComboboxContent>
       </P.Combobox>
-      <output>已选择：{value ?? "尚未选择"}</output>
+      <output>已选择：{value ?? '尚未选择'}</output>
     </Stack>
   );
 }
 export function AccordionDemo() {
   return (
-    <P.Accordion className="w-full max-w-xl" defaultValue={["tokens"]}>
+    <P.Accordion className="w-full max-w-xl" defaultValue={['tokens']}>
       <P.AccordionItem value="tokens">
         <P.AccordionTrigger>如何统一主题？</P.AccordionTrigger>
         <P.AccordionContent>
@@ -490,9 +637,7 @@ export function AccordionDemo() {
       </P.AccordionItem>
       <P.AccordionItem value="reuse">
         <P.AccordionTrigger>如何复用组件？</P.AccordionTrigger>
-        <P.AccordionContent>
-          保留官方组合 API，通过业务层封装具体流程。
-        </P.AccordionContent>
+        <P.AccordionContent>保留官方组合 API，通过业务层封装具体流程。</P.AccordionContent>
       </P.AccordionItem>
       <P.AccordionItem value="disabled" disabled>
         <P.AccordionTrigger>暂不可用的章节</P.AccordionTrigger>
@@ -545,24 +690,18 @@ export function DialogDemo() {
   return (
     <Stack>
       <P.Dialog open={open} onOpenChange={setOpen}>
-        <P.DialogTrigger render={<P.Button variant="outline" />}>
-          编辑项目
-        </P.DialogTrigger>
+        <P.DialogTrigger render={<P.Button variant="outline" />}>编辑项目</P.DialogTrigger>
         <P.DialogContent>
           <P.DialogHeader>
             <P.DialogTitle>编辑项目</P.DialogTitle>
-            <P.DialogDescription>
-              更新这个本地示例的显示名称。
-            </P.DialogDescription>
+            <P.DialogDescription>更新这个本地示例的显示名称。</P.DialogDescription>
           </P.DialogHeader>
           <P.Field>
             <P.FieldLabel htmlFor={id}>项目名称</P.FieldLabel>
             <P.Input id={id} defaultValue="Reito UI" />
           </P.Field>
           <P.DialogFooter>
-            <P.DialogClose render={<P.Button variant="outline" />}>
-              取消
-            </P.DialogClose>
+            <P.DialogClose render={<P.Button variant="outline" />}>取消</P.DialogClose>
             <P.Button
               onClick={() => {
                 setSaved(true);
@@ -574,7 +713,7 @@ export function DialogDemo() {
           </P.DialogFooter>
         </P.DialogContent>
       </P.Dialog>
-      <output aria-live="polite">{saved ? "项目已保存" : "尚未修改"}</output>
+      <output aria-live="polite">{saved ? '项目已保存' : '尚未修改'}</output>
     </Stack>
   );
 }
@@ -608,7 +747,7 @@ export function AlertDialogDemo() {
         </P.AlertDialogContent>
       </P.AlertDialog>
       <Row>
-        <output>{archived ? "已归档" : "进行中"}</output>
+        <output>{archived ? '已归档' : '进行中'}</output>
         {archived && (
           <P.Button variant="ghost" onClick={() => setArchived(false)}>
             重置
@@ -619,7 +758,7 @@ export function AlertDialogDemo() {
   );
 }
 export function DropdownMenuDemo() {
-  const [action, setAction] = React.useState("尚未执行");
+  const [action, setAction] = React.useState('尚未执行');
   const [pinned, setPinned] = React.useState(false);
   return (
     <Stack>
@@ -631,21 +770,15 @@ export function DropdownMenuDemo() {
         <P.DropdownMenuContent>
           <P.DropdownMenuGroup>
             <P.DropdownMenuLabel>当前任务</P.DropdownMenuLabel>
-            <P.DropdownMenuItem onClick={() => setAction("已复制任务链接")}>
+            <P.DropdownMenuItem onClick={() => setAction('已复制任务链接')}>
               复制链接<P.DropdownMenuShortcut>⌘ C</P.DropdownMenuShortcut>
             </P.DropdownMenuItem>
-            <P.DropdownMenuCheckboxItem
-              checked={pinned}
-              onCheckedChange={setPinned}
-            >
+            <P.DropdownMenuCheckboxItem checked={pinned} onCheckedChange={setPinned}>
               置顶任务
             </P.DropdownMenuCheckboxItem>
             <P.DropdownMenuSeparator />
             <P.DropdownMenuItem disabled>发布到云端</P.DropdownMenuItem>
-            <P.DropdownMenuItem
-              variant="destructive"
-              onClick={() => setAction("已归档示例任务")}
-            >
+            <P.DropdownMenuItem variant="destructive" onClick={() => setAction('已归档示例任务')}>
               归档任务
             </P.DropdownMenuItem>
           </P.DropdownMenuGroup>
@@ -653,25 +786,21 @@ export function DropdownMenuDemo() {
       </P.DropdownMenu>
       <output>
         {action}
-        {pinned ? " · 已置顶" : ""}
+        {pinned ? ' · 已置顶' : ''}
       </output>
     </Stack>
   );
 }
 export function ContextMenuDemo() {
-  const [value, setValue] = React.useState("在此区域右键");
+  const [value, setValue] = React.useState('在此区域右键');
   return (
     <P.ContextMenu>
       <P.ContextMenuTrigger className="flex h-36 w-full max-w-md items-center justify-center rounded-lg border border-dashed text-muted-foreground">
         {value}
       </P.ContextMenuTrigger>
       <P.ContextMenuContent>
-        <P.ContextMenuItem onClick={() => setValue("已打开任务")}>
-          打开任务
-        </P.ContextMenuItem>
-        <P.ContextMenuItem onClick={() => setValue("已复制路径")}>
-          复制路径
-        </P.ContextMenuItem>
+        <P.ContextMenuItem onClick={() => setValue('已打开任务')}>打开任务</P.ContextMenuItem>
+        <P.ContextMenuItem onClick={() => setValue('已复制路径')}>复制路径</P.ContextMenuItem>
         <P.ContextMenuSeparator />
         <P.ContextMenuItem disabled>恢复历史版本</P.ContextMenuItem>
       </P.ContextMenuContent>
@@ -682,45 +811,41 @@ export function PopoverDemo() {
   const id = React.useId();
   return (
     <div className="flex flex-wrap items-center gap-2">
-    <P.Popover>
-      <P.PopoverTrigger render={<P.Button variant="outline" />}>查看请求路径</P.PopoverTrigger>
-      <P.PopoverContent variant="list" align="start" aria-label="请求路径">
-        <P.PopoverList aria-label="请求路径列表">
-          <P.PopoverListItem metadata="HEAD · 16 次"><code>/health</code></P.PopoverListItem>
-          <P.PopoverListItem metadata="HEAD · 3 次"><code>/health/readiness</code></P.PopoverListItem>
-          <P.PopoverListItem metadata="HEAD · 2 次">路径未记录</P.PopoverListItem>
-        </P.PopoverList>
-      </P.PopoverContent>
-    </P.Popover>
-    <P.Popover>
-      <P.PopoverTrigger render={<P.Button variant="outline" />}>
-        显示设置
-      </P.PopoverTrigger>
-      <P.PopoverContent>
-        <P.PopoverHeader>
-          <P.PopoverTitle>显示设置</P.PopoverTitle>
-          <P.PopoverDescription>
-            调整当前工作区的显示方式。
-          </P.PopoverDescription>
-        </P.PopoverHeader>
-        <P.Field orientation="horizontal">
-          <P.Label htmlFor={id}>显示行号</P.Label>
-          <P.Switch id={id} defaultChecked />
-        </P.Field>
-      </P.PopoverContent>
-    </P.Popover>
+      <P.Popover>
+        <P.PopoverTrigger render={<P.Button variant="outline" />}>查看请求路径</P.PopoverTrigger>
+        <P.PopoverContent variant="list" align="start" aria-label="请求路径">
+          <P.PopoverList aria-label="请求路径列表">
+            <P.PopoverListItem metadata="HEAD · 16 次">
+              <code>/health</code>
+            </P.PopoverListItem>
+            <P.PopoverListItem metadata="HEAD · 3 次">
+              <code>/health/readiness</code>
+            </P.PopoverListItem>
+            <P.PopoverListItem metadata="HEAD · 2 次">路径未记录</P.PopoverListItem>
+          </P.PopoverList>
+        </P.PopoverContent>
+      </P.Popover>
+      <P.Popover>
+        <P.PopoverTrigger render={<P.Button variant="outline" />}>显示设置</P.PopoverTrigger>
+        <P.PopoverContent>
+          <P.PopoverHeader>
+            <P.PopoverTitle>显示设置</P.PopoverTitle>
+            <P.PopoverDescription>调整当前工作区的显示方式。</P.PopoverDescription>
+          </P.PopoverHeader>
+          <P.Field orientation="horizontal">
+            <P.Label htmlFor={id}>显示行号</P.Label>
+            <P.Switch id={id} defaultChecked />
+          </P.Field>
+        </P.PopoverContent>
+      </P.Popover>
     </div>
   );
 }
 export function TooltipDemo() {
   return (
-    <P.TooltipProvider delay={tokenMetrics["tooltip-delay"]}>
+    <P.TooltipProvider delay={tokenMetrics['tooltip-delay']}>
       <P.Tooltip>
-        <P.TooltipTrigger
-          render={
-            <P.Button variant="outline" size="icon" aria-label="新增任务" />
-          }
-        >
+        <P.TooltipTrigger render={<P.Button variant="outline" size="icon" aria-label="新增任务" />}>
           <Plus />
         </P.TooltipTrigger>
         <P.TooltipContent>
@@ -759,9 +884,7 @@ export function HoverCardDemo() {
 export function SheetDemo() {
   return (
     <P.Sheet>
-      <P.SheetTrigger render={<P.Button variant="outline" />}>
-        打开任务详情
-      </P.SheetTrigger>
+      <P.SheetTrigger render={<P.Button variant="outline" />}>打开任务详情</P.SheetTrigger>
       <P.SheetContent>
         <P.SheetHeader>
           <P.SheetTitle>任务详情</P.SheetTitle>
@@ -772,9 +895,7 @@ export function SheetDemo() {
           <p className="text-sm">主题与组件已准备好，可继续查看变体和状态。</p>
         </div>
         <P.SheetFooter>
-          <P.SheetClose render={<P.Button variant="outline" />}>
-            完成
-          </P.SheetClose>
+          <P.SheetClose render={<P.Button variant="outline" />}>完成</P.SheetClose>
         </P.SheetFooter>
       </P.SheetContent>
     </P.Sheet>
@@ -786,23 +907,19 @@ export function CardDemo() {
     <P.Card className="w-full max-w-sm">
       <P.CardHeader>
         <P.CardTitle>本地工作区</P.CardTitle>
-        <P.CardDescription>
-          独立的示例卡片，包含标题、内容和操作。
-        </P.CardDescription>
+        <P.CardDescription>独立的示例卡片，包含标题、内容和操作。</P.CardDescription>
         <P.CardAction>
           <P.Badge variant="outline">Demo</P.Badge>
         </P.CardAction>
       </P.CardHeader>
       <P.CardContent>
         <p className="text-sm">
-          {connected
-            ? "示例工作区已打开。"
-            : "确认布局后，继续完善自己的组件。"}
+          {connected ? '示例工作区已打开。' : '确认布局后，继续完善自己的组件。'}
         </p>
       </P.CardContent>
       <P.CardFooter>
         <P.Button onClick={() => setConnected(!connected)}>
-          {connected ? "关闭工作区" : "打开工作区"}
+          {connected ? '关闭工作区' : '打开工作区'}
         </P.Button>
       </P.CardFooter>
     </P.Card>
@@ -814,9 +931,7 @@ export function AlertDemo() {
       <P.Alert>
         <Info />
         <P.AlertTitle>修改已保存在本地</P.AlertTitle>
-        <P.AlertDescription>
-          可以继续预览主题、密度和交互状态。
-        </P.AlertDescription>
+        <P.AlertDescription>可以继续预览主题、密度和交互状态。</P.AlertDescription>
       </P.Alert>
       <P.Alert variant="destructive">
         <P.AlertTitle>验证未通过</P.AlertTitle>
@@ -833,16 +948,14 @@ export function EmptyDemo() {
         <P.EmptyMedia variant="icon">
           <Inbox />
         </P.EmptyMedia>
-        <P.EmptyTitle>{created ? "示例任务已创建" : "还没有任务"}</P.EmptyTitle>
+        <P.EmptyTitle>{created ? '示例任务已创建' : '还没有任务'}</P.EmptyTitle>
         <P.EmptyDescription>
-          {created
-            ? "这个操作仅更新本地展示。"
-            : "创建第一个任务，开始整理你的工作。"}
+          {created ? '这个操作仅更新本地展示。' : '创建第一个任务，开始整理你的工作。'}
         </P.EmptyDescription>
       </P.EmptyHeader>
       <P.EmptyContent>
         <P.Button onClick={() => setCreated(!created)}>
-          {created ? "重置示例" : "创建任务"}
+          {created ? '重置示例' : '创建任务'}
         </P.Button>
       </P.EmptyContent>
     </P.Empty>
@@ -864,7 +977,7 @@ export function AvatarDemo() {
         <P.AvatarFallback>UI</P.AvatarFallback>
       </P.Avatar>
       <P.AvatarGroup>
-        {["A", "B", "C"].map((name) => (
+        {['A', 'B', 'C'].map((name) => (
           <P.Avatar key={name}>
             <P.AvatarFallback>{name}</P.AvatarFallback>
           </P.Avatar>
@@ -876,11 +989,7 @@ export function AvatarDemo() {
 }
 export function SkeletonDemo() {
   return (
-    <div
-      className="flex w-full max-w-sm gap-3"
-      role="status"
-      aria-label="正在载入任务"
-    >
+    <div className="flex w-full max-w-sm gap-3" role="status" aria-label="正在载入任务">
       <P.Skeleton className="size-10 rounded-full" />
       <div className="flex-1 space-y-2">
         <P.Skeleton className="h-4 w-3/4" />
@@ -918,17 +1027,24 @@ export function SeparatorDemo() {
     </Stack>
   );
 }
-export function ScrollAreaDemo({ rowCount = 18 }: { rowCount?: number } = {}) {
+export function ScrollAreaDemo({
+  rowCount = 18,
+  variant = 'inset',
+}: { rowCount?: number; variant?: 'default' | 'inset' } = {}) {
   return (
-    <P.ScrollArea className="h-48 w-72 max-w-full rounded-lg border" aria-label="文件列表">
-      <div className="py-[var(--rui-space-1)]">
+    <P.ScrollArea
+      variant={variant}
+      className="h-48 w-72 max-w-full rounded-lg border"
+      aria-label="文件列表"
+    >
+      <div>
         {Array.from({ length: Math.max(1, Math.min(50, Math.floor(rowCount))) }, (_, index) => (
           <div
             key={index}
-            className="flex items-center gap-[var(--rui-content-gap-sm)] px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-sm"
+            className="flex items-center gap-[var(--rui-content-gap-sm)] py-[var(--rui-cell-padding-y)] text-sm"
           >
             <FileText className="size-4 text-muted-foreground" />
-            component-{String(index + 1).padStart(2, "0")}.tsx
+            component-{String(index + 1).padStart(2, '0')}.tsx
           </div>
         ))}
       </div>
@@ -944,11 +1060,7 @@ export function ProgressDemo() {
         <P.ProgressValue />
       </P.Progress>
       <Row>
-        <P.Button
-          variant="outline"
-          size="sm"
-          onClick={() => setValue(Math.min(100, value + 10))}
-        >
+        <P.Button variant="outline" size="sm" onClick={() => setValue(Math.min(100, value + 10))}>
           增加进度
         </P.Button>
         <P.Button variant="ghost" size="sm" onClick={() => setValue(0)}>
@@ -971,9 +1083,9 @@ export function TableDemo() {
       </P.TableHeader>
       <P.TableBody>
         {[
-          ["Button", "基础"],
-          ["DataTable", "复杂"],
-          ["Message", "AI"],
+          ['Button', '基础'],
+          ['DataTable', '复杂'],
+          ['Message', 'AI'],
         ].map(([name, kind]) => (
           <P.TableRow key={name}>
             <P.TableCell className="font-medium">{name}</P.TableCell>
@@ -1032,7 +1144,7 @@ export function PaginationDemo() {
   );
 }
 export function BreadcrumbDemo() {
-  const [place, setPlace] = React.useState("Button");
+  const [place, setPlace] = React.useState('Button');
   return (
     <Stack>
       <P.Breadcrumb>
@@ -1042,7 +1154,7 @@ export function BreadcrumbDemo() {
               href="#library"
               onClick={(event) => {
                 event.preventDefault();
-                setPlace("组件库");
+                setPlace('组件库');
               }}
             >
               组件库
@@ -1054,7 +1166,7 @@ export function BreadcrumbDemo() {
               href="#basic"
               onClick={(event) => {
                 event.preventDefault();
-                setPlace("基础组件");
+                setPlace('基础组件');
               }}
             >
               基础组件
@@ -1071,7 +1183,7 @@ export function BreadcrumbDemo() {
   );
 }
 export function CommandDemo() {
-  const [selection, setSelection] = React.useState("尚未选择");
+  const [selection, setSelection] = React.useState('尚未选择');
   return (
     <Stack>
       <P.Command className="max-w-md border">
@@ -1079,11 +1191,11 @@ export function CommandDemo() {
         <P.CommandList>
           <P.CommandEmpty>没有匹配的命令。</P.CommandEmpty>
           <P.CommandGroup heading="工作区">
-            <P.CommandItem onSelect={() => setSelection("新建任务")}>
+            <P.CommandItem onSelect={() => setSelection('新建任务')}>
               <Plus />
               新建任务<P.CommandShortcut>⌘ N</P.CommandShortcut>
             </P.CommandItem>
-            <P.CommandItem onSelect={() => setSelection("打开设置")}>
+            <P.CommandItem onSelect={() => setSelection('打开设置')}>
               <Settings />
               打开设置
             </P.CommandItem>
@@ -1114,9 +1226,7 @@ export function ResizableDemo() {
   );
 }
 export function CalendarDemo() {
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date(2026, 8, 6),
-  );
+  const [date, setDate] = React.useState<Date | undefined>(new Date(2026, 8, 6));
   return (
     <Stack>
       <P.Calendar
@@ -1130,18 +1240,16 @@ export function CalendarDemo() {
       <output>
         已选日期：
         {date
-          ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-          : "尚未选择"}
+          ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+          : '尚未选择'}
       </output>
     </Stack>
   );
 }
 export function SidebarDemo() {
-  const [active, setActive] = React.useState("收件箱");
+  const [active, setActive] = React.useState('收件箱');
   return (
-    <P.SidebarProvider
-      className="min-h-80 overflow-hidden rounded-lg border"
-    >
+    <P.SidebarProvider className="min-h-80 overflow-hidden rounded-lg border">
       <P.Sidebar collapsible="none" className="min-h-80">
         <P.SidebarHeader>
           <P.SidebarInput aria-label="搜索任务" placeholder="搜索任务…" />
@@ -1152,9 +1260,9 @@ export function SidebarDemo() {
             <P.SidebarGroupContent>
               <P.SidebarMenu>
                 {[
-                  ["收件箱", Inbox],
-                  ["任务", FileText],
-                  ["设置", Settings],
+                  ['收件箱', Inbox],
+                  ['任务', FileText],
+                  ['设置', Settings],
                 ].map(([label, icon]) => {
                   const Icon = icon as typeof Inbox;
                   return (
@@ -1186,9 +1294,7 @@ export function SidebarDemo() {
           </P.SidebarMenu>
         </P.SidebarFooter>
       </P.Sidebar>
-      <div className="flex flex-1 items-center justify-center p-6 text-sm">
-        {active}
-      </div>
+      <div className="flex flex-1 items-center justify-center p-6 text-sm">{active}</div>
     </P.SidebarProvider>
   );
 }
@@ -1212,34 +1318,75 @@ const gallerySources = [
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iNTQwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTRlNGU3Ii8+PHJlY3QgeD0iMTEwIiB5PSI4MCIgd2lkdGg9Ijc0MCIgaGVpZ2h0PSIzODAiIHJ4PSIyNCIgZmlsbD0iI2ExYTFhYSIvPjxyZWN0IHg9IjE2NSIgeT0iMTQwIiB3aWR0aD0iNjMwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzNmM2Y0NiIvPjxyZWN0IHg9IjE2NSIgeT0iMjIwIiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjE4MCIgcng9IjEyIiBmaWxsPSIjZmFmYWZhIi8+PHJlY3QgeD0iNDYwIiB5PSIyMjAiIHdpZHRoPSIzMzUiIGhlaWdodD0iMTgwIiByeD0iMTIiIGZpbGw9IiM3MTcxN2EiLz48L3N2Zz4=',
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iNTQwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTgxODFiIi8+PGcgZmlsbD0iI2ExYTFhYSI+PGNpcmNsZSBjeD0iMjgwIiBjeT0iMjcwIiByPSIxMzAiLz48Y2lyY2xlIGN4PSI2ODAiIGN5PSIyNzAiIHI9IjEzMCIvPjwvZz48cGF0aCBkPSJNMjgwIDI3MGg0MDAiIHN0cm9rZT0iI2ZhZmFmYSIgc3Ryb2tlLXdpZHRoPSIyNCIvPjwvc3ZnPg==',
 ];
-export const galleryDemoItems: ImageGalleryItem[] = gallerySources.map((src, index) => ({ id: `gallery-${index + 1}`, src, alt: ['山形工作区占位图', '面板工作区占位图', '连接状态占位图'][index] ?? `示例图 ${index + 1}`, title: ['视觉方向', '工作区布局', '连接关系'][index], description: '本地 SVG 示例资源，不请求外部服务。' }));
+export const galleryDemoItems: ImageGalleryItem[] = gallerySources.map((src, index) => ({
+  id: `gallery-${index + 1}`,
+  src,
+  alt: ['山形工作区占位图', '面板工作区占位图', '连接状态占位图'][index] ?? `示例图 ${index + 1}`,
+  title: ['视觉方向', '工作区布局', '连接关系'][index],
+  description: '本地 SVG 示例资源，不请求外部服务。',
+}));
 export function ImageGalleryDemo() {
   const [activeId, setActiveId] = React.useState(galleryDemoItems[0]?.id);
-  return <div className="w-full max-w-xl"><ImageGallery items={galleryDemoItems} activeId={activeId} onActiveChange={setActiveId} onRetry={() => {}} /></div>;
+  return (
+    <div className="w-full max-w-xl">
+      <ImageGallery
+        items={galleryDemoItems}
+        activeId={activeId}
+        onActiveChange={setActiveId}
+        onRetry={() => {}}
+      />
+    </div>
+  );
 }
 export const carouselDemoItems = [
   { id: 'review', eyebrow: '01', title: '检查变更', description: '查看文件差异与自动检查结果。' },
   { id: 'run', eyebrow: '02', title: '运行任务', description: '在本地工作区执行已确认的步骤。' },
-  { id: 'artifact', eyebrow: '03', title: '预览产物', description: '确认组件在实际工作面中的层级。' },
+  {
+    id: 'artifact',
+    eyebrow: '03',
+    title: '预览产物',
+    description: '确认组件在实际工作面中的层级。',
+  },
   { id: 'share', eyebrow: '04', title: '交付结果', description: '整理验证证据并交给使用方。' },
 ];
 export function CarouselDemo() {
-  return <div className="w-full max-w-xl"><Carousel items={carouselDemoItems} getItemId={item => item.id} renderItem={item => <article className="min-h-36 rounded-lg border border-border bg-card p-[var(--rui-content-padding)]"><p className="text-xs text-muted-foreground">步骤 {item.eyebrow}</p><h3 className="mt-[var(--rui-space-2)] text-sm font-medium">{item.title}</h3><p className="mt-[var(--rui-space-1)] text-xs leading-relaxed text-muted-foreground">{item.description}</p></article>} label="本地任务流程" /></div>;
+  return (
+    <div className="w-full max-w-xl">
+      <Carousel
+        items={carouselDemoItems}
+        getItemId={(item) => item.id}
+        renderItem={(item) => (
+          <article className="min-h-36 rounded-lg border border-border bg-card p-[var(--rui-content-padding)]">
+            <p className="text-xs text-muted-foreground">步骤 {item.eyebrow}</p>
+            <h3 className="mt-[var(--rui-space-2)] text-sm font-medium">{item.title}</h3>
+            <p className="mt-[var(--rui-space-1)] text-xs leading-relaxed text-muted-foreground">
+              {item.description}
+            </p>
+          </article>
+        )}
+        label="本地任务流程"
+      />
+    </div>
+  );
 }
 export function ImageCompareDemo() {
   const [position, setPosition] = React.useState(48);
-  return <div className="w-full max-w-xl"><ImageCompare before={{ src: gallerySources[0]!, alt: '调整前的山形工作区', label: '调整前' }} after={{ src: gallerySources[1]!, alt: '调整后的面板工作区', label: '调整后' }} position={position} onPositionChange={setPosition} /></div>;
+  return (
+    <div className="w-full max-w-xl">
+      <ImageCompare
+        before={{ src: gallerySources[0]!, alt: '调整前的山形工作区', label: '调整前' }}
+        after={{ src: gallerySources[1]!, alt: '调整后的面板工作区', label: '调整后' }}
+        position={position}
+        onPositionChange={setPosition}
+      />
+    </div>
+  );
 }
 export function InputOTPDemo() {
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState('');
   return (
     <Stack>
-      <P.InputOTP
-        aria-label="六位验证码"
-        maxLength={6}
-        value={value}
-        onChange={setValue}
-      >
+      <P.InputOTP aria-label="六位验证码" maxLength={6} value={value} onChange={setValue}>
         <P.InputOTPGroup>
           {[0, 1, 2, 3, 4, 5].map((index) => (
             <P.InputOTPSlot key={index} index={index} />
@@ -1247,9 +1394,7 @@ export function InputOTPDemo() {
         </P.InputOTPGroup>
       </P.InputOTP>
       <Note>
-        {value.length === 6
-          ? "输入已完成（仅本地示例）"
-          : `已输入 ${value.length} / 6 位`}
+        {value.length === 6 ? '输入已完成（仅本地示例）' : `已输入 ${value.length} / 6 位`}
       </Note>
     </Stack>
   );
@@ -1263,17 +1408,11 @@ export function ItemDemo() {
       </P.ItemMedia>
       <P.ItemContent>
         <P.ItemTitle>个人组件库</P.ItemTitle>
-        <P.ItemDescription>
-          基础、复杂与 AI 组件共享一个主题。
-        </P.ItemDescription>
+        <P.ItemDescription>基础、复杂与 AI 组件共享一个主题。</P.ItemDescription>
       </P.ItemContent>
       <P.ItemActions>
-        <P.Button
-          variant="outline"
-          size="sm"
-          onClick={() => setInstalled(!installed)}
-        >
-          {installed ? "已添加" : "添加"}
+        <P.Button variant="outline" size="sm" onClick={() => setInstalled(!installed)}>
+          {installed ? '已添加' : '添加'}
         </P.Button>
       </P.ItemActions>
     </P.Item>
@@ -1295,7 +1434,7 @@ export function KbdDemo() {
   );
 }
 export function NativeSelectDemo() {
-  const [value, setValue] = React.useState("system");
+  const [value, setValue] = React.useState('system');
   return (
     <Stack>
       <Native.NativeSelect
@@ -1316,7 +1455,7 @@ export function NativeSelectDemo() {
   );
 }
 export function NavigationMenuDemo() {
-  const [page, setPage] = React.useState("选择一个文档");
+  const [page, setPage] = React.useState('选择一个文档');
   return (
     <Stack>
       <P.NavigationMenu>
@@ -1324,7 +1463,7 @@ export function NavigationMenuDemo() {
           <P.NavigationMenuItem>
             <P.NavigationMenuTrigger>组件文档</P.NavigationMenuTrigger>
             <P.NavigationMenuContent className="w-60">
-              {["基础组件", "复杂组件", "AI 组件"].map((label) => (
+              {['基础组件', '复杂组件', 'AI 组件'].map((label) => (
                 <P.NavigationMenuLink
                   key={label}
                   href={`#${label}`}
@@ -1343,7 +1482,7 @@ export function NavigationMenuDemo() {
               href="#tokens"
               onClick={(event) => {
                 event.preventDefault();
-                setPage("设计 Tokens");
+                setPage('设计 Tokens');
               }}
             >
               设计 Tokens
@@ -1356,19 +1495,17 @@ export function NavigationMenuDemo() {
   );
 }
 export function MenubarDemo() {
-  const [action, setAction] = React.useState("尚未执行");
+  const [action, setAction] = React.useState('尚未执行');
   return (
     <Stack>
       <P.Menubar>
         <P.MenubarMenu>
           <P.MenubarTrigger>文件</P.MenubarTrigger>
           <P.MenubarContent>
-            <P.MenubarItem onClick={() => setAction("新建任务")}>
+            <P.MenubarItem onClick={() => setAction('新建任务')}>
               新建任务<P.MenubarShortcut>⌘ N</P.MenubarShortcut>
             </P.MenubarItem>
-            <P.MenubarItem onClick={() => setAction("打开工作区")}>
-              打开工作区
-            </P.MenubarItem>
+            <P.MenubarItem onClick={() => setAction('打开工作区')}>打开工作区</P.MenubarItem>
             <P.MenubarSeparator />
             <P.MenubarItem disabled>导出到云端</P.MenubarItem>
           </P.MenubarContent>
@@ -1376,12 +1513,8 @@ export function MenubarDemo() {
         <P.MenubarMenu>
           <P.MenubarTrigger>查看</P.MenubarTrigger>
           <P.MenubarContent>
-            <P.MenubarItem onClick={() => setAction("显示文档")}>
-              显示文档
-            </P.MenubarItem>
-            <P.MenubarItem onClick={() => setAction("显示组件")}>
-              显示组件
-            </P.MenubarItem>
+            <P.MenubarItem onClick={() => setAction('显示文档')}>显示文档</P.MenubarItem>
+            <P.MenubarItem onClick={() => setAction('显示组件')}>显示组件</P.MenubarItem>
           </P.MenubarContent>
         </P.MenubarMenu>
       </P.Menubar>
@@ -1397,397 +1530,443 @@ export interface BasicCatalogEntry {
   component: React.ComponentType;
 }
 export const basicCatalog: BasicCatalogEntry[] = [
-  { id: 'scroll-top', name: 'ScrollTop', description: '独立滚动目标、阈值、返回顶部与焦点恢复。', component: ScrollTopDemo },
-  { id: 'one-time-code', name: 'OneTimeCode', description: '受宿主管理的验证码展示、锁定、有效期与异步复制。', component: OneTimeCodeDemo },
   {
-    id: "button",
-    name: "Button",
-    description: "六种操作层级、尺寸、禁用与加载状态。",
+    id: 'scroll-top',
+    name: 'ScrollTop',
+    description: '独立滚动目标、阈值、返回顶部与焦点恢复。',
+    component: ScrollTopDemo,
+  },
+  {
+    id: 'one-time-code',
+    name: 'OneTimeCode',
+    description: '受宿主管理的验证码展示、锁定、有效期与异步复制。',
+    component: OneTimeCodeDemo,
+  },
+  {
+    id: 'button',
+    name: 'Button',
+    description: '六种操作层级、尺寸、禁用与加载状态。',
     component: ButtonDemo,
   },
   {
-    id: "button-group",
-    name: "Button Group",
-    description: "相邻操作、分隔与共享边缘。",
+    id: 'button-group',
+    name: 'Button Group',
+    description: '相邻操作、分隔与共享边缘。',
     component: ButtonGroupDemo,
   },
   {
-    id: "badge",
-    name: "Badge",
-    description: "轻量标签、状态与图标组合。",
+    id: 'badge',
+    name: 'Badge',
+    description: '轻量标签、状态与图标组合。',
     component: BadgeDemo,
   },
   {
-    id: "input",
-    name: "Input",
-    description: "文本输入、中文、只读、错误与禁用。",
+    id: 'input',
+    name: 'Input',
+    description: '文本输入、中文、只读、错误与禁用。',
     component: InputDemo,
   },
   {
-    id: "input-tags",
-    name: "InputTags",
-    description: "任意标签创建、去重、上限、编辑与删除。",
+    id: 'input-tags',
+    name: 'InputTags',
+    description: '任意标签创建、去重、上限、编辑与删除。',
     component: InputTagsDemo,
   },
   {
-    id: "color-picker",
-    name: "ColorPicker / ColorInput",
-    description: "颜色文本、色板、通道、格式与透明度。",
+    id: 'color-picker',
+    name: 'ColorPicker / ColorInput',
+    description: '颜色文本、色板、通道、格式与透明度。',
     component: ColorPickerDemo,
   },
   {
-    id: "input-date",
-    name: "InputDate",
-    description: "日期分段、locale 顺序、范围、日历与表单值。",
+    id: 'input-date',
+    name: 'InputDate',
+    description: '日期分段、locale 顺序、范围、日历与表单值。',
     component: InputDateDemo,
   },
   {
-    id: "input-time",
-    name: "InputTime",
-    description: "时间分段、小时制、精度、步进、范围与表单值。",
+    id: 'input-time',
+    name: 'InputTime',
+    description: '时间分段、小时制、精度、步进、范围与表单值。',
     component: InputTimeDemo,
   },
   {
-    id: "date-time-picker",
-    name: "DateTimePicker",
-    description: "本地日期时间、跨日范围、一致提交与序列化。",
+    id: 'date-time-picker',
+    name: 'DateTimePicker',
+    description: '本地日期时间、跨日范围、一致提交与序列化。',
     component: DateTimePickerDemo,
   },
   {
-    id: "password-input",
-    name: "PasswordInput",
-    description: "显隐、规则、强度反馈与宿主校验接点。",
+    id: 'password-input',
+    name: 'PasswordInput',
+    description: '显隐、规则、强度反馈与宿主校验接点。',
     component: PasswordInputDemo,
   },
   {
-    id: "input-mask",
-    name: "InputMask",
-    description: "raw/display 双值、可选段、粘贴、光标与 IME。",
+    id: 'input-mask',
+    name: 'InputMask',
+    description: 'raw/display 双值、可选段、粘贴、光标与 IME。',
     component: InputMaskDemo,
   },
   {
-    id: "listbox",
-    name: "Listbox",
-    description: "常驻单选或多选列表、分组、搜索、富选项与范围选择。",
+    id: 'listbox',
+    name: 'Listbox',
+    description: '常驻单选或多选列表、分组、搜索、富选项与范围选择。',
     component: ListboxDemo,
   },
   {
-    id: "textarea",
-    name: "Textarea",
-    description: "多行编辑与字数反馈。",
+    id: 'textarea',
+    name: 'Textarea',
+    description: '多行编辑与字数反馈。',
     component: TextareaDemo,
   },
   {
-    id: "label",
-    name: "Label",
-    description: "与控件显式关联的表单标签。",
+    id: 'label',
+    name: 'Label',
+    description: '与控件显式关联的表单标签。',
     component: LabelDemo,
   },
   {
-    id: "field",
-    name: "Field",
-    description: "标签、说明、错误与字段分组。",
+    id: 'field',
+    name: 'Field',
+    description: '标签、说明、错误与字段分组。',
     component: FieldDemo,
   },
   {
-    id: "input-group",
-    name: "Input Group",
-    description: "前后缀、快捷键与输入操作。",
+    id: 'input-group',
+    name: 'Input Group',
+    description: '前后缀、快捷键与输入操作。',
     component: InputGroupDemo,
   },
   {
-    id: "checkbox",
-    name: "Checkbox",
-    description: "选中、部分选中、错误与禁用。",
+    id: 'checkbox',
+    name: 'Checkbox',
+    description: '选中、部分选中、错误与禁用。',
     component: CheckboxDemo,
   },
   {
-    id: "switch",
-    name: "Switch",
-    description: "即时布尔设置与紧凑变体。",
+    id: 'switch',
+    name: 'Switch',
+    description: '即时布尔设置与紧凑变体。',
     component: SwitchDemo,
   },
   {
-    id: "radio-group",
-    name: "Radio Group",
-    description: "互斥选项与键盘移动。",
+    id: 'radio-group',
+    name: 'Radio Group',
+    description: '互斥选项与键盘移动。',
     component: RadioGroupDemo,
   },
   {
-    id: "slider",
-    name: "Slider",
-    description: "连续数值、范围与禁用状态。",
+    id: 'slider',
+    name: 'Slider',
+    description: '连续数值、范围与禁用状态。',
     component: SliderDemo,
   },
   {
-    id: "toggle",
-    name: "Toggle",
-    description: "独立可切换操作。",
+    id: 'toggle',
+    name: 'Toggle',
+    description: '独立可切换操作。',
     component: ToggleDemo,
   },
   {
-    id: "toggle-group",
-    name: "Toggle Group",
-    description: "可多选的工具栏按钮组。",
+    id: 'toggle-group',
+    name: 'Toggle Group',
+    description: '可多选的工具栏按钮组。',
     component: ToggleGroupDemo,
   },
   {
-    id: "select",
-    name: "Select",
-    description: "可控单选、分组与禁用选项。",
+    id: 'select',
+    name: 'Select',
+    description: '可控单选、分组与禁用选项。',
     component: SelectDemo,
   },
   {
-    id: "combobox",
-    name: "Combobox",
-    description: "可搜索选项、清除与空结果。",
+    id: 'combobox',
+    name: 'Combobox',
+    description: '可搜索选项、清除与空结果。',
     component: ComboboxDemo,
   },
   {
-    id: "async-combobox",
-    name: "AsyncCombobox",
-    description: "宿主异步查询、取消过期请求、重试与选中项缓存。",
+    id: 'async-combobox',
+    name: 'AsyncCombobox',
+    description: '宿主异步查询、取消过期请求、重试与选中项缓存。',
     component: AsyncComboboxDemo,
   },
   {
-    id: "async-multi-select",
-    name: "AsyncMultiSelect",
-    description: "宿主异步多选、过期请求保护与跨结果页标签缓存。",
+    id: 'async-multi-select',
+    name: 'AsyncMultiSelect',
+    description: '宿主异步多选、过期请求保护与跨结果页标签缓存。',
     component: AsyncMultiSelectDemo,
   },
   {
-    id: "accordion",
-    name: "Accordion",
-    description: "分组折叠内容与禁用章节。",
+    id: 'accordion',
+    name: 'Accordion',
+    description: '分组折叠内容与禁用章节。',
     component: AccordionDemo,
   },
   {
-    id: "collapsible",
-    name: "Collapsible",
-    description: "按需展开的辅助内容。",
+    id: 'collapsible',
+    name: 'Collapsible',
+    description: '按需展开的辅助内容。',
     component: CollapsibleDemo,
   },
   {
-    id: "tabs",
-    name: "Tabs",
-    description: "预览/代码切换与禁用标签。",
+    id: 'tabs',
+    name: 'Tabs',
+    description: '预览/代码切换与禁用标签。',
     component: TabsDemo,
   },
   {
-    id: "dialog",
-    name: "Dialog",
-    description: "可控模态、表单、保存与焦点恢复。",
+    id: 'dialog',
+    name: 'Dialog',
+    description: '可控模态、表单、保存与焦点恢复。',
     component: DialogDemo,
   },
   {
-    id: "alert-dialog",
-    name: "Alert Dialog",
-    description: "确认操作与可恢复的本地反馈。",
+    id: 'alert-dialog',
+    name: 'Alert Dialog',
+    description: '确认操作与可恢复的本地反馈。',
     component: AlertDialogDemo,
   },
   {
-    id: "dropdown-menu",
-    name: "Dropdown Menu",
-    description: "操作、快捷键、复选与禁用条目。",
+    id: 'dropdown-menu',
+    name: 'Dropdown Menu',
+    description: '操作、快捷键、复选与禁用条目。',
     component: DropdownMenuDemo,
   },
   {
-    id: "context-menu",
-    name: "Context Menu",
-    description: "右键打开的上下文操作。",
+    id: 'context-menu',
+    name: 'Context Menu',
+    description: '右键打开的上下文操作。',
     component: ContextMenuDemo,
   },
   {
-    id: "popover",
-    name: "Popover",
-    description: "与触发器关联的辅助设置。",
+    id: 'popover',
+    name: 'Popover',
+    description: '与触发器关联的辅助设置。',
     component: PopoverDemo,
   },
   {
-    id: "tooltip",
-    name: "Tooltip",
-    description: "悬停与键盘焦点说明。",
+    id: 'tooltip',
+    name: 'Tooltip',
+    description: '悬停与键盘焦点说明。',
     component: TooltipDemo,
   },
   {
-    id: "hover-card",
-    name: "Hover Card",
-    description: "链接预览卡片。",
+    id: 'hover-card',
+    name: 'Hover Card',
+    description: '链接预览卡片。',
     component: HoverCardDemo,
   },
   {
-    id: "sheet",
-    name: "Sheet",
-    description: "按需打开的任务详情抽屉。",
+    id: 'sheet',
+    name: 'Sheet',
+    description: '按需打开的任务详情抽屉。',
     component: SheetDemo,
   },
   {
-    id: "card",
-    name: "Card",
-    description: "标题、内容、动作与页脚组合。",
+    id: 'card',
+    name: 'Card',
+    description: '标题、内容、动作与页脚组合。',
     component: CardDemo,
   },
   {
-    id: "alert",
-    name: "Alert",
-    description: "信息与错误提示。",
+    id: 'alert',
+    name: 'Alert',
+    description: '信息与错误提示。',
     component: AlertDemo,
   },
   {
-    id: "empty",
-    name: "Empty",
-    description: "可执行下一步的空状态。",
+    id: 'empty',
+    name: 'Empty',
+    description: '可执行下一步的空状态。',
     component: EmptyDemo,
   },
   {
-    id: "avatar",
-    name: "Avatar",
-    description: "回退文字、尺寸与头像组。",
+    id: 'avatar',
+    name: 'Avatar',
+    description: '回退文字、尺寸与头像组。',
     component: AvatarDemo,
   },
   {
-    id: "skeleton",
-    name: "Skeleton",
-    description: "结构稳定的加载占位。",
+    id: 'skeleton',
+    name: 'Skeleton',
+    description: '结构稳定的加载占位。',
     component: SkeletonDemo,
   },
   {
-    id: "spinner",
-    name: "Spinner",
-    description: "加载指示与按钮组合。",
+    id: 'spinner',
+    name: 'Spinner',
+    description: '加载指示与按钮组合。',
     component: SpinnerDemo,
   },
   {
-    id: "separator",
-    name: "Separator",
-    description: "水平与垂直分隔。",
+    id: 'separator',
+    name: 'Separator',
+    description: '水平与垂直分隔。',
     component: SeparatorDemo,
   },
   {
-    id: "scroll-area",
-    name: "Scroll Area",
-    description: "可滚动文件列表与细滚动条。",
+    id: 'scroll-area',
+    name: 'Scroll Area',
+    description: '可滚动文件列表与细滚动条。',
     component: ScrollAreaDemo,
   },
   {
-    id: "progress",
-    name: "Progress",
-    description: "数值进度、标签与重置操作。",
+    id: 'progress',
+    name: 'Progress',
+    description: '数值进度、标签与重置操作。',
     component: ProgressDemo,
   },
   {
-    id: "table",
-    name: "Table",
-    description: "表格标题、列头、行与状态。",
+    id: 'table',
+    name: 'Table',
+    description: '表格标题、列头、行与状态。',
     component: TableDemo,
   },
   {
-    id: "pagination",
-    name: "Pagination",
-    description: "页码选择与相邻页导航。",
+    id: 'pagination',
+    name: 'Pagination',
+    description: '页码选择与相邻页导航。',
     component: PaginationDemo,
   },
   {
-    id: "breadcrumb",
-    name: "Breadcrumb",
-    description: "层级导航与当前页标识。",
+    id: 'breadcrumb',
+    name: 'Breadcrumb',
+    description: '层级导航与当前页标识。',
     component: BreadcrumbDemo,
   },
   {
-    id: "command",
-    name: "Command",
-    description: "可过滤命令列表与选择反馈。",
+    id: 'command',
+    name: 'Command',
+    description: '可过滤命令列表与选择反馈。',
     component: CommandDemo,
   },
   {
-    id: "resizable",
-    name: "Resizable",
-    description: "鼠标与键盘可调整的双面板。",
+    id: 'resizable',
+    name: 'Resizable',
+    description: '鼠标与键盘可调整的双面板。',
     component: ResizableDemo,
   },
   {
-    id: "calendar",
-    name: "Calendar",
-    description: "固定月份的可控单日选择与禁用日期。",
+    id: 'calendar',
+    name: 'Calendar',
+    description: '固定月份的可控单日选择与禁用日期。',
     component: CalendarDemo,
   },
   {
-    id: "sidebar",
-    name: "Sidebar",
-    description: "搜索、分组、活动行与页脚。",
+    id: 'sidebar',
+    name: 'Sidebar',
+    description: '搜索、分组、活动行与页脚。',
     component: SidebarDemo,
   },
   {
-    id: "aspect-ratio",
-    name: "Aspect Ratio",
-    description: "保持固定比例的内容容器。",
+    id: 'aspect-ratio',
+    name: 'Aspect Ratio',
+    description: '保持固定比例的内容容器。',
     component: AspectRatioDemo,
   },
   {
-    id: "image-gallery",
-    name: "ImageGallery",
-    description: "缩略图、放大预览、图像状态与键盘导航。",
+    id: 'image-gallery',
+    name: 'ImageGallery',
+    description: '缩略图、放大预览、图像状态与键盘导航。',
     component: ImageGalleryDemo,
   },
   {
-    id: "carousel",
-    name: "Carousel",
-    description: "受控分页、指示器、手势与可暂停自动播放。",
+    id: 'carousel',
+    name: 'Carousel',
+    description: '受控分页、指示器、手势与可暂停自动播放。',
     component: CarouselDemo,
   },
   {
-    id: "image-compare",
-    name: "ImageCompare",
-    description: "横纵图像重叠、受控比例与键盘范围。",
+    id: 'image-compare',
+    name: 'ImageCompare',
+    description: '横纵图像重叠、受控比例与键盘范围。',
     component: ImageCompareDemo,
   },
   {
-    id: "input-otp",
-    name: "Input OTP",
-    description: "分组验证码输入与完成反馈。",
+    id: 'input-otp',
+    name: 'Input OTP',
+    description: '分组验证码输入与完成反馈。',
     component: InputOTPDemo,
   },
   {
-    id: "item",
-    name: "Item",
-    description: "媒体、描述、内容与行内操作。",
+    id: 'item',
+    name: 'Item',
+    description: '媒体、描述、内容与行内操作。',
     component: ItemDemo,
   },
   {
-    id: "kbd",
-    name: "Kbd",
-    description: "单键与组合快捷键提示。",
+    id: 'kbd',
+    name: 'Kbd',
+    description: '单键与组合快捷键提示。',
     component: KbdDemo,
   },
   {
-    id: "native-select",
-    name: "Native Select",
-    description: "平台兼容入口；产品界面请使用 SelectInput / Select。",
+    id: 'native-select',
+    name: 'Native Select',
+    description: '平台兼容入口；产品界面请使用 SelectInput / Select。',
     component: NativeSelectDemo,
   },
   {
-    id: "navigation-menu",
-    name: "Navigation Menu",
-    description: "产品导航与文档入口。",
+    id: 'navigation-menu',
+    name: 'Navigation Menu',
+    description: '产品导航与文档入口。',
     component: NavigationMenuDemo,
   },
   {
-    id: "menubar",
-    name: "Menubar",
-    description: "桌面菜单栏与分组命令。",
+    id: 'menubar',
+    name: 'Menubar',
+    description: '桌面菜单栏与分组命令。',
     component: MenubarDemo,
   },
-  { id: 'toast', name: 'Toast', description: 'Base UI 管理的通知、撤销动作与异步反馈。', component: ToastDemo },
-  { id: 'multi-select', name: 'MultiSelect', description: '可搜索多选、标签移除与空/加载/禁用状态。', component: MultiSelectDemo },
-  { id: 'number-field', name: 'NumberField', description: '本地化数值输入、步进、边界与空值。', component: NumberFieldDemo },
-  { id: 'meter', name: 'Meter', description: '容量、预算与质量的有界测量值。', component: MeterDemo },
-  { id: 'meter-group', name: 'MeterGroup / ProgressGroup', description: '多段容量构成与任务进度。', component: MeterGroupDemo },
-  { id: 'rating', name: 'Rating', description: '可读、可编辑且支持精度的评分输入。', component: RatingDemo },
+  {
+    id: 'toast',
+    name: 'Toast',
+    description: 'Base UI 管理的通知、撤销动作与异步反馈。',
+    component: ToastDemo,
+  },
+  {
+    id: 'multi-select',
+    name: 'MultiSelect',
+    description: '可搜索多选、标签移除与空/加载/禁用状态。',
+    component: MultiSelectDemo,
+  },
+  {
+    id: 'number-field',
+    name: 'NumberField',
+    description: '本地化数值输入、步进、边界与空值。',
+    component: NumberFieldDemo,
+  },
+  {
+    id: 'meter',
+    name: 'Meter',
+    description: '容量、预算与质量的有界测量值。',
+    component: MeterDemo,
+  },
+  {
+    id: 'meter-group',
+    name: 'MeterGroup / ProgressGroup',
+    description: '多段容量构成与任务进度。',
+    component: MeterGroupDemo,
+  },
+  {
+    id: 'rating',
+    name: 'Rating',
+    description: '可读、可编辑且支持精度的评分输入。',
+    component: RatingDemo,
+  },
   { id: 'knob', name: 'Knob', description: '紧凑圆形单值输入与可读读数。', component: KnobDemo },
 ];
 
-export function ToastDemo({ mode = 'default' }: { mode?: 'default' | 'undo' | 'async' | 'error' } = {}) {
-  return <ToastProvider timeout={0}><ToastDemoActions mode={mode} /></ToastProvider>;
+export function ToastDemo({
+  mode = 'default',
+}: { mode?: 'default' | 'undo' | 'async' | 'error' } = {}) {
+  return (
+    <ToastProvider timeout={0}>
+      <ToastDemoActions mode={mode} />
+    </ToastProvider>
+  );
 }
 function ToastDemoActions({ mode }: { mode: 'default' | 'undo' | 'async' | 'error' }) {
   const manager = useToastManager();
@@ -1796,61 +1975,251 @@ function ToastDemoActions({ mode }: { mode: 'default' | 'undo' | 'async' | 'erro
   async function save() {
     setPending(true);
     try {
-      await manager.promise(new Promise<string>(resolve => setTimeout(() => resolve('本地设置'), 400)), {
-        loading: { title: '正在保存设置', description: '本地异步演示。', type: 'loading' },
-        success: value => ({ title: '设置已保存', description: `${value}已更新。`, type: 'success' }),
-        error: { title: '保存失败', description: '请重试。', type: 'error' },
-      });
-    } finally { setPending(false); }
+      await manager.promise(
+        new Promise<string>((resolve) => setTimeout(() => resolve('本地设置'), 400)),
+        {
+          loading: { title: '正在保存设置', description: '本地异步演示。', type: 'loading' },
+          success: (value) => ({
+            title: '设置已保存',
+            description: `${value}已更新。`,
+            type: 'success',
+          }),
+          error: { title: '保存失败', description: '请重试。', type: 'error' },
+        },
+      );
+    } finally {
+      setPending(false);
+    }
   }
-  return <Stack><Row>
-    {mode === 'default' && <P.Button onClick={() => manager.add({ title: '更改已保存', description: '组件偏好已保存在本地示例中。', type: 'success' })}>显示通知</P.Button>}
-    {mode === 'undo' && <P.Button variant="outline" disabled={archived} onClick={() => {
-      setArchived(true);
-      const id = manager.add({ title: '任务已归档', description: '可以立即撤销本地示例操作。', actionProps: { children: '撤销归档', onClick: () => { setArchived(false); manager.close(id); } } });
-    }}>归档示例任务</P.Button>}
-    {mode === 'async' && <P.Button disabled={pending} onClick={() => void save()}>{pending && <P.Spinner />}保存设置</P.Button>}
-    {mode === 'error' && <P.Button variant="outline" onClick={() => manager.add({ title: '连接失败', description: '这是本地错误示例；请检查地址后重试。', type: 'error', priority: 'high' })}>显示错误通知</P.Button>}
-  </Row>{mode === 'undo' && <output>{archived ? '任务状态：已归档' : '任务状态：进行中'}</output>}<Note>通知由 Base UI 管理公告、关闭和焦点；F6 可进入通知区域。所有操作仅更新本地示例。</Note></Stack>;
+  return (
+    <Stack>
+      <Row>
+        {mode === 'default' && (
+          <P.Button
+            onClick={() =>
+              manager.add({
+                title: '更改已保存',
+                description: '组件偏好已保存在本地示例中。',
+                type: 'success',
+              })
+            }
+          >
+            显示通知
+          </P.Button>
+        )}
+        {mode === 'undo' && (
+          <P.Button
+            variant="outline"
+            disabled={archived}
+            onClick={() => {
+              setArchived(true);
+              const id = manager.add({
+                title: '任务已归档',
+                description: '可以立即撤销本地示例操作。',
+                actionProps: {
+                  children: '撤销归档',
+                  onClick: () => {
+                    setArchived(false);
+                    manager.close(id);
+                  },
+                },
+              });
+            }}
+          >
+            归档示例任务
+          </P.Button>
+        )}
+        {mode === 'async' && (
+          <P.Button disabled={pending} onClick={() => void save()}>
+            {pending && <P.Spinner />}保存设置
+          </P.Button>
+        )}
+        {mode === 'error' && (
+          <P.Button
+            variant="outline"
+            onClick={() =>
+              manager.add({
+                title: '连接失败',
+                description: '这是本地错误示例；请检查地址后重试。',
+                type: 'error',
+                priority: 'high',
+              })
+            }
+          >
+            显示错误通知
+          </P.Button>
+        )}
+      </Row>
+      {mode === 'undo' && <output>{archived ? '任务状态：已归档' : '任务状态：进行中'}</output>}
+      <Note>通知由 Base UI 管理公告、关闭和焦点；F6 可进入通知区域。所有操作仅更新本地示例。</Note>
+    </Stack>
+  );
 }
 
 const multiSelectOptions = [
-  { value: 'react', label: 'React' }, { value: 'typescript', label: 'TypeScript' },
-  { value: 'tailwind', label: 'Tailwind CSS' }, { value: 'storybook', label: 'Storybook' },
+  { value: 'react', label: 'React' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'tailwind', label: 'Tailwind CSS' },
+  { value: 'storybook', label: 'Storybook' },
   { value: 'legacy', label: '旧版框架（不可用）', disabled: true },
 ];
-export function MultiSelectDemo({ state = 'default' }: { state?: 'default' | 'disabled' | 'loading' | 'empty' | 'invalid' } = {}) {
+export function MultiSelectDemo({
+  state = 'default',
+}: { state?: 'default' | 'disabled' | 'loading' | 'empty' | 'invalid' } = {}) {
   const [value, setValue] = React.useState<string[]>(['react']);
-  return <Stack><MultiSelect label="项目技术栈" options={state === 'empty' ? [] : multiSelectOptions} value={state === 'empty' ? [] : value} onValueChange={setValue} disabled={state === 'disabled'} loading={state === 'loading'} error={state === 'invalid' ? '请至少保留两个技术标签。' : undefined} description="输入关键词筛选；可用键盘移动到标签并移除。" /><output>已选择：{state === 'empty' ? '无' : value.join(', ') || '无'}</output></Stack>;
+  return (
+    <Stack>
+      <MultiSelect
+        label="项目技术栈"
+        options={state === 'empty' ? [] : multiSelectOptions}
+        value={state === 'empty' ? [] : value}
+        onValueChange={setValue}
+        disabled={state === 'disabled'}
+        loading={state === 'loading'}
+        error={state === 'invalid' ? '请至少保留两个技术标签。' : undefined}
+        description="输入关键词筛选；可用键盘移动到标签并移除。"
+      />
+      <output>已选择：{state === 'empty' ? '无' : value.join(', ') || '无'}</output>
+    </Stack>
+  );
 }
 
-export function NumberFieldDemo({ state = 'default' }: { state?: 'default' | 'currency' | 'disabled' | 'invalid' | 'empty' } = {}) {
-  const [value, setValue] = React.useState<number | null>(state === 'empty' ? null : state === 'currency' ? 125.5 : 2);
-  return <Stack><NumberField label={state === 'currency' ? '月度预算' : '并发任务数'} value={value} onValueChange={setValue} min={state === 'currency' ? 0 : 1} max={state === 'currency' ? 1000 : 8} step={state === 'currency' ? 0.5 : 1} format={state === 'currency' ? { style: 'currency', currency: 'CNY' } : undefined} locale="zh-CN" disabled={state === 'disabled'} inputPlaceholder="输入数值" error={state === 'invalid' ? '当前方案最多允许 1 个并发任务。' : undefined} description={state === 'currency' ? '支持本地化金额与 0.5 元步进。' : '允许 1–8；方向键调整，直接输入可在失焦时提交。'} /><output>当前数值：{value ?? '空'}</output>{state === 'disabled' && <NumberField label="只读配额" value={8} readOnly />}</Stack>;
+export function NumberFieldDemo({
+  state = 'default',
+}: { state?: 'default' | 'currency' | 'disabled' | 'invalid' | 'empty' } = {}) {
+  const [value, setValue] = React.useState<number | null>(
+    state === 'empty' ? null : state === 'currency' ? 125.5 : 2,
+  );
+  return (
+    <Stack>
+      <NumberField
+        label={state === 'currency' ? '月度预算' : '并发任务数'}
+        value={value}
+        onValueChange={setValue}
+        min={state === 'currency' ? 0 : 1}
+        max={state === 'currency' ? 1000 : 8}
+        step={state === 'currency' ? 0.5 : 1}
+        format={state === 'currency' ? { style: 'currency', currency: 'CNY' } : undefined}
+        locale="zh-CN"
+        disabled={state === 'disabled'}
+        inputPlaceholder="输入数值"
+        error={state === 'invalid' ? '当前方案最多允许 1 个并发任务。' : undefined}
+        description={
+          state === 'currency'
+            ? '支持本地化金额与 0.5 元步进。'
+            : '允许 1–8；方向键调整，直接输入可在失焦时提交。'
+        }
+      />
+      <output>当前数值：{value ?? '空'}</output>
+      {state === 'disabled' && <NumberField label="只读配额" value={8} readOnly />}
+    </Stack>
+  );
 }
 
-export function MeterDemo({ state = 'default' }: { state?: 'default' | 'warning' | 'zero' | 'quality' } = {}) {
-  const [value, setValue] = React.useState(state === 'warning' ? 116 : state === 'zero' ? 0 : state === 'quality' ? 82 : 68);
+export function MeterDemo({
+  state = 'default',
+}: { state?: 'default' | 'warning' | 'zero' | 'quality' } = {}) {
+  const [value, setValue] = React.useState(
+    state === 'warning' ? 116 : state === 'zero' ? 0 : state === 'quality' ? 82 : 68,
+  );
   const quality = state === 'quality';
   const max = quality ? 100 : 128;
-  return <Stack><Meter label={quality ? '数据完整度' : '工作区存储'} min={0} max={max} value={value} valueLabel={quality ? `${value}%` : `${value} / 128 GB`} tone={state === 'warning' ? 'warning' : quality ? 'success' : 'default'} description={state === 'warning' ? '容量接近上限，请整理已有文件。' : quality ? '这是当前数据质量测量，不表示后台任务进度。' : '展示当前已用容量；不表示任务完成百分比。'} /><Row><P.Button variant="outline" size="sm" onClick={() => setValue(Math.min(max, value + 8))}>增加示例值</P.Button><P.Button variant="ghost" size="sm" onClick={() => setValue(0)}>归零</P.Button></Row></Stack>;
+  return (
+    <Stack>
+      <Meter
+        label={quality ? '数据完整度' : '工作区存储'}
+        min={0}
+        max={max}
+        value={value}
+        valueLabel={quality ? `${value}%` : `${value} / 128 GB`}
+        tone={state === 'warning' ? 'warning' : quality ? 'success' : 'default'}
+        description={
+          state === 'warning'
+            ? '容量接近上限，请整理已有文件。'
+            : quality
+              ? '这是当前数据质量测量，不表示后台任务进度。'
+              : '展示当前已用容量；不表示任务完成百分比。'
+        }
+      />
+      <Row>
+        <P.Button variant="outline" size="sm" onClick={() => setValue(Math.min(max, value + 8))}>
+          增加示例值
+        </P.Button>
+        <P.Button variant="ghost" size="sm" onClick={() => setValue(0)}>
+          归零
+        </P.Button>
+      </Row>
+    </Stack>
+  );
 }
 
-export function MeterGroupDemo({ state = 'default' }: { state?: 'default' | 'zero' | 'overflow' } = {}) {
-  const items = state === 'zero' ? [] : [
-    { id: 'projects', label: '项目文件', value: state === 'overflow' ? 72 : 42, tone: 'default' as const },
-    { id: 'indexes', label: '本地索引', value: 18, tone: 'accent' as const },
-    { id: 'cache', label: '缓存', value: 12, tone: 'muted' as const },
-  ];
-  return <Stack><MeterGroup label="工作区存储构成" items={items} max={state === 'overflow' ? 96 : 128} formatValue={value => `${value} GB`} description="分段显示容量构成；任务执行状态应使用 ProgressGroup。" /></Stack>;
+export function MeterGroupDemo({
+  state = 'default',
+}: { state?: 'default' | 'zero' | 'overflow' } = {}) {
+  const items =
+    state === 'zero'
+      ? []
+      : [
+          {
+            id: 'projects',
+            label: '项目文件',
+            value: state === 'overflow' ? 72 : 42,
+            tone: 'default' as const,
+          },
+          { id: 'indexes', label: '本地索引', value: 18, tone: 'accent' as const },
+          { id: 'cache', label: '缓存', value: 12, tone: 'muted' as const },
+        ];
+  return (
+    <Stack>
+      <MeterGroup
+        label="工作区存储构成"
+        items={items}
+        max={state === 'overflow' ? 96 : 128}
+        formatValue={(value) => `${value} GB`}
+        description="分段显示容量构成；任务执行状态应使用 ProgressGroup。"
+      />
+    </Stack>
+  );
 }
 
-export function RatingDemo({ state = 'default' }: { state?: 'default' | 'half' | 'readonly' | 'error' } = {}) {
+export function RatingDemo({
+  state = 'default',
+}: { state?: 'default' | 'half' | 'readonly' | 'error' } = {}) {
   const [value, setValue] = React.useState<number | null>(state === 'half' ? 3.5 : 4);
-  return <Stack><Rating label="本次回答质量" value={value} onValueChange={setValue} step={state === 'half' ? 0.5 : 1} readOnly={state === 'readonly'} error={state === 'error' ? '请选择评分后再提交。' : undefined} description="方向键移动，空格选择；可用清除按钮恢复未评分。" /><output>当前评分：{value ?? '未评分'}</output></Stack>;
+  return (
+    <Stack>
+      <Rating
+        label="本次回答质量"
+        value={value}
+        onValueChange={setValue}
+        step={state === 'half' ? 0.5 : 1}
+        readOnly={state === 'readonly'}
+        error={state === 'error' ? '请选择评分后再提交。' : undefined}
+        description="方向键移动，空格选择；可用清除按钮恢复未评分。"
+      />
+      <output>当前评分：{value ?? '未评分'}</output>
+    </Stack>
+  );
 }
 
-export function KnobDemo({ state = 'default' }: { state?: 'default' | 'readonly' | 'disabled' | 'error' } = {}) {
+export function KnobDemo({
+  state = 'default',
+}: { state?: 'default' | 'readonly' | 'disabled' | 'error' } = {}) {
   const [value, setValue] = React.useState(62);
-  return <Stack><Knob label="上下文预算" value={value} onValueChange={setValue} readOnly={state === 'readonly'} disabled={state === 'disabled'} error={state === 'error' ? '当前值超过推荐预算。' : undefined} formatValue={current => `${current}%`} showRange description="紧凑单值调节；精确文本输入请使用 NumberField。" /><output>当前值：{value}</output></Stack>;
+  return (
+    <Stack>
+      <Knob
+        label="上下文预算"
+        value={value}
+        onValueChange={setValue}
+        readOnly={state === 'readonly'}
+        disabled={state === 'disabled'}
+        error={state === 'error' ? '当前值超过推荐预算。' : undefined}
+        formatValue={(current) => `${current}%`}
+        showRange
+        description="紧凑单值调节；精确文本输入请使用 NumberField。"
+      />
+      <output>当前值：{value}</output>
+    </Stack>
+  );
 }

@@ -97,7 +97,12 @@ function hslToRgb(hue: number, saturation: number, lightness: number): RgbaColor
   else if (segment < 5) [r, b] = [x, chroma];
   else [r, b] = [chroma, x];
   const offset = l - chroma / 2;
-  return { r: Math.round((r + offset) * 255), g: Math.round((g + offset) * 255), b: Math.round((b + offset) * 255), a: 1 };
+  return {
+    r: Math.round((r + offset) * 255),
+    g: Math.round((g + offset) * 255),
+    b: Math.round((b + offset) * 255),
+    a: 1,
+  };
 }
 
 function rgbToHsl({ r, g, b }: RgbaColor) {
@@ -152,7 +157,12 @@ function hsvToRgb({ h, s, v }: HsvColor, alpha = 1): RgbaColor {
   else if (segment < 5) [r, b] = [x, chroma];
   else [r, b] = [chroma, x];
   const offset = value - chroma;
-  return { r: Math.round((r + offset) * 255), g: Math.round((g + offset) * 255), b: Math.round((b + offset) * 255), a: clamp(alpha, 0, 1) };
+  return {
+    r: Math.round((r + offset) * 255),
+    g: Math.round((g + offset) * 255),
+    b: Math.round((b + offset) * 255),
+    a: clamp(alpha, 0, 1),
+  };
 }
 
 /** Parses hex, rgb(a) and hsl(a) color strings without accepting browser-dependent named colors. */
@@ -160,7 +170,8 @@ export function parseColor(value: string): RgbaColor | null {
   const input = value.trim();
   const hex = /^#([\da-f]{3,8})$/i.exec(input)?.[1];
   if (hex && [3, 4, 6, 8].includes(hex.length)) {
-    const expanded = hex.length <= 4 ? [...hex].map(character => character + character).join('') : hex;
+    const expanded =
+      hex.length <= 4 ? [...hex].map((character) => character + character).join('') : hex;
     return {
       r: Number.parseInt(expanded.slice(0, 2), 16),
       g: Number.parseInt(expanded.slice(2, 4), 16),
@@ -172,7 +183,7 @@ export function parseColor(value: string): RgbaColor | null {
   const functional = /^(rgba?|hsla?)\((.*)\)$/i.exec(input);
   if (!functional) return null;
   const [name, body] = [functional[1].toLowerCase(), functional[2]];
-  const slash = body.split('/').map(part => part.trim());
+  const slash = body.split('/').map((part) => part.trim());
   if (slash.length > 2) return null;
   const commaSyntax = slash[0].includes(',');
   const parts = slash[0].split(commaSyntax ? /\s*,\s*/ : /\s+/).filter(Boolean);
@@ -184,40 +195,75 @@ export function parseColor(value: string): RgbaColor | null {
 
   if (name.startsWith('rgb')) {
     const channels = parts.map(parseChannel);
-    if (channels.some(channel => channel == null)) return null;
+    if (channels.some((channel) => channel == null)) return null;
     return { r: channels[0]!, g: channels[1]!, b: channels[2]!, a: alpha };
   }
 
   const hue = Number.parseFloat(parts[0].replace(/deg$/i, ''));
   const saturation = Number.parseFloat(parts[1]);
   const lightness = Number.parseFloat(parts[2]);
-  if (!Number.isFinite(hue) || !parts[1].endsWith('%') || !parts[2].endsWith('%') || saturation < 0 || saturation > 100 || lightness < 0 || lightness > 100) return null;
+  if (
+    !Number.isFinite(hue) ||
+    !parts[1].endsWith('%') ||
+    !parts[2].endsWith('%') ||
+    saturation < 0 ||
+    saturation > 100 ||
+    lightness < 0 ||
+    lightness > 100
+  )
+    return null;
   return { ...hslToRgb(hue, saturation, lightness), a: alpha };
 }
 
 export function formatColor(color: RgbaColor, format: ColorFormat = 'hex', allowAlpha = false) {
-  const safe = { r: clamp(Math.round(color.r), 0, 255), g: clamp(Math.round(color.g), 0, 255), b: clamp(Math.round(color.b), 0, 255), a: allowAlpha ? clamp(color.a, 0, 1) : 1 };
+  const safe = {
+    r: clamp(Math.round(color.r), 0, 255),
+    g: clamp(Math.round(color.g), 0, 255),
+    b: clamp(Math.round(color.b), 0, 255),
+    a: allowAlpha ? clamp(color.a, 0, 1) : 1,
+  };
   if (format === 'hex') {
     const channels = [safe.r, safe.g, safe.b, ...(allowAlpha ? [Math.round(safe.a * 255)] : [])];
-    return `#${channels.map(channel => channel.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+    return `#${channels
+      .map((channel) => channel.toString(16).padStart(2, '0'))
+      .join('')
+      .toUpperCase()}`;
   }
-  if (format === 'rgb') return allowAlpha ? `rgba(${safe.r}, ${safe.g}, ${safe.b}, ${round(safe.a, 2)})` : `rgb(${safe.r}, ${safe.g}, ${safe.b})`;
+  if (format === 'rgb')
+    return allowAlpha
+      ? `rgba(${safe.r}, ${safe.g}, ${safe.b}, ${round(safe.a, 2)})`
+      : `rgb(${safe.r}, ${safe.g}, ${safe.b})`;
   const hsl = rgbToHsl(safe);
-  return allowAlpha ? `hsla(${round(hsl.h)}, ${round(hsl.s)}%, ${round(hsl.l)}%, ${round(safe.a, 2)})` : `hsl(${round(hsl.h)}, ${round(hsl.s)}%, ${round(hsl.l)}%)`;
+  return allowAlpha
+    ? `hsla(${round(hsl.h)}, ${round(hsl.s)}%, ${round(hsl.l)}%, ${round(safe.a, 2)})`
+    : `hsl(${round(hsl.h)}, ${round(hsl.s)}%, ${round(hsl.l)}%)`;
 }
 
 function useColorEditor(props: ColorInputProps) {
-  const { value, defaultValue = DEFAULT_COLOR, format = 'hex', allowAlpha = false, onValueChange, onValueCommit } = props;
+  const {
+    value,
+    defaultValue = DEFAULT_COLOR,
+    format = 'hex',
+    allowAlpha = false,
+    onValueChange,
+    onValueCommit,
+  } = props;
   const controlled = value !== undefined;
   const initial = parseColor(value ?? defaultValue) ?? parseColor(DEFAULT_COLOR)!;
   const lastValid = React.useRef(initial);
-  const [internalValue, setInternalValue] = React.useState(() => formatColor(initial, format, allowAlpha));
+  const [internalValue, setInternalValue] = React.useState(() =>
+    formatColor(initial, format, allowAlpha),
+  );
   const externalValue = controlled ? value : internalValue;
   const parsedExternalColor = parseColor(externalValue ?? '') ?? lastValid.current;
   const externalColor = { ...parsedExternalColor, a: allowAlpha ? parsedExternalColor.a : 1 };
   const canonicalValue = formatColor(externalColor, format, allowAlpha);
-  const [draft, setDraft] = React.useState(() => parseColor(externalValue ?? '') ? canonicalValue : (externalValue ?? ''));
-  const [draftError, setDraftError] = React.useState<string | null>(parseColor(externalValue ?? '') ? null : '请输入有效的 HEX、RGB 或 HSL 颜色。');
+  const [draft, setDraft] = React.useState(() =>
+    parseColor(externalValue ?? '') ? canonicalValue : (externalValue ?? ''),
+  );
+  const [draftError, setDraftError] = React.useState<string | null>(
+    parseColor(externalValue ?? '') ? null : '请输入有效的 HEX、RGB 或 HSL 颜色。',
+  );
   const draftDirty = React.useRef(false);
 
   React.useEffect(() => {
@@ -234,18 +280,21 @@ function useColorEditor(props: ColorInputProps) {
     }
   }, [allowAlpha, externalValue, format]);
 
-  const apply = React.useCallback((color: RgbaColor, commit = false) => {
-    const nextColor = { ...color, a: allowAlpha ? clamp(color.a, 0, 1) : 1 };
-    const nextValue = formatColor(nextColor, format, allowAlpha);
-    lastValid.current = nextColor;
-    if (!controlled) setInternalValue(nextValue);
-    setDraft(nextValue);
-    setDraftError(null);
-    draftDirty.current = false;
-    onValueChange?.(nextValue, nextColor);
-    if (commit) onValueCommit?.(nextValue, nextColor);
-    return nextValue;
-  }, [allowAlpha, controlled, format, onValueChange, onValueCommit]);
+  const apply = React.useCallback(
+    (color: RgbaColor, commit = false) => {
+      const nextColor = { ...color, a: allowAlpha ? clamp(color.a, 0, 1) : 1 };
+      const nextValue = formatColor(nextColor, format, allowAlpha);
+      lastValid.current = nextColor;
+      if (!controlled) setInternalValue(nextValue);
+      setDraft(nextValue);
+      setDraftError(null);
+      draftDirty.current = false;
+      onValueChange?.(nextValue, nextColor);
+      if (commit) onValueCommit?.(nextValue, nextColor);
+      return nextValue;
+    },
+    [allowAlpha, controlled, format, onValueChange, onValueCommit],
+  );
 
   const commitDraft = React.useCallback(() => {
     if (!draftDirty.current) return true;
@@ -264,46 +313,100 @@ function useColorEditor(props: ColorInputProps) {
     draftDirty.current = false;
   }, [allowAlpha, format]);
 
-  return { color: externalColor, draft, setDraft, draftError, setDraftError, draftDirty, apply, commitDraft, restoreDraft };
+  return {
+    color: externalColor,
+    draft,
+    setDraft,
+    draftError,
+    setDraftError,
+    draftDirty,
+    apply,
+    commitDraft,
+    restoreDraft,
+  };
 }
 
-const transparencyClass = "bg-[image:repeating-conic-gradient(var(--rui-border)_0_25%,var(--rui-bg)_0_50%)] bg-[length:var(--rui-space-2)_var(--rui-space-2)]";
+const transparencyClass =
+  'bg-[image:repeating-conic-gradient(var(--rui-border)_0_25%,var(--rui-bg)_0_50%)] bg-[length:var(--rui-space-2)_var(--rui-space-2)]';
 
-function ColorTextField({ props, editor, pickerButton }: { props: ColorInputProps; editor: ReturnType<typeof useColorEditor>; pickerButton?: React.ReactNode }) {
+function ColorTextField({
+  props,
+  editor,
+  pickerButton,
+}: {
+  props: ColorInputProps;
+  editor: ReturnType<typeof useColorEditor>;
+  pickerButton?: React.ReactNode;
+}) {
   const id = React.useId();
   const errorId = `${id}-error`;
   const descriptionId = `${id}-description`;
   const invalid = Boolean(props.error || editor.draftError);
-  return <Field data-invalid={invalid || undefined} data-disabled={props.disabled || undefined} className={props.className}>
-    <FieldLabel htmlFor={id}>{props.label}</FieldLabel>
-    <InputGroup data-disabled={props.disabled || undefined}>
-      <InputGroupAddon className={cn('overflow-hidden rounded-[inherit] p-0', transparencyClass)}>
-        {pickerButton ?? <span aria-hidden="true" className="size-[var(--rui-control-height)] border-r border-border" style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }} />}
-      </InputGroupAddon>
-      <InputGroupInput
-        id={id}
-        name={props.name}
-        value={editor.draft}
-        placeholder={props.placeholder ?? (props.format === 'rgb' ? 'rgb(0, 0, 0)' : props.format === 'hsl' ? 'hsl(0, 0%, 0%)' : props.allowAlpha ? '#000000FF' : '#000000')}
-        disabled={props.disabled}
-        readOnly={props.readOnly}
-        required={props.required}
-        spellCheck={false}
-        autoComplete="off"
-        aria-invalid={invalid || undefined}
-        aria-describedby={cn(props.description && descriptionId, invalid && errorId) || undefined}
-        className={cn('font-mono uppercase', props.inputClassName)}
-        onChange={event => { editor.draftDirty.current = true; editor.setDraft(event.target.value); editor.setDraftError(null); }}
-        onBlur={() => { if (!props.readOnly && !props.disabled) editor.commitDraft(); }}
-        onKeyDown={event => {
-          if (event.key === 'Enter' && !event.nativeEvent.isComposing) { event.preventDefault(); editor.commitDraft(); }
-          if (event.key === 'Escape') { event.preventDefault(); editor.restoreDraft(); }
-        }}
-      />
-    </InputGroup>
-    {props.description && <FieldDescription id={descriptionId}>{props.description}</FieldDescription>}
-    {invalid && <FieldError id={errorId}>{props.error ?? editor.draftError}</FieldError>}
-  </Field>;
+  return (
+    <Field
+      data-invalid={invalid || undefined}
+      data-disabled={props.disabled || undefined}
+      className={props.className}
+    >
+      <FieldLabel htmlFor={id}>{props.label}</FieldLabel>
+      <InputGroup data-disabled={props.disabled || undefined}>
+        <InputGroupAddon className={cn('overflow-hidden rounded-[inherit] p-0', transparencyClass)}>
+          {pickerButton ?? (
+            <span
+              aria-hidden="true"
+              className="size-[var(--rui-control-height)] border-r border-border"
+              style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }}
+            />
+          )}
+        </InputGroupAddon>
+        <InputGroupInput
+          id={id}
+          name={props.name}
+          value={editor.draft}
+          placeholder={
+            props.placeholder ??
+            (props.format === 'rgb'
+              ? 'rgb(0, 0, 0)'
+              : props.format === 'hsl'
+                ? 'hsl(0, 0%, 0%)'
+                : props.allowAlpha
+                  ? '#000000FF'
+                  : '#000000')
+          }
+          disabled={props.disabled}
+          readOnly={props.readOnly}
+          required={props.required}
+          spellCheck={false}
+          autoComplete="off"
+          aria-invalid={invalid || undefined}
+          aria-describedby={cn(props.description && descriptionId, invalid && errorId) || undefined}
+          className={cn('font-mono uppercase', props.inputClassName)}
+          onChange={(event) => {
+            editor.draftDirty.current = true;
+            editor.setDraft(event.target.value);
+            editor.setDraftError(null);
+          }}
+          onBlur={() => {
+            if (!props.readOnly && !props.disabled) editor.commitDraft();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
+              event.preventDefault();
+              editor.commitDraft();
+            }
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              editor.restoreDraft();
+            }
+          }}
+        />
+      </InputGroup>
+      {props.description && (
+        <FieldDescription id={descriptionId}>{props.description}</FieldDescription>
+      )}
+      {invalid && <FieldError id={errorId}>{props.error ?? editor.draftError}</FieldError>}
+    </Field>
+  );
 }
 
 export function ColorInput(props: ColorInputProps) {
@@ -311,98 +414,347 @@ export function ColorInput(props: ColorInputProps) {
   return <ColorTextField props={props} editor={editor} />;
 }
 
-function ChannelInput({ label, value, min, max, disabled, onChange, onCommit }: { label: string; value: number; min: number; max: number; disabled?: boolean; onChange: (value: number) => void; onCommit: () => void }) {
+function ChannelInput({
+  label,
+  value,
+  min,
+  max,
+  disabled,
+  onChange,
+  onCommit,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  disabled?: boolean;
+  onChange: (value: number) => void;
+  onCommit: () => void;
+}) {
   const id = React.useId();
-  return <label htmlFor={id} className="grid min-w-0 gap-1 text-xs text-muted-foreground">
-    <span>{label}</span>
-    <Input id={id} type="number" min={min} max={max} value={Math.round(value)} disabled={disabled} className="px-2 font-mono text-xs text-foreground" onChange={event => onChange(clamp(event.currentTarget.valueAsNumber || 0, min, max))} onBlur={onCommit} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); event.currentTarget.blur(); } }} />
-  </label>;
+  return (
+    <label htmlFor={id} className="grid min-w-0 gap-1 text-xs text-muted-foreground">
+      <span>{label}</span>
+      <Input
+        id={id}
+        type="number"
+        min={min}
+        max={max}
+        value={Math.round(value)}
+        disabled={disabled}
+        className="px-2 font-mono text-xs text-foreground"
+        onChange={(event) => onChange(clamp(event.currentTarget.valueAsNumber || 0, min, max))}
+        onBlur={onCommit}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            event.currentTarget.blur();
+          }
+        }}
+      />
+    </label>
+  );
 }
 
-function ColorPanel({ editor, allowAlpha = false, presets = [], showChannels = true, disabled, readOnly }: { editor: ReturnType<typeof useColorEditor>; allowAlpha?: boolean; presets?: readonly string[]; showChannels?: boolean; disabled?: boolean; readOnly?: boolean }) {
+function ColorPanel({
+  editor,
+  allowAlpha = false,
+  presets = [],
+  showChannels = true,
+  disabled,
+  readOnly,
+}: {
+  editor: ReturnType<typeof useColorEditor>;
+  allowAlpha?: boolean;
+  presets?: readonly string[];
+  showChannels?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+}) {
   const hsv = rgbToHsv(editor.color);
   const hueColor = formatColor(hsvToRgb({ h: hsv.h, s: 100, v: 100 }), 'rgb');
   const interactiveDisabled = disabled || readOnly;
-  const updateHsv = React.useCallback((next: Partial<HsvColor>, commit = false) => editor.apply(hsvToRgb({ ...hsv, ...next }, editor.color.a), commit), [editor, hsv]);
-  const pointColor = React.useCallback((element: HTMLElement, clientX: number, clientY: number) => {
-    const rect = element.getBoundingClientRect();
-    return hsvToRgb({ h: hsv.h, s: clamp((clientX - rect.left) / rect.width * 100, 0, 100), v: clamp((rect.bottom - clientY) / rect.height * 100, 0, 100) }, editor.color.a);
-  }, [editor.color.a, hsv.h]);
+  const updateHsv = React.useCallback(
+    (next: Partial<HsvColor>, commit = false) =>
+      editor.apply(hsvToRgb({ ...hsv, ...next }, editor.color.a), commit),
+    [editor, hsv],
+  );
+  const pointColor = React.useCallback(
+    (element: HTMLElement, clientX: number, clientY: number) => {
+      const rect = element.getBoundingClientRect();
+      return hsvToRgb(
+        {
+          h: hsv.h,
+          s: clamp(((clientX - rect.left) / rect.width) * 100, 0, 100),
+          v: clamp(((rect.bottom - clientY) / rect.height) * 100, 0, 100),
+        },
+        editor.color.a,
+      );
+    },
+    [editor.color.a, hsv.h],
+  );
 
-  return <div data-slot="color-picker-panel" className="grid w-64 gap-3">
-    <div
-      role="slider"
-      tabIndex={interactiveDisabled ? -1 : 0}
-      aria-label="饱和度与亮度"
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={Math.round(hsv.s)}
-      aria-valuetext={`饱和度 ${Math.round(hsv.s)}%，亮度 ${Math.round(hsv.v)}%`}
-      aria-disabled={interactiveDisabled || undefined}
-      data-slot="color-picker-area"
-      className="relative h-32 touch-none overflow-hidden rounded-md border border-border [background:linear-gradient(to_top,var(--rui-color-space-black),transparent),linear-gradient(to_right,var(--rui-color-space-white),transparent)] outline-none focus-visible:border-ring focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-ring/50"
-      style={{ backgroundColor: hueColor }}
-      onPointerDown={event => {
-        if (interactiveDisabled) return;
-        event.currentTarget.setPointerCapture(event.pointerId);
-        editor.apply(pointColor(event.currentTarget, event.clientX, event.clientY));
-      }}
-      onPointerMove={event => {
-        if (interactiveDisabled || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
-        editor.apply(pointColor(event.currentTarget, event.clientX, event.clientY));
-      }}
-      onPointerUp={event => {
-        if (interactiveDisabled) return;
-        const color = pointColor(event.currentTarget, event.clientX, event.clientY);
-        event.currentTarget.releasePointerCapture(event.pointerId);
-        editor.apply(color, true);
-      }}
-      onKeyDown={event => {
-        if (interactiveDisabled || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
-        event.preventDefault();
-        const step = event.shiftKey ? 10 : 1;
-        const next = event.key === 'ArrowLeft' ? { s: clamp(hsv.s - step, 0, 100) } : event.key === 'ArrowRight' ? { s: clamp(hsv.s + step, 0, 100) } : event.key === 'ArrowUp' ? { v: clamp(hsv.v + step, 0, 100) } : { v: clamp(hsv.v - step, 0, 100) };
-        updateHsv(next, true);
-      }}
-    >
-      <span aria-hidden="true" className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--rui-color-space-white)] shadow-sm ring-1 ring-[var(--rui-color-space-black)]" style={{ left: `${hsv.s}%`, top: `${100 - hsv.v}%` }} />
-    </div>
-
-    <div className="grid grid-cols-[var(--rui-control-height)_minmax(0,1fr)] items-center gap-2">
-      <span aria-hidden="true" className={cn('size-[var(--rui-control-height)] overflow-hidden rounded-md border border-border', transparencyClass)}><span className="block size-full" style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }} /></span>
-      <div className="grid gap-2">
-        <Slider aria-label="色相" min={0} max={360} step={1} value={[hsv.h]} disabled={interactiveDisabled} className="[&_[data-slot=slider-track]]:bg-[image:var(--rui-color-picker-hue-gradient)]" onValueChange={value => updateHsv({ h: Array.isArray(value) ? value[0] : value })} onValueCommitted={value => updateHsv({ h: Array.isArray(value) ? value[0] : value }, true)} />
-        {allowAlpha && <Slider aria-label="透明度" min={0} max={100} step={1} value={[editor.color.a * 100]} disabled={interactiveDisabled} style={{ '--color-picker-alpha-gradient': `linear-gradient(to right, transparent, ${formatColor(editor.color, 'rgb')})` } as React.CSSProperties} className={cn(transparencyClass, '[&_[data-slot=slider-track]]:bg-[image:var(--color-picker-alpha-gradient)]')} onValueChange={value => editor.apply({ ...editor.color, a: (Array.isArray(value) ? value[0] : value) / 100 })} onValueCommitted={value => editor.apply({ ...editor.color, a: (Array.isArray(value) ? value[0] : value) / 100 }, true)} />}
+  return (
+    <div data-slot="color-picker-panel" className="grid w-64 gap-3">
+      <div
+        role="slider"
+        tabIndex={interactiveDisabled ? -1 : 0}
+        aria-label="饱和度与亮度"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(hsv.s)}
+        aria-valuetext={`饱和度 ${Math.round(hsv.s)}%，亮度 ${Math.round(hsv.v)}%`}
+        aria-disabled={interactiveDisabled || undefined}
+        data-slot="color-picker-area"
+        className={cn([
+          // Layout
+          'relative h-32 touch-none overflow-hidden',
+          // Surface
+          'rounded-md border border-border',
+          // Layout
+          '[background:linear-gradient(to_top,var(--rui-color-space-black),transparent),linear-gradient(to_right,var(--rui-color-space-white),transparent)]',
+          // Surface
+          'outline-none',
+          // Keyboard focus
+          'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
+        ])}
+        style={{ backgroundColor: hueColor }}
+        onPointerDown={(event) => {
+          if (interactiveDisabled) return;
+          event.currentTarget.setPointerCapture(event.pointerId);
+          editor.apply(pointColor(event.currentTarget, event.clientX, event.clientY));
+        }}
+        onPointerMove={(event) => {
+          if (interactiveDisabled || !event.currentTarget.hasPointerCapture(event.pointerId))
+            return;
+          editor.apply(pointColor(event.currentTarget, event.clientX, event.clientY));
+        }}
+        onPointerUp={(event) => {
+          if (interactiveDisabled) return;
+          const color = pointColor(event.currentTarget, event.clientX, event.clientY);
+          event.currentTarget.releasePointerCapture(event.pointerId);
+          editor.apply(color, true);
+        }}
+        onKeyDown={(event) => {
+          if (
+            interactiveDisabled ||
+            !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)
+          )
+            return;
+          event.preventDefault();
+          const step = event.shiftKey ? 10 : 1;
+          const next =
+            event.key === 'ArrowLeft'
+              ? { s: clamp(hsv.s - step, 0, 100) }
+              : event.key === 'ArrowRight'
+                ? { s: clamp(hsv.s + step, 0, 100) }
+                : event.key === 'ArrowUp'
+                  ? { v: clamp(hsv.v + step, 0, 100) }
+                  : { v: clamp(hsv.v - step, 0, 100) };
+          updateHsv(next, true);
+        }}
+      >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--rui-color-space-white)] shadow-sm ring-1 ring-[var(--rui-color-space-black)]"
+          style={{ left: `${hsv.s}%`, top: `${100 - hsv.v}%` }}
+        />
       </div>
+
+      <div className="grid grid-cols-[var(--rui-control-height)_minmax(0,1fr)] items-center gap-2">
+        <span
+          aria-hidden="true"
+          className={cn(
+            'size-[var(--rui-control-height)] overflow-hidden rounded-md border border-border',
+            transparencyClass,
+          )}
+        >
+          <span
+            className="block size-full"
+            style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }}
+          />
+        </span>
+        <div className="grid gap-2">
+          <Slider
+            aria-label="色相"
+            min={0}
+            max={360}
+            step={1}
+            value={[hsv.h]}
+            disabled={interactiveDisabled}
+            className="[&_[data-slot=slider-track]]:bg-[image:var(--rui-color-picker-hue-gradient)]"
+            onValueChange={(value) => updateHsv({ h: Array.isArray(value) ? value[0] : value })}
+            onValueCommitted={(value) =>
+              updateHsv({ h: Array.isArray(value) ? value[0] : value }, true)
+            }
+          />
+          {allowAlpha && (
+            <Slider
+              aria-label="透明度"
+              min={0}
+              max={100}
+              step={1}
+              value={[editor.color.a * 100]}
+              disabled={interactiveDisabled}
+              style={
+                {
+                  '--color-picker-alpha-gradient': `linear-gradient(to right, transparent, ${formatColor(editor.color, 'rgb')})`,
+                } as React.CSSProperties
+              }
+              className={cn(
+                transparencyClass,
+                '[&_[data-slot=slider-track]]:bg-[image:var(--color-picker-alpha-gradient)]',
+              )}
+              onValueChange={(value) =>
+                editor.apply({
+                  ...editor.color,
+                  a: (Array.isArray(value) ? value[0] : value) / 100,
+                })
+              }
+              onValueCommitted={(value) =>
+                editor.apply(
+                  { ...editor.color, a: (Array.isArray(value) ? value[0] : value) / 100 },
+                  true,
+                )
+              }
+            />
+          )}
+        </div>
+      </div>
+
+      {showChannels && (
+        <div className={cn('grid gap-2', allowAlpha ? 'grid-cols-4' : 'grid-cols-3')}>
+          <ChannelInput
+            label="R"
+            value={editor.color.r}
+            min={0}
+            max={255}
+            disabled={interactiveDisabled}
+            onChange={(r) => editor.apply({ ...editor.color, r })}
+            onCommit={() => editor.apply(editor.color, true)}
+          />
+          <ChannelInput
+            label="G"
+            value={editor.color.g}
+            min={0}
+            max={255}
+            disabled={interactiveDisabled}
+            onChange={(g) => editor.apply({ ...editor.color, g })}
+            onCommit={() => editor.apply(editor.color, true)}
+          />
+          <ChannelInput
+            label="B"
+            value={editor.color.b}
+            min={0}
+            max={255}
+            disabled={interactiveDisabled}
+            onChange={(b) => editor.apply({ ...editor.color, b })}
+            onCommit={() => editor.apply(editor.color, true)}
+          />
+          {allowAlpha && (
+            <ChannelInput
+              label="A %"
+              value={editor.color.a * 100}
+              min={0}
+              max={100}
+              disabled={interactiveDisabled}
+              onChange={(a) => editor.apply({ ...editor.color, a: a / 100 })}
+              onCommit={() => editor.apply(editor.color, true)}
+            />
+          )}
+        </div>
+      )}
+
+      {presets.length > 0 && (
+        <div role="group" aria-label="预设颜色" className="flex flex-wrap gap-2">
+          {presets.map((preset) => {
+            const parsed = parseColor(preset);
+            if (!parsed) return null;
+            const selected =
+              formatColor(parsed, 'hex', allowAlpha) ===
+              formatColor(editor.color, 'hex', allowAlpha);
+            return (
+              <button
+                key={preset}
+                type="button"
+                aria-label={`选择颜色 ${preset}`}
+                aria-pressed={selected}
+                disabled={interactiveDisabled}
+                className={cn(
+                  'size-6 overflow-hidden rounded-md border border-border outline-none focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50 disabled:opacity-[var(--rui-opacity-disabled)]',
+                  transparencyClass,
+                )}
+                onClick={() => editor.apply(parsed, true)}
+              >
+                <span
+                  className="block size-full"
+                  style={{ backgroundColor: formatColor(parsed, 'rgb', true) }}
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
-
-    {showChannels && <div className={cn('grid gap-2', allowAlpha ? 'grid-cols-4' : 'grid-cols-3')}>
-      <ChannelInput label="R" value={editor.color.r} min={0} max={255} disabled={interactiveDisabled} onChange={r => editor.apply({ ...editor.color, r })} onCommit={() => editor.apply(editor.color, true)} />
-      <ChannelInput label="G" value={editor.color.g} min={0} max={255} disabled={interactiveDisabled} onChange={g => editor.apply({ ...editor.color, g })} onCommit={() => editor.apply(editor.color, true)} />
-      <ChannelInput label="B" value={editor.color.b} min={0} max={255} disabled={interactiveDisabled} onChange={b => editor.apply({ ...editor.color, b })} onCommit={() => editor.apply(editor.color, true)} />
-      {allowAlpha && <ChannelInput label="A %" value={editor.color.a * 100} min={0} max={100} disabled={interactiveDisabled} onChange={a => editor.apply({ ...editor.color, a: a / 100 })} onCommit={() => editor.apply(editor.color, true)} />}
-    </div>}
-
-    {presets.length > 0 && <div role="group" aria-label="预设颜色" className="flex flex-wrap gap-2">
-      {presets.map(preset => {
-        const parsed = parseColor(preset);
-        if (!parsed) return null;
-        const selected = formatColor(parsed, 'hex', allowAlpha) === formatColor(editor.color, 'hex', allowAlpha);
-        return <button key={preset} type="button" aria-label={`选择颜色 ${preset}`} aria-pressed={selected} disabled={interactiveDisabled} className={cn('size-6 overflow-hidden rounded-md border border-border outline-none focus-visible:border-ring focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-ring/50 disabled:opacity-[var(--rui-opacity-disabled)]', transparencyClass)} onClick={() => editor.apply(parsed, true)}><span className="block size-full" style={{ backgroundColor: formatColor(parsed, 'rgb', true) }} /></button>;
-      })}
-    </div>}
-  </div>;
+  );
 }
 
-export function ColorPicker({ inline = false, presets, showChannels = true, open, defaultOpen, onOpenChange, ...props }: ColorPickerProps) {
+export function ColorPicker({
+  inline = false,
+  presets,
+  showChannels = true,
+  open,
+  defaultOpen,
+  onOpenChange,
+  ...props
+}: ColorPickerProps) {
   const editor = useColorEditor(props);
-  const panel = <ColorPanel editor={editor} allowAlpha={props.allowAlpha} presets={presets} showChannels={showChannels} disabled={props.disabled} readOnly={props.readOnly} />;
-  if (inline) return <div className={cn('grid gap-[var(--rui-content-gap-sm)]', props.className)}><ColorTextField props={{ ...props, className: undefined }} editor={editor} /><div className="w-fit rounded-lg border border-border bg-popover p-3 text-popover-foreground shadow-sm">{panel}</div></div>;
+  const panel = (
+    <ColorPanel
+      editor={editor}
+      allowAlpha={props.allowAlpha}
+      presets={presets}
+      showChannels={showChannels}
+      disabled={props.disabled}
+      readOnly={props.readOnly}
+    />
+  );
+  if (inline)
+    return (
+      <div className={cn('grid gap-[var(--rui-content-gap-sm)]', props.className)}>
+        <ColorTextField props={{ ...props, className: undefined }} editor={editor} />
+        <div className="w-fit rounded-lg border border-border bg-popover p-3 text-popover-foreground shadow-sm">
+          {panel}
+        </div>
+      </div>
+    );
   if (props.readOnly) return <ColorTextField props={props} editor={editor} />;
 
-  const trigger = <PopoverTrigger render={<Button type="button" size="icon" variant="ghost" aria-label="打开颜色选择器" disabled={props.disabled} />}><span aria-hidden="true" className="block size-full" style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }} /></PopoverTrigger>;
-  return <Popover open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-    <ColorTextField props={props} editor={editor} pickerButton={trigger} />
-    <PopoverContent align="start" aria-label="颜色选择器" className="w-auto p-3">{panel}</PopoverContent>
-  </Popover>;
+  const trigger = (
+    <PopoverTrigger
+      render={
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          aria-label="打开颜色选择器"
+          disabled={props.disabled}
+        />
+      }
+    >
+      <span
+        aria-hidden="true"
+        className="block size-full"
+        style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }}
+      />
+    </PopoverTrigger>
+  );
+  return (
+    <Popover open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+      <ColorTextField props={props} editor={editor} pickerButton={trigger} />
+      <PopoverContent align="start" aria-label="颜色选择器" className="w-auto p-3">
+        {panel}
+      </PopoverContent>
+    </Popover>
+  );
 }

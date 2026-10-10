@@ -66,6 +66,8 @@ test('keyboard navigation selects a remote option', async ({ page }) => {
   const input = await open(page, 'overview');
   await input.fill('type');
   await expect(page.getByRole('option', { name: /TypeScript/ })).toBeVisible();
+  // TypeScript is also in the initial results; wait for the filtered response before choosing.
+  await expect(page.getByRole('option')).toHaveCount(1);
   await input.press('ArrowDown');
   await input.press('Enter');
   await expect(page.locator('output')).toContainText('value=typescript');

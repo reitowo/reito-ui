@@ -5,7 +5,7 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
   await page.goto('/?layer=basic&component=input');
   const input = page.getByRole('textbox', { name: '项目名称', exact: true });
   await expect(input).toHaveCSS('height', density === 'compact' ? '32px' : '40px');
-  await expect(input).toHaveCSS('font-size', '14px');
+  await expect(input).toHaveCSS('font-size', '13px');
   await page.evaluate(() => {
     const root = document.documentElement.style;
     root.setProperty('--rui-control-height', '44px');
@@ -24,10 +24,10 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
   const button = page.getByRole('button', { name: '保存更改', exact: true });
   await page.evaluate(() => {
     const root = document.documentElement.style;
-    root.setProperty('--rui-control-height', '44px');
+    root.setProperty('--rui-button-height', '44px');
     root.setProperty('--rui-font-interface', '18px');
-    root.setProperty('--rui-radius-lg', '3px');
-    root.setProperty('--rui-font-weight-medium', '600');
+    root.setProperty('--rui-radius-sm', '3px');
+    root.setProperty('--rui-font-weight-regular', '600');
   });
   await expect(button).toHaveCSS('height', '44px');
   await expect(button).toHaveCSS('font-size', '18px');

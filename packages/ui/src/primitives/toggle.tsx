@@ -1,42 +1,82 @@
-import { Toggle as TogglePrimitive } from "@base-ui/react/toggle"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "../lib/utils.js"
+import { useThemeColor, type ThemeColor } from '../theme.js';
+import { Toggle as TogglePrimitive } from '@base-ui/react/toggle';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../lib/utils.js';
 
 const toggleVariants = cva(
-  "group/toggle inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all outline-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-[var(--rui-opacity-disabled)] aria-invalid:border-destructive aria-invalid:ring-destructive/20 aria-pressed:bg-muted data-[state=on]:bg-muted dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  [
+    // Layout
+    'group/toggle inline-flex items-center justify-center',
+    // Spacing
+    'gap-1',
+    // Surface
+    'rounded-sm',
+    // Typography
+    'text-[length:var(--rui-action-font-size)] font-normal whitespace-nowrap',
+    // Motion
+    'transition-all',
+    // Surface
+    'outline-none',
+    // Pointer interaction
+    'hover:bg-muted hover:text-foreground',
+    // Keyboard focus
+    'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
+    // Disabled state
+    'disabled:pointer-events-none disabled:opacity-[var(--rui-opacity-disabled)]',
+    // Validation state
+    'aria-invalid:border-destructive aria-invalid:ring-destructive/20',
+    // Component state
+    'aria-pressed:bg-muted data-[state=on]:bg-muted',
+    // Validation state
+    'dark:aria-invalid:ring-destructive/40',
+    // Child and composition rules
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  ],
   {
     variants: {
       variant: {
-        default: "bg-transparent",
-        outline: "border border-input bg-transparent hover:bg-muted",
+        default: 'bg-transparent',
+        outline: 'border border-input bg-transparent hover:bg-muted',
       },
       size: {
         default:
-          "h-[var(--rui-control-height)] min-w-[var(--rui-control-height)] px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        sm: "h-[var(--rui-control-height-sm)] min-w-[var(--rui-control-height-sm)] rounded-md px-2.5 text-[length:var(--rui-text-sm)] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-[var(--rui-control-height-lg)] min-w-[var(--rui-control-height-lg)] px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+          "h-[var(--rui-button-height)] min-w-[var(--rui-button-height)] px-[var(--rui-button-padding-x)] [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-[var(--rui-control-height-sm)] min-w-[var(--rui-control-height-sm)] px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        md: 'h-[var(--rui-control-height)] min-w-[var(--rui-control-height)] px-2.5',
+        lg: 'h-[var(--rui-control-height-lg)] min-w-[var(--rui-control-height-lg)] px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: 'default',
+      size: 'default',
     },
-  }
-)
+  },
+);
 
 function Toggle({
   className,
-  variant = "default",
-  size = "default",
+  color,
+  style,
+  variant = 'default',
+  size = 'default',
   ...props
-}: TogglePrimitive.Props & VariantProps<typeof toggleVariants>) {
+}: Omit<TogglePrimitive.Props, 'color'> & { color?: ThemeColor } & VariantProps<
+    typeof toggleVariants
+  >) {
+  const colorStyle = useThemeColor(color);
   return (
     <TogglePrimitive
+      data-rui-color={color}
+      style={
+        typeof style === 'function'
+          ? (state) => ({ ...colorStyle, ...style(state) })
+          : { ...colorStyle, ...style }
+      }
       data-slot="toggle"
       className={cn(toggleVariants({ variant, size, className }))}
       {...props}
     />
-  )
+  );
 }
 
-export { Toggle, toggleVariants }
+export { Toggle, toggleVariants };

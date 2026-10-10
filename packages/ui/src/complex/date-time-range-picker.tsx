@@ -77,7 +77,10 @@ export function isSupportedTimeZone(timeZone: string) {
   }
 }
 
-export function validateDateTimeRange(value: DateTimeRangeValue, { min, max, timeZone, requireComplete = false }: DateTimeRangeValidationOptions = {}) {
+export function validateDateTimeRange(
+  value: DateTimeRangeValue,
+  { min, max, timeZone, requireComplete = false }: DateTimeRangeValidationOptions = {},
+) {
   if (min && max && compareLocalDateTime(min, max) > 0) return '允许的起止时间配置无效';
   if (timeZone !== undefined && !isSupportedTimeZone(timeZone)) return '时区标识无效';
   if (!value.start) return value.end || requireComplete ? '请选择开始时间' : undefined;
@@ -90,8 +93,16 @@ export function validateDateTimeRange(value: DateTimeRangeValue, { min, max, tim
   return undefined;
 }
 
-export function serializeDateTimeRange(value: DateTimeRangeValue | null | undefined, { precision = 'minute', min, max, timeZone }: DateTimeRangeSerializationOptions = {}) {
-  if (!value?.start || !value.end || validateDateTimeRange(value, { min, max, timeZone, requireComplete: true })) return '';
+export function serializeDateTimeRange(
+  value: DateTimeRangeValue | null | undefined,
+  { precision = 'minute', min, max, timeZone }: DateTimeRangeSerializationOptions = {},
+) {
+  if (
+    !value?.start ||
+    !value.end ||
+    validateDateTimeRange(value, { min, max, timeZone, requireComplete: true })
+  )
+    return '';
   return JSON.stringify({
     start: formatLocalDateTime(value.start, precision),
     end: formatLocalDateTime(value.end, precision),
@@ -103,11 +114,17 @@ export function parseDateTimeRange(text: string): ParsedDateTimeRange | null {
   try {
     const parsed = JSON.parse(text) as { start?: unknown; end?: unknown; timeZone?: unknown };
     if (typeof parsed.start !== 'string' || typeof parsed.end !== 'string') return null;
-    if (parsed.timeZone !== undefined && (typeof parsed.timeZone !== 'string' || !isSupportedTimeZone(parsed.timeZone))) return null;
+    if (
+      parsed.timeZone !== undefined &&
+      (typeof parsed.timeZone !== 'string' || !isSupportedTimeZone(parsed.timeZone))
+    )
+      return null;
     const start = parseLocalDateTime(parsed.start);
     const end = parseLocalDateTime(parsed.end);
     const value = { start, end };
-    return start && end && !validateDateTimeRange(value) ? { value, ...(parsed.timeZone ? { timeZone: parsed.timeZone } : {}) } : null;
+    return start && end && !validateDateTimeRange(value)
+      ? { value, ...(parsed.timeZone ? { timeZone: parsed.timeZone } : {}) }
+      : null;
   } catch {
     return null;
   }
@@ -150,9 +167,17 @@ export function DateTimeRangePicker({
   const controlled = value !== undefined;
   const [internalValue, setInternalValue] = React.useState(defaultValue);
   const currentValue = controlled ? value : internalValue;
-  const automaticError = validateDateTimeRange(currentValue, { min, max, timeZone, requireComplete: Boolean(currentValue.start || currentValue.end) });
+  const automaticError = validateDateTimeRange(currentValue, {
+    min,
+    max,
+    timeZone,
+    requireComplete: Boolean(currentValue.start || currentValue.end),
+  });
   const visibleError = error ?? automaticError;
-  const describedBy = [description ? `${id}-description` : undefined, visibleError ? `${id}-error` : undefined].filter(Boolean).join(' ') || undefined;
+  const describedBy =
+    [description ? `${id}-description` : undefined, visibleError ? `${id}-error` : undefined]
+      .filter(Boolean)
+      .join(' ') || undefined;
 
   function update(endpoint: keyof DateTimeRangeValue, next: LocalDateTimeValue | null) {
     const nextValue = { ...currentValue, [endpoint]: next };
@@ -162,20 +187,76 @@ export function DateTimeRangePicker({
 
   function commit(endpoint: keyof DateTimeRangeValue, next: LocalDateTimeValue | null) {
     const nextValue = { ...currentValue, [endpoint]: next };
-    if (!validateDateTimeRange(nextValue, { min, max, timeZone, requireComplete: true })) onValueCommit?.(nextValue);
+    if (!validateDateTimeRange(nextValue, { min, max, timeZone, requireComplete: true }))
+      onValueCommit?.(nextValue);
   }
 
   const serialized = serializeDateTimeRange(currentValue, { precision, min, max, timeZone });
 
-  return <FieldSet disabled={disabled} data-slot="date-time-range-picker" data-invalid={visibleError ? true : undefined} aria-describedby={describedBy} className={cn('min-w-0 gap-[var(--rui-content-gap-sm)]', className)}>
-    <FieldLegend variant="label">{label}</FieldLegend>
-    <div className="grid min-w-0 gap-[var(--rui-content-gap)] md:grid-cols-2">
-      <DateTimePicker id={`${id}-start`} label={startLabel} dateLabel={`${startLabel}${dateLabel}`} timeLabel={`${startLabel}${timeLabel}`} value={currentValue.start} onValueChange={next => update('start', next)} onValueCommit={next => commit('start', next)} min={min} max={max} isDateDisabled={isDateDisabled} locale={locale} order={order} hourCycle={hourCycle} precision={precision} minuteStep={minuteStep} secondStep={secondStep} disabled={disabled} readOnly={readOnly} required={required} />
-      <DateTimePicker id={`${id}-end`} label={endLabel} dateLabel={`${endLabel}${dateLabel}`} timeLabel={`${endLabel}${timeLabel}`} value={currentValue.end} onValueChange={next => update('end', next)} onValueCommit={next => commit('end', next)} min={min} max={max} isDateDisabled={isDateDisabled} locale={locale} order={order} hourCycle={hourCycle} precision={precision} minuteStep={minuteStep} secondStep={secondStep} disabled={disabled} readOnly={readOnly} required={required} />
-    </div>
-    {timeZone && <p data-slot="date-time-range-time-zone" className="text-xs text-muted-foreground"><span>{timeZoneLabel}：</span><code className="font-mono text-foreground">{timeZone}</code></p>}
-    {name && <input type="hidden" name={name} form={form} value={serialized} disabled={disabled} />}
-    {description && <FieldDescription id={`${id}-description`}>{description}</FieldDescription>}
-    {visibleError && <FieldError id={`${id}-error`}>{visibleError}</FieldError>}
-  </FieldSet>;
+  return (
+    <FieldSet
+      disabled={disabled}
+      data-slot="date-time-range-picker"
+      data-invalid={visibleError ? true : undefined}
+      aria-describedby={describedBy}
+      className={cn('min-w-0 gap-[var(--rui-content-gap-sm)]', className)}
+    >
+      <FieldLegend variant="label">{label}</FieldLegend>
+      <div className="grid min-w-0 gap-[var(--rui-content-gap)] md:grid-cols-2">
+        <DateTimePicker
+          id={`${id}-start`}
+          label={startLabel}
+          dateLabel={`${startLabel}${dateLabel}`}
+          timeLabel={`${startLabel}${timeLabel}`}
+          value={currentValue.start}
+          onValueChange={(next) => update('start', next)}
+          onValueCommit={(next) => commit('start', next)}
+          min={min}
+          max={max}
+          isDateDisabled={isDateDisabled}
+          locale={locale}
+          order={order}
+          hourCycle={hourCycle}
+          precision={precision}
+          minuteStep={minuteStep}
+          secondStep={secondStep}
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+        />
+        <DateTimePicker
+          id={`${id}-end`}
+          label={endLabel}
+          dateLabel={`${endLabel}${dateLabel}`}
+          timeLabel={`${endLabel}${timeLabel}`}
+          value={currentValue.end}
+          onValueChange={(next) => update('end', next)}
+          onValueCommit={(next) => commit('end', next)}
+          min={min}
+          max={max}
+          isDateDisabled={isDateDisabled}
+          locale={locale}
+          order={order}
+          hourCycle={hourCycle}
+          precision={precision}
+          minuteStep={minuteStep}
+          secondStep={secondStep}
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+        />
+      </div>
+      {timeZone && (
+        <p data-slot="date-time-range-time-zone" className="text-xs text-muted-foreground">
+          <span>{timeZoneLabel}：</span>
+          <code className="font-mono text-foreground">{timeZone}</code>
+        </p>
+      )}
+      {name && (
+        <input type="hidden" name={name} form={form} value={serialized} disabled={disabled} />
+      )}
+      {description && <FieldDescription id={`${id}-description`}>{description}</FieldDescription>}
+      {visibleError && <FieldError id={`${id}-error`}>{visibleError}</FieldError>}
+    </FieldSet>
+  );
 }
