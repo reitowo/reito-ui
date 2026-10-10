@@ -2,7 +2,11 @@ import { test, expect } from '@playwright/test';
 
 for (const theme of ['dark','light']) for (const density of ['compact','comfortable']) {
   test('clear, select and short feedback keep component height: ' + theme + '/' + density, async ({ page }) => {
-    await page.addInitScript(({ theme,density }) => { localStorage.setItem('reito-theme',theme);localStorage.setItem('reito-density',density); }, { theme,density });
+    await page.addInitScript(({ theme,density }) => {
+      localStorage.setItem('reito-theme',theme);localStorage.setItem('reito-density',density);
+      // This checks feedback geometry; the host clipboard is outside that contract.
+      Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => undefined } });
+    }, { theme,density });
     await page.goto('/?layer=basic&component=rating');
     const rating = page.locator('[data-slot="rating"]');
     const clear = rating.getByRole('button', { name:'清除本次回答质量' });

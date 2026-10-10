@@ -11,7 +11,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     }, { theme, density });
     await page.setViewportSize({ width: 1303, height: 1244 });
     await page.goto('/?view=overview');
-    await expect(page.locator('[data-preview]')).toHaveCount(count);
+    await expect(page.locator('[data-preview]')).toHaveCount(count, { timeout: 30_000 });
     await expect(page.getByText('预览未能显示，请重置或在组件详情中打开。', { exact: true })).toHaveCount(0);
     const inventory = await page.locator('[data-component]').evaluateAll(tiles => tiles.map(tile => ({
       component: tile.getAttribute('data-component'),

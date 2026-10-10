@@ -136,7 +136,17 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   const table = await open(page, 'row-editing', `theme:${theme};density:${density}`);
   await table.getByRole('button', { name: '编辑记录 TASK-01' }).click();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  let violations: unknown;
+  await expect.poll(async () => {
+    try {
+      violations = await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations);
+      return true;
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Axe is already running')) return false;
+      throw error;
+    }
+  }, { timeout: 5_000 }).toBe(true);
+  expect(violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/data-table-editing/${theme}-${density}.png`, fullPage: true });
 });

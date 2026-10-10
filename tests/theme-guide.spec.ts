@@ -23,14 +23,14 @@ for(const scheme of ['dark','light']) test('theme guide reacts to global and loc
  await page.getByRole('textbox',{name:'工作区名称',exact:true}).fill('保留这个草稿');
  await page.getByRole('switch',{name:'任务完成提醒'}).uncheck();
  await choose(page,'主题主色','蓝色');
- expect(await color(save)).not.toBe(before);expect(await color(local)).toBe(localBefore);
+ await expect.poll(() => color(save)).not.toBe(before);expect(await color(local)).toBe(localBefore);
  await expect(page.getByRole('textbox',{name:'工作区名称',exact:true})).toHaveValue('保留这个草稿');
  await expect(page.getByRole('switch',{name:'任务完成提醒'})).not.toBeChecked();
  const base=await color(preview);
  await choose(page,'底色色系','Stone');
- expect(await color(preview)).not.toBe(base);
+ await expect.poll(() => color(preview)).not.toBe(base);
  await choose(page,'组件颜色','琥珀');
- expect(await color(local)).not.toBe(localBefore);
+ await expect.poll(() => color(local)).not.toBe(localBefore);
  await choose(page,'呈现样式','描边');
  await expect(local).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
  const style=await local.evaluate(n=>({fg:getComputedStyle(n).color,bg:getComputedStyle(n.closest('[data-rui-theme]')!).backgroundColor}));

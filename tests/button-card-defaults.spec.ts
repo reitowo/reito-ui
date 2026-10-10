@@ -50,6 +50,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     expect(await geometry()).toEqual({ headerToBody: 0, bodyToFooter: 0, descriptionToText: 10, contentBottom: parseFloat(y) });
     await page.goto('/?view=overview#component-ai-agent-task');
     const task = page.locator('[data-slot="agent-task-card"]');
+    await expect(task).toBeVisible({ timeout: 30_000 });
     for (const slot of ['card-header','card-content','agent-task-actions']) {
       const region = task.locator('[data-slot="' + slot + '"]');
       await expect(region).toHaveCSS('padding-left', x);

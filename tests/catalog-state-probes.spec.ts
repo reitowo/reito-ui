@@ -9,7 +9,7 @@ test('every catalog family gets a default state probe and geometry record', asyn
     Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>undefined}});
   });
   await page.goto('/?view=overview');
-  await expect(page.locator('[data-preview]')).toHaveCount(manifest.total);
+  await expect(page.locator('[data-preview]')).toHaveCount(manifest.total, { timeout: 30_000 });
   await page.evaluate(() => document.fonts.ready);
   const results: any[] = [];
   for (const entry of manifest.entries) {

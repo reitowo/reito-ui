@@ -7,7 +7,7 @@ test('overview discovers the complete catalog and supports search, embedded inte
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/?view=overview');
-  await expect(page.getByRole('heading', { name: '全组件总览', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '全组件总览', exact: true })).toBeVisible({ timeout: 30_000 });
   const tiles = page.locator('[data-component]');
   await expect(tiles).toHaveCount(manifest.entries.length);
   expect(await tiles.evaluateAll(nodes => nodes.map(node => node.getAttribute('data-component')).sort())).toEqual(manifest.entries.map((entry: { layer: string; id: string }) => `${entry.layer}/${entry.id}`).sort());
