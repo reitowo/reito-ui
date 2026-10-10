@@ -122,7 +122,7 @@ test('public component colors preserve shared geometry and disabled states in St
  test.setTimeout(90_000);
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  for(const mode of ['dark','light']) for(const density of ['compact','comfortable']) {
-  await page.goto('http://127.0.0.1:6007/iframe.html?id=基础-theme--'+(mode==='dark'?'playground':'light')+'&viewMode=story&globals=theme:'+mode+';density:'+density);
+  await page.goto((process.env.REITO_STORYBOOK_URL || 'http://127.0.0.1:6007') + '/iframe.html?id=基础-theme--'+(mode==='dark'?'playground':'light')+'&viewMode=story&globals=theme:'+mode+';density:'+density);
   const primary=page.getByRole('button',{name:'主题主色',exact:true});
   await expect(primary).toBeVisible({timeout:30_000});
   for(const label of ['主题主色','独立绿色','柔和琥珀','禁用操作','处理中']) {

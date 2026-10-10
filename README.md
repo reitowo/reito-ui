@@ -1,4 +1,4 @@
-# Reito UI 0.5.5
+# Reito UI 0.5.6
 
 基于 **shadcn/ui + Base UI + Tailwind CSS 4** 的个人 React 组件库。以 Cursor 的紧凑工作界面为主要方向，按 **基础 → 复杂 → AI** 分层。提供中性深浅主题、两档密度、真实字体、Storybook 与可操作的组件例工程。
 
@@ -6,7 +6,7 @@
 
 本轮重点是 [表格与 AI 内容密度](docs/density-v04.md)：紧凑表格上下 6px、左右 10px，AI 内容内距 12px，代码产物不重复叠加留白。最终验证和 MultiSelect 打开状态的扫描限制见 [验证记录](docs/validation.md)。
 
-当前版本支持运行时配色、全组件总览，以及基础变量 → 语义角色 → 组件 token 的继承与局部微调。新增能力、默认密度调整和验证范围见 [0.5.5 发布说明](docs/release-0.5.5.md)。
+当前版本支持运行时配色、全组件总览，以及基础变量 → 语义角色 → 组件 token 的继承与局部微调。新增能力、默认密度调整和验证范围见 [0.5.6 发布说明](docs/release-0.5.6.md)。
 
 ## 打开与确认
 
@@ -37,7 +37,7 @@ npm run storybook
 npm run pack:library
 ```
 
-同时安装 `artifacts/reito-tokens-0.5.5.tgz` 和 `artifacts/reito-ui-0.5.5.tgz`，然后：
+同时安装 `artifacts/reito-tokens-0.5.6.tgz` 和 `artifacts/reito-ui-0.5.6.tgz`，然后：
 
 ```tsx
 import '@reito/tokens/css';
@@ -47,7 +47,7 @@ import { DataTable } from '@reito/ui/complex';
 import { Composer } from '@reito/ui/ai';
 ```
 
-在 `<html>` 设置 `data-theme="dark" data-density="compact"`。包面向 React 19 / ESM，带 TypeScript 声明和已编译 CSS；消费工程无需 shadcn CLI 或 Tailwind 构建才能显示组件。CSS 包含 Tailwind Preflight 与 Inter Variable 字体，接入现有应用时一次性加载。已发布到 npm；可运行 `npm install @reito/ui@0.5.5 @reito/tokens@0.5.5` 安装本版。
+在 `<html>` 设置 `data-theme="dark" data-density="compact"`。包面向 React 19 / ESM，带 TypeScript 声明和已编译 CSS；消费工程无需 shadcn CLI 或 Tailwind 构建才能显示组件。CSS 包含 Tailwind Preflight 与 Inter Variable 字体，接入现有应用时一次性加载。已发布到 npm；可运行 `npm install @reito/ui@0.5.6 @reito/tokens@0.5.6` 安装本版。
 
 完整操作、Tailwind 接入、0.2 API 迁移和 0.3 → 0.4 密度变更见 [复用指南](docs/reuse-guide.md)。
 
