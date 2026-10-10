@@ -27,6 +27,8 @@ Set `data-theme="dark"` (or `light`) and `data-density="compact"` on the documen
 
 Public entries: `@reito/ui`, `@reito/ui/basic`, `@reito/ui/complex`, `@reito/ui/ai`, and the explicit native compatibility entry `@reito/ui/native`. Prefer `SelectInput` or `Select` for themed application selection controls.
 
+`ReitoThemeProvider` supports runtime colors and typed `tokens` overrides. Shared semantic roles feed component defaults for Button, Input, Menu, Card and ScrollArea; nested scopes and overlays inherit the nearest configuration. See the [component token guide](https://github.com/reitowo/reito-ui/blob/main/docs/component-tokens.md) for keys and scope boundaries.
+
 - [Live examples and Storybook](https://reitowo.github.io/reito-ui/)
 - [Installation and migration guide](https://github.com/reitowo/reito-ui/blob/main/docs/reuse-guide.md)
 - [Source and issues](https://github.com/reitowo/reito-ui)

@@ -5,7 +5,7 @@
     "ai": 24
   },
   "total": 138,
-  "stories": 1439,
+  "stories": 1440,
   "entries": [
     {
       "layer": "basic",
@@ -65,7 +65,7 @@
       "storyId": "基础-input--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputDemo",
-      "stories": 8
+      "stories": 9
     },
     {
       "layer": "basic",
