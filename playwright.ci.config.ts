@@ -17,6 +17,7 @@ export default defineConfig({
   use: { baseURL: 'http://127.0.0.1:5173', headless: true, viewport: { width: 1440, height: 1000 }, trace: 'retain-on-failure', screenshot: 'only-on-failure' },
   webServer: [
     { command: 'npm run dev', url: 'http://127.0.0.1:5173', reuseExistingServer: false, timeout: 60_000 },
+    { command: 'npm run dev:workbench', url: 'http://127.0.0.1:5175', reuseExistingServer: false, timeout: 60_000 },
     { command: 'python3 -m http.server 6007 --bind 127.0.0.1 --directory apps/storybook/storybook-static', url: 'http://127.0.0.1:6007', reuseExistingServer: false, timeout: 30_000 },
   ],
 });

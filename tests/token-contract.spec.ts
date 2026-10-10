@@ -52,7 +52,7 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
 
 test('generated container breakpoints preserve desktop and narrow workspace layout', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('http://127.0.0.1:5175/');
+  await page.goto(process.env.REITO_WORKBENCH_URL || 'http://127.0.0.1:5175/');
   const panels = page.locator('.workbench-shell > div').first();
   await expect(panels).toHaveCSS('flex-direction', 'row');
   const navigation = page.getByRole('navigation', { name: '工作台导航' });
