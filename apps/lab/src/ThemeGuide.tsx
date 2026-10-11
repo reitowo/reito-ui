@@ -1,5 +1,5 @@
 import { ThemeTokenDemo } from '../../../packages/ui/src/basic/theme-token-demo';
-import { ThemeControls } from './ThemeControls';
+import { ThemeControls, useDensityPreferences } from './ThemeControls';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, Moon, Palette, RotateCcw, Sun } from 'lucide-react';
 import { Badge, Button, Checkbox, Input, Label, Progress, ProgressLabel, ProgressValue, SelectInput, Switch, Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@reito/ui/basic';
@@ -15,6 +15,7 @@ const neutralOptions = [{value:'graphite',label:'Graphite 中性灰'}, ...['gray
 const name = (options:typeof primaryOptions,value:string) => options.find(option=>option.value===value)?.label ?? value;
 
 export function ThemeGuide() {
+  const [density,setDensity]=useDensityPreferences();
   const [primary,setPrimary]=useState<StudyPrimary>(()=>storedColors().primary || 'violet');
   const [neutral,setNeutral]=useState<StudyNeutral>(()=>storedColors().neutral || 'graphite');
   const [scheme,setScheme]=useState<StudyScheme>(()=>{try{return localStorage.getItem('reito-theme')==='light'?'light':localStorage.getItem('reito-theme')==='system'?'system':'dark';}catch{return 'dark';}});
@@ -25,11 +26,11 @@ export function ThemeGuide() {
   const [workspace,setWorkspace]=useState('个人工作区');
   const [saved,setSaved]=useState(false);
   useEffect(()=>{try { localStorage.setItem('reito-colors',JSON.stringify({primary,neutral})); localStorage.setItem('reito-theme',scheme); } catch {} document.title='动态主题配色示例 · Reito UI';},[scheme,primary,neutral]);
-  const api = ['// 当前可用 API：来自 @reito/ui/basic', '<ReitoThemeProvider', '  mode="'+scheme+'"', '  colors={{ primary: "'+primary+'", neutral: "'+neutral+'" }}', '>', '  <Button color="primary">保存</Button>', '  <Button color="'+localColor+'" variant="'+localVariant+'">单独配色</Button>', '</ReitoThemeProvider>'].join('\n');
-  return <ReitoThemeProvider root mode={scheme} colors={{primary,neutral}} className="reito-root min-h-screen bg-background text-foreground" style={{display:"block"}}>
+  const api = ['// 当前可用 API：来自 @reito/ui/basic', '<ReitoThemeProvider', '  mode="'+scheme+'"', '  density="'+density+'"', '  colors={{ primary: "'+primary+'", neutral: "'+neutral+'" }}', '>', '  <Button color="primary">保存</Button>', '  <Button color="'+localColor+'" variant="'+localVariant+'">单独配色</Button>', '</ReitoThemeProvider>'].join('\n');
+  return <ReitoThemeProvider root mode={scheme} density={density} colors={{primary,neutral}} className="reito-root min-h-screen bg-background text-foreground" style={{display:"block"}}>
     <header className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3">
       <a href="?view=overview" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="size-3" aria-hidden="true"/>组件总览</a>
-      <div className="flex items-center gap-2"><Badge variant="outline">配色交互示例</Badge><ThemeControls colors={{primary,neutral}} onChange={colors=>{setPrimary(colors.primary ?? 'neutral');setNeutral(colors.neutral ?? 'graphite');}} mode={scheme} onModeChange={setScheme}/></div>
+      <div className="flex items-center gap-2"><Badge variant="outline">配色交互示例</Badge><ThemeControls colors={{primary,neutral}} onChange={colors=>{setPrimary(colors.primary ?? 'neutral');setNeutral(colors.neutral ?? 'graphite');}} mode={scheme} onModeChange={setScheme} density={density} onDensityChange={setDensity}/></div>
     </header>
     <main className="mx-auto grid w-full max-w-[var(--rui-container-5xl)] gap-6 px-4 py-6">
       <div className="grid gap-2"><h1 className="text-xl font-semibold">动态主题配色示例</h1><p className="text-sm text-muted-foreground">主色决定强调操作，底色决定工作面的灰阶，单个组件可以另选颜色。</p><p className="text-xs text-muted-foreground">当前使用正式主题接口：17 套彩色色阶、6 套底色色系，支持系统明暗和局部弹层继承。选择会保留到组件总览。</p></div>

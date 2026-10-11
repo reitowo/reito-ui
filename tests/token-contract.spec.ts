@@ -4,7 +4,7 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
   await page.addInitScript(density => localStorage.setItem('reito-density', density), density);
   await page.goto('/?layer=basic&component=input');
   const input = page.getByRole('textbox', { name: '项目名称', exact: true });
-  await expect(input).toHaveCSS('height', density === 'compact' ? '32px' : '40px');
+  await expect(input).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
   await expect(input).toHaveCSS('font-size', '13px');
   await page.evaluate(() => {
     const root = document.documentElement.style;

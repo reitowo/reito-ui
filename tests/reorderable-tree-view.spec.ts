@@ -33,6 +33,6 @@ test('Playground Controls keep value and expansion on the same Story tab', async
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: reorder tree remains compact and accessible`, async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 900 }); const tree = await open(page, 'playground', `theme:${theme};density:${density}`); const src = tree.getByRole('treeitem', { name: 'src' }); expect(await src.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 32);
+  await page.setViewportSize({ width: 390, height: 900 }); const tree = await open(page, 'playground', `theme:${theme};density:${density}`); const src = tree.getByRole('treeitem', { name: 'src' }); expect(await src.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 28);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') }); expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true); await page.screenshot({ path: `.logs/reorderable-tree-view/${theme}-${density}.png`, fullPage: true });
 });

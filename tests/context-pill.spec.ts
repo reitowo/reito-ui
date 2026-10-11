@@ -8,7 +8,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     }, { theme, density });
     await page.goto('/?layer=ai&component=context-pill');
     const demo = page.locator('.lab-demo');
-    const expectedHeight = density === 'compact' ? 28 : 36;
+    const expectedHeight = density === 'compact' ? 28 : 32;
     for (const name of ['当前工作区', 'design-language.md', '只读上下文']) {
       const pill = demo.getByTitle(name, { exact: true }).locator('..');
       await expect(pill).toHaveCSS('height', `${expectedHeight}px`);

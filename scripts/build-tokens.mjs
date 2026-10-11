@@ -143,7 +143,30 @@ const metrics = Object.fromEntries(flatten(source.foundation).flatMap(([name, va
   if (!match) return [];
   return [[name, Number(match.groups.value) * (match.groups.unit === 'rem' ? 16 : match.groups.unit === 's' ? 1000 : 1)]];
 }));
+// The inspector consumes the same resolver and namespace mapping as CSS generation.
+function inspectGroup(group, path = []) {
+  return Object.entries(group).flatMap(([key, token]) => {
+    if (key.startsWith('$')) return [];
+    const parts = [...path, key];
+    if (!('$value' in token)) return inspectGroup(token, parts);
+    const name = parts.join('.');
+    return [{
+      path: name,
+      group: parts[0],
+      type: token.$type,
+      sourceValue: token.$value,
+      description: token.$description ?? '',
+      resolvedValue: resolve(token),
+      cssValue: cssValue(token),
+      cssVariable: parts[0] === 'colorThemes' ? null : `--rui-${variable(name)}`,
+      theme: parts[0] === 'themes' ? parts[1] : parts[0] === 'colorThemes' ? parts[3] : null,
+      density: parts[0] === 'density' ? parts[1] : null,
+    }];
+  });
+}
 const outputs = [
+  [new URL('packages/tokens/dist/catalog.js', root), `/* Generated inspection catalog. Edit src/tokens.json. */\nexport const tokenCatalog = ${JSON.stringify(inspectGroup(source), null, 2)};\n`],
+  [new URL('packages/tokens/dist/catalog.d.ts', root), `export interface TokenDefinition { path: string; group: string; type: string; sourceValue: unknown; description: string; resolvedValue: string; cssValue: string; cssVariable: string | null; theme: string | null; density: string | null; }\nexport declare const tokenCatalog: readonly TokenDefinition[];\n`],
   [new URL('packages/tokens/dist/themes.js', root), `/* Generated runtime color presets. Edit src/tokens.json. */\nexport const themeTokens = ${JSON.stringify(runtime, null, 2)};\n`],
   [new URL('packages/tokens/dist/themes.d.ts', root), `export type ColorPalette = ${Object.keys(runtimeColors).map(v=>JSON.stringify(v)).join(' | ')};\nexport type NeutralPalette = 'graphite' | ${Object.keys(runtimeNeutral).map(v=>JSON.stringify(v)).join(' | ')};\nexport declare const themeTokens: { themes: Record<'dark' | 'light', Record<string, string>>; neutrals: Record<Exclude<NeutralPalette, 'graphite'>, Record<'dark' | 'light', Record<string, string>>>; colors: Record<ColorPalette, Record<'dark' | 'light', Record<string, string>>>; scales: Record<string, Record<string, string>>; paletteVariables: Record<string, Record<string, string>>; aliases: Record<string, string>; bindings: Record<string, string>; densityBindings: Record<'compact' | 'comfortable', Record<string, string>>; themeBindings: Record<'dark' | 'light', Record<string, string>>; neutralBindings: Record<string, Record<'dark' | 'light', Record<string, string>>>; colorBindings: Record<ColorPalette, Record<'dark' | 'light', Record<string, string>>> };\nexport type SemanticTokenName = ${tokenKeys.map(v=>JSON.stringify(v)).join(' | ')};\nexport type ComponentTokenOverrides = {\n${Object.entries(componentKeys).map(([name, keys])=>`  ${JSON.stringify(name)}?: Partial<Record<${keys.map(v=>JSON.stringify(v)).join(' | ')}, string>>;`).join('\n')}\n};\nexport type ThemeTokenOverrides = { semantic?: Partial<Record<SemanticTokenName, string>>; components?: ComponentTokenOverrides };\n`],
   [new URL('packages/tokens/dist/tokens.css', root), css + aliases + `\n:root { --rui-color-text: var(--rui-text); --rui-color-soft: var(--rui-hover); --rui-color-border: var(--rui-border-strong); }\n`],

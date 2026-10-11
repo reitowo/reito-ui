@@ -1,4 +1,4 @@
-import { chooseThemeMode } from './theme-menu';
+import { chooseThemeDensity, chooseThemeMode } from './theme-menu';
 import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
@@ -82,12 +82,12 @@ test('unlocking again before an old callback settles does not restore its feedba
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
   test(`${theme}/${density}: token height, keyboard copying and narrow containment`, async ({ page }) => {
     if (theme === 'light') await chooseThemeMode(page,'light');
-    if (density === 'comfortable') await page.getByRole('button', { name: '切换组件密度' }).click();
+    if (density === 'comfortable') await chooseThemeDensity(page, 'comfortable');
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('html')).toHaveAttribute('data-density', density);
     const display = page.getByRole('group', { name: 'JumpServer 验证码' });
     const copy = display.getByRole('button');
-    await expect.poll(async () => (await copy.boundingBox())!.height).toBe(density === 'compact' ? 24 : 32);
+    await expect.poll(async () => (await copy.boundingBox())!.height).toBe(density === 'compact' ? 24 : 28);
     await copy.focus();
     await page.keyboard.press('Enter');
     await expect(display.getByRole('status')).toHaveText('已复制');

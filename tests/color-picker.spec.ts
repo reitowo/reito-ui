@@ -108,7 +108,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 560, height: 720 });
   await open(page, 'popup', `theme:${theme};density:${density}`);
   const input = page.getByRole('textbox', { name: '界面强调色' });
-  expect(await input.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await input.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await page.getByRole('button', { name: '打开颜色选择器' }).click();
   await expect(page.locator('[data-slot="color-picker-panel"]')).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

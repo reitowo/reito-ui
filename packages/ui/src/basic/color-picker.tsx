@@ -328,6 +328,8 @@ function useColorEditor(props: ColorInputProps) {
 
 const transparencyClass =
   'bg-[image:repeating-conic-gradient(var(--rui-border)_0_25%,var(--rui-bg)_0_50%)] bg-[length:var(--rui-space-2)_var(--rui-space-2)]';
+const colorSwatchClass =
+  'size-[var(--rui-control-height-xs)] overflow-hidden rounded-[calc(var(--rui-component-input-radius)-var(--rui-space-1))]';
 
 function ColorTextField({
   props,
@@ -350,13 +352,14 @@ function ColorTextField({
     >
       <FieldLabel htmlFor={id}>{props.label}</FieldLabel>
       <InputGroup data-disabled={props.disabled || undefined}>
-        <InputGroupAddon className={cn('overflow-hidden rounded-[inherit] p-0', transparencyClass)}>
+        <InputGroupAddon className="p-0 pl-[var(--rui-space-1)] has-[>button]:ml-0">
           {pickerButton ?? (
-            <span
-              aria-hidden="true"
-              className="size-[var(--rui-control-height)] border-r border-border"
-              style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }}
-            />
+            <span aria-hidden="true" className={cn(colorSwatchClass, transparencyClass)}>
+              <span
+                className="block size-full"
+                style={{ backgroundColor: formatColor(editor.color, 'rgb', true) }}
+              />
+            </span>
           )}
         </InputGroupAddon>
         <InputGroupInput
@@ -735,8 +738,9 @@ export function ColorPicker({
       render={
         <Button
           type="button"
-          size="icon"
+          size="icon-xs"
           variant="ghost"
+          className={cn(colorSwatchClass, transparencyClass, 'border-0')}
           aria-label="打开颜色选择器"
           disabled={props.disabled}
         />

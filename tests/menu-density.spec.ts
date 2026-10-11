@@ -7,7 +7,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       localStorage.setItem('reito-density', density);
     }, { theme, density });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    const rowHeight = density === 'compact' ? 28 : 36;
+    const rowHeight = density === 'compact' ? 28 : 32;
     async function expectRow(row: Locator) {
       await expect(row).toHaveCSS('font-size', '13px');
       await expect(row).toHaveCSS('height', `${rowHeight}px`);

@@ -124,7 +124,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 480, height: 720 });
   await open(page, 'controlled-commit', `theme:${theme};density:${density}`);
   const group = page.locator('[data-slot="input-date"]');
-  expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await page.getByRole('button', { name: '打开日历' }).click();
   await expect(page.getByRole('grid')).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

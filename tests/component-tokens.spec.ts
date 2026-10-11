@@ -34,8 +34,8 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
     const trigger = example.getByRole('button', { name: 'Token 示例菜单', exact: true });
     const nested = example.getByRole('button', { name: '嵌套继承操作', exact: true });
     const input = example.getByRole('textbox', { name: 'Token 示例工作区' });
-    const initialHeight = density === 'compact' ? 28 : 36;
-    const largerHeight = density === 'compact' ? 32 : 40;
+    const initialHeight = density === 'compact' ? 28 : 32;
+    const largerHeight = density === 'compact' ? 32 : 36;
     await expect(save).toHaveCSS('height', `${initialHeight}px`);
     expect(await example.evaluate(n => n.closest('[data-theme]')?.getAttribute('data-theme'))).toBe(mode);
     await expect(input).toHaveCSS('height', `${largerHeight}px`);
@@ -56,8 +56,8 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
     await page.keyboard.press('Escape');
     await expect(trigger).toBeFocused();
     await example.getByRole('checkbox', { name: '仅按钮覆盖为 XS' }).check();
-    await expect(save).toHaveCSS('height', density === 'compact' ? '24px' : '32px');
-    await expect(nested).toHaveCSS('height', density === 'compact' ? '24px' : '32px');
+    await expect(save).toHaveCSS('height', density === 'compact' ? '24px' : '28px');
+    await expect(nested).toHaveCSS('height', density === 'compact' ? '24px' : '28px');
     await trigger.click();
     await expect(open).toHaveCSS('height', `${largerHeight}px`);
     await page.keyboard.press('Escape');
@@ -65,7 +65,7 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
     const card = example.getByLabel('局部 token 卡片');
     for (const slot of ['card-header', 'card-content', 'card-footer']) {
       await expect(card.locator(`[data-slot=${slot}]`)).toHaveCSS('padding-left', density === 'compact' ? '12px' : '16px');
-      await expect(card.locator(`[data-slot=${slot}]`)).toHaveCSS('padding-top', density === 'compact' ? '8px' : '12px');
+      await expect(card.locator(`[data-slot=${slot}]`)).toHaveCSS('padding-top', density === 'compact' ? '8px' : '10px');
     }
     // Controls outside the scope retain the original density.
     await expect(example.getByRole('button', { name: '重置尺寸示例' })).toHaveCSS('height', `${initialHeight}px`);

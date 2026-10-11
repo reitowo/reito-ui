@@ -1728,8 +1728,9 @@ export function RichTextEditor({
         </div>
       )}
       <div
+        data-slot="rich-text-editor-surface"
         className={cn(
-          'relative min-w-0 overflow-hidden rounded-lg border border-border bg-background transition-colors focus-within:border-ring focus-within:ring-[length:var(--rui-focus-width)] focus-within:ring-ring/50',
+          'rui-editor-surface relative min-w-0 overflow-hidden rounded-lg border border-border bg-background transition-colors',
           visibleError && 'border-destructive',
           (readOnly || disabled) && 'bg-muted/30',
         )}

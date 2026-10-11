@@ -72,7 +72,7 @@ test('Playground keeps controlled checkbox args synchronized in the same tab', a
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: checkbox tree is compact and accessible`, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 }); const tree = await open(page, 'partial', `theme:${theme};density:${density}`);
   const first = tree.getByRole('treeitem', { name: 'src' });
-  expect(await first.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 32);
+  expect(await first.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 28);
   await first.focus();
   expect(await first.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => getComputedStyle(element).boxShadow)).not.toBe('none');
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

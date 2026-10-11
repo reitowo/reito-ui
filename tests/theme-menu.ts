@@ -1,4 +1,9 @@
 import type { Page } from '@playwright/test';
+export async function chooseThemeDensity(page: Page, density: 'compact'|'comfortable') {
+  await page.getByRole('button', {name:'主题',exact:true}).click();
+  await page.getByRole('menuitemradio', {name: density==='compact'?'紧凑':'舒适',exact:true}).click();
+  await page.keyboard.press('Escape');
+}
 export async function chooseThemeMode(page: Page, mode: 'dark'|'light'|'system') {
   await page.getByRole('button', {name:'主题',exact:true}).click();
   await page.getByRole('menuitemradio', {name: mode==='dark'?'深色':mode==='light'?'浅色':'跟随系统',exact:true}).click();

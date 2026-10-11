@@ -1,4 +1,14 @@
 /* Tiptap document typography; toolbar and host layout stay in their components. */
+/* One boundary identifies the focused document; toolbar buttons own their focus. */
+.rui-editor-surface:has(.rui-editor-document:focus-visible) {
+  border-color: var(--rui-focus);
+}
+@media (forced-colors: active) {
+  .rui-editor-surface:has(.rui-editor-document:focus-visible) {
+    border-color: Highlight;
+  }
+}
+
 @layer components {
   .rui-editor-document {
     min-height: var(--rui-editor-min-height);
@@ -84,7 +94,7 @@
 
   .rui-editor-document li[data-type='taskItem'] > label {
     display: flex;
-    height: var(--rui-control-height-xs);
+    height: calc(var(--rui-font-interface) * var(--rui-leading-relaxed));
     flex-shrink: 0;
     align-items: center;
   }

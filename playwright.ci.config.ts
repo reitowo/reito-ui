@@ -10,7 +10,7 @@ export default defineConfig({
     'data-table-controlled.spec.ts', 'data-table-editing.spec.ts', 'data-table-preferences.spec.ts',
     'dynamic-form.spec.ts', 'form.spec.ts', 'key-value-editor-rich.spec.ts',
     'key-value-editor-transaction.spec.ts', 'property-list-rich.spec.ts',
-    'component-tokens.spec.ts', 'menu-density.spec.ts', 'token-contract.spec.ts',
+    'component-tokens.spec.ts', 'menu-density.spec.ts', 'theme-density.spec.ts', 'token-inspector.spec.ts', 'token-contract.spec.ts',
     'token-generation.spec.ts', 'validation-glow.spec.ts', 'scroll-area-insets.spec.ts',
   ],
   reporter: 'list',

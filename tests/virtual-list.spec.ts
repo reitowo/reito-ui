@@ -33,7 +33,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 390, height: 900 });
   const f = await open(page, '', `theme:${theme};density:${density}`);
   await expect(f.rows.first()).toBeVisible();
-  expect(await f.rows.first().evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 36 : 46);
+  expect(await f.rows.first().evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 36 : 40);
   await f.list.focus(); await f.list.press('End'); await expect(page.getByText('项目 10000', { exact: true })).toBeVisible();
   await f.list.press('Home'); await expect(page.getByText('项目 1', { exact: true })).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

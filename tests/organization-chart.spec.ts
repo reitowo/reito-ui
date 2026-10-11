@@ -154,7 +154,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   const chart = page.locator('[data-slot="organization-chart"]');
   const leaf = tree.getByRole('treeitem', { name: /界面设计/ }).locator(':scope > [data-slot="organization-chart-node"]');
   await expect(chart).toHaveCSS('overflow-x', 'auto');
-  expect(await chart.evaluate(element => getComputedStyle(element).paddingTop)).toBe(density === 'compact' ? '12px' : '20px');
+  expect(await chart.evaluate(element => getComputedStyle(element).paddingTop)).toBe(density === 'compact' ? '12px' : '16px');
   expect(await leaf.evaluate(element => element.getBoundingClientRect().width)).toBe(160);
   expect(await leaf.evaluate(element => element.getBoundingClientRect().height)).toBeLessThan(60);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

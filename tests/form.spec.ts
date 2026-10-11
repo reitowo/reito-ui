@@ -246,7 +246,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     const fields = await openForm(page);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('html')).toHaveAttribute('data-density', density);
-    await expect(fields.name).toHaveCSS('height', density === 'compact' ? '32px' : '40px');
+    await expect(fields.name).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
     await fields.name.fill('x');
     await fields.save.click();
     await expectAssociatedError(fields.name, '名称至少需要 2 个字符');

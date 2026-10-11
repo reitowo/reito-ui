@@ -100,7 +100,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 420, height: 620 });
   await open(page, 'with-rules', `theme:${theme};density:${density}`);
   const group = page.locator('[data-slot="password-input"]');
-  expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

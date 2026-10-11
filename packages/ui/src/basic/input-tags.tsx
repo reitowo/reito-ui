@@ -448,7 +448,7 @@ export function InputTags({
             // Spacing
             'gap-[var(--rui-space-1)]',
             // Surface
-            'rounded-lg border border-input bg-transparent',
+            'rounded-[var(--rui-component-input-radius)] border border-input bg-transparent',
             // Spacing
             'px-[var(--rui-cell-padding-x)] py-0',
             // Motion
@@ -476,7 +476,7 @@ export function InputTags({
                   data-tag-index={index}
                   aria-invalid={Boolean(tagError) || undefined}
                   aria-describedby={tagError ? `${id}-tag-error-${index}` : undefined}
-                  className="inline-flex min-h-[var(--rui-control-height-xs)] min-w-0 max-w-full items-center rounded-sm border border-border bg-muted text-xs text-foreground rui-validation"
+                  className="inline-flex min-h-[var(--rui-control-height-xs)] min-w-0 max-w-full items-center rounded-[calc(var(--rui-component-input-radius)-var(--rui-space-1))] border border-border bg-muted text-xs text-foreground rui-validation"
                 >
                   {editing?.index === index ? (
                     <>
@@ -507,7 +507,7 @@ export function InputTags({
                         type="button"
                         variant="ghost"
                         size="icon-xs"
-                        className="size-[var(--rui-control-height-xs)] rounded-sm"
+                        className="size-[var(--rui-control-height-xs)] rounded-[inherit]"
                         aria-label={`保存标签 ${tag}`}
                         onClick={commitEdit}
                       >
@@ -529,7 +529,7 @@ export function InputTags({
                             setNotice(undefined);
                           }}
                           onKeyDown={(event) => handleTagKeyDown(index, event)}
-                          className="min-w-0 truncate rounded-sm px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-left outline-none hover:bg-muted-foreground/10 focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50"
+                          className="min-w-0 truncate rounded-[inherit] px-[var(--rui-space-2)] py-[var(--rui-space-1)] text-left outline-none hover:bg-muted-foreground/10 focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50"
                         >
                           {tag}
                         </button>
@@ -544,7 +544,7 @@ export function InputTags({
                           variant="ghost"
                           size="icon-xs"
                           tabIndex={-1}
-                          className="size-[var(--rui-control-height-xs)] rounded-sm"
+                          className="size-[var(--rui-control-height-xs)] rounded-[inherit]"
                           aria-label={`移除标签 ${tag}`}
                           disabled={disabled}
                           onClick={() => removeTag(index)}

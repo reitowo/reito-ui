@@ -11,4 +11,10 @@ const ThemeGuide = React.lazy(() => import('./ThemeGuide').then(module => ({ def
 const Preview = React.lazy(() => import('./OverviewPreview').then(module => ({ default: module.OverviewPreview })));
 const params = new URLSearchParams(location.search);
 const showLab = new URLSearchParams(location.search).has('layer') || new URLSearchParams(location.search).has('component');
-ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><React.Suspense fallback={<p role="status">正在打开组件目录…</p>}>{params.has('preview') ? <Preview /> : params.get('view') === 'theme-guide' ? <ThemeGuide /> : params.get('view') === 'overview' ? <Overview /> : showLab ? <Lab /> : <Home />}</React.Suspense></React.StrictMode>);
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <React.Suspense fallback={null}>
+      {params.has('preview') ? <Preview /> : params.get('view') === 'theme-guide' ? <ThemeGuide /> : params.get('view') === 'overview' ? <Overview /> : showLab ? <Lab /> : <Home />}
+    </React.Suspense>
+  </React.StrictMode>,
+);

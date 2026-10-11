@@ -47,8 +47,20 @@ import {
 } from 'lucide-react';
 import * as P from '../primitives/index.js';
 
-function Stack({ children }: { children: React.ReactNode }) {
-  return <div className="flex w-full max-w-xl flex-col gap-4 text-sm">{children}</div>;
+function Stack({
+  children,
+  spacing = 'default',
+}: {
+  children: React.ReactNode;
+  spacing?: 'default' | 'related';
+}) {
+  return (
+    <div
+      className={`flex w-full max-w-xl flex-col text-sm ${spacing === 'related' ? 'gap-[var(--rui-content-gap-sm)]' : 'gap-4'}`}
+    >
+      {children}
+    </div>
+  );
 }
 function Row({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-wrap items-center gap-3">{children}</div>;
@@ -683,6 +695,52 @@ export function TabsDemo() {
     </P.Tabs>
   );
 }
+function CompactNotificationDialogDemo() {
+  const [open, setOpen] = React.useState(false);
+  const [result, setResult] = React.useState('');
+  const respond = (message: string) => {
+    setResult(message);
+    setOpen(false);
+  };
+  return (
+    <>
+      <P.Dialog open={open} onOpenChange={setOpen}>
+        <P.DialogTrigger render={<P.Button variant="outline" />}>紧凑确认弹窗</P.DialogTrigger>
+        <P.DialogContent variant="compact" showCloseButton={false}>
+          <P.DialogHeader>
+            <P.DialogTitle>启用任务通知</P.DialogTitle>
+            <P.DialogDescription>任务结束时，显示本地提醒。</P.DialogDescription>
+          </P.DialogHeader>
+          <P.DialogFooter variant="compact">
+            <P.Button
+              variant="ghost"
+              size="xs"
+              onClick={() => respond('已选择不再询问 · 本地示例')}
+            >
+              不再询问
+            </P.Button>
+            <P.Button
+              variant="secondary"
+              size="xs"
+              onClick={() => respond('已选择稍后处理 · 本地示例')}
+            >
+              暂不
+            </P.Button>
+            <P.Button
+              variant="accent"
+              size="xs"
+              onClick={() => respond('已允许示例提醒 · 未申请浏览器通知权限')}
+            >
+              允许
+            </P.Button>
+          </P.DialogFooter>
+        </P.DialogContent>
+      </P.Dialog>
+      {result && <output aria-live="polite">{result}</output>}
+    </>
+  );
+}
+
 export function DialogDemo() {
   const [open, setOpen] = React.useState(false);
   const [saved, setSaved] = React.useState(false);
@@ -714,6 +772,7 @@ export function DialogDemo() {
         </P.DialogContent>
       </P.Dialog>
       <output aria-live="polite">{saved ? '项目已保存' : '尚未修改'}</output>
+      <CompactNotificationDialogDemo />
     </Stack>
   );
 }
@@ -1146,7 +1205,7 @@ export function PaginationDemo() {
 export function BreadcrumbDemo() {
   const [place, setPlace] = React.useState('Button');
   return (
-    <Stack>
+    <Stack spacing="related">
       <P.Breadcrumb>
         <P.BreadcrumbList>
           <P.BreadcrumbItem>

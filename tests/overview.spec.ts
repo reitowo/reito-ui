@@ -36,15 +36,15 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await page.addInitScript(({ theme, density }) => { localStorage.setItem('reito-theme', theme); localStorage.setItem('reito-density', density); }, { theme, density });
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/?view=overview');
-    const trigger = page.getByRole('button', { name: '打开真实弹窗' });
+    const trigger = page.locator('[data-component="basic/dialog"]').getByRole('button', { name: '紧凑确认弹窗' });
     await trigger.click();
     const dialog = page.getByRole('dialog', { name: '启用任务通知' });
     const allow = dialog.getByRole('button', { name: '允许', exact: true });
     const insetX = density === 'compact' ? '12px' : '16px';
-    const insetY = density === 'compact' ? '8px' : '12px';
-    const textGap = density === 'compact' ? '4px' : '8px';
-    const headers = [page.locator('.atlas-dialog-specimen [data-slot="dialog-header"]'), dialog.locator('[data-slot="dialog-header"]')];
-    const footers = [page.locator('.atlas-dialog-specimen [data-slot="dialog-footer"]'), dialog.locator('[data-slot="dialog-footer"]')];
+    const insetY = density === 'compact' ? '8px' : '10px';
+    const textGap = density === 'compact' ? '4px' : '6px';
+    const headers = [dialog.locator('[data-slot="dialog-header"]')];
+    const footers = [dialog.locator('[data-slot="dialog-footer"]')];
     for (const surface of [...headers, ...footers]) {
       await expect(surface).toHaveCSS('padding-left', insetX);
       await expect(surface).toHaveCSS('padding-right', insetX);
@@ -53,7 +53,6 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     }
     for (const header of headers) await expect(header).toHaveCSS('row-gap', textGap);
     await expect(dialog.locator('[data-slot="dialog-title"]')).toHaveCSS('line-height', '20px');
-    await expect(page.locator('.atlas-dialog-specimen h3')).toHaveCSS('line-height', '20px');
     await page.evaluate(() => {
       document.documentElement.style.setProperty('--rui-compact-surface-padding-x', '17px');
       document.documentElement.style.setProperty('--rui-compact-surface-padding-y', '5px');
@@ -70,7 +69,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       document.documentElement.style.removeProperty('--rui-compact-surface-gap');
     });
     await expect(dialog).toHaveCSS('border-radius', '8px');
-    await expect(allow).toHaveCSS('height', density === 'compact' ? '24px' : '32px');
+    await expect(allow).toHaveCSS('height', density === 'compact' ? '24px' : '28px');
     await expect(allow).toHaveCSS('font-size', '13px');
     await expect(allow).toHaveCSS('border-radius', '6px');
     await dialog.screenshot({ path: `.logs/overview-dialog-${theme}-${density}.png` });
@@ -92,7 +91,6 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       const paragraph = node.querySelector('p')!;
       return paragraph.getBoundingClientRect().top - heading.getBoundingClientRect().bottom;
     })).toBe(parseFloat(textGap));
-    await page.locator('.atlas-dialog-specimen').screenshot({ path: `.logs/surface-rhythm-${theme}-${density}-confirmation.png` });
     await readingSurface.screenshot({ path: `.logs/surface-rhythm-${theme}-${density}-scroll.png` });
     await page.screenshot({ path: `.logs/surface-rhythm-${theme}-${density}-page.png` });
     await page.setViewportSize({ width: 1280, height: 800 });

@@ -12,9 +12,9 @@ for (const layer of ['basic', 'complex', 'ai']) test(`standalone overview previe
     await page.goto(`/?preview=${encodeURIComponent(current)}&theme=dark&density=compact`);
     const root = page.locator('.atlas-preview-root');
     await expect(root, current).toBeVisible();
+    await expect(root.locator(':scope > *').first(), current).toBeVisible();
     await expect(root.getByText('正在载入组件…', { exact: true }), current).toHaveCount(0);
     await expect(root.getByText('预览未能载入，请在组件详情中重新打开。', { exact: true }), current).toHaveCount(0);
-    expect(await root.locator(':scope > *').count(), current).toBeGreaterThan(0);
   }
   expect(failures).toEqual([]);
 });

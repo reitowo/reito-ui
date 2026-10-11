@@ -6,7 +6,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       localStorage.setItem('reito-theme', theme); localStorage.setItem('reito-density', density);
     }, { theme, density });
     await page.goto('/?layer=basic&component=button');
-    const height = density === 'compact' ? '28px' : '36px';
+    const height = density === 'compact' ? '28px' : '32px';
     for (const name of ['保存更改', '强调操作', '次要操作', '描边按钮', '轻量操作', '不可用', 'Default']) {
       const button = page.getByRole('button', { name, exact: true });
       await expect(button).toHaveCSS('height', height);
@@ -17,20 +17,21 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     const icon = page.getByRole('button', { name: '添加项目', exact: true });
     await expect(icon).toHaveCSS('height', height);
     await expect(icon).toHaveCSS('width', height);
-    await expect(page.getByRole('button', { name: 'Small', exact: true })).toHaveCSS('height', density === 'compact' ? '28px' : '36px');
-    await expect(page.getByRole('button', { name: 'Medium', exact: true })).toHaveCSS('height', density === 'compact' ? '32px' : '40px');
-    await expect(page.getByRole('button', { name: 'Large', exact: true })).toHaveCSS('height', density === 'compact' ? '36px' : '44px');
+    await expect(page.getByRole('button', { name: 'Small', exact: true })).toHaveCSS('height', density === 'compact' ? '28px' : '32px');
+    await expect(page.getByRole('button', { name: 'Medium', exact: true })).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
+    await expect(page.getByRole('button', { name: 'Large', exact: true })).toHaveCSS('height', density === 'compact' ? '36px' : '40px');
     await page.getByRole('button', { name: '保存更改', exact: true }).click();
     await expect(page.getByText('已保存 1 次')).toBeVisible();
     await page.goto('/?layer=basic&component=card');
     const card = page.locator('[data-slot="card"]');
+    await expect(card).toBeVisible();
     const header = card.locator('[data-slot="card-header"]');
     const body = card.locator('[data-slot="card-content"]');
     const footer = card.locator('[data-slot="card-footer"]');
     const gap = '0px';
     const x = density === 'compact' ? '16px' : '20px';
     const y = density === 'compact' ? '12px' : '16px';
-    const textGap = density === 'compact' ? 8 : 12;
+    const textGap = density === 'compact' ? 8 : 10;
     await expect(card).toHaveCSS('row-gap', gap);
     for (const slot of [header, body, footer]) await expect(slot).toHaveCSS('padding-left', x);
     const geometry = () => card.evaluate(node => {
@@ -41,13 +42,13 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       const text = node.querySelector('[data-slot=card-content] > p')!.getBoundingClientRect();
       return { headerToBody: body.top - header.bottom, bodyToFooter: footer.top - body.bottom, descriptionToText: text.top-description.bottom, contentBottom: footer.top-text.bottom };
     });
-    expect(await geometry()).toEqual({ headerToBody: 0, bodyToFooter: 0, descriptionToText: textGap, contentBottom: parseFloat(y) });
+    await expect.poll(geometry).toEqual({ headerToBody: 0, bodyToFooter: 0, descriptionToText: textGap, contentBottom: parseFloat(y) });
     await expect(footer.getByRole('button', { name: '打开工作区' })).toHaveCSS('height', height);
     await expect(footer).toHaveCSS('padding-top', y);
     await expect(footer).toHaveCSS('padding-bottom', y);
     await card.screenshot({ path: '.logs/card-spacing-fixed-' + theme + '-' + density + '.png' });
     await page.evaluate(() => document.documentElement.style.setProperty('--rui-card-text-gap', '10px'));
-    expect(await geometry()).toEqual({ headerToBody: 0, bodyToFooter: 0, descriptionToText: 10, contentBottom: parseFloat(y) });
+    await expect.poll(geometry).toEqual({ headerToBody: 0, bodyToFooter: 0, descriptionToText: 10, contentBottom: parseFloat(y) });
     await page.goto('/?view=overview#component-ai-agent-task');
     const task = page.locator('[data-slot="agent-task-card"]');
     await expect(task).toBeVisible({ timeout: 30_000 });

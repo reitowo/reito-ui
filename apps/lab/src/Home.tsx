@@ -1,4 +1,4 @@
-import { ThemeControls, useThemePreferences } from './ThemeControls';
+import { ThemeControls, useDensityPreferences, useThemePreferences } from './ThemeControls';
 import { readThemeMode } from './theme-preferences';
 import { ReitoThemeProvider } from '@reito/ui/basic';
 import { useEffect, useState } from 'react';
@@ -51,20 +51,21 @@ function WorkspacePreview() {
 }
 
 export function Home() {
+  const [density, setDensity] = useDensityPreferences();
   const [colors, setColors] = useThemePreferences();
   const [theme, setTheme] = useState(readThemeMode);
   const [tokensOpen, setTokensOpen] = useState(false);
   useEffect(() => {
     document.title = 'Reito UI · 为你的工具构建一致的界面';
 
-    document.documentElement.dataset.density = 'compact';
+    document.documentElement.dataset.density = density;
 
     try { localStorage.setItem('reito-theme', theme); } catch { /* Session theme remains available. */ }
-  }, [theme]);
+  }, [theme, density]);
   const linkClass = 'home-link';
-  return <ReitoThemeProvider root mode={theme} density="compact" colors={colors}><TooltipProvider><div className="reito-root home-page">
+  return <ReitoThemeProvider root mode={theme} density={density} colors={colors}><TooltipProvider><div className="reito-root home-page">
     <a className="home-skip" href="#home-main">跳到主要内容</a>
-    <header className="home-header"><a href={siteBase} className="home-logo" aria-label="Reito UI 首页"><PanelLeft className="size-5" /><span>Reito UI</span></a><nav aria-label="主导航" className="order-last w-full justify-center sm:order-none sm:w-auto"><a href={siteBase + "?view=overview"}>Component atlas</a><a href="#components">组件</a><a href="#design">设计语言</a><a href="#start">快速开始</a></nav><div className="flex items-center gap-2"><ThemeControls colors={colors} onChange={setColors} mode={theme} onModeChange={setTheme}/><a className="home-github" href={repository} target="_blank" rel="noreferrer" aria-label="GitHub 源码"><Code2 className="size-4" /></a></div></header>
+    <header className="home-header"><a href={siteBase} className="home-logo" aria-label="Reito UI 首页"><PanelLeft className="size-5" /><span>Reito UI</span></a><nav aria-label="主导航" className="order-last w-full justify-center sm:order-none sm:w-auto"><a href={siteBase + "?view=overview"}>Component atlas</a><a href="#components">组件</a><a href="#design">设计语言</a><a href="#start">快速开始</a></nav><div className="flex items-center gap-2"><ThemeControls colors={colors} onChange={setColors} mode={theme} onModeChange={setTheme} density={density} onDensityChange={setDensity}/><a className="home-github" href={repository} target="_blank" rel="noreferrer" aria-label="GitHub 源码"><Code2 className="size-4" /></a></div></header>
     <main id="home-main">
       <section className="home-hero"><a href={`${repository}/commits/main`} className="home-version" target="_blank" rel="noreferrer"><span className="size-2 rounded-full bg-foreground" />Reito UI {version}<ArrowRight className="size-3" /></a><h1 className="text-3xl sm:text-[length:calc(var(--rui-font-display)*2)]">为你的工具，<br /><span className="text-muted-foreground">构建一致的界面。</span></h1><p>从基础控件到 AI 工作流，一套可复用的 React 组件。<br className="hidden sm:block" />紧凑、清晰，让每个界面说同一种设计语言。</p><div className="home-hero-actions"><a href={`${siteBase}?layer=basic&component=button`} className="home-primary-link">浏览组件<ArrowRight className="size-4" /></a><a href="#start" className="home-secondary-link">开始使用<Code2 className="size-4" /></a></div><div className="home-stack"><span>React</span><span>TypeScript</span><span>Tailwind CSS</span><span>Base UI</span><span>Storybook</span></div></section>
       <section className="home-container" aria-label="交互工作区展示"><WorkspacePreview /></section>
@@ -73,7 +74,7 @@ export function Home() {
         { title: '复杂组件', english: 'Workspace', icon: Braces, description: '数据表格、文件、编辑器与工作区。把多个操作组织成清晰流程。', items: 'DataTable · Form · Workspace', href: `${siteBase}?layer=complex&component=data-table` },
         { title: 'AI 组件', english: 'Intelligence', icon: Sparkles, description: '消息、上下文、工具调用与产物。让应用接入自己的模型和执行服务。', items: 'Composer · ToolCall · ArtifactPanel', href: `${siteBase}?layer=ai&component=composer` },
       ].map(layer => <a href={layer.href} className="home-layer" key={layer.title}><layer.icon className="size-6" /><div className="text-xs text-muted-foreground">{layer.english}</div><h3>{layer.title}<ArrowRight className="size-4" /></h3><p>{layer.description}</p><span className="mt-auto text-xs text-muted-foreground">{layer.items}</span></a>)}</div></section>
-      <section id="design" className="home-section home-container home-design"><div className="home-section-heading"><span className="text-sm text-muted-foreground">Graphite 设计语言</span><h2>风格属于你，<br />一致性由系统维护。</h2><p>中性灰阶、克制的边界、明确的焦点。颜色、间距与尺寸来自共享 tokens，深浅主题从控件延伸到浮层。</p><Button className="mt-5" variant="outline" onClick={() => setTokensOpen(true)}>查看设计 Tokens<ArrowRight /></Button></div><div className="home-token-panel"><div className="flex justify-between text-sm"><span>一个主题，所有组件</span><span className="text-muted-foreground">{theme === 'dark' ? '深色' : '浅色'}</span></div><div className="home-swatches"><div className="bg-background">画布</div><div className="bg-card">表面</div><div className="bg-muted">辅助</div><div className="bg-primary text-primary-foreground">操作</div></div><div className="flex flex-wrap gap-3"><Button>主要操作</Button><Button variant="outline">次要操作</Button><Badge variant="secondary">共享样式</Badge></div><div className="border-t border-border pt-4 text-xs text-muted-foreground">语义颜色 / 统一尺寸 / 键盘焦点 / 中文内容</div></div></section>
+      <section id="design" className="home-section home-container home-design"><div className="home-section-heading"><span className="text-sm text-muted-foreground">Graphite 设计语言</span><h2>风格属于你，<br />一致性由系统维护。</h2><p>中性灰阶、克制的边界、明确的焦点。颜色、间距与尺寸来自共享 tokens，深浅主题从控件延伸到浮层。</p><Button className="mt-5" variant="outline" onClick={() => setTokensOpen(true)}>查看设计变量<ArrowRight /></Button></div><div className="home-token-panel"><div className="flex justify-between text-sm"><span>一个主题，所有组件</span><span className="text-muted-foreground">{theme === 'dark' ? '深色' : '浅色'}</span></div><div className="home-swatches"><div className="bg-background">画布</div><div className="bg-card">表面</div><div className="bg-muted">辅助</div><div className="bg-primary text-primary-foreground">操作</div></div><div className="flex flex-wrap gap-3"><Button>主要操作</Button><Button variant="outline">次要操作</Button><Badge variant="secondary">共享样式</Badge></div><div className="border-t border-border pt-4 text-xs text-muted-foreground">语义颜色 / 统一尺寸 / 键盘焦点 / 中文内容</div></div></section>
       <section id="start" className="home-section home-container home-start"><div className="home-section-heading"><span className="text-sm text-muted-foreground">快速开始</span><h2>把组件，带进你的项目。</h2><p>通过 npm 安装组件与设计 tokens，在应用入口引入样式即可使用。仓库同时提供 Storybook 和本地示例。</p><div className="mt-5 flex flex-wrap gap-4"><a className={linkClass} href={`${repository}/blob/main/docs/reuse-guide.md`} target="_blank" rel="noreferrer">安装与复用指南<ExternalLink className="size-3" /></a><a className={linkClass} href={storybook}>打开 Storybook<ArrowRight className="size-3" /></a></div></div><div className="min-w-0"><CodeBlock code={start} language="bash" filename="快速开始" /></div></section>
       <section className="home-container home-closing"><h2>先试用，再组合。</h2><p>在 Storybook 同页调整参数，找到适合自己应用的样式与行为。</p><a className="home-primary-link" href={storybook}>进入 Storybook<ArrowRight className="size-4" /></a></section>
     </main>

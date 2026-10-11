@@ -1,4 +1,4 @@
-import { chooseThemeMode } from './theme-menu';
+import { chooseThemeDensity, chooseThemeMode } from './theme-menu';
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
@@ -32,7 +32,7 @@ test('inline previews render immediately and preserve state while scrolling and 
   await expect(frame.getByText('已保存 1 次')).toBeVisible();
   await chooseThemeMode(page,'light');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await page.getByRole('button', { name: '切换组件密度' }).click();
+  await chooseThemeDensity(page, 'comfortable');
   await expect(page.locator('html')).toHaveAttribute('data-density', 'comfortable');
   await expect(frame.getByText('已保存 1 次')).toBeVisible();
   expect(documents.filter(url => new URL(url).searchParams.get('preview') === 'basic/button')).toHaveLength(0);

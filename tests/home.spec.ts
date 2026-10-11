@@ -12,10 +12,10 @@ test('homepage preview filters, updates state, switches code and opens tokens', 
   await expect(page.getByText('没有匹配的任务')).toBeVisible();
   await page.getByRole('tab', { name: '查看代码' }).click();
   await expect(page.locator('[data-slot="code-content"]').first()).toContainText('SearchBar');
-  await page.getByRole('button', { name: '查看设计 Tokens' }).click();
+  await page.getByRole('button', { name: '查看设计变量' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('button', { name: '查看设计 Tokens' })).toBeFocused();
+  await expect(page.getByRole('button', { name: '查看设计变量' })).toBeFocused();
 });
 
 test('component links still open Lab, and Lab brand returns home', async ({ page }) => {

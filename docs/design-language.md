@@ -62,9 +62,9 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 | 辅助文字 / 紧凑 UI / 常规 UI / 阅读正文 | 12 / 13 / 14 / 16 px | 数字按浏览器根字号 16 px 折算；不要为塞入文字继续缩小正文。 |
 | 常规 / 中等 / 半粗字重 | 400 / 500 / 600 | 控件与正文优先 400，主要导航和标题按层级使用 500；600 用于需要明确强调的内容，避免每个标签都加粗。 |
 | 紧凑：XS / SM / default / LG 控件 | 24 / 28 / 32 / 36 px | 此行是通用控件尺度；Button 默认使用独立的 button-height，见下文。 |
-| 舒适：XS / SM / default / LG 控件 | 32 / 36 / 40 / 44 px | 调整尺寸与间距，不靠放大整个页面实现。 |
-| 既有布局：紧凑 / 舒适行高角色 | 36 / 46 px | `--rui-row-height` 保留为布局角色；不是 DataTable 所有数据行的固定高度。 |
-| 既有布局：紧凑 / 舒适面板内距 | 16 / 24 px | `--rui-panel-padding` 保留；通用组件内容区使用下表的 `--rui-content-padding`。 |
+| 舒适：XS / SM / default / LG 控件 | 28 / 32 / 36 / 40 px | 比紧凑增加一级 4px，保留相同界面字号。 |
+| 既有布局：紧凑 / 舒适行高角色 | 36 / 40 px | `--rui-row-height` 保留为布局角色；不是 DataTable 所有数据行的固定高度。 |
+| 既有布局：紧凑 / 舒适面板内距 | 16 / 20 px | `--rui-panel-padding` 保留；通用组件内容区使用下表的 `--rui-content-padding`。 |
 | 间距尺度 | 0、4、8、12、16、20、24、32、40、48、64 px | 使用 `--rui-space-*`；特殊布局尺寸先登记为共享 token。 |
 | 小 / 中 / 大圆角 / composer | 6 / 8 / 12 / 14 px | 控件、容器与对话框使用稳定层级；composer 有独立角色，圆形状态元素可用 full。 |
 | 边框 / 普通键盘焦点 / 强轮廓 | 1 / 1 / 2 px | 普通focus-width与outline-width分开；结构提示保留强轮廓角色；表单错误使用内边缘渐变。 |
@@ -74,22 +74,24 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 
 | 内容角色 | CSS token | compact | comfortable |
 | --- | --- | ---: | ---: |
-| 通用内容内距 | `--rui-content-padding` | 12px | 20px |
+| 通用内容内距 | `--rui-content-padding` | 12px | 16px |
 | 紧凑面板左右内距 | `--rui-compact-surface-padding-x` | 12px | 16px |
-| 紧凑面板上下内距 | `--rui-compact-surface-padding-y` | 8px | 12px |
-| 紧凑面板相关文字间隔 | `--rui-compact-surface-gap` | 4px | 8px |
+| 紧凑面板上下内距 | `--rui-compact-surface-padding-y` | 8px | 10px |
+| 紧凑面板相关文字间隔 | `--rui-compact-surface-gap` | 4px | 6px |
 | 菜单条目左右内距 | `--rui-menu-item-padding-x` | 12px | 16px |
-| 菜单条目上下内距 | `--rui-menu-item-padding-y` | 4px | 8px |
+| 菜单条目上下内距 | `--rui-menu-item-padding-y` | 4px | 6px |
 | 内容间距 | `--rui-content-gap` | 12px | 16px |
-| 小内容间距 | `--rui-content-gap-sm` | 8px | 12px |
-| 单元格横向内距 | `--rui-cell-padding-x` | 10px | 16px |
-| 单元格纵向内距 | `--rui-cell-padding-y` | 6px | 10px |
+| 小内容间距 | `--rui-content-gap-sm` | 8px | 10px |
+| 单元格横向内距 | `--rui-cell-padding-x` | 10px | 12px |
+| 单元格纵向内距 | `--rui-cell-padding-y` | 6px | 8px |
 | 表头纵向内距 | `--rui-table-head-padding-y` | 4px | 6px |
-| 表头高度角色 | `--rui-table-head-height` | 36px | 48px |
-| 消息间距 | `--rui-message-gap` | 16px | 24px |
-| Composer 输入最小高度 | `--rui-composer-input-height` | 80px | 112px |
-| 空态内距 | `--rui-empty-padding` | 24px | 40px |
-| 预览内距 | `--rui-preview-padding` | 16px | 24px |
+| 表头高度角色 | `--rui-table-head-height` | 36px | 40px |
+| 消息间距 | `--rui-message-gap` | 16px | 20px |
+| Composer 输入最小高度 | `--rui-composer-input-height` | 80px | 96px |
+| 空态内距 | `--rui-empty-padding` | 24px | 32px |
+| 预览内距 | `--rui-preview-padding` | 16px | 20px |
+
+2026-10-11 舒适密度按桌面工作面收敛：控件比紧凑增加 4px，相关内容间距增加 2px，通用内容内距增加 4px；卡片区域保留 20 / 16px 横纵内距，字体与圆角不随密度放大。Lab 的密度选项并入共享主题菜单，首页、总览、详情和配色示例共用持久化选择；默认仍为紧凑。下文带日期的旧实测记录保留历史值，当前舒适契约以上表及 [舒适密度验证](validation-comfortable-density.md) 为准。
 
 组件内容容器使用 `p-[var(--rui-content-padding)]`，相邻内容使用相应 gap 角色，表格使用 cell 角色。当前 Lab 示例中，compact 数据行由 46px 收至 34px，AI 内容内距由 16px 收至 12px；前者是该示例的观察值，长文本和高控件仍会增加实际行高。已有产物容器中的代码使用 `CodeBlock variant="embedded"`，让外层提供边界、代码区域负责文本内距，避免重复嵌套 padding。
 

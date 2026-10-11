@@ -110,14 +110,14 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await open(page, 'overview', `theme:${theme};density:${density}`);
   const write = page.getByRole('option', { name: /写入文件/ });
   await expect(write).toHaveCSS('padding-left', density === 'compact' ? '12px' : '16px');
-  await expect(write).toHaveCSS('padding-top', density === 'compact' ? '6px' : '10px');
+  await expect(write).toHaveCSS('padding-top', density === 'compact' ? '6px' : '8px');
   // Inspect the composed desktop width before testing the narrow stacked sides.
   await page.setViewportSize({ width: 1303, height: 900 });
   const icon=write.locator('[data-slot=listbox-option-icon]');
   await expect(icon.locator('svg')).toBeVisible();
   await expect(icon).toHaveCSS('width','16px');
   await expect(icon).toHaveCSS('height','16px');
-  expect(await write.evaluate(n=>n.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await write.evaluate(n=>n.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   const shortRow = await write.evaluate(n => {
     const label=n.querySelector('[data-slot=listbox-option-label]')!.getBoundingClientRect();
     const detail=n.querySelector('[data-slot=listbox-option-description]')!.getBoundingClientRect();

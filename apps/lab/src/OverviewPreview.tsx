@@ -50,5 +50,5 @@ export function OverviewPreview() {
     report();
     return () => { observer.disconnect(); window.removeEventListener('message', receive); };
   }, []);
-  return <TooltipProvider><div ref={root} className="reito-root atlas-preview-root"><PreviewBoundary><Suspense fallback={<p role="status">正在载入组件…</p>}><PreviewContent /></Suspense></PreviewBoundary></div></TooltipProvider>;
+  return <TooltipProvider><div ref={root} className="reito-root atlas-preview-root"><PreviewBoundary><Suspense fallback={null}><PreviewContent /></Suspense></PreviewBoundary></div></TooltipProvider>;
 }

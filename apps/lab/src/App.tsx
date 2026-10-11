@@ -1,11 +1,11 @@
-import { ThemeControls, useThemePreferences } from './ThemeControls';
+import { ThemeControls, useDensityPreferences, useThemePreferences } from './ThemeControls';
 import { readThemeMode } from './theme-preferences';
 import { ReitoThemeProvider } from '@reito/ui/basic';
 import { useEffect, useMemo, useState } from 'react';
 import { Blocks, Braces, Check, ChevronRight, ExternalLink, Menu, Moon, PanelLeft, Search, SlidersHorizontal, Sparkles, Sun } from 'lucide-react';
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Input, Label, Textarea, TooltipProvider } from '@reito/ui/basic';
 import { layers, allComponents as all, type LayerId } from './catalog';
-import { TokenReference, downloadJson } from './TokenReference';
+import { downloadJson } from './TokenReference';
 import catalogManifest from './catalog-manifest.json';
 import { version } from '../package.json';
 
@@ -20,10 +20,9 @@ export function App() {
   const [selection, setSelection] = useState(() => all.find(entry => entry.layer === initial.get('layer') && entry.id === initial.get('component')) || all[0]);
   const [query, setQuery] = useState('');
   const [theme, setTheme] = useState(readThemeMode);
-  const [density, setDensity] = useState(() => readSetting('reito-density', 'compact') === 'comfortable' ? 'comfortable' : 'compact');
+  const [density, setDensity] = useDensityPreferences();
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
-  const [tokensOpen, setTokensOpen] = useState(false);
   const [reviews, setReviews] = useState(readReviews);
   const key = `${selection.layer}/${selection.id}`;
   const review = reviews[key] || { status: 'reviewing', note: '' };
@@ -42,11 +41,10 @@ export function App() {
     <header className="lab-titlebar">
       <a href={import.meta.env.BASE_URL} className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></a>
       <span className="lab-project">Graphite / Component library</span>
-      <div className="lab-tools"><ThemeControls colors={colors} onChange={setColors} mode={theme} onModeChange={setTheme}/>
+      <div className="lab-tools"><ThemeControls colors={colors} onChange={setColors} mode={theme} onModeChange={setTheme} density={density} onDensityChange={setDensity}/>
         <a className="lab-storybook-link" href={`${import.meta.env.BASE_URL}?view=overview`}>全组件总览</a>
-        <Button variant="ghost" size="sm" onClick={() => setTokensOpen(true)}>Tokens</Button>
+
         <Button variant="ghost" size="icon-sm" aria-label="显示组件目录" className="lab-mobile-menu" onClick={() => setNavigationOpen(!navigationOpen)}><Menu /></Button>
-        <Button variant="ghost" size="sm" onClick={() => setDensity(density === 'compact' ? 'comfortable' : 'compact')} aria-label="切换组件密度"><SlidersHorizontal />{density === 'compact' ? '紧凑' : '舒适'}</Button>
 
         <a className="lab-storybook-link" href={storybookBase} target="_blank" rel="noreferrer">Storybook <ExternalLink className="size-3" /></a>
       </div>
@@ -80,6 +78,6 @@ export function App() {
       </main>
     </div>
     <Dialog open={reviewOpen} onOpenChange={setReviewOpen}><DialogContent><DialogHeader><DialogTitle>确认 {selection.name} 的样式</DialogTitle><DialogDescription>记录保存在当前浏览器。切换主题和密度后检查文字、边框、悬停与弹层。</DialogDescription></DialogHeader><div className="grid gap-2"><Label htmlFor="review-note">修改意见</Label><Textarea id="review-note" placeholder="例如：希望行距更紧凑…" value={review.note} onChange={event => updateReview({ note: event.target.value })} /></div><DialogFooter><Button variant="ghost" onClick={() => downloadJson(`reito-reviews-${version}.json`, { version, reviews })}>导出记录</Button><Button variant="outline" onClick={() => { updateReview({ status: 'reviewing' }); setReviewOpen(false); }}>待调整</Button><Button onClick={() => { updateReview({ status: 'accepted' }); setReviewOpen(false); }}><Check />确认此组件</Button></DialogFooter></DialogContent></Dialog>
-    <TokenReference open={tokensOpen} onOpenChange={setTokensOpen} />
+
   </div></TooltipProvider></ReitoThemeProvider>;
 }

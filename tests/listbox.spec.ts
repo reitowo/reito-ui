@@ -157,7 +157,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 420, height: 620 });
   await open(page, 'rich-options', `theme:${theme};density:${density}`);
   const row = page.locator('[data-slot="listbox-option"]').first();
-  expect(await row.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await row.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   let violations: unknown;
   await expect.poll(async () => {
