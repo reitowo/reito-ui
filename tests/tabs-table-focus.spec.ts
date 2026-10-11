@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { storybookUrl } from './select-option';
+import { axeViolations } from './axe-scan';
 
 const story = (theme = 'dark', density = 'compact') => `${storybookUrl}/iframe.html?id=基础-tabs--reading-surfaces&viewMode=story&globals=theme:${theme};density:${density}`;
 const openStory = async (page: Page, theme = 'dark', density = 'compact') => {
@@ -161,17 +162,7 @@ test('reading surfaces retain ARIA and table semantics', async ({ page }) => {
   const rules = ['aria-allowed-attr', 'aria-hidden-focus', 'aria-prohibited-attr', 'aria-required-attr', 'aria-required-children', 'aria-required-parent', 'aria-roles', 'aria-tab-name', 'aria-valid-attr-value', 'aria-valid-attr', 'table-fake-caption', 'td-headers-attr', 'th-has-data-cells'];
   for (const name of ['说明', '记录', '操作']) {
     await page.getByRole('tab', { name, exact: true }).click();
-    const violations = await page.evaluate(async rules => {
-      // Storybook's automatic scan may still own axe after changing tabs.
-      for (let attempt = 0; attempt < 20; attempt++) {
-        try { return (await (window as any).axe.run(document.body, { runOnly: { type: 'rule', values: rules } })).violations; }
-        catch (error) {
-          if (!String(error).includes('Axe is already running')) throw error;
-          await new Promise(resolve => setTimeout(resolve, 50));
-        }
-      }
-      throw new Error('等待现有 axe 扫描结束超时');
-    }, rules);
+    const violations = await axeViolations(page, { runOnly: { type: 'rule', values: rules } });
     expect(violations).toEqual([]);
   }
 });
