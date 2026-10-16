@@ -1,11 +1,11 @@
 {
   "counts": {
     "basic": 72,
-    "complex": 42,
+    "complex": 43,
     "ai": 24
   },
-  "total": 138,
-  "stories": 1440,
+  "total": 139,
+  "stories": 1445,
   "entries": [
     {
       "layer": "basic",
@@ -726,6 +726,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "kanban",
+      "name": "Kanban 看板",
+      "description": "任务卡片、跨列移动与受控保存",
+      "storyId": "复杂-kanban-看板--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "KanbanDemo",
+      "stories": 5
     },
     {
       "layer": "complex",

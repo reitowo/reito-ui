@@ -40,3 +40,4 @@ export * from './inline-edit.js';
 export * from './overlay-provider.js';
 export * from './chart.js';
 export * from './scheduler.js';
+export * from './kanban.js';

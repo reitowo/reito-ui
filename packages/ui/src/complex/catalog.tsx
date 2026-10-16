@@ -33,6 +33,7 @@ import { ResourceView } from './resource-view.js';
 import { FormDemo } from './form-demo.js';
 import { ChartDemo } from './chart-demo.js';
 import { SchedulerDemo } from './scheduler-demo.js';
+import { KanbanDemo } from './kanban-demo.js';
 import { AsyncFormDemo } from './async-form-demo.js';
 import { VirtualListDemo } from './virtual-list-demo.js';
 import { VirtualGridDemo } from './virtual-grid-demo.js';
@@ -1507,6 +1508,12 @@ export interface ComplexCatalogEntry {
   component: ComponentType;
 }
 export const complexCatalog: ComplexCatalogEntry[] = [
+  {
+    id: 'kanban',
+    name: 'Kanban 看板',
+    description: '任务卡片、跨列移动与受控保存',
+    component: KanbanDemo,
+  },
   {
     id: 'scheduler',
     name: 'Scheduler 排程',
