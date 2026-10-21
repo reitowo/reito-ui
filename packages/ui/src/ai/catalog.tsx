@@ -801,6 +801,50 @@ export interface AiCatalogEntry {
   description: string;
   component: ComponentType;
 }
+export function ToolCallTraceDemo() {
+  return (
+    <AiDemoFrame note="本地轨迹示例 · 不执行脚本或访问页面">
+      <div className="grid min-w-0 gap-[var(--rui-content-gap-sm)]">
+        <ToolCall
+          variant="trace"
+          status="success"
+          timestamp="18:28:35"
+          kind="eval 执行"
+          title="读正文与大纲"
+          durationLabel="24ms"
+          tag="读正文"
+          input={
+            '(async () => {\n  const doc = await readDocument();\n  return doc.outline;\n})();'
+          }
+          output='{"type":"object","value":{"blocks":83,"ok":true}}'
+          outputLines={133}
+        />
+        <ToolCall
+          variant="trace"
+          status="error"
+          timestamp="18:34:21"
+          kind="eval 执行"
+          title="测试文本替换"
+          durationLabel="2ms"
+          tag="修改点"
+          input={'(async () => {\n  await replaceText("示例");\n})();'}
+          error="Error: 本地示例错误，文档仍在同步。"
+        />
+        <ToolCall
+          variant="trace"
+          status="success"
+          timestamp="18:34:32"
+          kind="open 打开"
+          title="重新打开文档"
+          durationLabel="1.2s"
+        >
+          url: https://example.com/doc/local-sample
+        </ToolCall>
+      </div>
+    </AiDemoFrame>
+  );
+}
+
 export const aiCatalog: AiCatalogEntry[] = [
   {
     id: 'composer',

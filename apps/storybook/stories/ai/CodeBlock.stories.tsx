@@ -33,6 +33,7 @@ export const CopyError: Story = { name: "复制失败", args: { onCopy: fn(async
 export const ReadOnly: Story = { name: "隐藏复制操作", args: { copyable: false } };
 export const Embedded: Story = { name: "嵌入容器", args: { variant: 'embedded' }, decorators: [Story => <section aria-label="嵌入产物" className="overflow-hidden rounded-lg border"><Story /></section>], parameters: { docs: { description: { story: '嵌入已有产物容器时去掉第二层边框与内距。宿主不再为代码区额外添加 padding。' } } } };
 export const Empty: Story = { name: "空代码", args: { code: '' } };
+export const Inline: Story = { name: "行内高密", args: { variant: 'inline', code: '(async () => {\n  return document.title;\n})();', language: 'javascript' } };
 export const LongLines: Story = { name: "长行局部滚动",
   args: { code: 'export const nestedPath = "packages/ui/src/components/workspace/very-long-module-name-with-a-readable-code-scroll-region/settings.tsx";\n'.repeat(10) },
   play: async ({ canvasElement, args }) => {
@@ -183,6 +184,6 @@ export const OversizedSource: Story = { name: "超长源码回退", args: { file
 
 export const Playground: Story = {
   name: "参数调试", args: { variant: 'default', copyable: true, language: 'typescript', filename: 'workspace.ts', code: 'export const density = "compact";', onCopy: undefined },
-  argTypes: { variant: choiceControl(['default', 'embedded']), copyable: booleanControl, language: choiceControl(['text', 'typescript', 'javascript', 'tsx', 'jsx', 'json', 'html', 'css', 'bash', 'powershell', 'python', 'sql', 'yaml', 'markdown', 'go', 'rust']), filename: textControl, code: textControl },
+  argTypes: { variant: choiceControl(['default', 'embedded', 'inline']), copyable: booleanControl, language: choiceControl(['text', 'typescript', 'javascript', 'tsx', 'jsx', 'json', 'html', 'css', 'bash', 'powershell', 'python', 'sql', 'yaml', 'markdown', 'go', 'rust']), filename: textControl, code: textControl },
   parameters: { controls: { include: ['variant', 'copyable', 'language', 'filename', 'code'] } }, render: args => <CodeBlock {...args} />,
 };

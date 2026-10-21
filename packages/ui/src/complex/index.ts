@@ -6,6 +6,7 @@ export * from './date-time-range-picker.js';
 export * from './file-upload.js';
 export * from './property-list.js';
 export * from './timeline.js';
+export * from './mini-timeline.js';
 export * from './stepper.js';
 export * from './settings-section.js';
 export * from './workspace.js';

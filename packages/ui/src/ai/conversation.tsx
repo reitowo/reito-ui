@@ -7,8 +7,8 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { ArrowDown, LoaderCircle } from 'lucide-react';
-import { Button } from '../primitives/button.js';
+import { LoaderCircle } from 'lucide-react';
+import { JumpToLatest } from '../basic/jump-to-latest.js';
 import { classes } from './shared.js';
 
 export interface ConversationProps extends HTMLAttributes<HTMLDivElement> {
@@ -78,21 +78,7 @@ export function Conversation({
           {Children.count(children) ? children : empty}
         </div>
       </div>
-      {!atEnd && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="pointer-events-auto shadow-sm"
-            aria-controls={id}
-            onClick={goToEnd}
-          >
-            <ArrowDown className="size-3.5" aria-hidden="true" />
-            回到最新
-          </Button>
-        </div>
-      )}
+      <JumpToLatest visible={!atEnd} placement="center" aria-controls={id} onClick={goToEnd} />
     </div>
   );
 }

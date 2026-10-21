@@ -192,6 +192,7 @@ export function ThemeControls({
               {[
                 { value: 'compact', label: '紧凑' },
                 { value: 'comfortable', label: '舒适' },
+                { value: 'dense', label: '高密' },
               ].map(({ value, label }) => (
                 <DropdownMenuRadioItem
                   key={value}

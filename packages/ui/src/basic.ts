@@ -23,6 +23,8 @@ export * from './basic/image-gallery.js';
 export * from './basic/carousel.js';
 export * from './basic/image-compare.js';
 export * from './basic/scroll-top.js';
+export * from './basic/section-label.js';
+export * from './basic/jump-to-latest.js';
 
 export { ReitoThemeProvider, useReitoTheme } from './theme.js';
 export type {
@@ -31,5 +33,6 @@ export type {
   ThemeColors,
   ThemeTokenOverrides,
   ColorPalette,
+  DensityMode,
   NeutralPalette,
 } from './theme.js';

@@ -16,7 +16,7 @@ function IsolatedExample() {
   // Storybook's built-in docs iframe omits globals from its URL. Pass the two
   // visual globals explicitly so portaled examples follow the docs toolbar.
   const theme = globals.theme === 'light' ? 'light' : 'dark';
-  const density = globals.density === 'comfortable' ? 'comfortable' : 'compact';
+  const density = globals.density === 'comfortable' || globals.density === 'dense' ? globals.density : 'compact';
   const query = new URLSearchParams({ id: story.id, viewMode: 'story', globals: `theme:${theme};density:${density}` });
   return <>
     <div className="sbdocs-preview"><iframe className="sb-isolated-preview" title={story.name} src={`iframe.html?${query}`} /></div>

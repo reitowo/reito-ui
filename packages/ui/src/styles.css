@@ -12,6 +12,12 @@
     @slot;
   }
 }
+/* Discrete dense restyles; numeric dense values come from density tokens. */
+@custom-variant dense {
+  @scope ([data-density='dense']) to ([data-density]:not([data-density='dense'])) {
+    @slot;
+  }
+}
 
 @layer base {
   * {

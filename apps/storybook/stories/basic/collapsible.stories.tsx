@@ -1,7 +1,7 @@
 import { useArgs } from "storybook/preview-api";
 import * as React from "react";
 import * as P from "@reito/ui/basic";
-import { Folder, ChevronDown } from "lucide-react";
+import { Folder, ChevronDown, ChevronRight } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { CollapsibleDemo } from "../../../../packages/ui/src/basic/catalog.js";
@@ -68,6 +68,10 @@ export const Expanded: Story = {
   name: "状态 · 默认展开",
   args: { defaultOpen: true },
   render: (args) => <FileDisclosure {...args} />,
+};
+export const Row: Story = {
+  name: "行式触发器",
+  render: () => <P.Collapsible className="w-full max-w-md"><P.CollapsibleTrigger variant="row" className="bg-sunken font-mono"><ChevronRight data-slot="collapsible-chevron" className="size-3" aria-hidden="true" /><span className="min-w-0 flex-1 truncate text-foreground">(async () =&gt; {"{"}</span><span className="text-2xs">13 行</span></P.CollapsibleTrigger><P.CollapsibleContent><pre className="mt-px rounded-xs bg-sunken px-2 py-0.5 font-mono text-xs">{"(async () => {\n  return 1;\n})();"}</pre></P.CollapsibleContent></P.Collapsible>,
 };
 export const Disabled: Story = {
   name: "状态 · 禁用",

@@ -97,7 +97,7 @@ function scope(token: TokenDefinition) {
   return [
     groups.find((group) => group.value === token.group)?.label ?? token.group,
     token.theme === 'light' ? '浅色' : token.theme === 'dark' ? '深色' : '',
-    token.density === 'comfortable' ? '舒适' : token.density === 'compact' ? '紧凑' : '',
+    token.density === 'comfortable' ? '舒适' : token.density === 'dense' ? '高密' : token.density === 'compact' ? '紧凑' : '',
   ]
     .filter(Boolean)
     .join(' / ');

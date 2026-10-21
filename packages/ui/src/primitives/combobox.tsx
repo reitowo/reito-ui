@@ -108,7 +108,7 @@ function ComboboxContent({
                 // Layout
                 'group/combobox-content relative max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden',
                 // Surface
-                'rounded-lg bg-popover',
+                'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
                 // Typography
                 'text-popover-foreground',
                 // Surface
@@ -139,7 +139,7 @@ function ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props) {
     <ComboboxPrimitive.List
       data-slot="combobox-list"
       className={cn(
-        'no-scrollbar max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto overscroll-contain p-1 data-empty:p-0',
+        'no-scrollbar max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto overscroll-contain p-[var(--rui-component-menu-popup-padding)] data-empty:p-0',
         className,
       )}
       {...props}
@@ -156,11 +156,11 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
           // Layout
           'relative flex w-full cursor-default items-center',
           // Spacing
-          'gap-2',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-md',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-inset-padding-x)] pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
@@ -174,7 +174,7 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
       )}
@@ -183,7 +183,7 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
       {children}
       <ComboboxPrimitive.ItemIndicator
         render={
-          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
+          <span className="pointer-events-none absolute right-[var(--rui-component-menu-item-padding-x)] flex size-[var(--rui-component-menu-icon-size)] items-center justify-center" />
         }
       >
         <CheckIcon className="pointer-events-none" />
@@ -232,7 +232,10 @@ function ComboboxSeparator({ className, ...props }: ComboboxPrimitive.Separator.
   return (
     <ComboboxPrimitive.Separator
       data-slot="combobox-separator"
-      className={cn('-mx-1 my-1 h-px bg-border', className)}
+      className={cn(
+        'mx-[var(--rui-component-menu-separator-inset)] my-[var(--rui-component-menu-separator-margin-y)] h-px bg-border',
+        className,
+      )}
       {...props}
     />
   );

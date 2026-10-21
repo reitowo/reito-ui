@@ -32,7 +32,7 @@ export function OverviewPreview() {
   useEffect(() => {
     const apply = (theme: string | null, density: string | null) => {
       document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
-      document.documentElement.dataset.density = density === 'comfortable' ? 'comfortable' : 'compact';
+      document.documentElement.dataset.density = density === 'comfortable' || density === 'dense' ? density : 'compact';
       document.documentElement.style.colorScheme = document.documentElement.dataset.theme;
     };
     apply(params.get('theme'), params.get('density'));

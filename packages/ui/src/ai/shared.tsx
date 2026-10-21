@@ -34,7 +34,7 @@ export function ExecutionIcon({
     <Icon
       aria-hidden="true"
       className={classes(
-        'size-4 shrink-0',
+        'size-[var(--rui-icon-size)] shrink-0',
         status === 'running' && 'motion-safe:animate-spin',
         status === 'error' ? 'text-destructive' : 'text-muted-foreground',
         className,

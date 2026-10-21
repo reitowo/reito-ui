@@ -12,11 +12,17 @@ import {
 import {
   themeTokens,
   type ColorPalette,
+  type DensityMode,
   type NeutralPalette,
   type ThemeTokenOverrides,
 } from '@reito/tokens/themes';
 
-export type { ColorPalette, NeutralPalette, ThemeTokenOverrides } from '@reito/tokens/themes';
+export type {
+  ColorPalette,
+  DensityMode,
+  NeutralPalette,
+  ThemeTokenOverrides,
+} from '@reito/tokens/themes';
 export type ThemeMode = 'dark' | 'light' | 'system';
 export type ThemeColor =
   | ColorPalette
@@ -37,7 +43,7 @@ export type ThemeColors = {
 type ThemeState = {
   mode: ThemeMode;
   scheme: 'dark' | 'light';
-  density: 'compact' | 'comfortable';
+  density: DensityMode;
   colors: ThemeColors;
   tokens: ThemeTokenOverrides;
   style: CSSProperties;
@@ -87,7 +93,7 @@ function mergeTokens(
 function themeStyle(
   scheme: 'dark' | 'light',
   colors: ThemeColors,
-  density: 'compact' | 'comfortable',
+  density: DensityMode,
   tokens: ThemeTokenOverrides,
 ) {
   const values = {
@@ -139,7 +145,7 @@ export function ReitoThemeProvider({
 }: Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
   mode?: ThemeMode;
   colors?: Partial<ThemeColors>;
-  density?: 'compact' | 'comfortable';
+  density?: DensityMode;
   tokens?: ThemeTokenOverrides;
   root?: boolean;
   children?: ReactNode;

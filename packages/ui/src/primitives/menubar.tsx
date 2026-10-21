@@ -79,9 +79,9 @@ function MenubarContent({
           // Layout
           'min-w-36',
           // Surface
-          'rounded-lg bg-popover',
+          'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
           // Spacing
-          'p-1',
+          'p-[var(--rui-component-menu-popup-padding)]',
           // Typography
           'text-popover-foreground',
           // Surface
@@ -115,9 +115,9 @@ function MenubarItem({
           // Layout
           'group/menubar-item',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
           'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
@@ -125,13 +125,13 @@ function MenubarItem({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground',
           // Component state
-          'data-inset:pl-7 data-[variant=destructive]:text-destructive',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-[variant=destructive]:text-destructive',
           // Keyboard focus
           'data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20',
           // Disabled state
           'data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg:not([class*='size-'])]:size-4",
+          "[&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
           // Component state
           'data-[variant=destructive]:*:[svg]:text-destructive!',
         ],
@@ -160,11 +160,11 @@ function MenubarCheckboxItem({
           // Layout
           'relative flex cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-7',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-[var(--rui-component-menu-inset-padding-x)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
@@ -174,7 +174,7 @@ function MenubarCheckboxItem({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground',
           // Component state
-          'data-inset:pl-7',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
@@ -185,7 +185,7 @@ function MenubarCheckboxItem({
       checked={checked}
       {...props}
     >
-      <span className="pointer-events-none absolute left-1.5 flex size-4 items-center justify-center [&_svg:not([class*='size-'])]:size-4">
+      <span className="pointer-events-none absolute left-[var(--rui-component-menu-item-padding-x)] flex size-[var(--rui-component-menu-icon-size)] items-center justify-center [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]">
         <MenuPrimitive.CheckboxItemIndicator>
           <CheckIcon />
         </MenuPrimitive.CheckboxItemIndicator>
@@ -216,11 +216,11 @@ function MenubarRadioItem({
           // Layout
           'relative flex cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-7',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-[var(--rui-component-menu-inset-padding-x)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
@@ -230,17 +230,17 @@ function MenubarRadioItem({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground',
           // Component state
-          'data-inset:pl-7',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
       )}
       {...props}
     >
-      <span className="pointer-events-none absolute left-1.5 flex size-4 items-center justify-center [&_svg:not([class*='size-'])]:size-4">
+      <span className="pointer-events-none absolute left-[var(--rui-component-menu-item-padding-x)] flex size-[var(--rui-component-menu-icon-size)] items-center justify-center [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]">
         <MenuPrimitive.RadioItemIndicator>
           <CheckIcon />
         </MenuPrimitive.RadioItemIndicator>
@@ -262,7 +262,7 @@ function MenubarLabel({
       data-slot="menubar-label"
       data-inset={inset}
       className={cn(
-        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium data-inset:pl-7',
+        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
         className,
       )}
       {...props}
@@ -277,7 +277,10 @@ function MenubarSeparator({
   return (
     <DropdownMenuSeparator
       data-slot="menubar-separator"
-      className={cn('-mx-1 my-1 h-px bg-border', className)}
+      className={cn(
+        'mx-[var(--rui-component-menu-separator-inset)] my-[var(--rui-component-menu-separator-margin-y)] h-px bg-border',
+        className,
+      )}
       {...props}
     />
   );
@@ -316,10 +319,10 @@ function MenubarSubTrigger({
       data-inset={inset}
       className={cn(
         [
-          'gap-1.5 rounded-sm px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
+          'gap-[var(--rui-component-menu-item-gap)] rounded-[var(--rui-component-menu-item-radius)] px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
-          'focus:bg-accent focus:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground',
-          "[&_svg:not([class*='size-'])]:size-4",
+          'focus:bg-accent focus:text-accent-foreground data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-open:bg-accent data-open:text-accent-foreground',
+          "[&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
       )}
@@ -340,9 +343,9 @@ function MenubarSubContent({
           // Layout
           'min-w-32',
           // Surface
-          'rounded-lg bg-popover',
+          'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
           // Spacing
-          'p-1',
+          'p-[var(--rui-component-menu-popup-padding)]',
           // Typography
           'text-popover-foreground',
           // Surface

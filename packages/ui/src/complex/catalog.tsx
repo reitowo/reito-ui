@@ -27,6 +27,7 @@ import { Input } from '../primitives/input.js';
 import { Switch } from '../primitives/switch.js';
 import { DiffViewer, type DiffHunk } from './diff-viewer.js';
 import { LogViewer, type LogEntry } from './log-viewer.js';
+import { MiniTimeline, type MiniTimelineEvent } from './mini-timeline.js';
 import { KeyValueEditor, type KeyValueEntry } from './key-value-editor.js';
 import { ResourceList, type ResourceItem } from './resource-list.js';
 import { ResourceView } from './resource-view.js';
@@ -1507,7 +1508,52 @@ export interface ComplexCatalogEntry {
   description: string;
   component: ComponentType;
 }
+const miniTimelineLanes = [
+  { id: 'open', label: 'open' },
+  { id: 'read', label: 'read' },
+  { id: 'write', label: 'write' },
+];
+const miniTimelineEvents: MiniTimelineEvent[] = Array.from({ length: 36 }, (_, index) => {
+  const lane = index % 9 === 0 ? 'open' : index % 7 === 3 ? 'write' : 'read';
+  return {
+    id: `event-${index + 1}`,
+    lane,
+    label: `本地事件 ${index + 1} · ${lane}`,
+    tone: index === 21 || index === 22 ? 'danger' : lane === 'open' ? 'info' : 'neutral',
+  };
+});
+
+export function MiniTimelineDemo() {
+  const [value, setValue] = useState<string | null>('event-36');
+  const selected = miniTimelineEvents.find((event) => event.id === value);
+  return (
+    <div className="grid min-w-0 gap-2">
+      <MiniTimeline
+        label="本地编辑轨迹"
+        lanes={miniTimelineLanes}
+        events={miniTimelineEvents}
+        markers={[
+          { index: 2, label: 'T1' },
+          { index: 14, label: 'T2' },
+          { index: 27, label: 'T3' },
+        ]}
+        value={value}
+        onValueChange={setValue}
+      />
+      <output className="text-xs text-muted-foreground">
+        当前事件：{selected ? selected.label : '未选择'}
+      </output>
+    </div>
+  );
+}
+
 export const complexCatalog: ComplexCatalogEntry[] = [
+  {
+    id: 'mini-timeline',
+    name: 'MiniTimeline 迷你时间线',
+    description: '按通道排列的小刻度事件总览与键盘选择',
+    component: MiniTimelineDemo,
+  },
   {
     id: 'kanban',
     name: 'Kanban 看板',
