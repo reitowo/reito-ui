@@ -72,24 +72,24 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 
 0.3 → 0.4 调整的是共享内容密度：正文区域、表格和 AI 组件通过同一组角色收紧空白，UI 字号与控件高度保持上述尺度。以下数值仍以 16px 根字号折算；不要把 rem 数值误作不可缩放的像素上限。
 
-| 内容角色 | CSS token | compact | comfortable |
-| --- | --- | ---: | ---: |
-| 通用内容内距 | `--rui-content-padding` | 12px | 16px |
-| 紧凑面板左右内距 | `--rui-compact-surface-padding-x` | 12px | 16px |
-| 紧凑面板上下内距 | `--rui-compact-surface-padding-y` | 8px | 10px |
-| 紧凑面板相关文字间隔 | `--rui-compact-surface-gap` | 4px | 6px |
-| 菜单条目左右内距 | `--rui-menu-item-padding-x` | 12px | 16px |
-| 菜单条目上下内距 | `--rui-menu-item-padding-y` | 4px | 6px |
-| 内容间距 | `--rui-content-gap` | 12px | 16px |
-| 小内容间距 | `--rui-content-gap-sm` | 8px | 10px |
-| 单元格横向内距 | `--rui-cell-padding-x` | 10px | 12px |
-| 单元格纵向内距 | `--rui-cell-padding-y` | 6px | 8px |
-| 表头纵向内距 | `--rui-table-head-padding-y` | 4px | 6px |
-| 表头高度角色 | `--rui-table-head-height` | 36px | 40px |
-| 消息间距 | `--rui-message-gap` | 16px | 20px |
-| Composer 输入最小高度 | `--rui-composer-input-height` | 80px | 96px |
-| 空态内距 | `--rui-empty-padding` | 24px | 32px |
-| 预览内距 | `--rui-preview-padding` | 16px | 20px |
+| 内容角色 | CSS token | compact | comfortable | dense |
+| --- | --- | ---: | ---: | ---: |
+| 通用内容内距 | `--rui-content-padding` | 12px | 16px | 8px |
+| 紧凑面板左右内距 | `--rui-compact-surface-padding-x` | 12px | 16px | 8px |
+| 紧凑面板上下内距 | `--rui-compact-surface-padding-y` | 8px | 10px | 4px |
+| 紧凑面板相关文字间隔 | `--rui-compact-surface-gap` | 4px | 6px | 2px |
+| 菜单条目左右内距 | `--rui-menu-item-padding-x` | 12px | 16px | 8px |
+| 菜单条目上下内距 | `--rui-menu-item-padding-y` | 4px | 6px | 2px |
+| 内容间距 | `--rui-content-gap` | 12px | 16px | 8px |
+| 小内容间距 | `--rui-content-gap-sm` | 8px | 10px | 6px |
+| 单元格横向内距 | `--rui-cell-padding-x` | 10px | 12px | 8px |
+| 单元格纵向内距 | `--rui-cell-padding-y` | 6px | 8px | 2px |
+| 表头纵向内距 | `--rui-table-head-padding-y` | 4px | 6px | 2px |
+| 表头高度角色 | `--rui-table-head-height` | 36px | 40px | 24px |
+| 消息间距 | `--rui-message-gap` | 16px | 20px | 8px |
+| Composer 输入最小高度 | `--rui-composer-input-height` | 80px | 96px | 64px |
+| 空态内距 | `--rui-empty-padding` | 24px | 32px | 16px |
+| 预览内距 | `--rui-preview-padding` | 16px | 20px | 8px |
 
 2026-10-11 舒适密度按桌面工作面收敛：控件比紧凑增加 4px，相关内容间距增加 2px，通用内容内距增加 4px；卡片区域保留 20 / 16px 横纵内距，字体与圆角不随密度放大。Lab 的密度选项并入共享主题菜单，首页、总览、详情和配色示例共用持久化选择；默认仍为紧凑。下文带日期的旧实测记录保留历史值，当前舒适契约以上表及 [舒适密度验证](validation-comfortable-density.md) 为准。
 
@@ -123,7 +123,7 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 编辑器媒体入口仍是一枚 XS 工具栏按钮。地址、替代文字、上传进度和失败恢复放在同一个紧凑 Popover 中；图片本身直接进入文档流，使用内容间距、弱边界和响应式最大宽度，不套独立卡片。宿主补全在正文底部附着一条弱底色审阅面，候选内容与接受/拒绝动作保持可见，加载、错误和重试不覆盖正文。所有 Story 中的上传与补全都明确标为本地模拟，组件不显示外部模型品牌或虚构在线状态。
 
-主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable`。默认是 dark + compact。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
+主题与密度放在 `document.documentElement`，即 `<html data-theme="dark" data-density="compact">`。可选值分别为 `dark | light`、`compact | comfortable | dense`。默认是 dark + compact；dense 见下文“高密模式”。Base UI 弹层会 portal 到文档中，只给应用内部 div 换主题会使菜单、提示和对话框继承错误；不要补写弹层专用颜色来修复。
 
 ## 桌面布局与阅读空间
 
@@ -308,3 +308,29 @@ Graphite / 灰白仍是库默认。消费工程可以用 ReitoThemeProvider 的 
 主题菜单的后续实测发现，18 项颜色列表放大了上述纵向空白问题。菜单主文字改为 menu-font-size 引用 font-interface（13px），保留20px行高；menu-item-padding-y 在 compact / comfortable 为4 / 8px，单行菜单项为28 / 36px，横向仍为12 / 16px。下拉、右键、Menubar、Select 和 Combobox 继续消费同一组角色，不添加 Lab 专用密度覆盖。参考为用户提供的本库深色主题选单截图；实测与交互结果见 [菜单紧凑密度验证](validation-menu-density.md)。
 
 默认 DialogFooter 与 AlertDialogFooter 使用共享 action-footer-padding-y：compact 12px、comfortable 16px，横向内距16px。默认动作区不再四边都用16px；紧凑确认变体继续消费 compact-surface-padding-x/y。新角色引用对应 card-padding-y 的密度值，由 token 源统一生成，供同类操作区复用。
+
+## 高密模式与菜单几何（2026-10-21）
+
+`data-density="dense"` 是 compact、comfortable 之外的第三种密度，面向事件轨迹、日志、检查器和数据表等开发工具工作面。它与另外两种密度一样只是样式能力：消费应用需要时在根节点或局部 `ReitoThemeProvider density="dense"` 上固定选择，不默认增加切换入口。参考为用户提供的深色开发工具轨迹面板截图（见 [references.md](references.md)），数值为本项目的原创取值。
+
+为让文字随密度变化，`font-interface`、`font-caption`、`line-interface`、`line-caption` 与 `action-font-size` 从 `foundation` 移入 `density` 的三种模式；CSS 变量名不变，`text-sm` / `text-xs` 桥接继续引用它们。新增 `text-2xs`（`font-micro` / `line-micro`）用于标签与计数。
+
+| 角色 | compact | comfortable | dense |
+| --- | ---: | ---: | ---: |
+| 界面字号 / 行高（`text-sm`） | 13 / 20px | 13 / 20px | 12 / 16px |
+| 辅助、等宽字号 / 行高（`text-xs`） | 12 / 16px | 12 / 16px | 11 / 14px |
+| 微型字号 / 行高（`text-2xs`） | 11 / 14px | 11 / 14px | 10 / 12px |
+| 动作字号 `action-font-size` | 14px | 14px | 12px |
+| 控件 XS / SM / default / LG | 24 / 28 / 32 / 36px | 28 / 32 / 36 / 40px | 18 / 20 / 24 / 28px |
+| 图标 `icon-size` | 16px | 16px | 12px |
+| 卡片内距（横 / 纵）`card-padding-x/y` | 16 / 12px | 20 / 16px | 8 / 4px |
+| 卡片圆角 `card-radius` | 14px | 14px | 6px |
+| 徽标高度 `badge-height` | 20px | 20px | 16px |
+
+dense 下的卡片使用 1px 低对比边界、无阴影；卡片内的源码与结果行放在新的语义面 `sunken`（各中性色系同步提供）：深色为 `#0f0f0f`，比卡片更深；浅色取画布色 `#fafaf8`，与偏灰的卡片形成内嵌对比，同时让默认 green / amber 状态文字保持 4.5:1 以上（更深的 `#ececea` 实测仅 4.18:1）。结果文字使用 success 等宽字，错误只使用 destructive 边界与文字，不铺红色底。数值以外的离散调整使用 `dense:` 变体（`@scope` 到最近的非 dense 密度为止），例如 CardTitle 与 CodeBlock 行高。
+
+组件支持：`ToolCall variant="trace"` 为一行事件卡（时间、类型、标题、右对齐耗时与 XS 标签；可折叠的首行源码预览与行数；截断结果行；完整错误行）；`CodeBlock variant="inline"` 去掉工具栏，以 sunken 单层承载代码；`Badge size="xs"`、`Toggle/ToggleGroup size="xs"`；`CollapsibleTrigger variant="row"` 为整行展开触发器；Card 与 Conversation 的间距、圆角直接消费密度 token。新增 `MiniTimeline`（按通道排列的小刻度事件总览，一个 Tab 停靠点）、`SectionLabel`（如 “TURN 1” 的轻量分组标签）和 `JumpToLatest`（浮动“回到最新”胶囊，Conversation 复用）。
+
+菜单按 Base UI v1 的圆角演示收敛为同心几何：弹层 `popup-radius` 8px、`popup-padding` 4px，高亮条目 `item-radius` 4px（= 8 − 4），图标间隔 `item-gap` 8px，分隔线 `separator-inset` 4px 内缩、上下 `separator-margin-y` 4px。条目横向内距改由 `components.menu.item-padding-x` → `density.*.popup-item-padding-x`（compact / comfortable / dense 为 8 / 10 / 6px），因此文字距弹层边缘为 12 / 14 / 10px；inset 条目与勾选指示器列使用 `inset-padding-x = item-padding-x + icon-size + item-gap`。DropdownMenu、ContextMenu、Menubar、Select、Combobox 与 Command 共用这组 token；`density.*.menu-item-padding-x` 保留给 Listbox、ScrollArea 等非弹层列表。本段替代上文“菜单条目使用 menu-item-padding-x 12 / 16px”的弹层描述。Menubar 外框使用 popup-radius，触发器仍按 Button 规则使用 radius-sm。
+
+实际量度、截图和检查记录见 [高密模式验证](validation-dense-density.md)。

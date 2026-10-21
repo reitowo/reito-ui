@@ -8,8 +8,8 @@
 | --- | --- |
 | Button | height、padding-x、font-size、radius；height 适用于默认文字和图标按钮，显式 size 继续使用对应尺寸尺度 |
 | Input | height、padding-x、font-size、radius；使用 Input 组合的密码等字段自动继承 |
-| Menu | item-height、item-line-height、item-padding-x、item-padding-y、font-size；DropdownMenu、ContextMenu、Menubar、Select、Combobox 的展开条目共享此组 |
-| Card | padding-x、padding-y、text-gap、radius；标题、内容、脚注使用同组内距 |
+| Menu | item-height、item-line-height、item-padding-x、item-padding-y、font-size；popup-radius、popup-padding、item-radius、item-gap、icon-size、inset-padding-x、separator-inset、separator-margin-y。DropdownMenu、ContextMenu、Menubar、Select、Combobox、Command 的弹层与条目共享此组 |
+| Card | padding-x、padding-y、text-gap、radius；标题、内容、脚注使用同组内距；radius 引用 `density.*.card-radius`（compact / comfortable 14px，dense 6px） |
 | ScrollArea | padding-x、padding-y；仅 inset 变体的固定滚动边缘，默认引用 compact-surface-padding-x 和 space-1 |
 
 其他组件继续消费共享语义角色。这次没有为每个 CSS 声明制造一个独立 token，也没有改变所有组件的默认尺寸。
@@ -42,7 +42,9 @@ const tokens: ThemeTokenOverrides = {
 
 生成变量以 `--rui-component-<组件>-<角色>` 命名。既有共享角色保留；消费工程优先通过 Provider 的 `tokens` 微调，避免页面选择器覆盖。CSS 自定义属性在声明处求值，局部基础值不能靠继承已计算的别名传播；Provider 会在自己的作用域和弹层重新绑定引用。
 
-菜单默认高度引用 `control-height-sm`，上下内距按 `(目标高度 - 行高) / 2` 推导，并限制为非负值。默认 compact 为 28px / 20px / 4px，comfortable 为 36px / 20px / 8px。它是单行目标，不给多行条目设置固定高度。特殊内距可以覆盖 `components.menu['item-padding-y']`，但使用方需要检查实际高度。
+菜单默认高度引用 `control-height-sm`，上下内距按 `(目标高度 - 行高) / 2` 推导，并限制为非负值。默认 compact 为 28px / 20px / 4px，comfortable 为 32px / 20px / 6px，dense 为 20px / 16px / 2px。
+
+弹层几何是同心的：`item-radius`（4px）等于 `popup-radius`（8px）减 `popup-padding`（4px）；调整其中一个时同步检查另外两个。`item-padding-x` 引用 `density.*.popup-item-padding-x`（8 / 10 / 6px），`inset-padding-x` 以 `$extensions.reito.css` 推导为 `item-padding-x + icon-size + item-gap`，供 inset 条目与勾选指示器列共用。它是单行目标，不给多行条目设置固定高度。特殊内距可以覆盖 `components.menu['item-padding-y']`，但使用方需要检查实际高度。
 
 计算表达式写在 `$extensions.reito.css` 中，它是本项目的扩展，不是 DTCG 标准表达式。`$value` 保留 compact 默认回退值；CSS 使用实时表达式。生成器检查普通引用与表达式引用的缺失目标和循环依赖。该检查不能验证消费工程运行时传入的任意 CSS 字符串。
 
