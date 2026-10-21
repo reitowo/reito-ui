@@ -4,7 +4,7 @@
 
 ## 实测几何
 
-Lab `?view=dense&page=trace`，1024×864，深色与浅色。数值由浏览器 `getComputedStyle` / `getBoundingClientRect` 读取，并固化在 `tests/dense-density.spec.ts`。
+Lab `?view=dense&page=trace`（画廊锁定高密的兼容入口；公开入口为 `?view=gallery`），1024×864，深色与浅色。数值由浏览器 `getComputedStyle` / `getBoundingClientRect` 读取，并固化在 `tests/dense-density.spec.ts`。
 
 | 项目 | 参考估算 | 实测 |
 | --- | --- | --- |

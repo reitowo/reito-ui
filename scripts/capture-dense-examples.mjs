@@ -21,12 +21,12 @@ const shots = [
   } },
   { page: 'events' },
   { page: 'inspector', prepare: async () => {
-    await page.getByRole('button', { name: 'graphite-large 操作' }).click();
+    await page.getByRole('button', { name: 'alpha-large 操作' }).click();
     await page.getByRole('menuitem', { name: '移动到' }).hover();
     await page.getByRole('menuitem', { name: '预发目录' }).waitFor();
   } },
   { page: 'inspector', suffix: 'context-menu', prepare: async () => {
-    await page.getByRole('row', { name: /sage-reasoner/ }).click({ button: 'right' });
+    await page.getByRole('row', { name: /gamma-reasoner/ }).click({ button: 'right' });
     await page.getByRole('menuitem', { name: '重新同步' }).waitFor();
   } },
   { page: 'commands', prepare: async () => {

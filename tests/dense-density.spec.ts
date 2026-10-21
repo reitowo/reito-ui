@@ -106,12 +106,12 @@ for (const theme of ['dark', 'light']) for (const example of ['events', 'inspect
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     await expectNoAxeViolations(page);
     if (example === 'inspector') {
-      await page.getByRole('button', { name: 'graphite-large 操作' }).click();
+      await page.getByRole('button', { name: 'alpha-large 操作' }).click();
       await page.getByRole('menuitem', { name: '移动到' }).press('ArrowRight');
       await expect(page.getByRole('menuitem', { name: '生产目录' })).toBeFocused();
       await page.keyboard.press('Escape');
       await page.keyboard.press('Escape');
-      await page.getByRole('row', { name: /sage-reasoner/ }).click({ button: 'right' });
+      await page.getByRole('row', { name: /gamma-reasoner/ }).click({ button: 'right' });
       await expect(page.getByRole('menuitem', { name: '重新同步' })).toBeVisible();
     } else if (example === 'commands') {
       await page.getByRole('menuitem', { name: '编辑' }).click();
