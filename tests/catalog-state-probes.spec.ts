@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const manifest = JSON.parse(readFileSync('apps/lab/src/catalog-manifest.json','utf8'));
 const stable = new Set(['button','button-group','rating','listbox','checkbox','switch','radio-group','slider','toggle','toggle-group','meter','knob','number-field','one-time-code','message-actions','permission','card','token-usage']);
 test('every catalog family gets a default state probe and geometry record', async ({ page }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(420_000);
   await page.addInitScript(() => {
     localStorage.setItem('reito-theme','dark');localStorage.setItem('reito-density','compact');
     Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>undefined}});

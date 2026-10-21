@@ -29,7 +29,7 @@ export function ThemeGuide() {
   const api = ['// 当前可用 API：来自 @reito/ui/basic', '<ReitoThemeProvider', '  mode="'+scheme+'"', '  density="'+density+'"', '  colors={{ primary: "'+primary+'", neutral: "'+neutral+'" }}', '>', '  <Button color="primary">保存</Button>', '  <Button color="'+localColor+'" variant="'+localVariant+'">单独配色</Button>', '</ReitoThemeProvider>'].join('\n');
   return <ReitoThemeProvider root mode={scheme} density={density} colors={{primary,neutral}} className="reito-root min-h-screen bg-background text-foreground" style={{display:"block"}}>
     <header className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3">
-      <a href="?view=overview" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="size-3" aria-hidden="true"/>组件总览</a>
+      <a href={`${import.meta.env.BASE_URL}?view=overview`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="size-3" aria-hidden="true"/>组件总览</a>
       <div className="flex items-center gap-2"><Badge variant="outline">配色交互示例</Badge><ThemeControls colors={{primary,neutral}} onChange={colors=>{setPrimary(colors.primary ?? 'neutral');setNeutral(colors.neutral ?? 'graphite');}} mode={scheme} onModeChange={setScheme} density={density} onDensityChange={setDensity}/></div>
     </header>
     <main className="mx-auto grid w-full max-w-[var(--rui-container-5xl)] gap-6 px-4 py-6">

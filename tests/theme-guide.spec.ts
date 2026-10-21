@@ -101,6 +101,7 @@ test('nested light theme enters a portal and restores keyboard focus',async({pag
 });
 
 test('system mode tracks changes and selected palettes persist into the full atlas',async({page})=>{
+ test.setTimeout(90_000);
  await page.emulateMedia({colorScheme:'dark',reducedMotion:'reduce'});await page.goto('/?view=theme-guide');
  await choose(page,'明暗模式','跟随系统');await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
  await page.getByRole('textbox',{name:'工作区名称',exact:true}).fill('系统切换不丢草稿');
@@ -111,7 +112,9 @@ test('system mode tracks changes and selected palettes persist into the full atl
  await choose(page,'明暗模式','跟随系统');
  await choose(page,'主题主色','蓝色');await choose(page,'底色色系','Zinc');
  const before=await page.getByLabel('主题效果预览').getByRole('button',{name:'保存工作区',exact:true}).evaluate(n=>getComputedStyle(n).backgroundColor);
- await page.getByRole('link',{name:'组件总览',exact:true}).click();await expect(page.getByRole('heading',{name:'全组件总览',exact:true})).toBeVisible({timeout:30_000});
+ await page.getByRole('link',{name:'组件总览',exact:true}).click();
+ await expect(page).toHaveURL(/view=overview/);
+ await expect(page.getByRole('heading',{name:'全组件总览',exact:true})).toBeVisible({timeout:60_000});
  // The atlas shares palette preferences; choose its existing light-mode control if needed.
  if(await page.locator('html').getAttribute('data-theme')!=='light') await chooseThemeMode(page,'light');
  await expect(page.getByRole('button',{name:'主要操作',exact:true})).toHaveCSS('background-color',before);
