@@ -285,7 +285,7 @@ const levelBadge: Record<LogLevel, 'secondary' | 'outline' | 'destructive'> = { 
 function EventsPage() {
   const [levels, setLevels] = useState<string[]>(['info', 'warn', 'error']);
   const [query, setQuery] = useState('');
-  const [selected, setSelected] = useState('log-56');
+  const [selected, setSelected] = useState('log-6');
   const [showSource, setShowSource] = useState(true);
   const [wrap, setWrap] = useState(false);
   const follow = useFollow();
@@ -618,9 +618,9 @@ function InspectorPage() {
           <li className="flex gap-2 text-destructive"><span className="tabular-nums">17:40</span><span className="truncate">连接超时（示例）</span></li>
         </ul>
         <Collapsible>
-          <CollapsibleTrigger variant="row" className="bg-sunken font-mono">
+          <CollapsibleTrigger variant="row" className="bg-sunken">
             <ChevronRight data-slot="collapsible-chevron" className="size-3" aria-hidden="true" />
-            <span className="min-w-0 flex-1 truncate text-foreground">原始 JSON</span>
+            <span className="min-w-0 flex-1 truncate font-mono text-foreground">原始 JSON</span>
             <span className="text-2xs">8 行</span>
           </CollapsibleTrigger>
           <CollapsibleContent>

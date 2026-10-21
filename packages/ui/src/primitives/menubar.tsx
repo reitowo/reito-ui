@@ -28,7 +28,7 @@ function Menubar({ className, ...props }: MenubarPrimitive.Props) {
     <MenubarPrimitive
       data-slot="menubar"
       className={cn(
-        'flex h-[calc(var(--rui-button-height)+var(--rui-control-inset)*2)] items-center gap-0.5 rounded-lg border p-[var(--rui-control-inset)]',
+        'flex h-[calc(var(--rui-button-height)+var(--rui-control-inset)*2)] items-center gap-0.5 rounded-[var(--rui-component-menu-popup-radius)] border p-[var(--rui-control-inset)]',
         className,
       )}
       {...props}

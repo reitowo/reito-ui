@@ -195,14 +195,14 @@ function TraceToolCall({
           <CollapsibleTrigger
             variant="row"
             data-slot="tool-call-input"
-            className="bg-sunken font-mono"
+            className="bg-sunken"
             aria-label={`${title}源码，${inputLines} 行`}
           >
             <ChevronRight data-slot="collapsible-chevron" className="size-3" aria-hidden="true" />
-            <span className="min-w-0 flex-1 truncate text-foreground">
+            <span className="min-w-0 flex-1 truncate font-mono text-foreground">
               {expanded ? inputLanguage : input.split('\n')[0]}
             </span>
-            <span className="shrink-0 font-sans text-2xs tabular-nums">{inputLines} 行</span>
+            <span className="shrink-0 text-2xs tabular-nums">{inputLines} 行</span>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <CodeBlock variant="inline" code={input} language={inputLanguage} className="mt-px" />
@@ -212,15 +212,15 @@ function TraceToolCall({
       {output && (
         <div
           data-slot="tool-call-output"
-          className="flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1.5 rounded-xs bg-sunken px-[var(--rui-cell-padding-x)] font-mono text-xs"
+          className="flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1.5 rounded-xs bg-sunken px-[var(--rui-cell-padding-x)] text-xs"
         >
           <CornerDownLeft className="size-3 shrink-0 text-success" aria-hidden="true" />
           <span className="sr-only">结果：</span>
-          <span className="min-w-0 flex-1 truncate text-success" title={output}>
+          <span className="min-w-0 flex-1 truncate font-mono text-success" title={output}>
             {output.replace(/\s*\n\s*/g, ' ')}
           </span>
           {resultLines > 1 && (
-            <span className="shrink-0 font-sans text-2xs text-muted-foreground tabular-nums">
+            <span className="shrink-0 text-2xs text-muted-foreground tabular-nums">
               {resultLines} 行
             </span>
           )}
@@ -229,10 +229,10 @@ function TraceToolCall({
       {error && (
         <p
           data-slot="tool-call-error"
-          className="flex min-w-0 items-start gap-1.5 px-[var(--rui-cell-padding-x)] font-mono text-xs break-words text-destructive"
+          className="flex min-w-0 items-start gap-1.5 px-[var(--rui-cell-padding-x)] text-xs break-words text-destructive"
         >
           <X className="mt-0.5 size-3 shrink-0" aria-hidden="true" />
-          <span className="min-w-0">{error}</span>
+          <span className="min-w-0 font-mono">{error}</span>
         </p>
       )}
       {children && (
