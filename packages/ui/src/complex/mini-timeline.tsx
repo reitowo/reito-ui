@@ -97,7 +97,9 @@ export function MiniTimeline({
               {events.map((event, index) => (
                 <span key={event.id} className="relative h-[var(--rui-line-micro)] w-1.5">
                   {markerAt.has(index) && (
-                    <span className="absolute left-0 whitespace-nowrap">{markerAt.get(index)}</span>
+                    <span className="absolute left-0 leading-none whitespace-nowrap">
+                      {markerAt.get(index)}
+                    </span>
                   )}
                 </span>
               ))}

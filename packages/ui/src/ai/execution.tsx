@@ -153,7 +153,7 @@ function TraceToolCall({
         className="flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-2"
       >
         {timestamp && (
-          <time className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums">
+          <time className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums dense:text-2xs">
             {timestamp}
           </time>
         )}
@@ -178,7 +178,7 @@ function TraceToolCall({
         </span>
         <span className="sr-only">{executionLabels[status]}</span>
         {durationLabel && (
-          <span className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums">
+          <span className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums dense:text-2xs">
             {durationLabel}
           </span>
         )}

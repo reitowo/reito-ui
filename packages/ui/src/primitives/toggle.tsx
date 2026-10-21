@@ -38,7 +38,7 @@ const toggleVariants = cva(
         outline: 'border border-input bg-transparent hover:bg-muted',
       },
       size: {
-        xs: "h-[var(--rui-control-height-xs)] min-w-[var(--rui-control-height-xs)] px-1.5 text-xs [&_svg:not([class*='size-'])]:size-3",
+        xs: "h-[var(--rui-control-height-xs)] min-w-[var(--rui-control-height-xs)] px-1.5 text-xs dense:px-1 [&_svg:not([class*='size-'])]:size-3 dense:[&_svg:not([class*='size-'])]:size-2.5",
         default:
           "h-[var(--rui-button-height)] min-w-[var(--rui-button-height)] px-[var(--rui-button-padding-x)] [&_svg:not([class*='size-'])]:size-3",
         sm: "h-[var(--rui-control-height-sm)] min-w-[var(--rui-control-height-sm)] px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",

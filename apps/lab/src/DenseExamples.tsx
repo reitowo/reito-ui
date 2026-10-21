@@ -174,7 +174,7 @@ function useFollow() {
 function PaneHeader({ title, children }: { title: ReactNode; children?: ReactNode }) {
   return (
     <div className="flex min-h-[var(--rui-control-height)] shrink-0 items-center gap-2 px-[var(--rui-content-padding)]">
-      <h1 className="flex min-w-0 items-center gap-1.5 text-sm font-semibold">{title}</h1>
+      <h1 className="flex min-w-0 items-center gap-1.5 text-sm leading-[var(--rui-line-interface)] font-semibold">{title}</h1>
       <div className="ml-auto flex shrink-0 items-center gap-1.5">{children}</div>
     </div>
   );
@@ -189,7 +189,7 @@ function TracePage() {
       <PaneHeader
         title={
           <>
-            示例扩展<span className="font-normal text-muted-foreground">/ 优化</span>
+            示例扩展<span className="text-xs font-normal text-muted-foreground">/ 优化</span>
             <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
             <span className="sr-only">已连接</span>
           </>
@@ -764,12 +764,12 @@ export function DenseExamples() {
     <ReitoThemeProvider root mode={theme} density="dense">
       <TooltipProvider>
         <div className="reito-root flex h-dvh flex-col bg-background text-foreground">
-          <header className="flex h-[var(--rui-control-height)] shrink-0 items-center gap-2 border-b bg-card px-[var(--rui-content-padding)]">
-            <a href={import.meta.env.BASE_URL} className="text-xs font-medium">Reito UI</a>
+          <header className="flex h-[var(--rui-control-height-sm)] shrink-0 items-center gap-2 border-b bg-card px-[var(--rui-content-padding)]">
+            <a href={import.meta.env.BASE_URL} className="text-xs font-semibold">Reito UI</a>
             <span className="text-2xs text-muted-foreground">高密示例 · 本地数据</span>
             <nav aria-label="示例页面" className="ml-2 flex items-center gap-0.5">
               {pages.map((item) => (
-                <Button key={item.id} variant="ghost" size="xs" aria-current={item.id === page ? 'page' : undefined} className="aria-[current=page]:bg-muted aria-[current=page]:text-foreground" onClick={() => setPage(item.id)}>
+                <Button key={item.id} variant="ghost" size="xs" aria-current={item.id === page ? 'page' : undefined} className="h-4 px-1.5 text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground" onClick={() => setPage(item.id)}>
                   {item.label}
                 </Button>
               ))}

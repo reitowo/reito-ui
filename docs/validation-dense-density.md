@@ -23,6 +23,14 @@ Lab `?view=dense&page=trace`，1024×864，深色与浅色。数值由浏览器 
 | comfortable | 8 / 4px | 4px | 10px | 14px | 32px | 4 / 4px |
 | dense | 8 / 4px | 4px | 6px | 10px | 20px | 4 / 4px |
 
+## 头部与元信息复查（2026-10-21 后续反馈）
+
+用户反馈轨迹复刻顶部文字仍偏大。实测各页没有超过 12px 的文字；偏大感来自示例外框栏 12px 导航、标题旁 12px 副标题、12px 切换图标、11px 等宽时间与耗时、12px 加粗表头，以及 `dense:` 变体未生效。
+
+- `dense:` 变体原以 `@scope` 声明，Tailwind 嵌套后变成 `(& [data-density=dense])`，只作用于自身后代，所有 `dense:` 工具类此前都不生效（含 CardTitle、CodeBlock 行高）。改为 `&:where([data-density='dense'], [data-density='dense'] *)`；代价是 dense 内再嵌套的 compact / comfortable 作用域仍会匹配。
+- 现值：标题 12px 600、副标题与计数 11px、时间线通道与刻度标记 10px、分组标签 10px 600、卡片时间与耗时 10px 等宽、切换按钮图标 10px、dense 表头 11px 次级色、示例外框栏 20px 高与 11px 导航。
+- `tests/dense-density.spec.ts` 增加上述字号断言，并检查各示例页不存在超过 12px 的文字。
+
 ## 截图
 
 `node scripts/capture-dense-examples.mjs http://127.0.0.1:5173/ <输出目录>` 生成以下文件（PR 附件）：轨迹面板（展开源码 / 滚动到错误卡）、事件查看器、数据与检查器（行操作子菜单 / 右键菜单）、命令与设置（Menubar / 单选下拉）各深浅两版，以及 compact 下的 DropdownMenu 对比。

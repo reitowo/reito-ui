@@ -24,6 +24,12 @@ for (const theme of ['dark', 'light']) {
     await expect(card.locator('[data-slot=tool-call-output] span.font-mono')).toHaveCSS('font-size', '11px');
     await expect(card.locator('[data-slot=badge]')).toHaveCSS('height', '16px');
     await expect(page.locator('[data-slot=section-label]').first()).toHaveCSS('font-size', '10px');
+    await expect(page.locator('main h1')).toHaveCSS('font-size', '12px');
+    await expect(page.locator('main h1')).toHaveCSS('font-weight', '600');
+    await expect(page.getByText('49 条')).toHaveCSS('font-size', '11px');
+    await expect(page.locator('[data-slot=mini-timeline] span.leading-none').first()).toHaveCSS('font-size', '10px');
+    await expect(card.locator('[data-slot=tool-call-header] time')).toHaveCSS('font-size', '10px');
+    await expect(page.locator('[data-slot=toggle-group-item] svg').first()).toHaveCSS('width', '10px');
     const error = page.locator('[data-slot=tool-call][data-status=error]');
     await expect(error.locator('[data-slot=tool-call-error]')).toContainText('browser surface not found');
     const errorBackground = await error.evaluate((node) => getComputedStyle(node).backgroundColor);
@@ -92,6 +98,9 @@ for (const theme of ['dark', 'light']) for (const example of ['events', 'inspect
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`/?view=dense&page=${example}&theme=${theme}`);
     await expect(page.locator('main')).toBeVisible();
+    // No dense example text exceeds the 12px interface size.
+    expect(await page.evaluate(() => [...document.querySelectorAll('main *')].filter((el) => [...el.childNodes].some((node) => node.nodeType === 3 && node.textContent!.trim()) && parseFloat(getComputedStyle(el).fontSize) > 12).length)).toBe(0);
+    if (example !== 'commands') await expect(page.locator('[data-slot=table-head]').first()).toHaveCSS('font-size', '11px');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     await expectNoAxeViolations(page);
     if (example === 'inspector') {
