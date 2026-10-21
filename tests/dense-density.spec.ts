@@ -13,6 +13,8 @@ for (const theme of ['dark', 'light']) {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`/?view=dense&page=trace&theme=${theme}`);
     await expect(page.locator('html')).toHaveAttribute('data-density', 'dense');
+    await expect(page.locator('.reito-root > header')).toHaveCSS('height', '28px');
+    await expect(page.locator('main h1').locator('..')).toHaveCSS('height', '32px');
     const card = page.locator('[data-slot=tool-call][data-variant=trace]').nth(3);
     await expect(card).toHaveCSS('border-radius', '6px');
     await expect(card).toHaveCSS('padding', '4px 8px');

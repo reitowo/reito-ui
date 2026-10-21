@@ -173,7 +173,7 @@ function useFollow() {
 
 function PaneHeader({ title, children }: { title: ReactNode; children?: ReactNode }) {
   return (
-    <div className="flex min-h-[var(--rui-control-height)] shrink-0 items-center gap-2 px-[var(--rui-content-padding)]">
+    <div className="flex min-h-8 shrink-0 items-center gap-2 px-[var(--rui-content-padding)] py-1">
       <h1 className="flex min-w-0 items-center gap-1.5 text-sm leading-[var(--rui-line-interface)] font-semibold">{title}</h1>
       <div className="ml-auto flex shrink-0 items-center gap-1.5">{children}</div>
     </div>
@@ -207,7 +207,7 @@ function TracePage() {
       </PaneHeader>
       <MiniTimeline
         label="事件总览"
-        className="shrink-0 px-[var(--rui-content-padding)] pb-1"
+        className="shrink-0 px-[var(--rui-content-padding)] py-1.5"
         lanes={timelineLanes}
         events={timelineEvents}
         markers={[{ index: 9, label: 'T1' }, { index: 22, label: 'T2' }, { index: 36, label: 'T3' }]}
@@ -338,7 +338,7 @@ function EventsPage() {
         </div>
         <MiniTimeline
           label="事件分布"
-          className="shrink-0 border-b px-[var(--rui-content-padding)] py-1"
+          className="shrink-0 border-b px-[var(--rui-content-padding)] py-1.5"
           lanes={sources.map((id) => ({ id, label: id }))}
           events={eventRows.map((row) => ({ id: row.id, lane: row.source, label: `${row.time} ${row.message}`, tone: row.level === 'error' ? 'danger' : row.level === 'warn' ? 'warning' : row.level === 'debug' ? 'neutral' : 'info' }))}
           value={selected}
@@ -650,7 +650,7 @@ function CommandsPage() {
   const [panel, setPanel] = useState('bottom');
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 items-center gap-2 border-b px-[var(--rui-content-padding)] py-1">
+      <div className="flex min-h-8 shrink-0 items-center gap-2 border-b px-[var(--rui-content-padding)] py-1">
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger>文件</MenubarTrigger>
@@ -764,12 +764,12 @@ export function DenseExamples() {
     <ReitoThemeProvider root mode={theme} density="dense">
       <TooltipProvider>
         <div className="reito-root flex h-dvh flex-col bg-background text-foreground">
-          <header className="flex h-[var(--rui-control-height-sm)] shrink-0 items-center gap-2 border-b bg-card px-[var(--rui-content-padding)]">
+          <header className="flex h-7 shrink-0 items-center gap-2 border-b bg-card px-[var(--rui-content-padding)]">
             <a href={import.meta.env.BASE_URL} className="text-xs font-semibold">Reito UI</a>
             <span className="text-2xs text-muted-foreground">高密示例 · 本地数据</span>
             <nav aria-label="示例页面" className="ml-2 flex items-center gap-0.5">
               {pages.map((item) => (
-                <Button key={item.id} variant="ghost" size="xs" aria-current={item.id === page ? 'page' : undefined} className="h-4 px-1.5 text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground" onClick={() => setPage(item.id)}>
+                <Button key={item.id} variant="ghost" size="xs" aria-current={item.id === page ? 'page' : undefined} className="h-5 px-1.5 text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground" onClick={() => setPage(item.id)}>
                   {item.label}
                 </Button>
               ))}
