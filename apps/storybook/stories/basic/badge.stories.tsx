@@ -11,6 +11,7 @@ const meta = { id: "基础-badge",
   args: { variant: "default", children: "已发布" },
   argTypes: {
     variant: { control: "select", options: ["default", "secondary", "outline", "destructive", "ghost", "link"] },
+    size: { control: "select", options: ["default", "xs"], description: "xs：16px 高、2xs 字号，用于高密轨迹标签。" },
     children: { control: "text", description: "标签内容；图标组合预设仍保留原始 JSX。" },
   },
   parameters: {
@@ -75,6 +76,10 @@ export const WithIcon: Story = {
 
 export const Playground: Story = {
   name: "参数调试",
-  args: { variant: "default", children: "已发布" },
-  parameters: { controls: { include: ["variant", "children"] } },
+  args: { variant: "default", size: "default", children: "已发布" },
+  parameters: { controls: { include: ["variant", "size", "children"] } },
+};
+export const ExtraSmall: Story = {
+  name: "尺寸 · XS",
+  render: () => <div className="flex flex-wrap items-center gap-2"><P.Badge size="xs" variant="secondary">读正文</P.Badge><P.Badge size="xs" variant="outline">修改点</P.Badge><P.Badge size="xs" variant="destructive">失败</P.Badge></div>,
 };

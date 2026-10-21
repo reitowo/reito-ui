@@ -37,7 +37,7 @@ export function App() {
   const storyId = catalogManifest.entries.find(entry => entry.layer === selection.layer && entry.id === selection.id)!.storyId;
   const storybookBase = (import.meta.env.VITE_STORYBOOK_URL || (import.meta.env.PROD ? `${import.meta.env.BASE_URL}storybook` : 'http://127.0.0.1:6007')).replace(/\/$/, '');
   const storybookUrl = `${storybookBase}/?path=/story/${encodeURIComponent(storyId)}&globals=theme:${theme};density:${density}`;
-  return <ReitoThemeProvider root mode={theme} density={density as "compact" | "comfortable"} colors={colors}><TooltipProvider><div className="reito-root lab-shell">
+  return <ReitoThemeProvider root mode={theme} density={density} colors={colors}><TooltipProvider><div className="reito-root lab-shell">
     <header className="lab-titlebar">
       <a href={import.meta.env.BASE_URL} className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></a>
       <span className="lab-project">Graphite / Component library</span>

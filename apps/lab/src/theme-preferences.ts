@@ -1,10 +1,11 @@
 import { themeTokens } from '@reito/tokens/themes';
 import type { ThemeColors, ThemeMode } from '@reito/ui/basic';
-export type ThemeDensity = 'compact' | 'comfortable';
+export type ThemeDensity = 'compact' | 'comfortable' | 'dense';
 
 export function readThemeDensity(): ThemeDensity {
   try {
-    return localStorage.getItem('reito-density') === 'comfortable' ? 'comfortable' : 'compact';
+    const density = localStorage.getItem('reito-density');
+    return density === 'comfortable' || density === 'dense' ? density : 'compact';
   } catch {
     return 'compact';
   }

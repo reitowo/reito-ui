@@ -57,7 +57,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
     <th
       data-slot="table-head"
       className={cn(
-        'h-[var(--rui-table-head-height)] px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)] text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0',
+        'h-[var(--rui-table-head-height)] px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)] text-left align-middle font-medium whitespace-nowrap text-foreground dense:text-xs dense:text-muted-foreground [&:has([role=checkbox])]:pr-0',
         className,
       )}
       {...props}

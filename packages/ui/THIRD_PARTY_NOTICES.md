@@ -224,7 +224,7 @@ The JavaScript build keeps bare package imports external. These dependencies are
 
 | Package | Inspected version | License | Complete license supplied by the package |
 | --- | --- | --- | --- |
-| @base-ui/react | 1.8.0 | MIT | node_modules/@base-ui/react/LICENSE |
+| @base-ui/react | 1.9.0 | MIT | node_modules/@base-ui/react/LICENSE |
 | @fontsource-variable/inter | 5.3.0 | OFL-1.1 | node_modules/@fontsource-variable/inter/LICENSE |
 | @tanstack/react-table | 8.21.3 | MIT | node_modules/@tanstack/react-table/LICENSE |
 | @tiptap/react | 3.31.3 | MIT | node_modules/@tiptap/react/LICENSE.md |

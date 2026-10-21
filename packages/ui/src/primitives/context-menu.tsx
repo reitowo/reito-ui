@@ -55,9 +55,9 @@ function ContextMenuContent({
                 // Layout
                 'z-[var(--rui-z-popover)] max-h-(--available-height) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto',
                 // Surface
-                'rounded-lg bg-popover',
+                'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
                 // Spacing
-                'p-1',
+                'p-[var(--rui-component-menu-popup-padding)]',
                 // Typography
                 'text-popover-foreground',
                 // Surface
@@ -96,7 +96,7 @@ function ContextMenuLabel({
       data-slot="context-menu-label"
       data-inset={inset}
       className={cn(
-        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium text-muted-foreground data-inset:pl-7',
+        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium text-muted-foreground data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
         className,
       )}
       {...props}
@@ -123,9 +123,9 @@ function ContextMenuItem({
           // Layout
           'group/context-menu-item relative flex cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
           'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
@@ -137,13 +137,13 @@ function ContextMenuItem({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground',
           // Component state
-          'data-inset:pl-7 data-[variant=destructive]:text-destructive',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-[variant=destructive]:text-destructive',
           // Keyboard focus
           'data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20',
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
           // Keyboard focus
           'focus:*:[svg]:text-accent-foreground',
           // Component state
@@ -177,9 +177,9 @@ function ContextMenuSubTrigger({
           // Layout
           'flex cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
           'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
@@ -191,9 +191,9 @@ function ContextMenuSubTrigger({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground',
           // Component state
-          'data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-open:bg-accent data-open:text-accent-foreground',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
       )}
@@ -234,11 +234,11 @@ function ContextMenuCheckboxItem({
           // Layout
           'relative flex cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-inset-padding-x)] pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
@@ -248,18 +248,18 @@ function ContextMenuCheckboxItem({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground',
           // Component state
-          'data-inset:pl-7',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
       )}
       checked={checked}
       {...props}
     >
-      <span className="pointer-events-none absolute right-2">
+      <span className="pointer-events-none absolute right-[var(--rui-component-menu-item-padding-x)]">
         <ContextMenuPrimitive.CheckboxItemIndicator>
           <CheckIcon />
         </ContextMenuPrimitive.CheckboxItemIndicator>
@@ -290,11 +290,11 @@ function ContextMenuRadioItem({
           // Layout
           'relative flex cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-inset-padding-x)] pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
@@ -304,17 +304,17 @@ function ContextMenuRadioItem({
           // Keyboard focus
           'focus:bg-accent focus:text-accent-foreground',
           // Component state
-          'data-inset:pl-7',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
       )}
       {...props}
     >
-      <span className="pointer-events-none absolute right-2">
+      <span className="pointer-events-none absolute right-[var(--rui-component-menu-item-padding-x)]">
         <ContextMenuPrimitive.RadioItemIndicator>
           <CheckIcon />
         </ContextMenuPrimitive.RadioItemIndicator>
@@ -328,7 +328,10 @@ function ContextMenuSeparator({ className, ...props }: ContextMenuPrimitive.Sepa
   return (
     <ContextMenuPrimitive.Separator
       data-slot="context-menu-separator"
-      className={cn('-mx-1 my-1 h-px bg-border', className)}
+      className={cn(
+        'mx-[var(--rui-component-menu-separator-inset)] my-[var(--rui-component-menu-separator-margin-y)] h-px bg-border',
+        className,
+      )}
       {...props}
     />
   );

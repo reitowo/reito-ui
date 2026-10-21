@@ -7,17 +7,15 @@ import { cn } from '../lib/utils.js';
 const badgeVariants = cva(
   [
     // Layout
-    'group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center',
+    'group/badge inline-flex w-fit shrink-0 items-center justify-center',
     // Spacing
     'gap-1',
     // Layout
     'overflow-hidden',
     // Surface
     'rounded-4xl border border-transparent',
-    // Spacing
-    'px-2 py-0.5',
     // Typography
-    'text-xs font-medium whitespace-nowrap',
+    'font-medium whitespace-nowrap',
     // Motion
     'transition-all',
     // Keyboard focus
@@ -27,7 +25,7 @@ const badgeVariants = cva(
     // Validation state
     'rui-validation',
     // Child and composition rules
-    '[&>svg]:pointer-events-none [&>svg]:size-3!',
+    '[&>svg]:pointer-events-none',
   ],
   {
     variants: {
@@ -40,9 +38,14 @@ const badgeVariants = cva(
         ghost: 'hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50',
         link: 'text-primary underline-offset-4 hover:underline',
       },
+      size: {
+        default: 'h-[var(--rui-badge-height)] px-2 py-0.5 text-xs [&>svg]:size-3!',
+        xs: 'h-4 rounded-xs px-1 text-2xs [&>svg]:size-2.5!',
+      },
     },
     defaultVariants: {
       variant: 'default',
+      size: 'default',
     },
   },
 );
@@ -52,6 +55,7 @@ function Badge({
   color,
   style,
   variant = 'default',
+  size = 'default',
   render,
   ...props
 }: Omit<useRender.ComponentProps<'span'>, 'color'> & { color?: ThemeColor } & VariantProps<
@@ -62,8 +66,8 @@ function Badge({
     defaultTagName: 'span',
     props: mergeProps<'span'>(
       {
-        className: cn(badgeVariants({ variant }), className),
-        ...{ 'data-rui-color': color, 'data-variant': variant },
+        className: cn(badgeVariants({ variant, size }), className),
+        ...{ 'data-rui-color': color, 'data-variant': variant, 'data-size': size },
         style: { ...colorStyle, ...style },
       },
       props,
@@ -72,6 +76,7 @@ function Badge({
     state: {
       slot: 'badge',
       variant,
+      size,
     },
   });
 }

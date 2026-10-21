@@ -13,7 +13,7 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        'flex size-full flex-col overflow-hidden rounded-xl! bg-popover p-1 text-popover-foreground',
+        'flex size-full flex-col overflow-hidden rounded-[var(--rui-component-menu-popup-radius)]! bg-popover p-[var(--rui-component-menu-popup-padding)] text-popover-foreground',
         className,
       )}
       {...props}
@@ -56,8 +56,11 @@ function CommandInput({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
   return (
-    <div data-slot="command-input-wrapper" className="p-1 pb-0">
-      <InputGroup className="rounded-lg! border-input/30 bg-input/30 shadow-none! *:data-[slot=input-group-addon]:pl-2!">
+    <div
+      data-slot="command-input-wrapper"
+      className="p-[var(--rui-component-menu-popup-padding)] pb-0"
+    >
+      <InputGroup className="rounded-[var(--rui-component-menu-item-radius)]! border-input/30 bg-input/30 shadow-none! *:data-[slot=input-group-addon]:pl-2!">
         <CommandPrimitive.Input
           data-slot="command-input"
           className={cn(
@@ -67,7 +70,7 @@ function CommandInput({
           {...props}
         />
         <InputGroupAddon>
-          <SearchIcon className="size-4 shrink-0 opacity-50" />
+          <SearchIcon className="size-[var(--rui-component-menu-icon-size)] shrink-0 opacity-50" />
         </InputGroupAddon>
       </InputGroup>
     </div>
@@ -108,7 +111,13 @@ function CommandGroup({
     <CommandPrimitive.Group
       data-slot="command-group"
       className={cn(
-        'overflow-hidden p-1 text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground',
+        [
+          // Layout
+          'overflow-hidden p-[var(--rui-component-menu-popup-padding)] text-foreground',
+          // Group heading
+          '**:[[cmdk-group-heading]]:px-[var(--rui-component-menu-item-padding-x)] **:[[cmdk-group-heading]]:py-[var(--rui-component-menu-item-padding-y)]',
+          '**:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground',
+        ],
         className,
       )}
       {...props}
@@ -123,7 +132,10 @@ function CommandSeparator({
   return (
     <CommandPrimitive.Separator
       data-slot="command-separator"
-      className={cn('-mx-1 h-px bg-border', className)}
+      className={cn(
+        'mx-[var(--rui-component-menu-separator-inset)] my-[var(--rui-component-menu-separator-margin-y)] h-px bg-border',
+        className,
+      )}
       {...props}
     />
   );
@@ -142,25 +154,25 @@ function CommandItem({
           // Layout
           'group/command-item relative flex cursor-default items-center',
           // Spacing
-          'gap-2',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-sm',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'px-2 py-1.5',
+          'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
-          'text-sm',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
           'outline-hidden',
           // Layout
           'select-none',
           // Component state
-          'in-data-[slot=dialog-content]:rounded-lg!',
+          'in-data-[slot=dialog-content]:rounded-[var(--rui-component-menu-item-radius)]!',
           // Disabled state
           'data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-[var(--rui-opacity-disabled)]',
           // Component state
           'data-selected:bg-muted data-selected:text-foreground',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
           // Component state
           'data-selected:*:[svg]:text-foreground',
         ],

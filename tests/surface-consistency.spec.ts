@@ -9,6 +9,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await page.setViewportSize({ width: 1303, height: 1244 });
     const x = density === 'compact' ? '12px' : '16px';
     const y = density === 'compact' ? '8px' : '10px';
+    const menuX = density === 'compact' ? '8px' : '10px';
     const menuY = density === 'compact' ? '4px' : '6px';
     for (const id of ['alert', 'card']) {
       await page.goto('/?layer=basic&component=' + id);
@@ -31,12 +32,12 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       await trigger.click(id === 'context-menu' ? { button: 'right' } : {});
       const item = page.locator('[data-slot="' + id + '-item"]').first();
       await expect(item).toBeVisible();
-      await expect(item).toHaveCSS('padding-left', x);
-      await expect(item).toHaveCSS('padding-right', x);
+      await expect(item).toHaveCSS('padding-left', menuX);
+      await expect(item).toHaveCSS('padding-right', menuX);
       await expect(item).toHaveCSS('padding-top', menuY);
       await expect(item).toHaveCSS('font-size', '13px');
       await expect(item).toHaveCSS('height', density === 'compact' ? '28px' : '32px');
-      await expect(item).toHaveCSS('border-radius', '6px');
+      await expect(item).toHaveCSS('border-radius', '4px');
       if (id === 'context-menu') await page.locator('[data-slot="context-menu-content"]').screenshot({ path: '.logs/feedback-menu-' + theme + '-' + density + '.png' });
       await page.keyboard.press('ArrowDown');
       await page.keyboard.press('Escape');

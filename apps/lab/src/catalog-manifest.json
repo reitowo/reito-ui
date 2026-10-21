@@ -1,12 +1,32 @@
 {
   "counts": {
-    "basic": 72,
-    "complex": 43,
+    "basic": 74,
+    "complex": 44,
     "ai": 24
   },
-  "total": 139,
-  "stories": 1445,
+  "total": 142,
+  "stories": 1462,
   "entries": [
+    {
+      "layer": "basic",
+      "id": "section-label",
+      "name": "SectionLabel",
+      "description": "高密列表中的轮次、日期等轻量分组标签。",
+      "storyId": "basic-section-label--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SectionLabelDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "jump-to-latest",
+      "name": "JumpToLatest",
+      "description": "离开底部后出现的浮动“回到最新”胶囊。",
+      "storyId": "basic-jump-to-latest--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "JumpToLatestDemo",
+      "stories": 4
+    },
     {
       "layer": "basic",
       "id": "scroll-top",
@@ -55,7 +75,7 @@
       "storyId": "基础-badge--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "BadgeDemo",
-      "stories": 9
+      "stories": 10
     },
     {
       "layer": "basic",
@@ -245,7 +265,7 @@
       "storyId": "基础-toggle-group--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ToggleGroupDemo",
-      "stories": 9
+      "stories": 10
     },
     {
       "layer": "basic",
@@ -305,7 +325,7 @@
       "storyId": "基础-collapsible--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CollapsibleDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "basic",
@@ -726,6 +746,16 @@
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "KnobDemo",
       "stories": 16
+    },
+    {
+      "layer": "complex",
+      "id": "mini-timeline",
+      "name": "MiniTimeline 迷你时间线",
+      "description": "按通道排列的小刻度事件总览与键盘选择",
+      "storyId": "complex-mini-timeline--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "MiniTimelineDemo",
+      "stories": 3
     },
     {
       "layer": "complex",
@@ -1195,7 +1225,7 @@
       "storyId": "ai-toolcall--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "ToolCallDemo",
-      "stories": 9
+      "stories": 11
     },
     {
       "layer": "ai",
@@ -1285,7 +1315,7 @@
       "storyId": "ai-codeblock--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "CodeBlockDemo",
-      "stories": 30
+      "stories": 31
     },
     {
       "layer": "ai",

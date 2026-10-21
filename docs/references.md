@@ -457,3 +457,9 @@ Reito 据此调整自己的共享灰阶与界面尺度，并添加蓝色强调�
 ## 顶栏主题菜单（2026-10-10）
 
 实际打开 https://ui.nuxt.com/ 的 Default theme 菜单，观察 Primary / Neutral 的带色点子菜单、当前值及选中勾选，以及 Light / Dark / System 的横排图标选择。主页当时显示 v4.11.3；该版本标识仅记录观察，不据搜索结果推断最新版本。Reito 的实现复用现有 Base UI DropdownMenu 与共享 token，沿用菜单结构和交互思路；使用自己的14px菜单文字、36 / 40px行高、字体、边界和色阶，不复制上游品牌或完整样式。字体、图标库和圆角配置不纳入本轮入口；详情见 validation-theme-menu.md。
+
+## 高密轨迹面板与 Base UI 菜单（2026-10-21）
+
+- **高密轨迹面板**：用户提供的深色开发工具“编辑轨迹”面板截图（第三方浏览器扩展的事件轨迹，原图约 1024×864）。实际观察：一行卡片头含时间、类型、标题、右对齐耗时与小标签；卡片内为可折叠源码首行与“N 行”计数、截断的绿色等宽结果行；错误卡只有红色边界与文字；顶部为 open / read / write 三条刻度通道，列表中有 “TURN 1” 分组标签，右下角为浮动“回到最新”胶囊。用于确定 dense 的文字、行高、内距、圆角与组件结构；数值为本项目估算后的原创取值，不复制截图中的品牌名称、URL、字体或资产。Lab 复刻页使用 example.com 地址和“示例扩展”名称，全部为本地数据。
+- **Base UI v1 菜单演示**：[Base UI Menu 文档](https://base-ui.com/react/components/menu) 的圆角演示。参考的是同心几何关系（弹层圆角 = 条目圆角 + 弹层内距、内缩分隔线、图标与文字间距），具体取值写在 `components.menu` 中，未复制演示样式表。
+- **依赖**：`@base-ui/react` 由 1.8.0 升级到 1.9.0（MIT，见 `packages/ui/THIRD_PARTY_NOTICES.md`）。该版本的变更日志以修复与性能为主；Combobox / Autocomplete 的自动卸载与 `actionsRef` 解耦不影响本库，本库没有使用 `actionsRef`。

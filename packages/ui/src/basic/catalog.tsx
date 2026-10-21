@@ -1,6 +1,8 @@
 import { tokenMetrics } from '@reito/tokens/metrics';
 import { OneTimeCodeDemo } from './one-time-code-demo.js';
 import { ScrollTopDemo } from './scroll-top-demo.js';
+import { SectionLabel } from './section-label.js';
+import { JumpToLatest } from './jump-to-latest.js';
 import * as React from 'react';
 import * as Native from '../native.js';
 import { SelectInput } from './select-input.js';
@@ -1588,7 +1590,91 @@ export interface BasicCatalogEntry {
   description: string;
   component: React.ComponentType;
 }
+export function SectionLabelDemo() {
+  return (
+    <div className="grid w-full max-w-md gap-1">
+      <SectionLabel>Turn 1</SectionLabel>
+      <p className="text-sm text-muted-foreground">本地示例：第一轮读取了 4 个事件。</p>
+      <SectionLabel trailing="12 条" divider>
+        Turn 2
+      </SectionLabel>
+      <p className="text-sm text-muted-foreground">分隔线把后续分组与上一组隔开。</p>
+      <SectionLabel as="div">今天</SectionLabel>
+    </div>
+  );
+}
+
+export function JumpToLatestDemo() {
+  const viewport = React.useRef<HTMLDivElement>(null);
+  const id = React.useId();
+  const [lines, setLines] = React.useState(() =>
+    Array.from({ length: 24 }, (_, index) => `本地日志 ${index + 1}`),
+  );
+  const [atEnd, setAtEnd] = React.useState(true);
+  const [unread, setUnread] = React.useState(0);
+  const measure = () => {
+    const element = viewport.current;
+    if (!element) return;
+    const next =
+      element.scrollHeight - element.clientHeight - element.scrollTop < tokenMetrics['space-4'];
+    setAtEnd(next);
+    if (next) setUnread(0);
+  };
+  React.useEffect(measure, []);
+  const jump = () => {
+    const element = viewport.current;
+    if (!element) return;
+    element.scrollTop = element.scrollHeight;
+    measure();
+  };
+  return (
+    <Stack>
+      <div className="relative h-48 w-full max-w-md overflow-hidden rounded-lg border">
+        <div
+          id={id}
+          ref={viewport}
+          role="region"
+          aria-label="本地日志"
+          tabIndex={0}
+          onScroll={measure}
+          className="rui-scroll-focus h-full overflow-y-auto px-[var(--rui-cell-padding-x)] py-1 font-mono text-xs leading-[var(--rui-line-caption)]"
+        >
+          {lines.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+        <JumpToLatest visible={!atEnd} count={unread} aria-controls={id} onClick={jump} />
+      </div>
+      <div className="flex gap-2">
+        <P.Button
+          variant="outline"
+          size="xs"
+          onClick={() => {
+            setLines((current) => [...current, `本地日志 ${current.length + 1}`]);
+            if (!atEnd) setUnread((count) => count + 1);
+          }}
+        >
+          追加一条本地日志
+        </P.Button>
+        <JumpToLatest floating={false} label="静态示例" />
+      </div>
+    </Stack>
+  );
+}
+
 export const basicCatalog: BasicCatalogEntry[] = [
+  {
+    id: 'section-label',
+    name: 'SectionLabel',
+    description: '高密列表中的轮次、日期等轻量分组标签。',
+    component: SectionLabelDemo,
+  },
+  {
+    id: 'jump-to-latest',
+    name: 'JumpToLatest',
+    description: '离开底部后出现的浮动“回到最新”胶囊。',
+    component: JumpToLatestDemo,
+  },
   {
     id: 'scroll-top',
     name: 'ScrollTop',

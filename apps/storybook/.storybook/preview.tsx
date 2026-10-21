@@ -1,4 +1,4 @@
-import { ReitoThemeProvider, type ThemeColors, type NeutralPalette } from '@reito/ui/basic';
+import { ReitoThemeProvider, type DensityMode, type ThemeColors, type NeutralPalette } from '@reito/ui/basic';
 import type { Preview } from '@storybook/react-vite';
 import { useLayoutEffect, type ReactNode } from 'react';
 import { TooltipProvider } from '../../../packages/ui/src/primitives/tooltip';
@@ -13,7 +13,7 @@ function ThemeFrame({ theme, density, primary, neutral, docs, children }: { them
     document.documentElement.dataset.density = density;
     document.documentElement.style.colorScheme = theme;
   }, [theme, density]);
-  return <ReitoThemeProvider root mode={theme as "dark" | "light"} density={density as "compact" | "comfortable"} colors={{primary,neutral}}><TooltipProvider><div className={`reito-root sb-theme-frame${docs ? ' sb-docs-frame' : ''}`} data-theme={theme} data-density={density}>{children}</div></TooltipProvider></ReitoThemeProvider>;
+  return <ReitoThemeProvider root mode={theme as "dark" | "light"} density={density as DensityMode} colors={{primary,neutral}}><TooltipProvider><div className={`reito-root sb-theme-frame${docs ? ' sb-docs-frame' : ''}`} data-theme={theme} data-density={density}>{children}</div></TooltipProvider></ReitoThemeProvider>;
 }
 
 const preview: Preview = {
@@ -30,7 +30,7 @@ const preview: Preview = {
     density: {
       description: '共享控件高度与间距，保持文字可读。',
       toolbar: { title: '密度', icon: 'component', dynamicTitle: true, items: [
-        { value: 'compact', title: '紧凑' }, { value: 'comfortable', title: '舒适' },
+        { value: 'compact', title: '紧凑' }, { value: 'comfortable', title: '舒适' }, { value: 'dense', title: '高密' },
       ] },
     },
   },

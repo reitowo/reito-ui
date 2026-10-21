@@ -10,5 +10,6 @@ export type {
   ThemeColors,
   ThemeTokenOverrides,
   ColorPalette,
+  DensityMode,
   NeutralPalette,
 } from './theme.js';

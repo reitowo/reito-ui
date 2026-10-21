@@ -14,7 +14,7 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (
     <SelectPrimitive.Group
       data-slot="select-group"
-      className={cn('scroll-my-1 p-1', className)}
+      className={cn('scroll-my-1 p-[var(--rui-component-menu-popup-padding)]', className)}
       {...props}
     />
   );
@@ -127,7 +127,7 @@ function SelectContent({
                 // Layout
                 'relative isolate z-[var(--rui-z-popover)] max-h-(--available-height) max-w-(--available-width) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto',
                 // Surface
-                'rounded-lg bg-popover',
+                'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
                 // Typography
                 'text-popover-foreground',
                 // Surface
@@ -174,11 +174,11 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
           // Layout
           'relative flex min-h-[var(--rui-component-menu-item-height)] w-full cursor-default items-center',
           // Spacing
-          'gap-1.5',
+          'gap-[var(--rui-component-menu-item-gap)]',
           // Surface
-          'rounded-md',
+          'rounded-[var(--rui-component-menu-item-radius)]',
           // Spacing
-          'py-[var(--rui-component-menu-item-padding-y)] pr-8 pl-[var(--rui-component-menu-item-padding-x)]',
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-inset-padding-x)] pl-[var(--rui-component-menu-item-padding-x)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
           // Surface
@@ -190,7 +190,7 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
           // Disabled state
           'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)] *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         ],
         className,
       )}
@@ -201,7 +201,7 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         render={
-          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
+          <span className="pointer-events-none absolute right-[var(--rui-component-menu-item-padding-x)] flex size-[var(--rui-component-menu-icon-size)] items-center justify-center" />
         }
       >
         <CheckIcon className="pointer-events-none" />
@@ -214,7 +214,10 @@ function SelectSeparator({ className, ...props }: SelectPrimitive.Separator.Prop
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn('pointer-events-none -mx-1 my-1 h-px bg-border', className)}
+      className={cn(
+        'pointer-events-none mx-[var(--rui-component-menu-separator-inset)] my-[var(--rui-component-menu-separator-margin-y)] h-px bg-border',
+        className,
+      )}
       {...props}
     />
   );

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronDown, Clock3, ListChecks } from 'lucide-react';
+import { ChevronDown, ChevronRight, Clock3, CornerDownLeft, ListChecks, X } from 'lucide-react';
+import { Badge } from '../primitives/badge.js';
 import { Button } from '../primitives/button.js';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../primitives/collapsible.js';
+import { CodeBlock } from './code-block.js';
 import { classes, ExecutionIcon, executionLabels, type ExecutionStatus } from './shared.js';
 
 export interface ReasoningProps {
@@ -82,13 +84,174 @@ export interface ToolCallProps {
   title: string;
   status: ExecutionStatus;
   children?: ReactNode;
-  variant?: 'inline' | 'card';
+  /** `trace` is a one-line event card for dense execution logs. */
+  variant?: 'inline' | 'card' | 'trace';
   durationLabel?: string;
+  /** trace: leading clock time supplied by the host, e.g. `18:28:35`. */
+  timestamp?: string;
+  /** trace: short event kind shown before the title, e.g. `eval 执行`. */
+  kind?: string;
+  /** trace: trailing tag; strings render as an XS badge. */
+  tag?: ReactNode;
+  /** trace: source preview; collapsed to its first line with a line count. */
+  input?: string;
+  inputLanguage?: string;
+  /** trace: result text, shown as one truncated line. */
+  output?: string;
+  /** trace: line count of the full result when `output` is a summary. */
+  outputLines?: number;
+  /** trace: error message, shown in full below the header. */
+  error?: string;
+  /** Inline/card: body expansion. Trace: input preview expansion. */
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   onRetry?: () => void;
   className?: string;
+}
+
+const lineCount = (text: string) => text.replace(/\n$/, '').split('\n').length;
+
+function TraceToolCall({
+  title,
+  status,
+  children,
+  durationLabel,
+  timestamp,
+  kind,
+  tag,
+  input,
+  inputLanguage = 'javascript',
+  output,
+  outputLines,
+  error,
+  expanded,
+  onExpandedChange,
+  onRetry,
+  className,
+}: Omit<ToolCallProps, 'variant' | 'open' | 'defaultOpen' | 'onOpenChange'> & {
+  expanded: boolean;
+  onExpandedChange: (open: boolean) => void;
+}) {
+  const failed = status === 'error';
+  const inputLines = input ? lineCount(input) : 0;
+  const resultLines = outputLines ?? (output ? lineCount(output) : 0);
+  return (
+    <div
+      data-slot="tool-call"
+      data-variant="trace"
+      data-status={status}
+      className={classes(
+        'grid min-w-0 gap-[var(--rui-compact-surface-gap)] rounded-[var(--rui-component-card-radius)] border bg-card',
+        'px-[var(--rui-component-card-padding-x)] py-[var(--rui-component-card-padding-y)] text-sm',
+        failed && 'border-destructive/60',
+        className,
+      )}
+    >
+      <div
+        data-slot="tool-call-header"
+        className="flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-2"
+      >
+        {timestamp && (
+          <time className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums dense:text-2xs">
+            {timestamp}
+          </time>
+        )}
+        {(status === 'running' || status === 'pending') && (
+          <ExecutionIcon status={status} className="size-3" />
+        )}
+        {kind && (
+          <span
+            className={classes(
+              'shrink-0 text-xs',
+              failed ? 'text-destructive' : 'text-muted-foreground',
+            )}
+          >
+            {kind}
+          </span>
+        )}
+        <span
+          className={classes('min-w-0 flex-1 truncate font-medium', failed && 'text-destructive')}
+          title={title}
+        >
+          {title}
+        </span>
+        <span className="sr-only">{executionLabels[status]}</span>
+        {durationLabel && (
+          <span className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums dense:text-2xs">
+            {durationLabel}
+          </span>
+        )}
+        {typeof tag === 'string' ? (
+          <Badge variant="secondary" size="xs" className="shrink-0 font-normal">
+            {tag}
+          </Badge>
+        ) : (
+          tag
+        )}
+      </div>
+      {input && (
+        <Collapsible open={expanded} onOpenChange={onExpandedChange} className="min-w-0">
+          <CollapsibleTrigger
+            variant="row"
+            data-slot="tool-call-input"
+            className="bg-sunken"
+            aria-label={`${title}源码，${inputLines} 行`}
+          >
+            <ChevronRight data-slot="collapsible-chevron" className="size-3" aria-hidden="true" />
+            <span className="min-w-0 flex-1 truncate font-mono text-foreground">
+              {expanded ? inputLanguage : input.split('\n')[0]}
+            </span>
+            <span className="shrink-0 text-2xs tabular-nums">{inputLines} 行</span>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CodeBlock variant="inline" code={input} language={inputLanguage} className="mt-px" />
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+      {output && (
+        <div
+          data-slot="tool-call-output"
+          className="flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-1.5 rounded-xs bg-sunken px-[var(--rui-cell-padding-x)] text-xs"
+        >
+          <CornerDownLeft className="size-3 shrink-0 text-success" aria-hidden="true" />
+          <span className="sr-only">结果：</span>
+          <span className="min-w-0 flex-1 truncate font-mono text-success" title={output}>
+            {output.replace(/\s*\n\s*/g, ' ')}
+          </span>
+          {resultLines > 1 && (
+            <span className="shrink-0 text-2xs text-muted-foreground tabular-nums">
+              {resultLines} 行
+            </span>
+          )}
+        </div>
+      )}
+      {error && (
+        <p
+          data-slot="tool-call-error"
+          className="flex min-w-0 items-start gap-1.5 px-[var(--rui-cell-padding-x)] text-xs break-words text-destructive"
+        >
+          <X className="mt-0.5 size-3 shrink-0" aria-hidden="true" />
+          <span className="min-w-0 font-mono">{error}</span>
+        </p>
+      )}
+      {children && (
+        <div
+          data-slot="tool-call-content"
+          className="min-w-0 px-[var(--rui-cell-padding-x)] text-xs text-muted-foreground"
+        >
+          {children}
+        </div>
+      )}
+      {failed && onRetry && (
+        <div data-slot="tool-call-actions" className="flex items-center gap-2">
+          <Button type="button" size="xs" variant="outline" onClick={onRetry}>
+            重试此步骤
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function ToolCall({
@@ -102,16 +265,34 @@ export function ToolCall({
   onOpenChange,
   onRetry,
   className,
+  ...trace
 }: ToolCallProps) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const expanded = open ?? internalOpen;
+  const setExpanded = (next: boolean) => {
+    if (open === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
+  if (variant === 'trace') {
+    return (
+      <TraceToolCall
+        {...trace}
+        title={title}
+        status={status}
+        durationLabel={durationLabel}
+        expanded={expanded}
+        onExpandedChange={setExpanded}
+        onRetry={onRetry}
+        className={className}
+      >
+        {children}
+      </TraceToolCall>
+    );
+  }
   return (
     <Collapsible
       open={expanded}
-      onOpenChange={(next) => {
-        if (open === undefined) setInternalOpen(next);
-        onOpenChange?.(next);
-      }}
+      onOpenChange={setExpanded}
       data-slot="tool-call"
       className={classes(
         'min-w-0',
