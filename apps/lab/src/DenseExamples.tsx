@@ -31,7 +31,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
   CommandShortcut,
   ContextMenu,
   ContextMenuContent,
@@ -364,15 +363,15 @@ function EventsPage() {
                     onClick={() => setSelected(row.id)}
                     className="cursor-default"
                   >
-                    <TableCell className="font-mono text-xs whitespace-nowrap text-muted-foreground tabular-nums">{row.time}</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap text-muted-foreground tabular-nums"><span className="font-mono">{row.time}</span></TableCell>
                     <TableCell>
                       <Badge size="xs" variant={levelBadge[row.level]} className={row.level === 'warn' ? 'text-warning' : undefined}>
                         {row.level}
                       </Badge>
                     </TableCell>
-                    {showSource && <TableCell className="font-mono text-xs text-muted-foreground">{row.source}</TableCell>}
-                    <TableCell className={`max-w-0 font-mono text-xs ${wrap ? 'break-words whitespace-normal' : 'truncate'} ${row.level === 'error' ? 'text-destructive' : ''}`}>
-                      <button type="button" className="w-full truncate text-left outline-none focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring" onClick={() => setSelected(row.id)}>
+                    {showSource && <TableCell className="text-xs text-muted-foreground"><span className="font-mono">{row.source}</span></TableCell>}
+                    <TableCell className={`max-w-0 text-xs ${wrap ? 'break-words whitespace-normal' : 'truncate'} ${row.level === 'error' ? 'text-destructive' : ''}`}>
+                      <button type="button" className="w-full truncate text-left font-mono outline-none focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring" onClick={() => setSelected(row.id)}>
                         {row.message}
                       </button>
                     </TableCell>
@@ -552,9 +551,9 @@ function InspectorPage() {
                     <TableCell>
                       <Badge size="xs" variant={statusBadge[row.status].variant}>{statusBadge[row.status].label}</Badge>
                     </TableCell>
-                    {visible.context && <TableCell className="text-right font-mono text-xs tabular-nums">{row.context}</TableCell>}
-                    {visible.latency && <TableCell className="text-right font-mono text-xs tabular-nums">{row.latency}</TableCell>}
-                    {visible.updated && <TableCell className="font-mono text-xs text-muted-foreground tabular-nums">{row.updated}</TableCell>}
+                    {visible.context && <TableCell className="text-right text-xs tabular-nums"><span className="font-mono">{row.context}</span></TableCell>}
+                    {visible.latency && <TableCell className="text-right text-xs tabular-nums"><span className="font-mono">{row.latency}</span></TableCell>}
+                    {visible.updated && <TableCell className="text-xs text-muted-foreground tabular-nums"><span className="font-mono">{row.updated}</span></TableCell>}
                     <TableCell className="py-0">
                       <RowActions row={row} onSelect={() => setSelected(row.id)} />
                     </TableCell>
@@ -692,7 +691,6 @@ function CommandsPage() {
                 <CommandItem><Search />在文档中查找<CommandShortcut>⌘F</CommandShortcut></CommandItem>
                 <CommandItem><RefreshCw />重新同步<CommandShortcut>⌘R</CommandShortcut></CommandItem>
               </CommandGroup>
-              <CommandSeparator />
               <CommandGroup heading="视图">
                 <CommandItem><List />切换列表视图</CommandItem>
                 <CommandItem><GitCommitHorizontal />切换时间线视图</CommandItem>

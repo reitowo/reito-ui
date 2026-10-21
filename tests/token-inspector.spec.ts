@@ -21,8 +21,8 @@ test('inspection catalog covers every source definition exactly once', () => {
 
 test('catalog preserves public namespace, aliases and CSS expressions without inventing recipe variables', () => {
   const find = (path: string) => tokenCatalog.find(token => token.path === path)!;
-  expect(find('foundation.font-interface').cssVariable).toBe('--rui-font-interface');
-  expect(find('foundation.font-interface').cssValue).toBe('var(--rui-text-sm)');
+  expect(find('density.compact.font-interface').cssVariable).toBe('--rui-font-interface');
+  expect(find('density.compact.font-interface').cssValue).toBe('var(--rui-text-sm)');
   expect(find('components.menu.item-padding-y').cssValue).toContain('--rui-component-menu-item-height');
   expect(find('density.comfortable.control-height').cssVariable).toBe('--rui-control-height');
   expect(tokenCatalog.filter(token => token.group === 'colorThemes').every(token => token.cssVariable === null)).toBe(true);
@@ -47,9 +47,9 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await navigation.getByRole('button', {name:/^全部变量/}).click();
     await dialog.getByRole('checkbox', {name:'全部模式'}).check();
     await expect(dialog.locator('[data-token-path]')).toHaveCount(tokenCatalog.length);
-    await navigation.getByRole('button', {name:/^基础尺度/}).click();
+    await navigation.getByRole('button', {name:/^密度/}).click();
     await search.fill('font-interface');
-    await dialog.getByRole('button', {name:'查看变量 foundation.font-interface',exact:true}).click();
+    await dialog.getByRole('button', {name:`查看变量 density.${density}.font-interface`,exact:true}).click();
     const detail = dialog.getByRole('complementary', {name:'变量详情'});
     await expect(detail).toContainText('var(--rui-text-sm)');
     await page.evaluate(() => document.documentElement.style.setProperty('--rui-font-interface','18px'));
