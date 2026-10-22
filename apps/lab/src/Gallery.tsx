@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Activity,
+  ArrowLeft,
   ChevronRight,
   Copy,
   Ellipsis,
@@ -23,6 +24,7 @@ import {
   Sun,
   Trash2,
 } from 'lucide-react';
+import './gallery.css';
 import {
   Badge,
   Button,
@@ -194,6 +196,36 @@ function PaneHeader({ title, children }: { title: ReactNode; children?: ReactNod
   );
 }
 
+function SplitPane({
+  pane,
+  onBack,
+  backLabel,
+  main,
+  aside,
+}: {
+  pane: 'main' | 'detail';
+  onBack: () => void;
+  backLabel: string;
+  main: ReactNode;
+  aside: ReactNode;
+}) {
+  return (
+    <div className="gallery-split flex h-full min-h-0" data-pane={pane}>
+      <div className="gallery-main flex min-h-0 min-w-0 flex-1 flex-col">{main}</div>
+      <div className="gallery-aside flex w-[var(--rui-inspector-width)] shrink-0 flex-col gap-1 overflow-y-auto border-l bg-card px-[var(--rui-content-padding)] py-1">
+        <div className="gallery-aside-toolbar">
+          <Button variant="ghost" size="xs" className="min-h-[var(--rui-control-height-sm)]" onClick={onBack}>
+            <ArrowLeft />
+            返回
+          </Button>
+          <span className="truncate text-xs text-muted-foreground">{backLabel}</span>
+        </div>
+        {aside}
+      </div>
+    </div>
+  );
+}
+
 function TracePage() {
   const [view, setView] = useState<string[]>(['list']);
   const [selected, setSelected] = useState<string | null>('e49');
@@ -299,6 +331,7 @@ function EventsPage() {
   const [levels, setLevels] = useState<string[]>(['info', 'warn', 'error']);
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState('log-6');
+  const [pane, setPane] = useState<'main' | 'detail'>('main');
   const [showSource, setShowSource] = useState(true);
   const [wrap, setWrap] = useState(false);
   const follow = useFollow();
@@ -307,16 +340,24 @@ function EventsPage() {
     [levels, query],
   );
   const current = eventRows.find((row) => row.id === selected);
+  const selectRow = (id: string) => {
+    setSelected(id);
+    setPane('detail');
+  };
   return (
-    <div className="flex h-full min-h-0">
-      <section aria-label="事件流" className="flex min-w-0 flex-1 flex-col">
+    <SplitPane
+      pane={pane}
+      onBack={() => setPane('main')}
+      backLabel={current ? `${current.time} · ${current.level}` : '事件详情'}
+      main={
+      <section aria-label="事件流" className="flex min-h-0 min-w-0 flex-1 flex-col">
         <PaneHeader title="事件流">
           <span className="text-xs text-muted-foreground tabular-nums">
             {rows.length} / {eventRows.length}
           </span>
         </PaneHeader>
         <div className="flex shrink-0 flex-wrap items-center gap-1.5 border-b px-[var(--rui-content-padding)] pb-1.5">
-          <div className="relative w-[var(--rui-container-3xs)]">
+          <div className="gallery-filter-field relative w-[var(--rui-container-3xs)] min-w-0">
             <Search className="pointer-events-none absolute top-1/2 left-1.5 size-3 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input aria-label="筛选事件" placeholder="筛选消息或来源" value={query} onChange={(event) => setQuery(event.target.value)} className="h-[var(--rui-control-height-sm)] pl-6 text-xs" />
           </div>
@@ -359,7 +400,7 @@ function EventsPage() {
           onValueChange={setSelected}
         />
         <div className="relative min-h-0 flex-1">
-          <div ref={follow.ref} onScroll={follow.measure} className="h-full overflow-y-auto">
+          <div ref={follow.ref} onScroll={follow.measure} className="gallery-table-scroll h-full overflow-y-auto">
             <Table aria-label="事件">
               <TableHeader className="sticky top-0 bg-background">
                 <TableRow>
@@ -374,7 +415,7 @@ function EventsPage() {
                   <TableRow
                     key={row.id}
                     data-state={row.id === selected ? 'selected' : undefined}
-                    onClick={() => setSelected(row.id)}
+                    onClick={() => selectRow(row.id)}
                     className="cursor-default"
                   >
                     <TableCell className="text-xs whitespace-nowrap text-muted-foreground tabular-nums"><span className="font-mono">{row.time}</span></TableCell>
@@ -385,7 +426,7 @@ function EventsPage() {
                     </TableCell>
                     {showSource && <TableCell className="text-xs text-muted-foreground"><span className="font-mono">{row.source}</span></TableCell>}
                     <TableCell className={`max-w-0 text-xs ${wrap ? 'break-words whitespace-normal' : 'truncate'} ${row.level === 'error' ? 'text-destructive' : ''}`}>
-                      <button type="button" className="w-full truncate text-left font-mono outline-none focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring" onClick={() => setSelected(row.id)}>
+                      <button type="button" className="w-full truncate text-left font-mono outline-none focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring" onClick={() => selectRow(row.id)}>
                         {row.message}
                       </button>
                     </TableCell>
@@ -397,7 +438,9 @@ function EventsPage() {
           <JumpToLatest visible={!follow.atEnd} count={3} onClick={follow.jump} />
         </div>
       </section>
-      <aside aria-label="事件详情" className="flex w-[var(--rui-inspector-width)] shrink-0 flex-col gap-1 overflow-y-auto border-l bg-card px-[var(--rui-content-padding)] py-1">
+      }
+      aside={
+      <aside aria-label="事件详情" className="flex min-h-0 flex-1 flex-col gap-1">
         <SectionLabel trailing={current?.id}>事件详情</SectionLabel>
         {current && (
           <>
@@ -418,7 +461,8 @@ function EventsPage() {
           </>
         )}
       </aside>
-    </div>
+      }
+    />
   );
 }
 
@@ -483,14 +527,23 @@ function RowActions({ row, onSelect }: { row: ModelRow; onSelect: () => void }) 
 
 function InspectorPage() {
   const [selected, setSelected] = useState('m1');
+  const [pane, setPane] = useState<'main' | 'detail'>('main');
   const [provider, setProvider] = useState('all');
   const [streaming, setStreaming] = useState(true);
   const [visible, setVisible] = useState({ provider: true, context: true, latency: true, updated: true });
   const rows = modelRows.filter((row) => provider === 'all' || row.provider === provider);
   const current = modelRows.find((row) => row.id === selected) ?? modelRows[0]!;
+  const selectRow = (id: string) => {
+    setSelected(id);
+    setPane('detail');
+  };
   return (
-    <div className="flex h-full min-h-0">
-      <section aria-label="模型目录" className="flex min-w-0 flex-1 flex-col">
+    <SplitPane
+      pane={pane}
+      onBack={() => setPane('main')}
+      backLabel={current.name}
+      main={
+      <section aria-label="模型目录" className="flex min-h-0 min-w-0 flex-1 flex-col">
         <PaneHeader title="条目目录">
           <SelectInput
             size="xs"
@@ -525,7 +578,7 @@ function InspectorPage() {
             新增
           </Button>
         </PaneHeader>
-        <div className="min-h-0 flex-1 overflow-y-auto border-t">
+        <div className="gallery-table-scroll min-h-0 flex-1 overflow-y-auto border-t">
           <Table aria-label="模型">
             <TableHeader className="sticky top-0 bg-background">
               <TableRow>
@@ -547,7 +600,7 @@ function InspectorPage() {
                     render={
                       <TableRow
                         data-state={row.id === selected ? 'selected' : undefined}
-                        onClick={() => setSelected(row.id)}
+                        onClick={() => selectRow(row.id)}
                         className="cursor-default"
                       />
                     }
@@ -556,7 +609,7 @@ function InspectorPage() {
                       <span className="flex items-center gap-1.5">
                         {row.starred ? <Star className="size-3 text-warning" aria-hidden="true" /> : <span className="size-3" />}
                         {row.starred && <span className="sr-only">已收藏</span>}
-                        <button type="button" className="truncate font-mono text-xs outline-none focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring" onClick={() => setSelected(row.id)}>
+                        <button type="button" className="truncate font-mono text-xs outline-none focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring" onClick={() => selectRow(row.id)}>
                           {row.name}
                         </button>
                       </span>
@@ -569,7 +622,7 @@ function InspectorPage() {
                     {visible.latency && <TableCell className="text-right text-xs tabular-nums"><span className="font-mono">{row.latency}</span></TableCell>}
                     {visible.updated && <TableCell className="text-xs text-muted-foreground tabular-nums"><span className="font-mono">{row.updated}</span></TableCell>}
                     <TableCell className="py-0">
-                      <RowActions row={row} onSelect={() => setSelected(row.id)} />
+                      <RowActions row={row} onSelect={() => selectRow(row.id)} />
                     </TableCell>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-auto min-w-40">
@@ -597,7 +650,9 @@ function InspectorPage() {
           本地示例数据 · 右键行打开上下文菜单
         </p>
       </section>
-      <aside aria-label="检查器" className="flex w-[var(--rui-inspector-width)] shrink-0 flex-col gap-1 overflow-y-auto border-l bg-card px-[var(--rui-content-padding)] py-1">
+      }
+      aside={
+      <aside aria-label="检查器" className="flex min-h-0 flex-1 flex-col gap-1">
         <div className="flex items-center gap-1.5">
           <h2 className="min-w-0 flex-1 truncate font-mono text-sm font-medium">{current.name}</h2>
           <Badge size="xs" variant={statusBadge[current.status].variant}>{statusBadge[current.status].label}</Badge>
@@ -641,7 +696,8 @@ function InspectorPage() {
           </CollapsibleContent>
         </Collapsible>
       </aside>
-    </div>
+      }
+    />
   );
 }
 
@@ -664,7 +720,7 @@ function CommandsPage() {
   const [panel, setPanel] = useState('bottom');
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex min-h-8 shrink-0 items-center gap-2 border-b px-[var(--rui-content-padding)] py-1">
+      <div className="flex min-h-8 shrink-0 items-center gap-2 overflow-x-auto border-b px-[var(--rui-content-padding)] py-1">
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger>文件</MenubarTrigger>
@@ -694,7 +750,7 @@ function CommandsPage() {
         </Menubar>
         <span className="ml-auto text-2xs text-muted-foreground">本地示例 · 命令不会执行</span>
       </div>
-      <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,var(--rui-container-sm))_minmax(0,1fr)] gap-[var(--rui-content-gap)] overflow-y-auto p-[var(--rui-content-padding)]">
+      <div className="gallery-commands-grid grid min-h-0 flex-1 grid-cols-[minmax(0,var(--rui-container-sm))_minmax(0,1fr)] gap-[var(--rui-content-gap)] overflow-y-auto p-[var(--rui-content-padding)]">
         <section aria-label="命令" className="min-w-0">
           <SectionLabel>命令面板</SectionLabel>
           <Command className="h-auto rounded-[var(--rui-component-menu-popup-radius)] border shadow-none">
@@ -770,6 +826,7 @@ function readDensity(fallback: DensityMode): DensityMode {
 
 function DashboardPage() {
   const [selected, setSelected] = useState('task-2');
+  const [pane, setPane] = useState<'main' | 'detail'>('main');
   const tasks = [
     { id: 'task-1', title: '整理共享组件入口', area: '基础', done: true },
     { id: 'task-2', title: '核对事件流筛选', area: '复杂', done: false },
@@ -777,13 +834,22 @@ function DashboardPage() {
     { id: 'task-4', title: '补充空态与加载', area: '反馈', done: true },
   ];
   const done = tasks.filter((task) => task.done).length;
+  const current = tasks.find((task) => task.id === selected);
+  const selectTask = (id: string) => {
+    setSelected(id);
+    setPane('detail');
+  };
   return (
-    <div className="grid h-full min-h-0 grid-cols-[minmax(0,1fr)_minmax(0,var(--rui-inspector-width))]">
-      <section aria-label="工作概览" className="flex min-w-0 flex-col">
+    <SplitPane
+      pane={pane}
+      onBack={() => setPane('main')}
+      backLabel={current?.title ?? '概览详情'}
+      main={
+      <section aria-label="工作概览" className="flex min-h-0 min-w-0 flex-1 flex-col">
         <PaneHeader title="工作概览">
           <span className="text-xs text-muted-foreground tabular-nums">{done} / {tasks.length} 完成</span>
         </PaneHeader>
-        <div className="min-h-0 flex-1 overflow-y-auto px-[var(--rui-content-padding)] py-[var(--rui-content-gap)]">
+        <div className="gallery-table-scroll min-h-0 flex-1 overflow-y-auto px-[var(--rui-content-padding)] py-[var(--rui-content-gap)]">
           <div className="mb-3 grid gap-1">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>示例进度</span>
@@ -802,7 +868,7 @@ function DashboardPage() {
             </TableHeader>
             <TableBody>
               {tasks.map((task) => (
-                <TableRow key={task.id} data-state={task.id === selected ? 'selected' : undefined} className="cursor-default" onClick={() => setSelected(task.id)}>
+                <TableRow key={task.id} data-state={task.id === selected ? 'selected' : undefined} className="cursor-default" onClick={() => selectTask(task.id)}>
                   <TableCell className="font-medium">{task.title}</TableCell>
                   <TableCell className="text-muted-foreground">{task.area}</TableCell>
                   <TableCell>
@@ -814,8 +880,10 @@ function DashboardPage() {
           </Table>
         </div>
       </section>
-      <aside aria-label="概览详情" className="flex flex-col gap-1 overflow-y-auto border-l bg-card px-[var(--rui-content-padding)] py-1">
-        <h2 className="text-sm font-medium">{tasks.find((task) => task.id === selected)?.title}</h2>
+      }
+      aside={
+      <aside aria-label="概览详情" className="flex min-h-0 flex-1 flex-col gap-1">
+        <h2 className="text-sm font-medium">{current?.title}</h2>
         <p className="text-xs text-muted-foreground">本地示例事项，不连接外部服务。</p>
         <SectionLabel divider>最近活动</SectionLabel>
         <ul className="grid gap-1 text-xs">
@@ -824,7 +892,8 @@ function DashboardPage() {
           <li className="flex gap-2"><RefreshCw className="mt-0.5 size-3 text-muted-foreground" /><span>目录同步完成</span></li>
         </ul>
       </aside>
-    </div>
+      }
+    />
   );
 }
 
@@ -934,16 +1003,37 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
     document.title = `${pages.find((item) => item.id === page)!.label} · 示例画廊 · Reito UI`;
   }, [page, theme, density, lockedDensity]);
   const groups = ['工作流', '应用'] as const;
+  const pageButtons = (
+    <>
+      {groups.map((group) => (
+        <div key={group} className="grid gap-0.5">
+          <p className="px-1.5 text-2xs text-muted-foreground">{group}</p>
+          {pages.filter((item) => item.group === group).map((item) => (
+            <Button
+              key={item.id}
+              variant="ghost"
+              size="xs"
+              aria-current={item.id === page ? 'page' : undefined}
+              className="h-7 justify-start px-1.5 text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
+              onClick={() => setPage(item.id)}
+            >
+              {item.label}
+            </Button>
+          ))}
+        </div>
+      ))}
+    </>
+  );
   return (
     <ReitoThemeProvider root mode={theme} density={activeDensity}>
       <TooltipProvider>
-        <div className="reito-root flex h-dvh flex-col bg-background text-foreground">
-          <header className="flex h-7 shrink-0 items-center gap-2 border-b bg-card px-[var(--rui-content-padding)]">
+        <div className="gallery-shell reito-root flex h-dvh flex-col overflow-hidden bg-background text-foreground">
+          <header className="gallery-header flex h-7 shrink-0 items-center gap-2 border-b bg-card px-[var(--rui-content-padding)]">
             <a href={import.meta.env.BASE_URL} className="text-xs font-semibold">Reito UI</a>
-            <LayoutDashboard className="size-3.5 text-muted-foreground" aria-hidden="true" />
+            <LayoutDashboard className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
             <span className="text-xs font-medium">示例画廊</span>
-            <span className="hidden text-2xs text-muted-foreground sm:inline">可交互 · 本地占位数据</span>
-            <div className="ml-auto flex items-center gap-1.5">
+            <span className="gallery-header-title text-2xs text-muted-foreground">可交互 · 本地占位数据</span>
+            <div className="gallery-header-controls ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1.5">
               {!lockedDensity && (
                 <ToggleGroup
                   size="xs"
@@ -965,30 +1055,28 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
               </Button>
             </div>
           </header>
-          <div className="flex min-h-0 flex-1">
-            <aside className="flex w-[var(--rui-sidebar-width-narrow)] shrink-0 flex-col border-r bg-card">
+          <nav aria-label="示例页面" className="gallery-page-tabs">
+            {pages.map((item) => (
+              <Button
+                key={item.id}
+                variant="ghost"
+                size="xs"
+                aria-current={item.id === page ? 'page' : undefined}
+                className="text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
+                onClick={() => setPage(item.id)}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </nav>
+          <div className="flex min-h-0 min-w-0 flex-1">
+            <aside className="gallery-sidebar flex w-[var(--rui-sidebar-width-narrow)] shrink-0 flex-col border-r bg-card">
               <nav aria-label="示例页面" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-1.5">
-                {groups.map((group) => (
-                  <div key={group} className="grid gap-0.5">
-                    <p className="px-1.5 text-2xs text-muted-foreground">{group}</p>
-                    {pages.filter((item) => item.group === group).map((item) => (
-                      <Button
-                        key={item.id}
-                        variant="ghost"
-                        size="xs"
-                        aria-current={item.id === page ? 'page' : undefined}
-                        className="h-7 justify-start px-1.5 text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
-                        onClick={() => setPage(item.id)}
-                      >
-                        {item.label}
-                      </Button>
-                    ))}
-                  </div>
-                ))}
+                {pageButtons}
               </nav>
               <p className="border-t px-2 py-1 text-2xs text-muted-foreground">本地示例数据</p>
             </aside>
-            <main className="min-h-0 min-w-0 flex-1">{renderPage(page)}</main>
+            <main className="gallery-main-area min-h-0 min-w-0 flex-1 overflow-hidden">{renderPage(page)}</main>
           </div>
         </div>
       </TooltipProvider>
