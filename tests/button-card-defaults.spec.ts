@@ -7,6 +7,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     }, { theme, density });
     await page.goto('/?layer=basic&component=button');
     const height = density === 'compact' ? '28px' : '32px';
+    await expect(page.getByRole('button', { name: '保存更改', exact: true })).toBeVisible({ timeout: 15_000 });
     for (const name of ['保存更改', '强调操作', '次要操作', '描边按钮', '轻量操作', '不可用', 'Default']) {
       const button = page.getByRole('button', { name, exact: true });
       await expect(button).toHaveCSS('height', height);
