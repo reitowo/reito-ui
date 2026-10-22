@@ -13,12 +13,8 @@ page.on('pageerror', (error) => errors.push(error.message));
 page.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
 
 const shots = [
-  { page: 'trace', prepare: async () => {
-    await page.getByRole('button', { name: '读周宁的开头源码，13 行' }).click();
-  } },
-  { page: 'trace', suffix: 'error', prepare: async () => {
-    await page.getByRole('region', { name: '改稿记录' }).evaluate((element) => { element.scrollTop = element.scrollHeight; });
-  } },
+  { page: 'dashboard' },
+  { page: 'files' },
   { page: 'events' },
   { page: 'inspector', prepare: async () => {
     await page.getByRole('button', { name: '林夏 操作' }).click();
@@ -29,13 +25,10 @@ const shots = [
     await page.getByRole('row', { name: /周宁/ }).click({ button: 'right' });
     await page.getByRole('menuitem', { name: '再约一次' }).waitFor();
   } },
+  { page: 'trace' },
   { page: 'commands', prepare: async () => {
-    await page.getByRole('menuitem', { name: '编辑' }).click();
-    await page.getByRole('menuitem', { name: '重命名' }).hover();
-  } },
-  { page: 'commands', suffix: 'dropdown', prepare: async () => {
-    await page.getByRole('button', { name: '打开详情' }).click();
-    await page.getByRole('menuitemradio', { name: '展开原稿' }).hover();
+    await page.getByRole('button', { name: '本期操作' }).click();
+    await page.getByRole('menuitem', { name: '重命名' }).waitFor();
   } },
 ];
 for (const theme of ['dark', 'light']) {
