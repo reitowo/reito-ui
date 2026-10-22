@@ -10,9 +10,11 @@ for (const theme of ['dark', 'light']) {
       sessionStorage.setItem('density-test-ready', '1');
     }, theme);
     await page.goto('/?view=overview');
+    await expect(page.getByRole('heading', { name: '全组件总览' })).toBeVisible();
     await expect(page.getByRole('button', { name: '切换组件密度' })).toHaveCount(0);
-    const tile = page.locator('[data-component="basic/button"]');
+    const tile = page.locator('#component-basic-button');
     const save = tile.getByRole('button', { name: '保存更改', exact: true });
+    await expect(save).toBeVisible();
     await save.click();
     await chooseThemeDensity(page, 'comfortable');
     await expect(page.locator('html')).toHaveAttribute('data-density', 'comfortable');
@@ -30,11 +32,15 @@ for (const theme of ['dark', 'light']) {
       await page.keyboard.press('Escape');
     }
     await page.goto('/?view=overview');
+    await expect(page.getByRole('heading', { name: '全组件总览' })).toBeVisible();
     await page.getByRole('button', { name: '主题', exact: true }).click();
     await page.getByRole('menuitem', { name: '恢复默认主题', exact: true }).click();
     await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
-    await expect(page.locator('[data-component="basic/button"]').getByRole('button', { name: '保存更改', exact: true })).toHaveCSS('height', '28px');
+    await expect(page.getByRole('heading', { name: '全组件总览' })).toBeVisible();
+    const saveAfterReload = page.locator('#component-basic-button').getByRole('button', { name: '保存更改', exact: true });
+    await expect(saveAfterReload).toBeVisible();
+    await expect(saveAfterReload).toHaveCSS('height', '28px');
   });
 }
