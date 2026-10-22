@@ -11,7 +11,7 @@ const meta = { id: "基础-button",
   args: { variant: "default", size: "default", disabled: false, children: "保存更改" },
   argTypes: {
     variant: { control: "select", options: ["default", "accent", "secondary", "outline", "ghost", "link", "destructive"] },
-    size: { control: "select", options: ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-md", "icon-lg"] },
+    size: { control: "select", options: ["default", "xs", "sm", "md", "lg", "xl", "icon", "icon-xs", "icon-sm", "icon-md", "icon-lg", "icon-xl"] },
     disabled: { control: "boolean" },
     children: { control: "text", description: "按钮文字；图标尺寸下作为可访问名称。" },
   },
@@ -81,6 +81,10 @@ export const Large: Story = {
   name: "尺寸 · 文字 LG",
   args: { size: "lg", children: "保存更改" },
 };
+export const ExtraLarge: Story = {
+  name: "尺寸 · 文字 XL",
+  args: { size: "xl", children: "查看示例" },
+};
 export const IconExtraSmall: Story = {
   name: "尺寸 · 图标 XS",
   args: { size: "icon-xs", "aria-label": "添加项目", children: <Plus /> },
@@ -96,6 +100,10 @@ export const IconDefault: Story = {
 export const IconLarge: Story = {
   name: "尺寸 · 图标 LG",
   args: { size: "icon-lg", "aria-label": "添加项目", children: <Plus /> },
+};
+export const IconExtraLarge: Story = {
+  name: "尺寸 · 图标 XL",
+  args: { size: "icon-xl", "aria-label": "添加项目", children: <Plus /> },
 };
 export const Disabled: Story = {
   name: "状态 · 禁用",

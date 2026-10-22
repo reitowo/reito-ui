@@ -4,7 +4,7 @@
 
 ## 实测几何
 
-Lab `?view=dense&page=trace` 是示例「南窗」的校样页（索引 `/?view=examples`，稳定地址 `/?view=gallery`）。高密下仍核对顶栏 28px、分栏标题 32px、标题 12px / 600，以及主区域内没有超过 12px 的文字。轨迹卡片和迷你时间线不再放在产品页上；下面的卡片行高是组件本身的历史实测，Storybook 的 ToolCall「轨迹」故事仍保留该演示。数值由浏览器 `getComputedStyle` / `getBoundingClientRect` 读取，并固化在 `tests/dense-density.spec.ts`。
+Lab `/templates/nanchuang/trace?lock=dense` 是示例「南窗」的校样页（索引 `/templates`）。旧地址 `?view=dense&page=trace` 会改写到这里并锁定高密。高密下仍核对顶栏 28px、分栏标题 32px、标题 12px / 600，以及主区域内没有超过 12px 的文字。轨迹卡片和迷你时间线不再放在产品页上；下面的卡片行高是组件本身的历史实测，Storybook 的 ToolCall「轨迹」故事仍保留该演示。数值由浏览器 `getComputedStyle` / `getBoundingClientRect` 读取，并固化在 `tests/dense-density.spec.ts`。
 
 | 项目 | 参考估算 | 实测 |
 | --- | --- | --- |

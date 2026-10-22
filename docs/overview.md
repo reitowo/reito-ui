@@ -1,6 +1,6 @@
 # 全组件总览
 
-入口：本地 `http://127.0.0.1:5173/?view=overview`。首页主导航与 Lab 标题栏也提供入口；生产路径使用 Vite BASE_URL，可在 GitHub Pages 子目录部署。
+入口：本地 `http://127.0.0.1:5173/overview`。首页主导航与 Lab 标题栏也提供入口；生产路径使用 Vite BASE_URL，可在 GitHub Pages 子目录部署。旧的 `?view=overview` 会改写到这个路径。
 
 本轮工作区 catalog 为基础 72、复杂 43、AI 24，共 139 个组件族。总览直接复用相同目录和已有 Demo，Storybook 深链来自生成 manifest。数量包含工作区中既有的 Kanban 草稿，不表示这部分已发布到 npm；本轮没有修改其实现。
 

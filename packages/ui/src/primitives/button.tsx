@@ -51,11 +51,13 @@ const buttonVariants = cva(
         sm: "h-[var(--rui-control-height-sm)] gap-1 px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         md: 'h-[var(--rui-control-height)] gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
         lg: 'h-[var(--rui-control-height-lg)] gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
+        xl: 'h-[var(--rui-control-height-xl)] gap-[var(--rui-space-3)] px-[var(--rui-space-6)] text-[length:var(--rui-text-lg)] font-medium [&_svg:not([class*="size-"])]:size-4',
         icon: "size-[var(--rui-component-button-height)] [&_svg:not([class*='size-'])]:size-3.5",
         'icon-xs': "size-[var(--rui-control-height-xs)] [&_svg:not([class*='size-'])]:size-3",
         'icon-sm': "size-[var(--rui-control-height-sm)] [&_svg:not([class*='size-'])]:size-3.5",
         'icon-md': 'size-[var(--rui-control-height)]',
         'icon-lg': 'size-[var(--rui-control-height-lg)]',
+        'icon-xl': 'size-[var(--rui-control-height-xl)]',
       },
     },
     defaultVariants: {

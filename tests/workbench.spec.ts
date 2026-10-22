@@ -26,7 +26,7 @@ test('three layers expose the complete catalog and search reaches a working AI d
   await expect(page.locator('.lab-nav-item')).toHaveCount(1);
   await page.locator('.lab-nav-item').click();
   await expect(page.getByRole('heading',{level:1,name:'PermissionRequest'})).toBeVisible();
-  await expect(page).toHaveURL(/layer=ai&component=permission/);
+  await expect(page).toHaveURL(/\/components\/permission/);
   await page.reload();
   await expect(page.getByRole('heading',{level:1,name:'PermissionRequest'})).toBeVisible();
 });

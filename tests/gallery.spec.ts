@@ -76,8 +76,9 @@ test('gallery is one editorial desk with working pages', async ({ page }) => {
   await page.getByRole('button', { name: '林夏的菜单' }).click();
   await page.getByRole('menuitem', { name: '切换到浅色' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  expect(page.url()).toContain('view=gallery');
+  expect(page.url()).toContain('/templates/nanchuang/settings');
   expect(page.url()).toContain('density=compact');
   expect(page.url()).toContain('theme=light');
-  expect(page.url()).toContain('page=settings');
+  expect(page.url()).not.toContain('view=');
+  expect(page.url()).not.toContain('page=');
 });

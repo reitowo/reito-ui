@@ -8,16 +8,24 @@ import { layers, allComponents as all, type LayerId } from './catalog';
 import { downloadJson } from './TokenReference';
 import catalogManifest from './catalog-manifest.json';
 import { version } from '../package.json';
+import { currentSegments, sitePath } from './routes';
 
 type Review = { status: 'reviewing' | 'accepted'; note: string };
 const readSetting = (key: string, fallback: string) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
 const saveSetting = (key: string, value: string) => { try { localStorage.setItem(key, value); } catch { /* Private browsing can disallow storage. The current session remains usable. */ } };
 function readReviews(): Record<string, Review> { try { return JSON.parse(readSetting('reito-v3-reviews', '{}')); } catch { return {}; } }
 
+function readSelection() {
+  const segments = currentSegments();
+  const params = new URLSearchParams(location.search);
+  const id = segments[0] === 'components' && segments[1] ? decodeURIComponent(segments[1]) : params.get('component');
+  const layer = params.get('layer');
+  return all.find((entry) => entry.id === id && (!layer || entry.layer === layer)) ?? all.find((entry) => entry.id === id) ?? all[0];
+}
+
 export function App() {
   const [colors, setColors] = useThemePreferences();
-  const initial = new URLSearchParams(location.search);
-  const [selection, setSelection] = useState(() => all.find(entry => entry.layer === initial.get('layer') && entry.id === initial.get('component')) || all[0]);
+  const [selection, setSelection] = useState(readSelection);
   const [query, setQuery] = useState('');
   const [theme, setTheme] = useState(readThemeMode);
   const [density, setDensity] = useDensityPreferences();
@@ -31,7 +39,13 @@ export function App() {
   const filtered = useMemo(() => all.filter(entry => (query.trim() || entry.layer === selection.layer) && `${entry.id} ${entry.name} ${entry.description} ${entry.layerName}`.toLowerCase().includes(query.toLowerCase())), [query, selection.layer]);
   useEffect(() => {   saveSetting('reito-theme', theme); }, [theme]);
   useEffect(() => { document.documentElement.dataset.density = density; saveSetting('reito-density', density); }, [density]);
-  useEffect(() => { document.title = `${selection.name} · Reito UI`; const url = new URL(location.href); url.searchParams.set('layer', selection.layer); url.searchParams.set('component', selection.id); history.replaceState(null, '', url); }, [selection]);
+  useEffect(() => {
+    document.title = `${selection.name} · Reito UI`;
+    const url = new URL(location.href);
+    url.pathname = new URL(sitePath(`components/${selection.id}`), location.origin).pathname;
+    for (const key of ['view', 'layer', 'component', 'example', 'page']) url.searchParams.delete(key);
+    history.replaceState(null, '', url);
+  }, [selection]);
   const selectLayer = (id: LayerId) => { setQuery(''); setSelection(all.find(entry => entry.layer === id)!); };
   const updateReview = (patch: Partial<Review>) => setReviews(previous => { const updated = { ...previous, [key]: { ...review, ...patch } }; saveSetting('reito-v3-reviews', JSON.stringify(updated)); return updated; });
   const storyId = catalogManifest.entries.find(entry => entry.layer === selection.layer && entry.id === selection.id)!.storyId;
@@ -42,7 +56,7 @@ export function App() {
       <a href={import.meta.env.BASE_URL} className="lab-brand"><PanelLeft className="size-4" /><span>Reito UI</span><span className="lab-version">{version.replace(/\.0$/, '')}</span></a>
       <span className="lab-project">Graphite / Component library</span>
       <div className="lab-tools"><ThemeControls colors={colors} onChange={setColors} mode={theme} onModeChange={setTheme} density={density} onDensityChange={setDensity}/>
-        <a className="lab-storybook-link" href={`${import.meta.env.BASE_URL}?view=overview`}>全组件总览</a>
+        <a className="lab-storybook-link" href={sitePath('overview')}>全组件总览</a>
 
         <Button variant="ghost" size="icon-sm" aria-label="显示组件目录" className="lab-mobile-menu" onClick={() => setNavigationOpen(!navigationOpen)}><Menu /></Button>
 

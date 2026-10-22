@@ -90,6 +90,7 @@ export function ButtonDemo() {
         <P.Button>Default</P.Button>
         <P.Button size="md">Medium</P.Button>
         <P.Button size="lg">Large</P.Button>
+        <P.Button size="xl">XL</P.Button>
         <P.Button size="icon" aria-label="添加项目">
           <Plus />
         </P.Button>

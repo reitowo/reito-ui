@@ -185,7 +185,7 @@ Button 使用 6px 共享控件圆角、400 字重；XS 为 13px，高度仍随�
 
 2026-10-10 后续反馈明确面板左右内距应比上下大：当前 compact 为 12 / 8px，comfortable 为 16 / 12px（横 / 纵），替代此前四边等值的试调。标题与说明、相关短段落使用 `compact-surface-gap`（4 / 8px），标题和正文共用 `line-interface`（20px）；紧凑 DialogTitle 不再使用 `leading-none`。ScrollTop 的本地文档示例采用同样的内距和间隔，移除段落 `py-2` 的叠加空白。原始长文仍由阅读布局选择更松的段落节奏，不将短确认的文字间距强制用于所有文档。
 
-Lab 的 `?view=overview` 集中展示完整 catalog，搜索、按层筛选与侧栏锚点均使用相同目录。每个预览直接渲染已有 Demo，不启动 iframe，不按模块显示加载遮罩；React 生成的 ID 和各组件自己的 provider 隔离本地状态，portal 在总览文档中按实际触发器打开。主题/密度在根 html 更新；筛选移除或显式重置才初始化示例。它用于快速视觉比较，全部 props 和状态仍在 Storybook 检查。记录见 [全组件总览](overview.md)。
+Lab 的 `/overview` 集中展示完整 catalog，搜索、按层筛选与侧栏锚点均使用相同目录。每个预览直接渲染已有 Demo，不启动 iframe，不按模块显示加载遮罩；React 生成的 ID 和各组件自己的 provider 隔离本地状态，portal 在总览文档中按实际触发器打开。主题/密度在根 html 更新；筛选移除或显式重置才初始化示例。它用于快速视觉比较，全部 props 和状态仍在 Storybook 检查。记录见 [全组件总览](overview.md)。
 
 ## 状态与可操作性
 

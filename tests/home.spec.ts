@@ -21,7 +21,7 @@ test('homepage preview filters, updates state, switches code and opens tokens', 
 test('component links still open Lab, and Lab brand returns home', async ({ page }) => {
   await page.goto('/'); await page.getByRole('button', { name: '浏览组件', exact: true }).click();
   await expect(page.getByTestId('component-preview')).toBeVisible();
-  await expect(page).toHaveURL(/layer=basic&component=button/);
+  await expect(page).toHaveURL(/\/components\/button/);
   await page.locator('.lab-brand').click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText('构建一致的界面');
 });

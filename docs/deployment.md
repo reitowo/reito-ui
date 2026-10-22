@@ -3,12 +3,13 @@
 `.github/workflows/pages.yml` 在 main 推送或手动触发时检查、构建并发布主页、Lab 和 Storybook。仓库 Settings → Pages 的构建来源必须设为 GitHub Actions（当前仓库已启用）。
 
 - 主页：`https://reitowo.github.io/reito-ui/`
-- 示例索引：`https://reitowo.github.io/reito-ui/?view=examples`
-- 示例应用（`?view=gallery` 仍打开第一张示例）：`https://reitowo.github.io/reito-ui/?view=gallery`
-- Lab：`https://reitowo.github.io/reito-ui/?layer=basic&component=button`
+- 示例索引：`https://reitowo.github.io/reito-ui/templates`
+- 工作台：`https://reitowo.github.io/reito-ui/templates/dashboard/home`
+- 南窗（旧 `?view=gallery` 会打开这一页）：`https://reitowo.github.io/reito-ui/templates/nanchuang/dashboard`
+- Lab：`https://reitowo.github.io/reito-ui/components/button`
 - Storybook：`https://reitowo.github.io/reito-ui/storybook/`
 
-从非 `main` 分支预览：GitHub → Actions → **Deploy website to GitHub Pages** → Run workflow，在 `ref` 填入分支名（例如 PR 分支）。该操作会更新同一生产站点 URL，部署完成后打开上面的示例索引或 `?view=gallery` 即可交互试用。
+从非 `main` 分支预览：GitHub → Actions → **Deploy website to GitHub Pages** → Run workflow，在 `ref` 填入分支名（例如 PR 分支）。该操作会更新同一生产站点 URL，部署完成后打开上面的示例索引或工作台即可交互试用。构建会把 `index.html` 复制到 `404.html`，并为已知路径各写一份 `index.html`，这样直接打开 `/templates/dashboard/inbox` 或 `/components/button` 也能回到应用。
 
 构建根目录是仓库根目录。Node 24.11.1，先 `npm ci`、`npm run build`，再 `npm run check`（Storybook 类型检查依赖构建生成的组件库声明）。将 `apps/storybook/storybook-static` 复制到 `apps/lab/dist/storybook`，上传 `apps/lab/dist`。
 

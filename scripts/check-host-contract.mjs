@@ -13,7 +13,7 @@ const densityMeasurements=[];
 try {
   for(const theme of ['dark','light']) for(const density of ['compact','comfortable']) {
     const targets=[
-      {host:'lab',url:'http://127.0.0.1:5173/?layer=basic&component=button',selector:'.lab-demo [data-rui-button][data-size="default"][data-variant="default"]'},
+      {host:'lab',url:'http://127.0.0.1:5173/components/button',selector:'.lab-demo [data-rui-button][data-size="default"][data-variant="default"]'},
       {host:'storybook',url:`http://127.0.0.1:6006/iframe.html?id=基础-button--overview&viewMode=story&globals=theme:${theme};density:${density}`,selector:'[data-rui-button][data-size="default"][data-variant="default"]'},
       {host:'tarball',url:`${consumer}?theme=${theme}&density=${density}`,selector:'[data-testid="control-default"]'},
     ];

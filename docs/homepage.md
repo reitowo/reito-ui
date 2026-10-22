@@ -1,6 +1,8 @@
 # Reito UI 首页
 
-运行 `npm run dev` 后访问 `http://127.0.0.1:5173/`。首页是组件库的介绍与入口，Lab 保留在带 `layer/component` 参数的地址，例如 `/?layer=basic&component=button`。`/?view=examples` 是示例索引：每张卡片打开一个用 Reito UI 搭的完整应用，应用自己的名字只留在那个应用里。`/?view=gallery` 仍直接打开第一张示例。Lab 左上角品牌链接返回首页；直接分享组件链接不受影响。Lab 按需加载，首页无需先加载整个组件示例目录。
+运行 `npm run dev` 后访问 `http://127.0.0.1:5173/`。首页是组件库的介绍与入口。组件详情在 `/components/<id>`，例如 `/components/button`。示例索引在 `/templates`（`/examples` 会转到同一页）。卡片打开工作台、对话、落地页，以及仍保留的南窗。旧的 `?view=` 和 `?layer=&component=` 地址会在打开时改写成这些路径。Lab 左上角品牌链接返回首页；直接分享组件链接不受影响。Lab 按需加载，首页无需先加载整个组件示例目录。
+
+首页主行动按钮使用 Button 的 `xl` 尺寸，高度来自密度 token `control-height-xl`，颜色和圆角仍是主题按钮，不是单独的胶囊样式。
 
 页面包括：导航、版本入口、居中标题与双入口、可交互工作区、基础/复杂/AI 三层导航、Graphite 主题展示、快速开始、Storybook 入口和页脚。
 
