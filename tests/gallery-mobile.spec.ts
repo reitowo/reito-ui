@@ -1,25 +1,24 @@
 import { expect, test } from '@playwright/test';
 
-const pages = ['trace', 'events', 'inspector', 'commands', 'dashboard', 'files', 'settings'] as const;
+const pages = ['dashboard', 'files', 'events', 'inspector', 'trace', 'commands', 'settings'] as const;
 
 const tabLabels = {
-  trace: '封面进程',
+  dashboard: '本期',
+  files: '稿件',
   events: '审稿',
   inspector: '作者',
-  commands: '编辑台',
-  dashboard: '本期',
-  files: '稿件柜',
+  trace: '校样',
+  commands: '发稿',
   settings: '室规',
 } as const;
 
-/** Visible landmark/content unique to each gallery page after switching tabs. */
 const pageMarkers = {
-  trace: '封面进程',
+  dashboard: '本期',
+  files: '稿件',
   events: '审稿',
   inspector: '作者名册',
-  commands: null,
-  dashboard: '本期',
-  files: '稿件柜',
+  trace: '校样',
+  commands: '发稿',
   settings: '室规',
 } as const;
 
@@ -27,23 +26,19 @@ test('gallery stays within a phone viewport without horizontal overflow', async 
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/?view=gallery&page=trace&theme=dark&density=dense');
+  await page.goto('/?view=gallery&page=dashboard&theme=dark&density=dense');
   await expect(page.getByRole('banner')).toContainText('南窗');
   const tabs = page.locator('.gallery-page-tabs');
   await expect(tabs).toBeVisible();
   await expect(page.locator('.gallery-sidebar')).toBeHidden();
 
   for (const id of pages) {
-    await tabs.getByRole('button', { name: tabLabels[id] }).click();
-    if (id === 'commands') {
-      await expect(page.getByRole('menuitem', { name: '稿件' })).toBeVisible();
-    } else {
-      await expect(page.getByRole('region', { name: pageMarkers[id]! })).toBeVisible();
-    }
+    await tabs.getByRole('button', { name: tabLabels[id], exact: true }).click();
+    await expect(page.getByRole('region', { name: pageMarkers[id], exact: true })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
   }
 
-  await tabs.getByRole('button', { name: '审稿' }).click();
+  await tabs.getByRole('button', { name: '审稿', exact: true }).click();
   await page.getByRole('row').nth(1).click();
   await expect(page.getByRole('button', { name: '返回' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);

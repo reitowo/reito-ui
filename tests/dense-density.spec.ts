@@ -9,66 +9,20 @@ async function expectNoAxeViolations(page: Page) {
 }
 
 for (const theme of ['dark', 'light']) {
-  test(`${theme}/dense: trace card geometry follows dense tokens`, async ({ page }) => {
+  test(`${theme}/dense: proof desk keeps dense chrome without showcase widgets`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`/?view=dense&page=trace&theme=${theme}`);
     await expect(page.locator('html')).toHaveAttribute('data-density', 'dense');
     await expect(page.locator('.reito-root > header')).toHaveCSS('height', '28px');
     await expect(page.locator('main h1').locator('..')).toHaveCSS('height', '32px');
-    const card = page.locator('[data-slot=tool-call][data-variant=trace]').nth(3);
-    await expect(card).toHaveCSS('border-radius', '6px');
-    await expect(card).toHaveCSS('padding', '4px 8px');
-    await expect(card).toHaveCSS('box-shadow', 'none');
-    await expect(card.locator('[data-slot=tool-call-header]')).toHaveCSS('height', '18px');
-    await expect(card.locator('[data-slot=tool-call-input]')).toHaveCSS('height', '18px');
-    await expect(card.locator('[data-slot=tool-call-output]')).toHaveCSS('height', '18px');
-    await expect(card.locator('[data-slot=tool-call-header] span.truncate')).toHaveCSS('font-size', '12px');
-    await expect(card.locator('[data-slot=tool-call-output] span.font-mono')).toHaveCSS('font-size', '11px');
-    await expect(card.locator('[data-slot=badge]')).toHaveCSS('height', '16px');
-    await expect(page.locator('[data-slot=section-label]').first()).toHaveCSS('font-size', '10px');
     await expect(page.locator('main h1')).toHaveCSS('font-size', '12px');
     await expect(page.locator('main h1')).toHaveCSS('font-weight', '600');
-    await expect(page.getByText('49 条')).toHaveCSS('font-size', '11px');
-    await expect(page.locator('[data-slot=mini-timeline] span.leading-none').first()).toHaveCSS('font-size', '10px');
-    await expect(card.locator('[data-slot=tool-call-header] time')).toHaveCSS('font-size', '10px');
-    await expect(page.locator('[data-slot=toggle-group-item] svg').first()).toHaveCSS('width', '10px');
-    const error = page.locator('[data-slot=tool-call][data-status=error]');
-    await expect(error.locator('[data-slot=tool-call-error]')).toContainText('油墨未干');
-    const errorBackground = await error.evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(errorBackground).toBe(await card.evaluate((node) => getComputedStyle(node).backgroundColor));
-
-    const preview = page.getByRole('button', { name: '读周宁的开头源码，13 行' });
-    await expect(preview).toHaveAttribute('aria-expanded', 'false');
-    await preview.press('Enter');
-    await expect(preview).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.getByLabel('markdown代码').first()).toBeVisible();
+    await expect(page.locator('main h1')).toHaveText('校样');
+    await expect(page.locator('[data-slot=tool-call]')).toHaveCount(0);
+    await expect(page.locator('[data-slot=mini-timeline]')).toHaveCount(0);
+    await expect(page.getByText('油墨未干')).toBeVisible();
+    expect(await page.evaluate(() => [...document.querySelectorAll('main *')].filter((el) => [...el.childNodes].some((node) => node.nodeType === 3 && node.textContent!.trim()) && parseFloat(getComputedStyle(el).fontSize) > 12).length)).toBe(0);
     await expectNoAxeViolations(page);
-  });
-
-  test(`${theme}/dense: mini timeline is one tab stop with arrow navigation`, async ({ page }) => {
-    await page.goto(`/?view=dense&page=trace&theme=${theme}`);
-    const timeline = page.getByRole('group', { name: '封面进度' });
-    const selected = timeline.getByRole('button', { pressed: true });
-    await expect(selected).toHaveAttribute('tabindex', '0');
-    await expect(timeline.locator('button[tabindex="0"]')).toHaveCount(1);
-    await selected.focus();
-    await page.keyboard.press('Home');
-    const first = timeline.getByRole('button', { name: '选题 · 第 1 步' });
-    await expect(first).toBeFocused();
-    await page.keyboard.press('ArrowRight');
-    await expect(timeline.getByRole('button', { name: '选题 · 第 2 步' })).toBeFocused();
-    await page.keyboard.press('Enter');
-    await expect(timeline.getByRole('button', { name: '选题 · 第 2 步' })).toHaveAttribute('aria-pressed', 'true');
-  });
-
-  test(`${theme}/dense: jump to latest appears away from the end and returns there`, async ({ page }) => {
-    await page.goto(`/?view=dense&page=trace&theme=${theme}`);
-    const region = page.getByRole('region', { name: '改稿记录' });
-    const jump = page.getByRole('button', { name: '回到最新' });
-    await expect(jump).toBeVisible();
-    await jump.click();
-    await expect(jump).toHaveCount(0);
-    expect(await region.evaluate((node) => node.scrollHeight - node.clientHeight - node.scrollTop)).toBeLessThan(8);
   });
 }
 
@@ -114,12 +68,11 @@ for (const theme of ['dark', 'light']) for (const example of ['events', 'inspect
       await page.getByRole('row', { name: /周宁/ }).click({ button: 'right' });
       await expect(page.getByRole('menuitem', { name: '再约一次' })).toBeVisible();
     } else if (example === 'commands') {
-      await page.getByRole('menuitem', { name: '编辑' }).click();
+      await page.getByRole('button', { name: '本期操作' }).click();
       await expect(page.getByRole('menuitem', { name: '重命名' })).toBeVisible();
-      await page.keyboard.press('ArrowRight');
       await expect(page.getByRole('menuitemcheckbox', { name: '自动换行' })).toBeVisible();
     } else {
-      await page.getByRole('button', { name: '视图' }).click();
+      await page.getByRole('button', { name: '显示' }).click();
       await page.getByRole('menuitemcheckbox', { name: '自动换行' }).click();
       await expect(page.getByRole('cell', { name: /油墨未干/ }).first()).toHaveClass(/whitespace-normal/);
     }
