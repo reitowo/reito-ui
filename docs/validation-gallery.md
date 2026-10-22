@@ -1,8 +1,8 @@
 # 示例 · 2026-10-22
 
-公开站点是 Reito UI Lab（GitHub Pages：`https://reitowo.github.io/reito-ui/`）。示例索引在 `/?view=examples`。南窗是第一张示例，源码在 `apps/lab/src/examples/nanchuang/`，稳定地址仍是 `/?view=gallery`（`/?view=examples&example=nanchuang` 打开同一个应用，并回到 `view=gallery`）。这是一本虚构城市杂志的完整工作台：第 42 期封面是周宁的《雨季的书店》。主编林夏、校对陈麦、美编阿禾，印刷厂江岸印务把潮了的封面退了回来。页面之间共用同一期的稿件、批注、作者和校样，不再把组件演示铺在工作面上。应用里的刊名不出现在组件库首页。
+公开站点是 Reito UI Lab（GitHub Pages：`https://reitowo.github.io/reito-ui/`）。示例索引在 `/templates`。工作台、对话和落地页是中性模板，源码在 `apps/lab/src/templates/`。南窗仍是其中一张示例，源码在 `apps/lab/src/examples/nanchuang/`，地址是 `/templates/nanchuang/<page>`（旧的 `/?view=gallery` 与 `/?view=examples&example=nanchuang` 会改写到这条路径）。这是一本虚构城市杂志的编辑室：第 42 期封面是周宁的《雨季的书店》。主编林夏、校对陈麦、美编阿禾，印刷厂江岸印务把潮了的封面退了回来。页面之间共用同一期的稿件、批注、作者和校样。应用里的刊名不出现在组件库首页。
 
-地址仍用原来的 `page` id。缺省打开本期看板。
+地址用路径段，不再用 `page` 查询参数。缺省打开 `/templates/nanchuang/dashboard`。
 
 ## 页面
 

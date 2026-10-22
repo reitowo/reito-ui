@@ -92,7 +92,7 @@ import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
 
 先选层：可跨业务组合的原语进入基础；有数据/表单/布局契约的组合进入复杂；与 AI 会话、上下文和执行有关的组合进入 AI。新组件需要实际导出类型、共享 Demo、可发现 stories、适用状态和交互验证。保持基础 → 复杂 / AI 的依赖方向；基础不依赖业务层。
 
-新增组件后，将 Demo 注册到对应 `catalog.tsx`，补充该层 stories，再运行 `npm run catalog:build`。生成的 `apps/lab/src/catalog-manifest.json` 连接族、计数和实际 story ID；`npm run check` 包含 `catalog:check`，会发现目录漂移。Lab 深链格式为 `?layer=complex&component=diff-viewer`，不要另外维护一份手写 Storybook ID 映射。
+新增组件后，将 Demo 注册到对应 `catalog.tsx`，补充该层 stories，再运行 `npm run catalog:build`。生成的 `apps/lab/src/catalog-manifest.json` 连接族、计数和实际 story ID；`npm run check` 包含 `catalog:check`，会发现目录漂移。Lab 深链格式为 `/components/diff-viewer`（旧的 `?layer=complex&component=diff-viewer` 会改写过去），不要另外维护一份手写 Storybook ID 映射。
 
 用 `npm run dev` 打开 5173 的 Lab 逐组件确认；用 `npm run dev:workbench` 打开 5175 的 Agent / 文件与差异 / 设置组合例工程，检查组件进入实际工作流后的布局。Workbench 使用本地示例状态；它不是模型客户端或文件系统编辑器。
 

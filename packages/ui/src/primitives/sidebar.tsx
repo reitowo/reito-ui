@@ -429,7 +429,7 @@ function SidebarGroupLabel({
             // Keyboard focus
             'focus-visible:ring-[length:var(--rui-focus-width)]',
             // Child and composition rules
-            '[&>svg]:size-4 [&>svg]:shrink-0',
+            '[&>svg]:size-[var(--rui-icon-size)] [&>svg]:shrink-0',
           ],
           className,
         ),
@@ -478,7 +478,7 @@ function SidebarGroupAction({
             // Layout
             'md:after:hidden',
             // Child and composition rules
-            '[&>svg]:size-4 [&>svg]:shrink-0',
+            '[&>svg]:size-[var(--rui-icon-size)] [&>svg]:shrink-0',
           ],
           className,
         ),
@@ -559,7 +559,7 @@ const sidebarMenuButtonVariants = cva(
     // Component state
     'data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground',
     // Child and composition rules
-    '[&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate',
+    '[&_svg]:size-[var(--rui-icon-size)] [&_svg]:shrink-0 [&>span:last-child]:truncate',
   ],
   {
     variants: {
@@ -678,7 +678,7 @@ function SidebarMenuAction({
             // Layout
             'md:after:hidden',
             // Child and composition rules
-            '[&>svg]:size-4 [&>svg]:shrink-0',
+            '[&>svg]:size-[var(--rui-icon-size)] [&>svg]:shrink-0',
           ],
           showOnHover &&
             'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-active/menu-button:text-sidebar-accent-foreground aria-expanded:opacity-100 md:opacity-0',
@@ -832,7 +832,7 @@ function SidebarMenuSubButton({
             // Component state
             'data-[size=md]:text-sm data-[size=sm]:text-xs data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground',
             // Child and composition rules
-            '[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
+            '[&>span:last-child]:truncate [&>svg]:size-[var(--rui-icon-size)] [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
           ],
           className,
         ),

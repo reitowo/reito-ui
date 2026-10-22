@@ -19,6 +19,7 @@ export default defineConfig({
     'component-tokens.spec.ts', 'menu-density.spec.ts', 'theme-density.spec.ts', 'token-inspector.spec.ts', 'token-contract.spec.ts',
     'token-generation.spec.ts', 'validation-glow.spec.ts', 'scroll-area-insets.spec.ts',
     'gallery.spec.ts', 'gallery-mobile.spec.ts', 'dense-density.spec.ts',
+    'examples.spec.ts', 'templates.spec.ts',
   ],
   reporter: 'list',
   use: { baseURL: 'http://127.0.0.1:5173', headless: true, viewport: { width: 1440, height: 1000 }, trace: 'retain-on-failure', screenshot: 'only-on-failure' },

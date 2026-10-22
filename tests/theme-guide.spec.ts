@@ -113,7 +113,7 @@ test('system mode tracks changes and selected palettes persist into the full atl
  await choose(page,'主题主色','蓝色');await choose(page,'底色色系','Zinc');
  const before=await page.getByLabel('主题效果预览').getByRole('button',{name:'保存工作区',exact:true}).evaluate(n=>getComputedStyle(n).backgroundColor);
  await page.getByRole('link',{name:'组件总览',exact:true}).click();
- await expect(page).toHaveURL(/view=overview/);
+ await expect(page).toHaveURL(/\/overview\/?$/);
  await expect(page.getByRole('heading',{name:'全组件总览',exact:true})).toBeVisible({timeout:60_000});
  // The atlas shares palette preferences; choose its existing light-mode control if needed.
  if(await page.locator('html').getAttribute('data-theme')!=='light') await chooseThemeMode(page,'light');

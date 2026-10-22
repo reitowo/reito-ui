@@ -12,6 +12,8 @@ import {
   Trash2,
 } from 'lucide-react';
 import './nanchuang.css';
+import { currentSegments, sitePath } from '../../routes';
+import { exampleDensityTokens } from '../../templates/prefs';
 import {
   Avatar,
   AvatarFallback,
@@ -279,7 +281,7 @@ function BoardPage() {
                   const cards = visible.filter((piece) => piece.column === column.id);
                   return (
                     <section key={column.id} aria-label={column.title} className="gallery-column">
-                      <h2 className="flex items-center justify-between text-xs font-medium">
+                      <h2 className="flex items-center justify-between text-sm font-medium">
                         {column.title}
                         <span className="tabular-nums text-muted-foreground">{cards.length}</span>
                       </h2>
@@ -859,7 +861,9 @@ function renderPage(page: PageId) {
 }
 
 function readPage(): PageId {
-  const page = new URLSearchParams(location.search).get('page');
+  const segments = currentSegments();
+  const fromPath = segments[0] === 'templates' && segments[1] === 'nanchuang' ? segments[2] : undefined;
+  const page = fromPath ?? new URLSearchParams(location.search).get('page');
   return pages.some((item) => item.id === page) ? (page as PageId) : 'dashboard';
 }
 
@@ -931,12 +935,16 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
   useEffect(() => () => window.clearTimeout(askTimer.current), []);
   useEffect(() => {
     const url = new URL(location.href);
-    url.searchParams.set('view', lockedDensity === 'dense' ? 'dense' : 'gallery');
-    url.searchParams.delete('example');
-    url.searchParams.set('page', page);
+    url.pathname = new URL(sitePath(`templates/nanchuang/${page}`), location.origin).pathname;
+    for (const key of ['view', 'example', 'page']) url.searchParams.delete(key);
     url.searchParams.set('theme', theme);
-    if (!lockedDensity) url.searchParams.set('density', density);
-    else url.searchParams.delete('density');
+    if (lockedDensity) {
+      url.searchParams.set('lock', 'dense');
+      url.searchParams.delete('density');
+    } else {
+      url.searchParams.delete('lock');
+      url.searchParams.set('density', density);
+    }
     history.replaceState(null, '', url);
     document.title = `${pages.find((item) => item.id === page)!.label} · 南窗`;
   }, [page, theme, density, lockedDensity]);
@@ -1006,7 +1014,7 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
 
   const groups = ['这一期', '编辑室'] as const;
   return (
-    <ReitoThemeProvider root mode={theme} density={activeDensity}>
+    <ReitoThemeProvider root mode={theme} density={activeDensity} tokens={exampleDensityTokens(activeDensity)}>
       <TooltipProvider>
         <DeskContext.Provider value={desk}>
           <div className="gallery-shell reito-root flex h-dvh flex-col overflow-hidden bg-background text-foreground">
@@ -1016,13 +1024,13 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
                 variant="ghost"
                 size="icon-xs"
                 aria-label="回到示例"
-                render={<a href={`${import.meta.env.BASE_URL}?view=examples`} />}
+                render={<a href={sitePath('templates')} />}
               >
                 <ArrowLeft />
               </Button>
               <Newspaper className="size-[var(--rui-icon-size)] shrink-0 text-muted-foreground" aria-hidden="true" />
-              <span className="text-xs font-medium">南窗</span>
-              <span className="gallery-header-title text-xs text-muted-foreground">{issue} · 《{issueTitle}》</span>
+              <span className="text-sm font-medium">南窗</span>
+              <span className="gallery-header-title text-sm text-muted-foreground">{issue} · 《{issueTitle}》</span>
               <div className="gallery-header-controls ml-auto flex min-w-0 items-center justify-end gap-1.5">
                 <Input
                   type="search"
@@ -1042,7 +1050,7 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
                   variant="ghost"
                   size="xs"
                   aria-current={item.id === page ? 'page' : undefined}
-                  className="text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
+                  className="text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
                   onClick={() => setPage(item.id)}
                 >
                   {item.label}
@@ -1054,14 +1062,14 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
                 <nav aria-label="南窗" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-1.5">
                   {groups.map((group) => (
                     <div key={group} className="grid gap-0.5">
-                      <p className="px-1.5 text-2xs text-muted-foreground">{group}</p>
+                      <p className="px-1.5 text-xs text-muted-foreground">{group}</p>
                       {pages.filter((item) => item.group === group).map((item) => (
                         <Button
                           key={item.id}
                           variant="ghost"
-                          size="xs"
+                          size="sm"
                           aria-current={item.id === page ? 'page' : undefined}
-                          className="h-[var(--rui-control-height-sm)] justify-start px-1.5 text-xs text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
+                          className="justify-start px-1.5 text-muted-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
                           onClick={() => setPage(item.id)}
                         >
                           {item.label}
@@ -1070,7 +1078,7 @@ export function Gallery({ lockedDensity }: { lockedDensity?: DensityMode } = {})
                     </div>
                   ))}
                 </nav>
-                <p className="border-t px-2 py-1 text-2xs text-muted-foreground">
+                <p className="border-t px-2 py-1 text-xs text-muted-foreground">
                   {lamp ? '灯还亮着' : '灯关了'} · {deadline ? '周五会响' : '周五傍晚截稿'}
                 </p>
               </aside>
