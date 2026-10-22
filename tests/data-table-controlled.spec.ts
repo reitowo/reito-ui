@@ -1,4 +1,5 @@
 import { chooseSelectOption, storybookUrl } from './select-option';
+import { axeViolations } from './axe-scan';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
@@ -30,5 +31,5 @@ test('Playground Controls toggle manual props without changing tabs', async ({ p
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: remote table is accessible and has no page overflow`, async ({ page }) => {
-  await page.setViewportSize({ width: 640, height: 900 }); const table = await open(page, 'remote-controlled', `theme:${theme};density:${density}`); await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') }); expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true); await expect(table.getByRole('row')).toHaveCount(6); await page.screenshot({ path: `.logs/data-table-controlled/${theme}-${density}.png`, fullPage: true });
+  await page.setViewportSize({ width: 640, height: 900 }); const table = await open(page, 'remote-controlled', `theme:${theme};density:${density}`); await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') }); expect(await axeViolations(page, { rules: { region: { enabled: false } } })).toEqual([]); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true); await expect(table.getByRole('row')).toHaveCount(6); await page.screenshot({ path: `.logs/data-table-controlled/${theme}-${density}.png`, fullPage: true });
 });
