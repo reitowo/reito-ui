@@ -326,6 +326,11 @@ Graphite / 灰白仍是库默认。消费工程可以用 ReitoThemeProvider 的 
 | 卡片内距（横 / 纵）`card-padding-x/y` | 16 / 12px | 20 / 16px | 8 / 4px |
 | 卡片圆角 `card-radius` | 14px | 14px | 6px |
 | 徽标高度 `badge-height` | 20px | 20px | 16px |
+| 开关轨道高 / 宽 | 18.4 / 32px | 22 / 40px | 16 / 28px |
+| 小开关轨道高 / 宽 | 14 / 24px | 18 / 32px | 12 / 20px |
+| 开关滑块 / 小滑块 | 16 / 12px | 18 / 14px | 12 / 10px |
+
+开关轨道、宽度和滑块随密度覆盖，compact 与原先 foundation 尺寸一致。画廊顶栏高度取 `control-height-lg`，分栏标题最小高度取 `control-height` 加 `space-2`；高密下仍是 28px 与 32px，紧凑和舒适会随控件一起长高。
 
 dense 下的卡片使用 1px 低对比边界、无阴影；卡片内的源码与结果行放在新的语义面 `sunken`（各中性色系同步提供）：深色为 `#0f0f0f`，比卡片更深；浅色取画布色 `#fafaf8`，与偏灰的卡片形成内嵌对比，同时让默认 green / amber 状态文字保持 4.5:1 以上（更深的 `#ececea` 实测仅 4.18:1）。结果文字使用 success 等宽字，错误只使用 destructive 边界与文字，不铺红色底。数值以外的离散调整使用 `dense:` 变体（`@scope` 到最近的非 dense 密度为止），例如 CardTitle 与 CodeBlock 行高。
 

@@ -64,8 +64,8 @@ function Switch({
           // Motion
           'transition-transform',
           // Component state
-          'group-data-[size=default]/switch:size-4 group-data-[size=sm]/switch:size-3 group-data-[size=default]/switch:data-checked:translate-x-[calc(var(--rui-switch-width)-var(--rui-space-4)-2*var(--rui-border-width))]',
-          'group-data-[size=sm]/switch:data-checked:translate-x-[calc(var(--rui-switch-width-sm)-var(--rui-space-3)-2*var(--rui-border-width))] data-checked:bg-primary-foreground',
+          'group-data-[size=default]/switch:size-[var(--rui-switch-thumb)] group-data-[size=sm]/switch:size-[var(--rui-switch-thumb-sm)] group-data-[size=default]/switch:data-checked:translate-x-[calc(var(--rui-switch-width)-var(--rui-switch-thumb)-2*var(--rui-border-width))]',
+          'group-data-[size=sm]/switch:data-checked:translate-x-[calc(var(--rui-switch-width-sm)-var(--rui-switch-thumb-sm)-2*var(--rui-border-width))] data-checked:bg-primary-foreground',
           'group-data-[size=default]/switch:data-unchecked:translate-x-0 group-data-[size=sm]/switch:data-unchecked:translate-x-0',
           // Dark theme
           'dark:data-unchecked:bg-foreground',

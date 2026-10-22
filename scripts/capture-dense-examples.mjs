@@ -14,20 +14,20 @@ page.on('console', (message) => message.type() === 'error' && errors.push(messag
 
 const shots = [
   { page: 'trace', prepare: async () => {
-    await page.getByRole('button', { name: '读正文与大纲源码，13 行' }).click();
+    await page.getByRole('button', { name: '读周宁的开头源码，13 行' }).click();
   } },
   { page: 'trace', suffix: 'error', prepare: async () => {
-    await page.getByRole('region', { name: '事件列表' }).evaluate((element) => { element.scrollTop = element.scrollHeight; });
+    await page.getByRole('region', { name: '改稿记录' }).evaluate((element) => { element.scrollTop = element.scrollHeight; });
   } },
   { page: 'events' },
   { page: 'inspector', prepare: async () => {
-    await page.getByRole('button', { name: 'alpha-large 操作' }).click();
-    await page.getByRole('menuitem', { name: '移动到' }).hover();
-    await page.getByRole('menuitem', { name: '预发目录' }).waitFor();
+    await page.getByRole('button', { name: '林夏 操作' }).click();
+    await page.getByRole('menuitem', { name: '转到栏目' }).hover();
+    await page.getByRole('menuitem', { name: '城市' }).waitFor();
   } },
   { page: 'inspector', suffix: 'context-menu', prepare: async () => {
-    await page.getByRole('row', { name: /gamma-reasoner/ }).click({ button: 'right' });
-    await page.getByRole('menuitem', { name: '重新同步' }).waitFor();
+    await page.getByRole('row', { name: /周宁/ }).click({ button: 'right' });
+    await page.getByRole('menuitem', { name: '再约一次' }).waitFor();
   } },
   { page: 'commands', prepare: async () => {
     await page.getByRole('menuitem', { name: '编辑' }).click();
@@ -35,7 +35,7 @@ const shots = [
   } },
   { page: 'commands', suffix: 'dropdown', prepare: async () => {
     await page.getByRole('button', { name: '打开详情' }).click();
-    await page.getByRole('menuitemradio', { name: '展开源码' }).hover();
+    await page.getByRole('menuitemradio', { name: '展开原稿' }).hover();
   } },
 ];
 for (const theme of ['dark', 'light']) {

@@ -6,6 +6,7 @@
 
 .gallery-header {
   min-width: 0;
+  height: var(--rui-control-height-lg);
 }
 
 .gallery-page-tabs {
@@ -46,7 +47,7 @@
 @media (max-width: 640px) {
   .gallery-header {
     height: auto;
-    min-height: calc(var(--rui-space-8) + var(--rui-space-1));
+    min-height: var(--rui-control-height-lg);
     flex-wrap: wrap;
     row-gap: var(--rui-space-1);
     padding-block: var(--rui-space-1);
