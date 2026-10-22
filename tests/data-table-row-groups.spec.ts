@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { axeViolations } from './axe-scan';
 import { readFileSync } from 'node:fs';
 
 const prefix = '复杂-datatable-数据表格';
@@ -117,7 +118,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   // Current control and cell tokens produce 37/53px; refactor baseline matches both.
   expect(height).toBe(density === 'compact' ? 37 : 45);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  expect(await axeViolations(page, { rules: { region: { enabled: false } } })).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/data-table-row-groups/${theme}-${density}.png`, fullPage: true });
 });

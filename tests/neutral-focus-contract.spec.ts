@@ -13,7 +13,12 @@ for (const theme of ['dark','light']) for (const density of ['compact','comforta
       const control = page.locator('.lab-demo').locator(item.selector).filter({ hasText: item.id === 'button' ? item.label : undefined }).first();
       await expect(control).toBeVisible();
       await control.click();
-      if (item.id === 'select') await page.keyboard.press('Escape');
+      if (item.id === 'select') {
+        await expect(page.getByRole('listbox')).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.getByRole('listbox')).toBeHidden();
+        await expect(control).toBeFocused();
+      }
       await control.press('Tab');
       await page.keyboard.press('Shift+Tab');
       await expect(control).toBeFocused();
