@@ -444,18 +444,28 @@ export function DataTable<TData>({
     setEditSubmissionError(undefined);
   }
   function restoreEditOrigin(state: DataTableEditingState) {
-    requestAnimationFrame(() => {
-      const origin = editOrigins.current.get(editKey(state.rowId, state.columnId));
+    const key = editKey(state.rowId, state.columnId);
+    const tryFocus = () => {
+      const origin = editOrigins.current.get(key);
       if (origin?.isConnected) {
         origin.focus();
-        return;
+        return document.activeElement === origin;
       }
-      document
-        .querySelector<HTMLElement>(
-          `tr[data-row-id="${CSS.escape(state.rowId)}"] button[aria-label^="编辑记录 "]`,
-        )
-        ?.focus();
-    });
+      const fallback = document.querySelector<HTMLElement>(
+        `tr[data-row-id="${CSS.escape(state.rowId)}"] button[aria-label^="编辑记录 "]`,
+      );
+      fallback?.focus();
+      return Boolean(fallback && document.activeElement === fallback);
+    };
+    // Hosts often replace the edited row after onEditCommit; retry across frames so
+    // focus lands on the post-update edit action instead of a detached node.
+    const schedule = (attempt: number) => {
+      requestAnimationFrame(() => {
+        if (tryFocus() || attempt >= 4) return;
+        schedule(attempt + 1);
+      });
+    };
+    schedule(0);
   }
   function cancelEditing() {
     const state = currentEditing;
