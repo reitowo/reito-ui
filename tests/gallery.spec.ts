@@ -4,36 +4,37 @@ test('gallery switches pages, theme and density while staying interactive', asyn
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/?view=gallery&page=trace&theme=dark&density=dense');
   await expect(page.locator('html')).toHaveAttribute('data-density', 'dense');
-  await expect(page.getByRole('banner')).toContainText('示例画廊');
-  await expect(page.getByRole('navigation', { name: '示例页面' })).toBeVisible();
+  await expect(page.getByRole('banner')).toContainText('南窗');
+  await expect(page.getByRole('banner')).toContainText('雨季的书店');
+  await expect(page.getByRole('navigation', { name: '南窗' })).toBeVisible();
 
-  const nav = page.getByRole('navigation', { name: '示例页面' });
-  await nav.getByRole('button', { name: '事件流' }).click();
-  await expect(page.locator('main h1')).toHaveText('事件流');
+  const nav = page.getByRole('navigation', { name: '南窗' });
+  await nav.getByRole('button', { name: '审稿' }).click();
+  await expect(page.locator('main h1')).toHaveText('审稿');
   await page.getByRole('button', { name: '视图' }).click();
   await expect(page.getByRole('menuitemcheckbox', { name: '自动换行' })).toBeVisible();
   await page.keyboard.press('Escape');
 
-  await nav.getByRole('button', { name: '数据检查' }).click();
-  await page.getByRole('button', { name: 'alpha-large 操作' }).click();
-  await expect(page.getByRole('menuitem', { name: '移动到' })).toBeVisible();
+  await nav.getByRole('button', { name: '作者' }).click();
+  await page.getByRole('button', { name: '林夏 操作' }).click();
+  await expect(page.getByRole('menuitem', { name: '转到栏目' })).toBeVisible();
   await page.keyboard.press('Escape');
 
-  await nav.getByRole('button', { name: '活动轨迹' }).click();
-  const timeline = page.getByRole('group', { name: '事件总览' });
+  await nav.getByRole('button', { name: '封面进程' }).click();
+  const timeline = page.getByRole('group', { name: '封面进度' });
   await timeline.getByRole('button', { pressed: true }).focus();
   await page.keyboard.press('ArrowLeft');
   await expect(timeline.locator('button[tabindex="0"]')).toBeFocused();
 
-  await nav.getByRole('button', { name: '工作概览' }).click();
-  await expect(page.getByRole('progressbar', { name: '示例任务进度' })).toBeVisible();
+  await nav.getByRole('button', { name: '本期' }).click();
+  await expect(page.getByRole('progressbar', { name: '本期进度' })).toBeVisible();
 
-  await nav.getByRole('button', { name: '文件浏览' }).click();
-  await expect(page.getByText('概览.md')).toBeVisible();
-  await page.getByRole('button', { name: '打开 概览.md' }).click();
+  await nav.getByRole('button', { name: '稿件柜' }).click();
+  await expect(page.getByText('雨季的书店.md')).toBeVisible();
+  await page.getByRole('button', { name: '打开 雨季的书店.md' }).click();
 
-  await nav.getByRole('button', { name: '偏好设置' }).click();
-  const telemetry = page.locator('[data-slot=settings-row]', { hasText: '诊断数据' }).getByRole('switch');
+  await nav.getByRole('button', { name: '室规' }).click();
+  const telemetry = page.locator('[data-slot=settings-row]', { hasText: '截稿提醒' }).getByRole('switch');
   await telemetry.click();
   await expect(telemetry).toBeChecked();
 

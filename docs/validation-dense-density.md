@@ -29,7 +29,7 @@ Lab `?view=dense&page=trace`（画廊锁定高密的兼容入口；公开入口�
 
 - `dense:` 变体原以 `@scope` 声明，Tailwind 嵌套后变成 `(& [data-density=dense])`，只作用于自身后代，所有 `dense:` 工具类此前都不生效（含 CardTitle、CodeBlock 行高）。改为 `&:where([data-density='dense'], [data-density='dense'] *)`；代价是 dense 内再嵌套的 compact / comfortable 作用域仍会匹配。
 - 现值：标题 12px 600、副标题与计数 11px、时间线通道与刻度标记 10px、分组标签 10px 600、卡片时间与耗时 10px 等宽、切换按钮图标 10px、dense 表头 11px 次级色、示例外框栏 11px 导航。
-- 头部呼吸空间复查：字号保持不变；示例外框栏改回约 28px（`h-7`），各页 `PaneHeader` / 命令页菜单行约 32px（`min-h-8` + `py-1`），迷你时间线上下改为 `py-1.5`。
+- 头部呼吸空间复查：字号保持不变；示例外框栏改回约 28px（`h-7`），各页 `PaneHeader` / 命令页菜单行约 32px（`min-h-8` + `py-1`），迷你时间线上下改为 `py-1.5`。随后顶栏改为 `control-height-lg`、分栏标题改为 `control-height + space-2`，高密下仍是 28px 与 32px，紧凑和舒适随控件长高；开关轨道与滑块改为密度 token。
 - `tests/dense-density.spec.ts` 增加上述字号与外框/面板头高度断言，并检查各示例页不存在超过 12px 的文字。
 
 ## 截图
