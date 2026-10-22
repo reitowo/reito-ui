@@ -1,4 +1,5 @@
 import { chooseSelectOption, storybookUrl } from './select-option';
+import { axeViolations } from './axe-scan';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
