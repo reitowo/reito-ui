@@ -4,6 +4,7 @@ import { tokenMetrics } from '@reito/tokens/metrics';
 import * as React from 'react';
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
 import { Menubar as MenubarPrimitive } from '@base-ui/react/menubar';
+import { menuItemStateClassName } from '../lib/state.js';
 import { cn } from '../lib/utils.js';
 
 import {
@@ -86,11 +87,7 @@ function MenubarContent({
           'text-popover-foreground',
           // Surface
           'shadow-md ring-1 ring-foreground/10',
-          // Motion
-          'duration-[var(--rui-duration-fast)]',
-          // Component state
-          'data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2',
-          'data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95',
+          // Motion is inherited from DropdownMenuContent.
         ],
         className,
       )}
@@ -122,18 +119,12 @@ function MenubarItem({
           'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           // Typography
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground',
           // Component state
-          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-[variant=destructive]:text-destructive',
-          // Keyboard focus
-          'data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20',
-          // Disabled state
-          'data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Child and composition rules
           "[&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
           // Component state
-          'data-[variant=destructive]:*:[svg]:text-destructive!',
+          'data-[variant=destructive]:*:[svg]:text-[var(--rui-component-menu-item-fg-destructive)]!',
         ],
         className,
       )}
@@ -171,12 +162,11 @@ function MenubarCheckboxItem({
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Component state
           'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           '[&_svg]:pointer-events-none [&_svg]:shrink-0',
         ],
@@ -227,12 +217,11 @@ function MenubarRadioItem({
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Component state
           'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
@@ -321,7 +310,7 @@ function MenubarSubTrigger({
         [
           'gap-[var(--rui-component-menu-item-gap)] rounded-[var(--rui-component-menu-item-radius)] px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
           'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
-          'focus:bg-accent focus:text-accent-foreground data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-open:bg-accent data-open:text-accent-foreground',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           "[&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
         className,
@@ -350,11 +339,7 @@ function MenubarSubContent({
           'text-popover-foreground',
           // Surface
           'shadow-lg ring-1 ring-foreground/10',
-          // Motion
-          'duration-[var(--rui-duration-fast)]',
-          // Component state
-          'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95',
-          'data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          // Motion is inherited from DropdownMenuSubContent.
         ],
         className,
       )}

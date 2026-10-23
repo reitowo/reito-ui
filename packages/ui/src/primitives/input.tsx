@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Input as InputPrimitive } from '@base-ui/react/input';
+import { fieldStateClassName } from '../lib/state.js';
 import { cn } from '../lib/utils.js';
 
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
@@ -12,13 +13,12 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
           // Layout
           'h-[var(--rui-component-input-height)] w-full min-w-0',
           // Surface
-          'rounded-[var(--rui-component-input-radius)] border border-input bg-transparent',
+          'rounded-[var(--rui-component-input-radius)] border',
+          fieldStateClassName,
           // Spacing
           'px-[var(--rui-component-input-padding-x)] py-1',
           // Typography
           'text-[length:var(--rui-component-input-font-size)]',
-          // Motion
-          'transition-colors',
           // Surface
           'outline-none',
           // Layout
@@ -26,11 +26,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
           // Keyboard focus
           'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
           // Disabled state
-          'disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-[var(--rui-opacity-disabled)]',
-          // Dark theme
-          'dark:bg-input/30',
-          // Disabled state
-          'dark:disabled:bg-input/80',
+          'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-[var(--rui-opacity-disabled)]',
           // Validation state
           'rui-validation',
         ],

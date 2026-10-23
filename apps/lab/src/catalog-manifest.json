@@ -5,7 +5,7 @@
     "ai": 24
   },
   "total": 142,
-  "stories": 1464,
+  "stories": 1465,
   "entries": [
     {
       "layer": "basic",
@@ -365,7 +365,7 @@
       "storyId": "基础-dropdown-menu--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "DropdownMenuDemo",
-      "stories": 6
+      "stories": 7
     },
     {
       "layer": "basic",

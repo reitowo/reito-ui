@@ -4,6 +4,7 @@ import { ThemePortalScope } from '../theme.js';
 import { tokenMetrics } from '@reito/tokens/metrics';
 import * as React from 'react';
 import { Select as SelectPrimitive } from '@base-ui/react/select';
+import { menuItemStateClassName, popupMotionClassName } from '../lib/state.js';
 import { cn } from '../lib/utils.js';
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from 'lucide-react';
 
@@ -133,10 +134,8 @@ function SelectContent({
                 // Surface
                 'shadow-md ring-1 ring-foreground/10',
                 // Motion
-                'duration-[var(--rui-duration-fast)]',
-                // Component state
-                'data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2',
-                'data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+                popupMotionClassName,
+                'data-[align-trigger=true]:transition-none',
               ],
               className,
             )}
@@ -185,10 +184,9 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)] *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         ],

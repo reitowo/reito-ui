@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { fieldStateClassName } from '../lib/state.js';
 import { cn } from '../lib/utils.js';
 
 function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
@@ -10,13 +11,12 @@ function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
           // Layout
           'flex field-sizing-content min-h-[var(--rui-textarea-min-height)] w-full',
           // Surface
-          'rounded-lg border border-input bg-transparent',
+          'rounded-lg border',
+          fieldStateClassName,
           // Spacing
           'px-2.5 py-2',
           // Typography
           'text-sm',
-          // Motion
-          'transition-colors',
           // Surface
           'outline-none',
           // Layout
@@ -24,11 +24,7 @@ function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
           // Keyboard focus
           'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
           // Disabled state
-          'disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-[var(--rui-opacity-disabled)]',
-          // Dark theme
-          'dark:bg-input/30',
-          // Disabled state
-          'dark:disabled:bg-input/80',
+          'disabled:cursor-not-allowed disabled:opacity-[var(--rui-opacity-disabled)]',
           // Validation state
           'rui-validation',
         ],

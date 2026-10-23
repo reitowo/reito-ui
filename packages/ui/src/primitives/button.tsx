@@ -12,7 +12,7 @@ const buttonVariants = cva(
     // Typography
     'text-[length:var(--rui-component-button-font-size)] font-normal whitespace-nowrap',
     // Motion
-    'transition-all',
+    'transition-all duration-[var(--rui-motion-duration)] ease-[var(--rui-motion-easing)]',
     // Surface
     'outline-none',
     // Layout
@@ -20,7 +20,7 @@ const buttonVariants = cva(
     // Keyboard focus
     'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
     // Pointer interaction
-    'active:not-aria-[haspopup]:translate-y-px',
+    'active:not-aria-[haspopup]:translate-y-[var(--rui-motion-press-distance)]',
     // Disabled state
     'disabled:pointer-events-none disabled:opacity-[var(--rui-opacity-disabled)]',
     // Validation state
@@ -31,18 +31,49 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/80',
-        accent:
-          'bg-[var(--rui-action-accent)] text-[var(--rui-on-action-accent)] hover:bg-[var(--rui-action-accent)]/90',
-        outline:
-          'border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-[var(--rui-active)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground',
-        ghost:
-          'hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50',
-        destructive:
-          'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
-        link: 'text-primary underline-offset-4 hover:underline',
+        default: [
+          'bg-[var(--rui-component-button-primary-bg-rest)] text-[var(--rui-component-button-primary-fg)]',
+          'hover:bg-[var(--rui-component-button-primary-bg-hover)]',
+          'active:not-aria-[haspopup]:bg-[var(--rui-component-button-primary-bg-pressed)]',
+          'disabled:bg-[var(--rui-component-button-primary-bg-disabled)]',
+        ].join(' '),
+        accent: [
+          'bg-[var(--rui-component-button-accent-bg-rest)] text-[var(--rui-component-button-accent-fg)]',
+          'hover:bg-[var(--rui-component-button-accent-bg-hover)]',
+          'active:not-aria-[haspopup]:bg-[var(--rui-component-button-accent-bg-pressed)]',
+          'disabled:bg-[var(--rui-component-button-accent-bg-disabled)]',
+        ].join(' '),
+        outline: [
+          'border-[var(--rui-component-button-outline-border)] bg-[var(--rui-component-button-outline-bg-rest)]',
+          'text-[var(--rui-component-button-outline-fg)]',
+          'hover:bg-[var(--rui-component-button-outline-bg-hover)]',
+          'active:not-aria-[haspopup]:bg-[var(--rui-component-button-outline-bg-pressed)]',
+          'aria-expanded:bg-[var(--rui-component-button-outline-bg-expanded)]',
+          'disabled:bg-[var(--rui-component-button-outline-bg-rest)]',
+        ].join(' '),
+        secondary: [
+          'bg-[var(--rui-component-button-secondary-bg-rest)] text-[var(--rui-component-button-secondary-fg)]',
+          'hover:bg-[var(--rui-component-button-secondary-bg-hover)]',
+          'active:not-aria-[haspopup]:bg-[var(--rui-component-button-secondary-bg-pressed)]',
+          'aria-expanded:bg-[var(--rui-component-button-secondary-bg-expanded)]',
+          'disabled:bg-[var(--rui-component-button-secondary-bg-rest)]',
+        ].join(' '),
+        ghost: [
+          'bg-[var(--rui-component-button-ghost-bg-rest)] text-[var(--rui-component-button-ghost-fg)]',
+          'hover:bg-[var(--rui-component-button-ghost-bg-hover)]',
+          'active:not-aria-[haspopup]:bg-[var(--rui-component-button-ghost-bg-pressed)]',
+          'aria-expanded:bg-[var(--rui-component-button-ghost-bg-expanded)]',
+          'disabled:bg-[var(--rui-component-button-ghost-bg-rest)]',
+        ].join(' '),
+        destructive: [
+          'bg-[var(--rui-component-button-destructive-bg-rest)] text-[var(--rui-component-button-destructive-fg)]',
+          'hover:bg-[var(--rui-component-button-destructive-bg-hover)]',
+          'active:not-aria-[haspopup]:bg-[var(--rui-component-button-destructive-bg-pressed)]',
+          'disabled:bg-[var(--rui-component-button-destructive-bg-disabled)]',
+          'focus-visible:border-destructive/40 focus-visible:ring-destructive/20',
+          'dark:focus-visible:ring-destructive/40',
+        ].join(' '),
+        link: 'text-[var(--rui-component-button-link-fg)] underline-offset-4 hover:underline',
       },
       size: {
         default:

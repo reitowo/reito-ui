@@ -6,9 +6,9 @@
 
 | 组件组 | 组件 token |
 | --- | --- |
-| Button | height、padding-x、font-size、radius；height 适用于默认文字和图标按钮，显式 size 继续使用对应尺寸尺度 |
-| Input | height、padding-x、font-size、radius；使用 Input 组合的密码等字段自动继承 |
-| Menu | item-height、item-line-height、item-padding-x、item-padding-y、font-size；popup-radius、popup-padding、item-radius、item-gap、icon-size、inset-padding-x、separator-inset、separator-margin-y。DropdownMenu、ContextMenu、Menubar、Select、Combobox、Command 的弹层与条目共享此组 |
+| Button | height、padding-x、font-size、radius；primary / accent / outline / secondary / ghost / destructive 的 `bg-rest`、`bg-hover`、`bg-pressed`、`bg-disabled` 与前景色，以及 link-fg。height 适用于默认文字和图标按钮，显式 size 继续使用对应尺寸尺度。按下位移使用 `--rui-motion-press-distance` |
+| Input | height、padding-x、font-size、radius；`bg-rest`、`bg-hover`、`bg-disabled`、`bg-readonly`、`border-rest`、`border-readonly`、`border-invalid`。Textarea 共用这组表面 token。使用 Input 组合的密码等字段自动继承 |
+| Menu | item-height、item-line-height、item-padding-x、item-padding-y、font-size；popup-radius、popup-padding、item-radius、item-gap、icon-size、inset-padding-x、separator-inset、separator-margin-y；`item-bg-rest`、`item-bg-highlighted`、`item-fg-highlighted`、`item-bg-highlighted-destructive`、`item-fg-destructive`、`item-opacity-disabled`。DropdownMenu、ContextMenu、Menubar、Select、Combobox 的弹层与条目共享此组。弹层打开和关闭使用 `--rui-motion-duration`、`--rui-motion-easing` 与 `--rui-motion-popup-scale` |
 | Card | padding-x、padding-y、text-gap、radius；标题、内容、脚注使用同组内距；radius 引用 `density.*.card-radius`（compact / comfortable 14px，dense 6px） |
 | ScrollArea | padding-x、padding-y；仅 inset 变体的固定滚动边缘，默认引用 compact-surface-padding-x 和 space-1 |
 
@@ -40,12 +40,14 @@ const tokens: ThemeTokenOverrides = {
 
 `tokens` 是受类型检查的声明式配置，更新 props 会即时生效，不重新挂载子组件。省略的键继承父级设置；局部配置按组件和 token 键合并，不替换整个组件配置。用一个局部 Provider 包住单个组件即可限制调整范围。优先级为默认引用 → 父级配置 → 本级配置。`root` 将配置应用到文档根，局部 Provider 和 Base UI Portal 使用最近的 React 主题配置。
 
-生成变量以 `--rui-component-<组件>-<角色>` 命名。既有共享角色保留；消费工程优先通过 Provider 的 `tokens` 微调，避免页面选择器覆盖。CSS 自定义属性在声明处求值，局部基础值不能靠继承已计算的别名传播；Provider 会在自己的作用域和弹层重新绑定引用。
+生成变量以 `--rui-component-<组件>-<角色>` 命名。既有共享角色保留；消费工程优先通过 Provider 的 `tokens` 微调，避免页面选择器覆盖。CSS 自定义属性在声明处求值，局部基础值不能靠继承已计算的别名传播；Provider 会在自己的作用域和弹层重新绑定引用。带 `color` 的按钮会在自身重绑 primary / accent 状态 token，这样局部配色不会停在祖先已经算出的颜色上。
 
 菜单默认高度引用 `control-height-sm`，上下内距按 `(目标高度 - 行高) / 2` 推导，并限制为非负值。默认 compact 为 28px / 20px / 4px，comfortable 为 32px / 20px / 6px，dense 为 20px / 16px / 2px。
 
 弹层几何是同心的：`item-radius`（4px）等于 `popup-radius`（8px）减 `popup-padding`（4px）；调整其中一个时同步检查另外两个。`item-padding-x` 引用 `density.*.popup-item-padding-x`（8 / 10 / 6px），`inset-padding-x` 以 `$extensions.reito.css` 推导为 `item-padding-x + icon-size + item-gap`，供 inset 条目与勾选指示器列共用。它是单行目标，不给多行条目设置固定高度。特殊内距可以覆盖 `components.menu['item-padding-y']`，但使用方需要检查实际高度。
 
-计算表达式写在 `$extensions.reito.css` 中，它是本项目的扩展，不是 DTCG 标准表达式。`$value` 保留 compact 默认回退值；CSS 使用实时表达式。生成器检查普通引用与表达式引用的缺失目标和循环依赖。该检查不能验证消费工程运行时传入的任意 CSS 字符串。
+计算表达式写在 `$extensions.reito.css` 中，它是本项目的扩展，不是 DTCG 标准表达式。允许 `calc()` 和 `color-mix()`。`$value` 保留可解析的回退值；CSS 使用实时表达式。生成器检查普通引用与表达式引用的缺失目标和循环依赖。该检查不能验证消费工程运行时传入的任意 CSS 字符串。
+
+动效 token 在 `foundation`：`--rui-motion-duration`（150ms）、`--rui-motion-duration-lg`（300ms）、`--rui-motion-easing`、`--rui-motion-easing-lg`、`--rui-motion-popup-scale`（0.96）、`--rui-motion-press-distance`（1px）。系统请求减少动效时，两个时长变为 0ms，弹层缩放变为 1。菜单外壳内距仍是 4px，高密条目行高仍跟 `control-height-sm`。
 
 在 Lab 的 `?view=theme-guide` 查看“共享尺寸与组件微调”，或在 Storybook 的 ReitoThemeProvider 下选择同名示例。两处使用同一个交互示例。

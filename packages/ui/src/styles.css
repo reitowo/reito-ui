@@ -51,11 +51,7 @@
 /* Validation belongs inside the control. Preserve the independent keyboard
    ring, and apply the glow once to composite fields rather than their inputs. */
 .rui-validation:is([aria-invalid='true'], :has([aria-invalid='true'])) {
-  border-color: color-mix(
-    in srgb,
-    var(--rui-danger) calc(var(--rui-validation-border-opacity) * 100%),
-    var(--rui-border)
-  );
+  border-color: var(--rui-component-input-border-invalid);
   box-shadow:
     inset 0 0 var(--rui-validation-glow-blur) var(--rui-validation-glow-width)
       color-mix(
@@ -190,11 +186,19 @@
   color: var(--rui-color-text);
 }
 
-/* Filled colored actions use a paired hover shade, preserving text contrast. */
-[data-slot='button'][data-variant='default']:hover:not(:disabled),
+/* Filled actions follow component state tokens so palette overrides stay paired. */
+[data-slot='button'][data-variant='default']:hover:not(:disabled) {
+  background-color: var(--rui-component-button-primary-bg-hover);
+}
+[data-slot='button'][data-variant='default']:active:not(:disabled):not([aria-haspopup]) {
+  background-color: var(--rui-component-button-primary-bg-pressed);
+}
 [data-rui-color][data-slot='badge'][data-variant='default'][href]:hover {
   background-color: var(--rui-primary-hover);
 }
 [data-slot='button'][data-variant='accent']:hover:not(:disabled) {
-  background-color: var(--rui-action-accent-hover);
+  background-color: var(--rui-component-button-accent-bg-hover);
+}
+[data-slot='button'][data-variant='accent']:active:not(:disabled):not([aria-haspopup]) {
+  background-color: var(--rui-component-button-accent-bg-pressed);
 }

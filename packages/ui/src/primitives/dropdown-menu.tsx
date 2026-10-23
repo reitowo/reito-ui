@@ -2,6 +2,7 @@ import { ThemePortalScope } from '../theme.js';
 import { tokenMetrics } from '@reito/tokens/metrics';
 import * as React from 'react';
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
+import { menuItemStateClassName, popupMotionClassName } from '../lib/state.js';
 import { cn } from '../lib/utils.js';
 import { ChevronRightIcon, CheckIcon } from 'lucide-react';
 
@@ -54,13 +55,11 @@ function DropdownMenuContent({
                 'text-popover-foreground',
                 // Surface
                 'shadow-md ring-1 ring-foreground/10',
-                // Motion
-                'duration-[var(--rui-duration-fast)]',
                 // Surface
                 'outline-none',
-                // Component state
-                'data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2',
-                'data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:overflow-hidden data-closed:fade-out-0 data-closed:zoom-out-95',
+                // Motion
+                popupMotionClassName,
+                'data-ending-style:overflow-hidden',
               ],
               className,
             )}
@@ -126,18 +125,13 @@ function DropdownMenuItem({
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Component state
-          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-[variant=destructive]:text-destructive',
-          // Keyboard focus
-          'data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
-          // Component state
-          'data-[variant=destructive]:*:[svg]:text-destructive',
         ],
         className,
       )}
@@ -178,10 +172,9 @@ function DropdownMenuSubTrigger({
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Component state
-          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)] data-popup-open:bg-accent data-popup-open:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
@@ -218,11 +211,6 @@ function DropdownMenuSubContent({
           'text-popover-foreground',
           // Surface
           'shadow-lg ring-1 ring-foreground/10',
-          // Motion
-          'duration-[var(--rui-duration-fast)]',
-          // Component state
-          'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95',
-          'data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
         ],
         className,
       )}
@@ -264,12 +252,11 @@ function DropdownMenuCheckboxItem({
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Component state
           'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
@@ -323,12 +310,11 @@ function DropdownMenuRadioItem({
           'outline-hidden',
           // Layout
           'select-none',
-          // Keyboard focus
-          'focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground',
+          menuItemStateClassName,
           // Component state
           'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],
@@ -367,7 +353,7 @@ function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'spa
     <span
       data-slot="dropdown-menu-shortcut"
       className={cn(
-        'ml-auto text-xs tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground',
+        'ml-auto text-xs tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-[var(--rui-component-menu-item-fg-highlighted)]',
         className,
       )}
       {...props}

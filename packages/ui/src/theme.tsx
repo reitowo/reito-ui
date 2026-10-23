@@ -272,6 +272,9 @@ export function useThemeColor(color?: ThemeColor): CSSProperties | undefined {
       'color-text': 'var(--rui-text)',
       'color-soft': 'var(--rui-hover)',
       'color-border': 'var(--rui-border-strong)',
+      // State tokens resolve where they are set. Rebind them on this element so
+      // a local color is not stuck with the ancestor's already-resolved fill.
+      ...buttonStateAliases('var(--rui-text)', 'var(--rui-text-secondary)', 'var(--rui-bg)'),
     });
   const light = themeTokens.colorBindings[family].light,
     dark = themeTokens.colorBindings[family].dark;
@@ -286,5 +289,22 @@ export function useThemeColor(color?: ThemeColor): CSSProperties | undefined {
     'color-border': value('border'),
     'action-accent': value('solid'),
     'on-action-accent': value('on-solid'),
+    ...buttonStateAliases(value('solid'), value('hover'), value('on-solid')),
   });
+}
+
+function buttonStateAliases(rest: string, hover: string, foreground: string) {
+  return {
+    'component-button-primary-bg-rest': rest,
+    'component-button-primary-bg-hover': hover,
+    'component-button-primary-bg-pressed': hover,
+    'component-button-primary-bg-disabled': rest,
+    'component-button-primary-fg': foreground,
+    'component-button-accent-bg-rest': rest,
+    'component-button-accent-bg-hover': hover,
+    'component-button-accent-bg-pressed': hover,
+    'component-button-accent-bg-disabled': rest,
+    'component-button-accent-fg': foreground,
+    'component-button-link-fg': rest,
+  };
 }
