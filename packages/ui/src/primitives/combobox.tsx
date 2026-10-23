@@ -2,6 +2,7 @@ import { ThemePortalScope } from '../theme.js';
 import { tokenMetrics } from '@reito/tokens/metrics';
 import * as React from 'react';
 import { Combobox as ComboboxPrimitive } from '@base-ui/react';
+import { menuItemStateClassName, popupMotionClassName } from '../lib/state.js';
 import { cn } from '../lib/utils.js';
 
 import { Button } from './button.js';
@@ -114,15 +115,12 @@ function ComboboxContent({
                 // Surface
                 'shadow-md ring-1 ring-foreground/10',
                 // Motion
-                'duration-[var(--rui-duration-fast)]',
+                popupMotionClassName,
                 // Component state
-                'data-[chips=true]:min-w-(--anchor-width) data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2',
-                'data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+                'data-[chips=true]:min-w-(--anchor-width)',
                 // Child and composition rules
                 '*:data-[slot=input-group]:m-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-[var(--rui-control-height)] *:data-[slot=input-group]:border-input/30 *:data-[slot=input-group]:bg-input/30',
                 '*:data-[slot=input-group]:shadow-none',
-                // Component state
-                'data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
               ],
               className,
             )}
@@ -168,11 +166,9 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
           // Layout
           'select-none',
           // Component state
-          'data-highlighted:bg-accent data-highlighted:text-accent-foreground',
-          // Layout
-          'not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground',
+          menuItemStateClassName,
           // Disabled state
-          'data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)]',
+          'data-disabled:pointer-events-none',
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
         ],

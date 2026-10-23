@@ -14,7 +14,7 @@ const meta = { id: "基础-dropdown-menu",
       story: { inline: false, height: 'var(--rui-container-lg)' },
       description: {
         component:
-          "操作、快捷键、复选与禁用条目。 使用官方 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
+          "操作、快捷键、复选与禁用条目。弹层进入和退出使用 motion token（150ms、缩放 0.96）；高亮与禁用条目使用组件状态 token。减少动效时时长为 0。使用官方 shadcn Base UI / base-nova 组合 API；交互只更新本地示例状态。",
       },
     },
   },
@@ -85,6 +85,30 @@ export const Destructive: Story = {
 export const Checkbox: Story = {
   name: "条目 · 复选操作",
   render: () => <TaskMenu state="checkbox" />,
+};
+export const Motion: Story = {
+  name: "动效 · 打开与关闭",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "打开时从 0.96 缩放到 1，关闭时回到 0.96。时长和缓动来自 --rui-motion-duration / --rui-motion-easing。禁用条目使用 item-opacity-disabled。",
+      },
+    },
+  },
+  render: () => (
+    <P.DropdownMenu>
+      <P.DropdownMenuTrigger render={<P.Button variant="outline" />}>
+        打开菜单
+        <ChevronDown />
+      </P.DropdownMenuTrigger>
+      <P.DropdownMenuContent>
+        <P.DropdownMenuItem>复制任务链接</P.DropdownMenuItem>
+        <P.DropdownMenuItem disabled>发布到云端</P.DropdownMenuItem>
+        <P.DropdownMenuItem variant="destructive">归档任务</P.DropdownMenuItem>
+      </P.DropdownMenuContent>
+    </P.DropdownMenu>
+  ),
 };
 
 type PlaygroundArgs = { open: boolean; variant: "default" | "destructive"; disabled: boolean; inset: boolean; itemLabel: string; side: "top" | "bottom" | "left" | "right"; align: "start" | "center" | "end" };

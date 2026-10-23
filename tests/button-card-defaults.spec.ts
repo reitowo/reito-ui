@@ -7,7 +7,29 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     }, { theme, density });
     await page.goto('/?layer=basic&component=button');
     const height = density === 'compact' ? '28px' : '32px';
-    await expect(page.getByRole('button', { name: '保存更改', exact: true })).toBeVisible({ timeout: 15_000 });
+    const save = page.getByRole('button', { name: '保存更改', exact: true });
+    await expect(save).toBeVisible({ timeout: 15_000 });
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--rui-motion-duration').trim())).toBe('150ms');
+    const rest = await save.evaluate((el) => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor = 'var(--rui-primary)';
+      document.body.append(probe);
+      const primary = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return { button: getComputedStyle(el).backgroundColor, primary, duration: getComputedStyle(el).transitionDuration };
+    });
+    expect(rest.button).toBe(rest.primary);
+    expect(rest.duration === '150ms' || rest.duration === '0.15s').toBe(true);
+    await save.hover();
+    const hover = await page.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor = 'var(--rui-primary-hover)';
+      document.body.append(probe);
+      const value = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return value;
+    });
+    await expect.poll(() => save.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(hover);
     for (const name of ['保存更改', '强调操作', '次要操作', '描边按钮', '轻量操作', '不可用', 'Default']) {
       const button = page.getByRole('button', { name, exact: true });
       await expect(button).toHaveCSS('height', height);
@@ -21,7 +43,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await expect(page.getByRole('button', { name: 'Small', exact: true })).toHaveCSS('height', density === 'compact' ? '28px' : '32px');
     await expect(page.getByRole('button', { name: 'Medium', exact: true })).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
     await expect(page.getByRole('button', { name: 'Large', exact: true })).toHaveCSS('height', density === 'compact' ? '36px' : '40px');
-    await page.getByRole('button', { name: '保存更改', exact: true }).click();
+    await save.click();
     await expect(page.getByText('已保存 1 次')).toBeVisible();
     await page.goto('/?layer=basic&component=card');
     const card = page.locator('[data-slot="card"]');

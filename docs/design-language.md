@@ -68,7 +68,8 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 | 间距尺度 | 0、4、8、12、16、20、24、32、40、48、64 px | 使用 `--rui-space-*`；特殊布局尺寸先登记为共享 token。 |
 | 小 / 中 / 大圆角 / composer | 6 / 8 / 12 / 14 px | 控件、容器与对话框使用稳定层级；composer 有独立角色，圆形状态元素可用 full。 |
 | 边框 / 普通键盘焦点 / 强轮廓 | 1 / 1 / 2 px | 普通focus-width与outline-width分开；结构提示保留强轮廓角色；表单错误使用内边缘渐变。 |
-| 快速 / 常规动效 | 120 / 180 ms | 只提示状态变化；尊重 `prefers-reduced-motion`。 |
+| 快速 / 常规动效 | 120 / 180 ms | 既有过渡仍用这两个时长；只提示状态变化。 |
+| 动效时长 / 较长动效 | 150 / 300 ms | `--rui-motion-duration` 与 `--rui-motion-duration-lg`。菜单等弹层进入和退出使用较短时长、`--rui-motion-easing` 和 `--rui-motion-popup-scale`（0.96）；按钮按下位移为 `--rui-motion-press-distance`（1px）。`prefers-reduced-motion` 把这两个时长设为 0ms，并把弹层缩放设为 1。 |
 
 0.3 → 0.4 调整的是共享内容密度：正文区域、表格和 AI 组件通过同一组角色收紧空白，UI 字号与控件高度保持上述尺度。以下数值仍以 16px 根字号折算；不要把 rem 数值误作不可缩放的像素上限。
 
@@ -336,6 +337,8 @@ dense 下的卡片使用 1px 低对比边界、无阴影；卡片内的源码与
 
 组件支持：`ToolCall variant="trace"` 为一行事件卡（时间、类型、标题、右对齐耗时与 XS 标签；可折叠的首行源码预览与行数；截断结果行；完整错误行）；`CodeBlock variant="inline"` 去掉工具栏，以 sunken 单层承载代码；`Badge size="xs"`、`Toggle/ToggleGroup size="xs"`；`CollapsibleTrigger variant="row"` 为整行展开触发器；Card 与 Conversation 的间距、圆角直接消费密度 token。新增 `MiniTimeline`（按通道排列的小刻度事件总览，一个 Tab 停靠点）、`SectionLabel`（如 “TURN 1” 的轻量分组标签）和 `JumpToLatest`（浮动“回到最新”胶囊，Conversation 复用）。
 
-菜单按 Base UI v1 的圆角演示收敛为同心几何：弹层 `popup-radius` 8px、`popup-padding` 4px，高亮条目 `item-radius` 4px（= 8 − 4），图标间隔 `item-gap` 8px，分隔线 `separator-inset` 4px 内缩、上下 `separator-margin-y` 4px。条目横向内距改由 `components.menu.item-padding-x` → `density.*.popup-item-padding-x`（compact / comfortable / dense 为 8 / 10 / 6px），因此文字距弹层边缘为 12 / 14 / 10px；inset 条目与勾选指示器列使用 `inset-padding-x = item-padding-x + icon-size + item-gap`。DropdownMenu、ContextMenu、Menubar、Select、Combobox 与 Command 共用这组 token；`density.*.menu-item-padding-x` 保留给 Listbox、ScrollArea 等非弹层列表。本段替代上文“菜单条目使用 menu-item-padding-x 12 / 16px”的弹层描述。Menubar 外框使用 popup-radius，触发器仍按 Button 规则使用 radius-sm。
+菜单按 Base UI v1.9 的圆角演示收敛为同心几何：弹层 `popup-radius` 8px、`popup-padding` 4px，高亮条目 `item-radius` 4px（= 8 − 4），图标间隔 `item-gap` 8px，分隔线 `separator-inset` 4px 内缩、上下 `separator-margin-y` 4px。条目横向内距改由 `components.menu.item-padding-x` → `density.*.popup-item-padding-x`（compact / comfortable / dense 为 8 / 10 / 6px），因此文字距弹层边缘为 12 / 14 / 10px；inset 条目与勾选指示器列使用 `inset-padding-x = item-padding-x + icon-size + item-gap`。高密行高仍是 `control-height-sm`（20px）。这次没有改弹层或条目内距。DropdownMenu、ContextMenu、Menubar、Select、Combobox 与 Command 共用这组 token；`density.*.menu-item-padding-x` 保留给 Listbox、ScrollArea 等非弹层列表。本段替代上文“菜单条目使用 menu-item-padding-x 12 / 16px”的弹层描述。Menubar 外框使用 popup-radius，触发器仍按 Button 规则使用 radius-sm。
+
+按钮、菜单条目和输入框的休息、悬停、按下、禁用，以及输入框的无效和只读，改由组件状态 token 表达，例如 `--rui-component-button-primary-bg-rest`。这些颜色引用主题角色（或随主题变化的 `color-mix`），所以换主题后侧栏和弹层会一起更新。密度仍然只改变尺寸和字号，不改变这组颜色。禁用继续乘以共享的 `--rui-opacity-disabled`；只读输入保持不透明，只用底色和休息态分开。
 
 实际量度、截图和检查记录见 [高密模式验证](validation-dense-density.md)。

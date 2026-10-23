@@ -19,6 +19,17 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
   await expect(input).toHaveCSS('padding-left', '12.5px');
   await input.fill('修改 token 后仍然能输入');
   await expect(input).toHaveValue('修改 token 后仍然能输入');
+  const readonly = page.getByRole('textbox', { name: '只读项目编号', exact: true });
+  const surfaces = await readonly.evaluate((el) => {
+    const rest = document.querySelector('input:not([readonly]):not([disabled])');
+    return {
+      readonly: getComputedStyle(el).backgroundColor,
+      rest: rest ? getComputedStyle(rest).backgroundColor : '',
+      opacity: getComputedStyle(el).opacity,
+    };
+  });
+  expect(surfaces.readonly).not.toBe(surfaces.rest);
+  expect(surfaces.opacity).toBe('1');
 
   await page.goto('/?layer=basic&component=button');
   const button = page.getByRole('button', { name: '保存更改', exact: true });

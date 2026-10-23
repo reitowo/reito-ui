@@ -43,11 +43,46 @@ for (const density of ['compact', 'comfortable', 'dense'] as const) {
     await expect(popup.locator('[data-slot=dropdown-menu-separator]').first()).toHaveCSS('margin-left', '4px');
     await page.keyboard.press('ArrowDown');
     await expect(popup.getByRole('menuitem').first()).toBeFocused();
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--rui-motion-duration').trim())).toBe('0ms');
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--rui-motion-popup-scale').trim())).toBe('1');
+    const highlighted = await item.evaluate((el) => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor = 'var(--rui-hover)';
+      document.body.append(probe);
+      const hover = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return { item: getComputedStyle(el).backgroundColor, hover };
+    });
+    expect(highlighted.item).toBe(highlighted.hover);
     await page.keyboard.press('Escape');
     await expect(popup).toHaveCount(0);
     await expect(trigger).toBeFocused();
   });
 }
+
+test('menu popup uses motion tokens when motion is allowed', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/?layer=basic&component=dropdown-menu');
+  const trigger = page.getByTestId('component-preview').getByRole('button').first();
+  await trigger.click();
+  const popup = page.locator('[data-slot=dropdown-menu-content]');
+  await expect(popup).toBeVisible();
+  const motion = await popup.evaluate((el) => {
+    const style = getComputedStyle(el);
+    const root = getComputedStyle(document.documentElement);
+    return {
+      duration: style.transitionDuration,
+      token: root.getPropertyValue('--rui-motion-duration').trim(),
+      scale: root.getPropertyValue('--rui-motion-popup-scale').trim(),
+      easing: style.transitionTimingFunction,
+    };
+  });
+  expect(motion.token).toBe('150ms');
+  expect(motion.scale).toBe('0.96');
+  expect(motion.duration === '150ms' || motion.duration === '0.15s').toBe(true);
+  expect(motion.easing).toContain('cubic-bezier');
+  await expect(popup).toHaveCSS('padding-top', '4px');
+});
 
 for (const theme of ['dark', 'light']) for (const example of ['events', 'inspector', 'commands']) {
   test(`${theme}/dense: ${example} example opens its menus and passes axe`, async ({ page }) => {

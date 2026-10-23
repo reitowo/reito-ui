@@ -67,7 +67,7 @@ function cssValue(token) {
   resolve(token); // Reject missing or cyclic aliases even when emitting var().
   const expression = token.$extensions?.reito?.css;
   if (expression) {
-    if (!/^calc\(.+\)$/.test(expression)) throw new Error('Expected a calc() token expression');
+    if (!/^(?:calc|color-mix)\(.+\)$/.test(expression)) throw new Error('Expected a calc() or color-mix() token expression');
     return expression.replace(/\{([^}]+)\}/g, (_, path) => {
       resolve(lookup(path));
       return `var(--rui-${variable(path)})`;
@@ -84,7 +84,7 @@ function flatten(group, prefix = '', valueOf = resolve) {
 const declarations = (values) => values.map(([name, value]) => `  --rui-${name}: ${value};`).join('\n');
 const densityModes = Object.keys(source.density).filter(key => !key.startsWith('$'));
 if (densityModes[0] !== 'compact') throw new Error('compact must be the first (default) density.');
-let css = `/* Generated from src/tokens.json. Run npm run tokens:build. */\n:root {\n${declarations(flatten(source.foundation, '', cssValue))}\n${declarations(flatten(source.palette, 'palette-'))}\n${declarations(flatten(source.colorScales, 'palette-'))}\n${declarations(flatten(source.components, 'component-', cssValue))}\n}\n\n:root, [data-theme="dark"] {\n  color-scheme: dark;\n${declarations(flatten(source.themes.dark, '', cssValue))}\n}\n\n[data-theme="light"] {\n  color-scheme: light;\n${declarations(flatten(source.themes.light, '', cssValue))}\n}\n\n${densityModes.map(mode => `${mode === 'compact' ? ':root, ' : ''}[data-density="${mode}"] {\n${declarations(flatten(source.density[mode], '', cssValue))}\n}`).join('\n\n')}\n\n@media (prefers-reduced-motion: reduce) {\n  :root { --rui-duration-fast: 0ms; --rui-duration-normal: 0ms; }\n}\n`;
+let css = `/* Generated from src/tokens.json. Run npm run tokens:build. */\n:root {\n${declarations(flatten(source.foundation, '', cssValue))}\n${declarations(flatten(source.palette, 'palette-'))}\n${declarations(flatten(source.colorScales, 'palette-'))}\n${declarations(flatten(source.components, 'component-', cssValue))}\n}\n\n:root, [data-theme="dark"] {\n  color-scheme: dark;\n${declarations(flatten(source.themes.dark, '', cssValue))}\n}\n\n[data-theme="light"] {\n  color-scheme: light;\n${declarations(flatten(source.themes.light, '', cssValue))}\n}\n\n${densityModes.map(mode => `${mode === 'compact' ? ':root, ' : ''}[data-density="${mode}"] {\n${declarations(flatten(source.density[mode], '', cssValue))}\n}`).join('\n\n')}\n\n@media (prefers-reduced-motion: reduce) {\n  :root {\n    --rui-duration-fast: 0ms;\n    --rui-duration-normal: 0ms;\n    --rui-motion-duration: 0ms;\n    --rui-motion-duration-lg: 0ms;\n    --rui-motion-popup-scale: 1;\n  }\n}\n`;
 const roles = {
   background:'bg', foreground:'text', card:'surface', 'card-foreground':'text',
   popover:'elevated', 'popover-foreground':'text', primary:'primary', 'primary-foreground':'on-primary',

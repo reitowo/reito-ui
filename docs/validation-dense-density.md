@@ -15,7 +15,7 @@ Lab `/templates/nanchuang/trace?lock=dense` 是示例「南窗」的校样页（
 | 标签高度 / 图标 | 16 / 12px | 16 / 12px |
 | 错误卡 | 红边与红字 | destructive/60 边界、红色类型与标题、完整错误行；背景与普通卡相同 |
 
-菜单（Lab DropdownMenu 示例，reduced motion）：
+菜单（Lab DropdownMenu 示例，reduced motion）。外壳 4px 与条目内距保持 Base UI v1.9 的同心留白，高密行高仍是 20px：
 
 | 密度 | 弹层圆角 / 内距 | 条目圆角 | 条目横向内距 | 文字距弹层边缘 | 单行高度 | 分隔线内缩 / 上下 |
 | --- | --- | --- | --- | --- | --- | --- |
