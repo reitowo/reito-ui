@@ -77,6 +77,48 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
   });
 }
 
+for (const mode of ['dark', 'light']) test(`one radius base scales control, surface and menu radii together: ${mode}`, async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(`${process.env.REITO_STORYBOOK_URL || 'http://127.0.0.1:6007'}/iframe.html?id=基础-theme--component-tokens&viewMode=story&args=mode:${mode}&globals=theme:${mode}`);
+  const example = page.getByRole('region', { name: '组件 token 继承示例' });
+  const save = example.getByRole('button', { name: 'Token 示例保存', exact: true });
+  const input = example.getByRole('textbox', { name: 'Token 示例工作区' });
+  const card = example.getByLabel('局部 token 卡片');
+  const outside = example.getByRole('button', { name: '重置尺寸示例' });
+  const trigger = example.getByRole('button', { name: 'Token 示例菜单', exact: true });
+  const expectRadii = async (control: string, surface: string, item: string) => {
+    await expect(save).toHaveCSS('border-radius', control);
+    await expect(input).toHaveCSS('border-radius', control);
+    await expect(card).toHaveCSS('border-radius', surface);
+    await trigger.click();
+    await expect(page.locator('[data-slot=dropdown-menu-content]')).toHaveCSS('border-radius', surface);
+    await expect(page.getByRole('menuitem', { name: '打开工作区', exact: true })).toHaveCSS('border-radius', item);
+    await page.keyboard.press('Escape');
+    await expect(trigger).toBeFocused();
+  };
+  await expectRadii('6px', '8px', '4px');
+  await example.getByRole('combobox', { name: '全局圆角' }).click();
+  await page.getByRole('option', { name: '柔和 0.375rem', exact: true }).click();
+  await expectRadii('9px', '12px', '6px');
+  await expect(outside).toHaveCSS('border-radius', '6px');
+  await example.getByRole('combobox', { name: '全局圆角' }).click();
+  await page.getByRole('option', { name: '方正 0.125rem', exact: true }).click();
+  await expectRadii('3px', '4px', '2px');
+  await outside.click();
+  await expectRadii('6px', '8px', '4px');
+});
+
+test('raw --rui-radius on the document rescales control and surface roles', async ({ page }) => {
+  await page.goto('/?layer=basic&component=card');
+  const card = page.locator('[data-slot=card]').first();
+  const button = card.locator('[data-slot=button]').first();
+  await expect(card).toHaveCSS('border-radius', '8px');
+  await expect(button).toHaveCSS('border-radius', '6px');
+  await page.evaluate(() => document.documentElement.style.setProperty('--rui-radius', '0.5rem'));
+  await expect(card).toHaveCSS('border-radius', '16px');
+  await expect(button).toHaveCSS('border-radius', '12px');
+});
+
 test('raw CSS base aliases remain live at the document and density scopes', async ({ page }) => {
   await page.goto('/?layer=basic&component=button');
   const save = page.getByRole('button', { name: '保存更改', exact: true });

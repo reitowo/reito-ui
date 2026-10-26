@@ -11,7 +11,7 @@ function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
           // Layout
           'flex field-sizing-content min-h-[var(--rui-textarea-min-height)] w-full',
           // Surface
-          'rounded-lg border',
+          'rounded-[var(--rui-component-input-radius)] border',
           fieldStateClassName,
           // Spacing
           'px-2.5 py-2',

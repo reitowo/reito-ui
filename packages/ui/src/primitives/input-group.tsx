@@ -18,7 +18,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
           // Layout
           'group/input-group relative flex h-[var(--rui-control-height)] w-full min-w-0 items-center',
           // Surface
-          'rounded-lg border border-input',
+          'rounded-[var(--rui-component-input-radius)] border border-input',
           // Motion
           'transition-colors',
           // Surface
@@ -92,9 +92,9 @@ function InputGroupAddon({
 const inputGroupButtonVariants = cva('flex items-center gap-2 text-sm shadow-none', {
   variants: {
     size: {
-      xs: "gap-1 rounded-sm px-1.5 [&>svg:not([class*='size-'])]:size-3.5",
+      xs: "gap-1 rounded-control px-1.5 [&>svg:not([class*='size-'])]:size-3.5",
       sm: '',
-      'icon-xs': 'rounded-sm p-0 has-[>svg]:p-0',
+      'icon-xs': 'rounded-control p-0 has-[>svg]:p-0',
       'icon-sm': 'p-0 has-[>svg]:p-0',
     },
   },

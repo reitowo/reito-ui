@@ -73,7 +73,7 @@ function utilityContract(full) {
   if (match) return { kind: 'typography-utility', theme: `--${['sans','serif','mono'].includes(match[1]) ? 'font' : 'font-weight'}-${match[1]}`, reason: 'Font family/weight must resolve through the generated typography bridge.' };
   match = value.match(/^(leading|tracking)-(none|tight|snug|normal|relaxed|loose|tighter|wide|wider|widest)$/);
   if (match) return { kind: 'typography-utility', theme: `--${match[1]}-${match[2]}`, reason: 'Line-height/letter-spacing must resolve through the generated typography bridge.' };
-  match = value.match(/^rounded(?:-(?:t|r|b|l|s|e|tl|tr|br|bl|ss|se|es|ee))?(?:-(none|full|[234]?xs|sm|md|lg|xl|[234]xl))?$/);
+  match = value.match(/^rounded(?:-(?:t|r|b|l|s|e|tl|tr|br|bl|ss|se|es|ee))?(?:-(none|full|[234]?xs|sm|md|lg|xl|[234]xl|control|surface))?$/);
   if (match) return match[1] === 'none' ? { kind: 'structural-utility', status: 'structural', reason: 'Square corner reset.' } : { kind: 'radius-utility', theme: `--radius-${match[1] ?? 'DEFAULT'}`, reason: 'Corner radius must resolve through the generated radius bridge.' };
   match = value.match(/^shadow(?:-(none|2xs|xs|sm|md|lg|xl|2xl))?$/);
   if (match) return match[1] === 'none' ? { kind: 'structural-utility', status: 'structural', reason: 'Shadow reset.' } : { kind: 'shadow-utility', theme: `--shadow-${match[1] ?? 'DEFAULT'}`, reason: 'Elevation must resolve through the generated shadow bridge.' };

@@ -30,7 +30,10 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="input-otp-group"
-      className={cn('flex items-center rounded-lg rui-validation', className)}
+      className={cn(
+        'flex items-center rounded-[var(--rui-component-input-radius)] rui-validation',
+        className,
+      )}
       {...props}
     />
   );
@@ -63,7 +66,7 @@ function InputOTPSlot({
           // Surface
           'outline-none',
           // Layout
-          'first:rounded-l-lg first:border-l last:rounded-r-lg',
+          'first:rounded-l-[var(--rui-component-input-radius)] first:border-l last:rounded-r-[var(--rui-component-input-radius)]',
           // Validation state
           'rui-validation',
           // Component state

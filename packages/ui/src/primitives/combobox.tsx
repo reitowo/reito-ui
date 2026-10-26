@@ -251,7 +251,7 @@ function ComboboxChips({
           // Spacing
           'gap-1',
           // Surface
-          'rounded-lg border border-input bg-transparent bg-clip-padding',
+          'rounded-[var(--rui-component-input-radius)] border border-input bg-transparent bg-clip-padding',
           // Spacing
           'px-2.5 py-[calc(var(--rui-space-1)-var(--rui-border-width))]',
           // Typography
@@ -293,7 +293,7 @@ function ComboboxChip({
           // Spacing
           'gap-1',
           // Surface
-          'rounded-sm bg-muted',
+          'rounded-[calc(var(--rui-component-input-radius)-var(--rui-space-1))] bg-muted',
           // Spacing
           'px-1.5',
           // Typography

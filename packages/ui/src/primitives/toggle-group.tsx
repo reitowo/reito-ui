@@ -40,7 +40,7 @@ function ToggleGroup({
       data-orientation={orientation}
       style={{ '--gap': spacing } as React.CSSProperties}
       className={cn(
-        'group/toggle-group flex w-fit flex-row items-center gap-[--spacing(var(--gap))] rounded-sm data-vertical:flex-col data-vertical:items-stretch',
+        'group/toggle-group flex w-fit flex-row items-center gap-[--spacing(var(--gap))] rounded-control data-vertical:flex-col data-vertical:items-stretch',
         className,
       )}
       {...props}
@@ -76,8 +76,8 @@ function ToggleGroupItem({
           // Keyboard focus
           'focus:z-10 focus-visible:z-10',
           // Component state
-          'group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-sm',
-          'group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-sm group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-sm group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-sm',
+          'group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-control',
+          'group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-control group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-control group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-control',
           'group-data-horizontal/toggle-group:data-[spacing=0]:data-[variant=outline]:border-l-0 group-data-vertical/toggle-group:data-[spacing=0]:data-[variant=outline]:border-t-0',
           'group-data-horizontal/toggle-group:data-[spacing=0]:data-[variant=outline]:first:border-l group-data-vertical/toggle-group:data-[spacing=0]:data-[variant=outline]:first:border-t',
         ],

@@ -25,6 +25,7 @@ export function ThemeTokenDemo() {
   const [larger, setLarger] = useState(false);
   const [buttonOnly, setButtonOnly] = useState(false);
   const [compactCard, setCompactCard] = useState(false);
+  const [radius, setRadius] = useState('default');
   const [draft, setDraft] = useState('保留当前工作区');
   const [selected, setSelected] = useState('尚未操作');
   const tokens: ThemeTokenOverrides = {
@@ -49,10 +50,25 @@ export function ThemeTokenDemo() {
       <div className="grid gap-1">
         <h2 className="font-medium">共享尺寸与组件微调</h2>
         <p className="text-sm text-muted-foreground">
-          调整共享动作尺寸，按钮和单行菜单一起变化。组件覆盖只影响本区域，输入内容保持不变。
+          调整共享动作尺寸，按钮和单行菜单一起变化；全局圆角只改基准
+          --rui-radius，控件、卡片和菜单按同一阶梯缩放。组件覆盖只影响本区域，输入内容保持不变。
         </p>
       </div>
       <div className="flex flex-wrap items-end gap-3">
+        <div className="grid gap-1">
+          <Label htmlFor="token-radius">全局圆角</Label>
+          <SelectInput
+            id="token-radius"
+            aria-label="全局圆角"
+            value={radius}
+            onValueChange={setRadius}
+            options={[
+              { value: 'default', label: '默认 0.25rem' },
+              { value: '0.125rem', label: '方正 0.125rem' },
+              { value: '0.375rem', label: '柔和 0.375rem' },
+            ]}
+          />
+        </div>
         <div className="grid gap-1">
           <Label htmlFor="token-action-size">共享动作尺寸</Label>
           <SelectInput
@@ -81,7 +97,7 @@ export function ThemeTokenDemo() {
           卡片使用紧凑面板内距
         </label>
       </div>
-      <ReitoThemeProvider tokens={tokens}>
+      <ReitoThemeProvider radius={radius === 'default' ? undefined : radius} tokens={tokens}>
         <Card aria-label="局部 token 卡片">
           <CardHeader className="border-b">
             <CardTitle>继承同一套规则</CardTitle>
@@ -137,6 +153,7 @@ export function ThemeTokenDemo() {
             setLarger(false);
             setButtonOnly(false);
             setCompactCard(false);
+            setRadius('default');
           }}
         >
           重置尺寸示例

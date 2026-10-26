@@ -79,7 +79,7 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 | 既有布局：紧凑 / 舒适行高角色 | 36 / 40 px | `--rui-row-height` 保留为布局角色；不是 DataTable 所有数据行的固定高度。 |
 | 既有布局：紧凑 / 舒适面板内距 | 16 / 20 px | `--rui-panel-padding` 保留；通用组件内容区使用下表的 `--rui-content-padding`。 |
 | 间距尺度 | 0、4、8、12、16、20、24、32、40、48、64 px | 使用 `--rui-space-*`；特殊布局尺寸先登记为共享 token。 |
-| 小 / 中 / 大圆角 / composer | 6 / 8 / 12 / 14 px | 控件、容器与对话框使用稳定层级；composer 有独立角色，圆形状态元素可用 full。 |
+| 小 / 中 / 大圆角 / composer | 6 / 8 / 12 / 14 px | 均为基准 `--rui-radius`（默认 4px）的 1.5 / 2 / 3 / 3.5 倍，改基准即整体缩放（见[主题说明](theme-guide.md#全局圆角---rui-radius)）。控件、容器与对话框使用稳定层级；composer 有独立角色，圆形状态元素可用 full。 |
 | 边框 / 普通键盘焦点 / 强轮廓 | 1 / 1 / 2 px | 普通focus-width与outline-width分开；结构提示保留强轮廓角色；表单错误使用内边缘渐变。 |
 | 快速 / 常规动效 | 120 / 180 ms | 既有过渡仍用这两个时长；只提示状态变化。 |
 | 动效时长 / 较长动效 | 150 / 300 ms | `--rui-motion-duration` 与 `--rui-motion-duration-lg`。菜单等弹层进入和退出使用较短时长、`--rui-motion-easing` 和 `--rui-motion-popup-scale`（0.96）；按钮按下位移为 `--rui-motion-press-distance`（1px）。`prefers-reduced-motion` 把这两个时长设为 0ms，并把弹层缩放设为 1。 |
@@ -245,7 +245,7 @@ Composer 在原生 textarea 上维护文字与提及区间，复用 ContextPill 
 
 ContextMenu、DropdownMenu、Menubar 的条目使用 menu-item-padding-x/y：compact 12 / 4 px、comfortable 16 / 6 px。菜单外壳仍有 4 px 边缘，普通文字距离外壳左边为 16 / 20 px；带选择指示或 inset 的条目保留额外对齐空间。
 
-Button、Toggle、输入框附属按钮以及按钮组外端统一使用 radius-sm（6 px），与尺寸、变体、禁用或加载状态无关。相邻组合的内部接缝保留 0 圆角；圆形专用动作和容器仍使用各自角色。
+Button、Toggle、输入框附属按钮以及按钮组外端统一使用 radius-control（默认 radius-sm，6 px），与尺寸、变体、禁用或加载状态无关。Input、Textarea、NativeSelect、NumberField、InputGroup、InputOTP 与多选 Combobox 的字段外框使用同一 input radius；字段内的 chip 取 input radius − space-1 保持同心。相邻组合的内部接缝保留 0 圆角；圆形专用动作和容器仍使用各自角色。
 
 ScrollArea 默认不添加内容内距。variant="inset" 将组件 padding-x/y 放在 Root 和 Viewport 之间：横向继承紧凑面板尺度（12 / 16px），纵向采用 space-1（4px）的薄边缘。滚动到中部或末尾后仍保留顶部 / 底部边缘。文件列表 Demo 默认使用 inset，行内不重复横向 padding；纵向使用共享 Menu 条目尺度（4 / 8px），单行高度为28 / 36px，避免滚动容器内距与表格 cell padding 叠加。Storybook 可调 variant、方向和数量。实测见 [滚动列表内距验证](validation-scroll-area-insets.md)。
 

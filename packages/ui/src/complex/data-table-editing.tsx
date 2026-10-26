@@ -139,7 +139,7 @@ export function DataTableCellEditor<TData>({
       {...shared}
       type={definition.kind === 'number' ? 'number' : definition.kind === 'date' ? 'date' : 'text'}
       placeholder={definition.placeholder}
-      className="h-[var(--rui-control-height-sm)] rounded-md px-[var(--rui-space-2)]"
+      className="h-[var(--rui-control-height-sm)] px-[var(--rui-space-2)]"
       value={value === null ? '' : String(value)}
       onChange={(event) =>
         onChange(
