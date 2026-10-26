@@ -7,6 +7,7 @@
 
 同时安装匹配的 UI 与 tokens 版本。入口依次导入 @reito/tokens/css 和 @reito/ui/styles.css，
 用 ReitoThemeProvider root 包住应用并选择 mode。默认 compact，不要求产品提供密度切换。
+全局主题可以写成 createTheme 预设传给 theme；局部变化用 Theme 包住子树，详见 docs/theme-guide.md。
 样式已经编译，消费工程不需要 Tailwind、扫描 node_modules 或复制字体规则。
 
 ## 组合所有权

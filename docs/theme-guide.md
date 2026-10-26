@@ -23,6 +23,48 @@ import '@reito/ui/styles.css';
 </ReitoThemeProvider>
 ```
 
+## 代码化全局主题与局部 Theme
+
+全局主题写在一个 TS 模块里，用 `createTheme` 生成类型化预设，再交给根 Provider 的 `theme`。
+思路对应 PrimeVue `definePreset(base, overrides)` 与 Nuxt UI `app.config`：预设可以多层叠加，
+后面的层覆盖前面的层；colors 和组件默认值按字段合并，tokens 按组件合并，不重新实现一套 token。
+`tokens` 仍是 `@reito/tokens` 生成的 `ThemeTokenOverrides`，键名有类型检查。
+
+```tsx
+// theme.ts
+import { createTheme } from '@reito/ui/basic';
+
+export const baseTheme = createTheme({
+  colors: { primary: 'violet', neutral: 'zinc' },
+  tokens: { components: { button: { radius: '10px' } } },
+});
+export const productTheme = createTheme(baseTheme, {
+  defaults: { Button: { variant: 'outline' }, SelectInput: { placeholder: '请选择范围' } },
+});
+
+// main.tsx
+<ReitoThemeProvider root mode="system" theme={productTheme}>
+  <App />
+</ReitoThemeProvider>
+```
+
+`Theme` 是局部作用域，只影响子树（对应 Nuxt UI `UTheme`）。它与 Provider 接受同样的
+`theme / mode / colors / density / tokens / defaults`，但从不接管 html。合并顺序是：父作用域、
+本层 `theme`、本层单独属性；组件上显式传入的属性永远优先。
+
+```tsx
+<Theme mode="light" colors={{ primary: 'rose' }} defaults={{ Button: { variant: 'secondary', size: 'sm' } }}>
+  <Button>使用 secondary / sm</Button>
+  <Button variant="ghost">显式 ghost 优先</Button>
+  <SelectInput options={options} />  {/* 弹出菜单同样使用局部主题与默认值 */}
+</Theme>
+```
+
+`defaults` 目前覆盖 `Button`（variant / size / color）、`Panel`（flush）、`SelectInput`
+（placeholder）。其他组件仍通过语义 token 继承主题；需要更多组件默认值时，在 `ThemeComponentDefaults`
+中加入该组件并在组件内读取 `useThemeDefaults`。显式传 `undefined` 视为未传，会回落到主题默认值。
+密度仍是样式能力而非产品控件；预设里写 density 是应用作者的选择，不把高密度当作默认品牌特征。
+
 ## 作用域与兼容
 
 Provider 默认仅影响自身子树；root 同时设置 html 的主题、密度和语义变量，卸载恢复原值。嵌套 Provider 合并父级 colors，可独立指定明暗；默认 compact。system 监听系统明暗变化，SSR 首屏使用 dark，客户端挂载后解析系统偏好。持久化由宿主处理，库本身不读写存储。

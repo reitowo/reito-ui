@@ -86,9 +86,10 @@ merges `tokens` per key, and portals rendered inside it keep its theme. Use that
 global theme and local `Theme` scopes. Details and examples:
 [design-contract.md § Theme](references/design-contract.md#theme).
 
-Planned in [#20](https://github.com/reitowo/reito-ui/issues/20) (AI-THEME-01..03): a `Theme` alias
-for the nested provider, `createTheme` for a reusable preset object, and component prop defaults.
-They are not exported yet; do not import them. Until they ship, write `ReitoThemeProvider`.
+For a product-wide theme, define a `createTheme` preset in a TS module and pass it to the root
+provider's `theme` prop. `<Theme>` is the nested provider for an intentional local variation; its
+`defaults` prop sets Button, Panel and SelectInput prop defaults, and explicit props win. All three
+are exported from `@reito/ui/basic`. Ordinary screens need no overrides to align basic controls.
 
 ## Validate
 
