@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../primitives/select.js';
+import { useThemeDefaults } from '../theme.js';
 
 export interface SelectOption<Value extends string | number = string> {
   value: Value;
@@ -50,7 +51,7 @@ export function SelectInput<Value extends string | number = string>({
   value,
   defaultValue,
   onValueChange,
-  placeholder = '请选择',
+  placeholder: placeholderProp,
   name,
   form,
   autoComplete,
@@ -59,6 +60,8 @@ export function SelectInput<Value extends string | number = string>({
   disabled,
   ...triggerProps
 }: SelectInputProps<Value>) {
+  const themed = useThemeDefaults('SelectInput');
+  const placeholder = placeholderProp ?? themed.placeholder ?? '请选择';
   return (
     <Select<Value>
       items={options}

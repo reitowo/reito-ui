@@ -27,12 +27,22 @@ export * from './basic/scroll-top.js';
 export * from './basic/section-label.js';
 export * from './basic/jump-to-latest.js';
 
-export { ReitoThemeProvider, useReitoTheme } from './theme.js';
+export {
+  ReitoThemeProvider,
+  Theme,
+  createTheme,
+  useReitoTheme,
+  useThemeDefaults,
+} from './theme.js';
 export type {
   ThemeMode,
   ThemeColor,
   ThemeColors,
   ThemeTokenOverrides,
+  ThemeConfig,
+  ThemeComponentDefaults,
+  ThemeProps,
+  ReitoThemeProviderProps,
   ColorPalette,
   DensityMode,
   NeutralPalette,
