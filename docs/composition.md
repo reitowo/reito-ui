@@ -14,7 +14,9 @@
 
 - Stack 提供纵向间距，inset 显式提供内容内距；Inline 对齐并自动换行。
 - Grid 按容器可用宽度排列同级区域，窄面板也能自动收为单列。
-- PageHeader 统一页面标题、说明和主要操作；Panel 统一区域标题、操作和页脚。
+- 整页使用 Page：title、description、actions 与内容通过一个公开入口组合，统一页头到内容的距离。
+  Page 不添加默认外部 margin；inset 只在页面需要自己提供外边缘时启用。
+- PageHeader 统一标题、说明和主要操作，供已有容器使用；Panel 统一区域标题、操作和页脚。
 - Panel 默认自己提供一层内容内距；表格、ItemGroup、Empty 已有自己的内距，使用 flush。
 - Text 的 body/interface/caption/reading 角色、Heading 的 page/section/item 尺寸管理文字层级。
   Heading level 单独管理文档语义。正文默认完整换行，标题和段落不带浏览器默认 margin。
@@ -32,6 +34,9 @@ npm run recipe:check 检查其内容和公共导入，避免文档里的接口�
 | 默认 Button / Input / Select 高度 | 32px | 36px | 24px |
 | 默认控件字号 | 13px | 13px | 12px |
 | 通用内容内距 | 12px | 16px | 8px |
+| Page 页头到内容 | 16px | 20px | 12px |
+| 标题到说明 | 4px | 6px | 2px |
+| Tabs 导航到面板 | 12px | 16px | 8px |
 | Empty 内距 | 24px | 32px | 16px |
 | 正文字号 | 14px | 14px | 14px |
 
@@ -39,6 +44,25 @@ npm run recipe:check 检查其内容和公共导入，避免文档里的接口�
 radius-control 默认引用 6px 小圆角，radius-surface 默认引用 8px 中圆角；菜单和 composer 有明确角色。
 Card、Empty、Panel 消费 surface 角色，Input、Select、Button 消费 control 角色。
 基础字体规则位于 CSS base 层，不能压过等宽字体或组件自己的文字角色。
+
+## 页头与页签
+
+```tsx
+<Page title="知识库" description="检索已发布内容，管理来源与审核">
+  <Panel title="检索知识">{/* 业务内容 */}</Panel>
+  <Grid>{/* 同级内容区 */}</Grid>
+</Page>
+```
+
+Page 使用 section-gap 管理页头到内容，用 gap 属性管理内容区的同级间距。
+标题到说明使用 compact-surface-gap；Tabs 到面板使用 content-gap。这些角色随密度和 Provider 覆盖变化。
+应用不需要给 PageHeader、TabsContent 或首个 Panel 添加 margin-top／margin-bottom 来补齐布局。
+
+Tabs 的 default 是紧凑分段控件，line 是占满可用宽度的页面导航。
+line 标签按内容宽度排列，底边与选中指示线在同一位置；不使用指示线的负空间来制造面板间距。
+两种样式的长标签在导航内横向滚动，保持完整文字；方向键聚焦会把目标滚入可见范围。
+纵向 line 导航沿右边显示选中状态。导航样式不改变 Base UI 的选择、禁用或键盘行为。
+需要保留未发送表单 DOM 时使用 TabsContent keepMounted，业务草稿与命令仍由应用管理。
 
 ## 从 0.5.8 升级
 

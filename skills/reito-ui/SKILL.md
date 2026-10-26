@@ -74,6 +74,11 @@ Imports: basic components, composition and `ReitoThemeProvider` from `@reito/ui/
 - [design-contract.md](references/design-contract.md) gives component selection, typography roles,
   inset ownership and the full don't list.
 
+- Page owns a complete page: title, description, actions and the header-to-content gap. Use it for
+  every ordinary page. PageHeader is the standalone heading when a container already owns layout.
+- Tabs line is full-width page navigation; default is a compact segmented control. Both scroll long
+  labels inside the navigation and own the navigation-to-panel gap. Do not add compensating margins.
+
 Use documented control props. Base UI composition uses `render`, not Radix `asChild`;
 `SelectInput` reports values through `onValueChange`. Not every component has `loading`, `size` or
 `tone`; check types. Preserve labels, keyboard focus, disabled/error/loading states and Chinese IME.

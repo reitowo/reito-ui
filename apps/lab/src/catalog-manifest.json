@@ -5,17 +5,17 @@
     "ai": 24
   },
   "total": 143,
-  "stories": 1467,
+  "stories": 1470,
   "entries": [
     {
       "layer": "basic",
       "id": "composition",
       "name": "Composition / 页面积木",
-      "description": "Stack、Inline、Grid、Text、Heading、PageHeader 和 Panel 直接组合工作页面，主题统一尺寸与排版。",
+      "description": "Page 统一页头与内容间距，Stack、Inline、Grid、Text、Heading 和 Panel 组合工作页面。",
       "storyId": "基础-composition--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CompositionDemo",
-      "stories": 2
+      "stories": 5
     },
     {
       "layer": "basic",

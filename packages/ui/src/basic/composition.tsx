@@ -154,7 +154,7 @@ export function PageHeader({
       )}
       {...props}
     >
-      <Stack gap="small">
+      <Stack gap="none" className="gap-[var(--rui-compact-surface-gap)]">
         <Heading level={1} size="page">
           {title}
         </Heading>
@@ -166,6 +166,36 @@ export function PageHeader({
       </Stack>
       {actions && <Inline>{actions}</Inline>}
     </header>
+  );
+}
+
+/** A complete page owns the header-to-body gap; content sections do not add header margins. */
+export function Page({
+  title,
+  description,
+  actions,
+  gap = 'normal',
+  inset = false,
+  children,
+  className,
+  ...props
+}: Omit<ComponentProps<'section'>, 'title'> &
+  HeaderContent & { gap?: ContentGap; inset?: boolean }) {
+  return (
+    <section
+      data-slot="page"
+      className={cn(
+        'flex min-w-0 flex-col gap-[var(--rui-section-gap)]',
+        inset && 'p-[var(--rui-content-padding)]',
+        className,
+      )}
+      {...props}
+    >
+      <PageHeader title={title} description={description} actions={actions} />
+      <Stack data-slot="page-content" gap={gap}>
+        {children}
+      </Stack>
+    </section>
   );
 }
 
@@ -196,7 +226,10 @@ export function Panel({
     >
       <header
         data-slot="panel-header"
-        className="flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)] border-b border-border p-[var(--rui-content-padding)]"
+        className={cn(
+          'flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)]',
+          'border-b border-border p-[var(--rui-content-padding)]',
+        )}
       >
         <Stack gap="small">
           <Heading id={titleId}>{title}</Heading>
