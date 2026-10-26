@@ -6,7 +6,7 @@ function Empty({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="empty"
       className={cn(
-        'flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance',
+        'flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-[var(--rui-content-gap)] rounded-[var(--rui-radius-surface)] border-dashed p-[var(--rui-empty-padding)] text-center text-balance',
         className,
       )}
       {...props}
@@ -18,7 +18,10 @@ function EmptyHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="empty-header"
-      className={cn('flex max-w-sm flex-col items-center gap-2', className)}
+      className={cn(
+        'flex max-w-sm flex-col items-center gap-[var(--rui-content-gap-sm)]',
+        className,
+      )}
       {...props}
     />
   );
@@ -58,13 +61,13 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="empty-title"
-      className={cn('font-heading text-sm font-medium tracking-tight', className)}
+      className={cn('font-heading text-[length:var(--rui-text-md)] font-medium', className)}
       {...props}
     />
   );
 }
 
-function EmptyDescription({ className, ...props }: React.ComponentProps<'p'>) {
+function EmptyDescription({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="empty-description"
@@ -82,7 +85,7 @@ function EmptyContent({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="empty-content"
       className={cn(
-        'flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance',
+        'flex w-full max-w-sm min-w-0 flex-col items-center gap-[var(--rui-content-gap-sm)].5 text-sm text-balance',
         className,
       )}
       {...props}

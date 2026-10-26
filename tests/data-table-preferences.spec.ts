@@ -88,6 +88,8 @@ test('Playground enables export and view props without changing tabs', async ({ 
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: preference popover stays accessible and contained`, async ({ page }) => {
+  // Measure settled colors; popup entry opacity is covered by motion tests.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 720, height: 900 });
   const table = await open(page, 'saved-views', `theme:${theme};density:${density}`);
   await table.getByRole('button', { name: '视图' }).click();

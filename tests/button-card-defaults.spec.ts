@@ -6,7 +6,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       localStorage.setItem('reito-theme', theme); localStorage.setItem('reito-density', density);
     }, { theme, density });
     await page.goto('/?layer=basic&component=button');
-    const height = density === 'compact' ? '28px' : '32px';
+    const height = density === 'compact' ? '32px' : '36px';
     const save = page.getByRole('button', { name: '保存更改', exact: true });
     await expect(save).toBeVisible({ timeout: 15_000 });
     expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--rui-motion-duration').trim())).toBe('150ms');
@@ -33,7 +33,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     for (const name of ['保存更改', '强调操作', '次要操作', '描边按钮', '轻量操作', '不可用', 'Default']) {
       const button = page.getByRole('button', { name, exact: true });
       await expect(button).toHaveCSS('height', height);
-      await expect(button).toHaveCSS('font-size', '14px');
+      await expect(button).toHaveCSS('font-size', '13px');
       await expect(button).toHaveCSS('border-radius', '6px');
     }
     await expect(page.locator('[data-slot="button"][aria-busy="true"]')).toHaveCSS('height', height);

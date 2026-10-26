@@ -1,3 +1,4 @@
+import { CompositionDemo } from './composition-demo.js';
 import { tokenMetrics } from '@reito/tokens/metrics';
 import { OneTimeCodeDemo } from './one-time-code-demo.js';
 import { ScrollTopDemo } from './scroll-top-demo.js';
@@ -1664,6 +1665,13 @@ export function JumpToLatestDemo() {
 }
 
 export const basicCatalog: BasicCatalogEntry[] = [
+  {
+    id: 'composition',
+    name: 'Composition / 页面积木',
+    description:
+      'Stack、Inline、Grid、Text、Heading、PageHeader 和 Panel 直接组合工作页面，主题统一尺寸与排版。',
+    component: CompositionDemo,
+  },
   {
     id: 'section-label',
     name: 'SectionLabel',

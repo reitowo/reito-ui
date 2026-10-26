@@ -1,36 +1,69 @@
 ---
 name: reito-ui
-description: Build, extend, or review UI using the Reito Graphite component library when the user explicitly requests Reito UI, Graphite, or this personal design system. Use its tokens, shared React components, Storybook examples, and design contract; do not apply this style to unrelated UI tasks.
+description: Build or fix React interfaces with Reito UI using public components, composition recipes and the theme system. Use when the user requests Reito UI or Graphite, or an existing Reito application needs layout or theme corrections.
 ---
 
-# Reito UI / Graphite
+# Reito UI
 
-Use the user's existing Reito Graphite library as the design authority. It combines neutral grayscale surfaces, compact controls and readable content with quiet desktop chrome. The library provides a three-layer component explorer: basic, complex and AI. Choose layouts according to the requested work. Product screenshots are visual references, not exact specifications or sources of assets.
+Build the requested screen from public components. The library owns control geometry, typography,
+internal spacing, surface shape, focus and portal themes. The application owns content, navigation,
+business state and commands.
 
-## Start with the installed version
+## Start
 
-- Locate `@reito/ui` and `@reito/tokens` in the current project or the library checkout supplied by the user. Read their package versions, exports, types, and relevant existing component/story before editing. Do not invent APIs or silently install a different library when Reito UI is missing.
-- Read [references/design-contract.md](references/design-contract.md) for the portable design rules, component selection, and acceptance gates. If working in the library repository, also read its `AGENTS.md` and `docs/design-language.md`; those files track current implementation values.
-- Establish the working context first: identify whether the screen is a conversation, review, settings, data view or component showcase. For a visual direction change, inspect a reference for that context and the actual composed page before judging individual tokens. Then check affected component states and shared implications.
+Read the installed UI and tokens versions. The composition APIs below target the 0.6.0-next.0
+candidate and subsequent compatible versions; 0.5.8 does not export them. Use a matching release or
+supplied package artifacts. Consult public types or the component story when a prop is unclear.
+Application authors should not need to inspect private component CSS.
 
-## Preserve the system
+Load @reito/tokens/css then @reito/ui/styles.css once. Wrap the application in ReitoThemeProvider
+with root, the product's mode, and density="compact". The provider owns document and portal theme
+configuration. Only expose a product density switch when requested.
 
-- Token source: `packages/tokens/src/tokens.json`. Rebuild with `npm run tokens:build`; never hand-edit generated CSS. Primitive values feed semantic roles, and component slots/variants consume those roles.
-- Use semantic Tailwind utilities or --rui-* tokens, connected by the generated @theme bridge. The basic layer combines pinned shadcn / Base UI base-nova output with local Base UI compositions; complex and AI components compose that layer. Read installed APIs and provenance before choosing or extending a component. Correct shared appearance in the token source, component, or shared layout. Do not add page-specific theme overrides, literal palette colors, isolated fonts, or arbitrary shadows.
-- Use shared content-padding/content-gap, cell-padding and conversation density roles for containers and rows. Compact mode tightens spacing without shrinking reading text. Read the portable contract for 0.4 defaults; do not restore old fixed padding through feature-page overrides. Use CodeBlock's embedded variant inside an existing artifact frame to avoid nested container padding.
-- Give active work visual priority. Use short toolbars, lightweight sidebar rows and conditional context panels. In a conversation, make the composer the main soft container and keep input, context and actions together. Keep ordinary boundaries quiet and focus explicit; a statistics strip, decorative filename tab or uppercase eyebrow does not establish desktop character.
-- Set `data-theme="dark|light"` and `data-density="compact|comfortable"` on `<html>` so portaled surfaces inherit them. Default is dark + compact. A panel-specific color patch is not a fix for incorrect portal inheritance.
-- Do not add a compact/comfortable density switch to product headers, toolbars or settings by default. Use compact density unless the product specifies otherwise. Only expose density selection when the user explicitly requests it; supporting both densities and testing them does not require a user-facing switch. Lab and Storybook inspection controls are not application chrome to copy.
-- Consume `@reito/tokens/css` followed by `@reito/ui/styles.css`. Reuse public components; do not copy their implementation into feature pages.
-- Preserve accessible labels, native/Base UI keyboard semantics, visible focus, IME composition, and reduced-motion behavior. Show applicable loading/error/disabled/empty states with realistic Chinese content.
-- Keep product branding, proprietary fonts, and restricted Multica UI code out of the implementation. The library's own tokens and styling are original; inspect relevant dependency licenses when adding third-party code.
+## Compose
 
-## Finish with evidence
+Read [the composition contract](references/design-contract.md) for component selection and inset
+ownership. [The workbench recipe](assets/workbench.tsx) is a complete public-import example with no
+application CSS. It is generated from the same composition used in the Lab and verified against the
+compiled package.
 
-When adding a library component family, register its shared Demo in the relevant catalog, add discoverable stories and run `npm run catalog:build`. The generated manifest supplies Lab counts and Storybook deep links; `catalog:check` detects drift. Use Lab for individual components and Workbench for composed Agent, file review and settings flows, according to the task.
+- Stack owns vertical gaps; Inline aligns and wraps actions, metadata and fields.
+- Grid lays out peer sections and collapses according to available width.
+- PageHeader owns title, description and primary actions.
+- Panel owns a section heading, actions, footer and one content inset. Use flush for a list, table
+  or Empty that already owns its inset.
+- Heading separates document level from visual size. Text offers body, interface, caption and
+  reading roles. Content remains complete unless the product explicitly needs truncation.
+- Field and its label, description and error slots own form spacing. Use Inline align="end" for
+  fields and their submit button. Default controls align without height or font overrides.
+- ItemGroup and Item compose records; ItemSeparator divides them. Put author and time in one
+  Inline align="baseline". ItemActions stay with the record they affect.
 
-In the library repository, run `npm run check`, `npm run build`, and relevant interaction checks for executable UI changes. In a consuming project, use that project's checks and inspect the composed page. For visual work, also compare the result with an inspected reference for the selected working context, recording the reference and remaining differences. A passing build, interaction test or accessibility scan does not prove visual similarity.
+Use documented control props. Base UI composition uses render; SelectInput reports values through
+onValueChange. Do not assume every component has loading, size or tone. Preserve labels, keyboard
+focus, disabled/error/loading states and Chinese IME behavior.
 
-Record what actually ran, which theme/density combinations were checked, and any remaining limitations; the existence of a story or a prose rule is not proof that verification passed.
+## Theme and shared fixes
 
-Scope remains the user's requested screen, component, or review. Using this Skill does not authorize publishing packages, sending data, or replacing unrelated design systems.
+For a requested product-wide change, use the provider's typed tokens override. Use a nested provider
+for an intentional local variation. Ordinary screens need no overrides to align basic controls.
+
+If a default composition has clipped labels, doubled inset, inconsistent geometry or incorrect
+fonts, reproduce it with public components and fix the responsible library component or token.
+Keep the example as a behavior check. Avoid accumulating application data-slot selectors or copying
+component implementations into features. Application CSS is for genuinely product-specific geometry,
+such as a specialized canvas; it is not a prerequisite for ordinary forms, lists or panels.
+
+## Validate
+
+Inspect the composed screen with realistic Chinese/English content, empty/error states and a narrow
+container. Verify wrapping, visible labels, focus and preserved drafts. Shared library changes cover
+light/dark and supported densities, including a portal and nested theme.
+
+In the library follow AGENTS.md and run the required checks, build and relevant behavior tests.
+npm run test:composition checks a compiled consumer without source aliases, a Tailwind compiler or
+application CSS. npm run recipe:check prevents the portable example from drifting. Edit the recipe
+source at packages/ui/src/basic/composition-demo.tsx and run npm run recipe:build to regenerate it.
+
+Report source changes, local artifacts and published versions separately. Skill use does not grant
+package publication, deployment or external-message authority.

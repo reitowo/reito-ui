@@ -21,6 +21,8 @@ export interface ModelSelectorProps {
   disabled?: boolean;
   label?: string;
   compact?: boolean;
+  /** Compact hides the visible label; control size remains an explicit, independent choice. */
+  size?: 'xs' | 'sm' | 'default';
   className?: string;
 }
 
@@ -32,6 +34,7 @@ export function ModelSelector({
   disabled = false,
   label = '选择模型',
   compact = false,
+  size = 'default',
   className,
 }: ModelSelectorProps) {
   const id = useId();
@@ -53,7 +56,7 @@ export function ModelSelector({
         <SelectTrigger
           id={id}
           aria-label={label}
-          size={compact ? 'xs' : 'sm'}
+          size={size}
           className={classes(
             'max-w-full',
             compact && 'border-transparent bg-transparent shadow-none dark:bg-transparent',

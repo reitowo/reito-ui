@@ -25,6 +25,10 @@
     font-size: var(--rui-font-interface);
     line-height: var(--rui-line-height);
   }
+  /* Defaults stay below component utilities, so code and explicit typography can override them. */
+  [data-slot] {
+    font-family: var(--rui-font-sans);
+  }
   button,
   input,
   select,
@@ -43,9 +47,6 @@
   font-size: var(--rui-font-interface);
   line-height: var(--rui-line-height);
   color: var(--rui-text);
-}
-[data-slot] {
-  font-family: var(--rui-font-sans);
 }
 
 /* Validation belongs inside the control. Preserve the independent keyboard
