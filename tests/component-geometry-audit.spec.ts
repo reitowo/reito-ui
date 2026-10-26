@@ -26,7 +26,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     })));
     writeFileSync('.logs/component-geometry-' + theme + '-' + density + '.json', JSON.stringify(inventory, null, 2));
     expect(inventory).toHaveLength(count);
-    const sizes = density === 'compact' ? { default:28, icon:28, xs:24, 'icon-xs':24, sm:28, 'icon-sm':28, md:32, 'icon-md':32, lg:36, 'icon-lg':36 } : { default:32, icon:32, xs:28, 'icon-xs':28, sm:32, 'icon-sm':32, md:36, 'icon-md':36, lg:40, 'icon-lg':40 };
+    const sizes = density === 'compact' ? { default:32, icon:32, xs:24, 'icon-xs':24, sm:28, 'icon-sm':28, md:32, 'icon-md':32, lg:36, 'icon-lg':36 } : { default:36, icon:36, xs:28, 'icon-xs':28, sm:32, 'icon-sm':32, md:36, 'icon-md':36, lg:40, 'icon-lg':40 };
     const unexpected = inventory.flatMap(tile => tile.buttons.filter(button => {
       if (button.slot !== 'button' || !button.size || !(button.size in sizes)) return false;
       if (Math.abs(parseFloat(button.height) - sizes[button.size as keyof typeof sizes]) < .1) return false;
@@ -36,7 +36,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       return true;
     }).map(button => ({ component: tile.component, label: button.label, height: button.height })));
     expect(unexpected).toEqual([]);
-    const height = density === 'compact' ? '28px' : '32px';
+    const height = density === 'compact' ? '32px' : '36px';
     const y = density === 'compact' ? '8px' : '10px';
     const x = density === 'compact' ? '12px' : '16px';
     const task = page.locator('[data-slot="agent-task-card"]');
@@ -67,7 +67,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     const composer = page.locator('[data-component="ai/composer"]');
     await expect(composer.getByRole('button', { name: '发送消息', exact: true })).toHaveCSS('height', height);
     await expect(composer.getByRole('combobox', { name: '选择模型' })).toHaveCSS('height', height);
-    await expect(page.locator('[data-component="ai/task-queue"]').getByRole('combobox', { name: '筛选任务队列' })).toHaveCSS('height', height);
+    await expect(page.locator('[data-component="ai/task-queue"]').getByRole('combobox', { name: '筛选任务队列' })).toHaveCSS('height', density === 'compact' ? '24px' : '28px');
     const region = page.locator('[data-component="ai/agent-task"]');
     await region.scrollIntoViewIfNeeded();
     await region.screenshot({ path: '.logs/action-panel-' + theme + '-' + density + '.png' });

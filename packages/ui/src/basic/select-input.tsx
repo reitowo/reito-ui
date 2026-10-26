@@ -75,7 +75,9 @@ export function SelectInput<Value extends string | number = string>({
       }}
     >
       <SelectTrigger {...triggerProps}>
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={placeholder}>
+          {(selected) => options.find((option) => option.value === selected)?.label ?? placeholder}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent align="start" alignItemWithTrigger={false}>
         <SelectGroup>

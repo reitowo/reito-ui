@@ -9,10 +9,10 @@
 | Button | height、padding-x、font-size、radius；primary / accent / outline / secondary / ghost / destructive 的 `bg-rest`、`bg-hover`、`bg-pressed`、`bg-disabled` 与前景色，以及 link-fg。height 适用于默认文字和图标按钮，显式 size 继续使用对应尺寸尺度。按下位移使用 `--rui-motion-press-distance` |
 | Input | height、padding-x、font-size、radius；`bg-rest`、`bg-hover`、`bg-disabled`、`bg-readonly`、`border-rest`、`border-readonly`、`border-invalid`。Textarea 共用这组表面 token。使用 Input 组合的密码等字段自动继承 |
 | Menu | item-height、item-line-height、item-padding-x、item-padding-y、font-size；popup-radius、popup-padding、item-radius、item-gap、icon-size、inset-padding-x、separator-inset、separator-margin-y；`item-bg-rest`、`item-bg-highlighted`、`item-fg-highlighted`、`item-bg-highlighted-destructive`、`item-fg-destructive`、`item-opacity-disabled`。DropdownMenu、ContextMenu、Menubar、Select、Combobox 的弹层与条目共享此组。弹层打开和关闭使用 `--rui-motion-duration`、`--rui-motion-easing` 与 `--rui-motion-popup-scale` |
-| Card | padding-x、padding-y、text-gap、radius；标题、内容、脚注使用同组内距；radius 引用 `density.*.card-radius`（compact / comfortable 14px，dense 6px） |
+| Card | padding-x、padding-y、text-gap、radius；标题、内容、脚注使用同组内距；radius 引用 `density.*.card-radius`，默认绑定 radius-surface（8px） |
 | ScrollArea | padding-x、padding-y；仅 inset 变体的固定滚动边缘，默认引用 compact-surface-padding-x 和 space-1 |
 
-其他组件继续消费共享语义角色。这次没有为每个 CSS 声明制造一个独立 token，也没有改变所有组件的默认尺寸。
+其他组件消费共享语义角色。0.6 候选的默认对齐、文字角色和单层内距见 [组合契约](composition.md)。
 
 ## 使用方式
 
@@ -23,7 +23,8 @@ import type { ThemeTokenOverrides } from '@reito/ui/basic';
 const tokens: ThemeTokenOverrides = {
   semantic: {
     // 默认按钮和展开菜单一起提高一级；表单高度保持原样。
-    'control-height-sm': 'var(--rui-control-height)',
+    'button-height': 'var(--rui-control-height-lg)',
+    'control-height-sm': 'var(--rui-control-height-lg)',
   },
   components: {
     card: {

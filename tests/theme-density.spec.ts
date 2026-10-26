@@ -18,7 +18,7 @@ for (const theme of ['dark', 'light']) {
     await save.click();
     await chooseThemeDensity(page, 'comfortable');
     await expect(page.locator('html')).toHaveAttribute('data-density', 'comfortable');
-    await expect(save).toHaveCSS('height', '32px');
+    await expect(save).toHaveCSS('height', '36px');
     await expect(tile.getByText('已保存 1 次')).toBeVisible();
     await page.getByRole('button', { name: '主题', exact: true }).click();
     await expect(page.getByRole('menuitemradio', { name: '舒适', exact: true })).toHaveAttribute('aria-checked', 'true');
@@ -41,6 +41,6 @@ for (const theme of ['dark', 'light']) {
     await expect(page.getByRole('heading', { name: '全组件总览' })).toBeVisible({ timeout: 15_000 });
     const saveAfterReload = page.locator('#component-basic-button').getByRole('button', { name: '保存更改', exact: true });
     await expect(saveAfterReload).toBeVisible({ timeout: 15_000 });
-    await expect(saveAfterReload).toHaveCSS('height', '28px');
+    await expect(saveAfterReload).toHaveCSS('height', '32px');
   });
 }

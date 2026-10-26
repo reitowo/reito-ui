@@ -1,5 +1,6 @@
 'use client';
 import { ThemePortalScope } from '../theme.js';
+import { fieldStateClassName } from '../lib/state.js';
 
 import { tokenMetrics } from '@reito/tokens/metrics';
 import * as React from 'react';
@@ -50,11 +51,12 @@ function SelectTrigger({
           // Spacing
           'gap-1.5',
           // Surface
-          'rounded-lg border border-input bg-transparent',
+          'rounded-[var(--rui-component-input-radius)] border',
+          fieldStateClassName,
           // Spacing
-          'py-2 pr-2 pl-2.5',
+          'py-0 px-[var(--rui-component-input-padding-x)]',
           // Typography
-          'text-[length:var(--rui-action-font-size)] whitespace-nowrap',
+          'text-[length:var(--rui-component-input-font-size)] whitespace-nowrap',
           // Motion
           'transition-colors',
           // Surface
@@ -68,16 +70,12 @@ function SelectTrigger({
           // Validation state
           'rui-validation',
           // Component state
-          'data-placeholder:text-muted-foreground data-[size=default]:h-[var(--rui-control-height)] data-[size=sm]:h-[var(--rui-control-height-sm)] data-[size=xs]:h-[var(--rui-button-height)] data-[size=xs]:py-0',
-          'data-[size=xs]:rounded-sm',
+          'data-placeholder:text-muted-foreground data-[size=default]:h-[var(--rui-component-input-height)] data-[size=sm]:h-[var(--rui-control-height-sm)] data-[size=xs]:h-[var(--rui-control-height-xs)] data-[size=xs]:py-0',
           // Child and composition rules
           'data-[size=xs]:[&_svg]:size-3',
           // Component state
-          'data-[size=sm]:rounded-md',
           // Child and composition rules
           '*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5',
-          // Dark theme
-          'dark:bg-input/30 dark:hover:bg-input/50',
           // Validation state
           // Child and composition rules
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",

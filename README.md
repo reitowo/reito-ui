@@ -1,5 +1,7 @@
 # Reito UI 0.5.8
 
+应用搭建入口：[页面组合与默认主题](docs/composition.md) · [可安装 skill](skills/reito-ui/SKILL.md)。
+
 基于 **shadcn/ui + Base UI + Tailwind CSS 4** 的个人 React 组件库。以 Cursor 的紧凑工作界面为主要方向，按 **基础 → 复杂 → AI** 分层。提供中性深浅主题、两档密度、真实字体、Storybook 与可操作的组件例工程。
 
 0.3 建立了 shadcn / Base UI 重建基础；0.4 持续补充高频与富功能组件，并将表格、内容区和 AI 组件的密度统一到共享 tokens。基础层包含 50 个固定版本官方 CLI 生成族和 20 个本地组合族，复杂与 AI 层在其上组合。这里的外观与 API 是本库实现，不能称作 Cursor / Claude 的官方组件。

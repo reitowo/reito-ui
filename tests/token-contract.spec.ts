@@ -10,7 +10,7 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
     const root = document.documentElement.style;
     root.setProperty('--rui-control-height', '44px');
     root.setProperty('--rui-font-interface', '18px');
-    root.setProperty('--rui-radius-lg', '3px');
+    root.setProperty('--rui-radius-control', '3px');
     root.setProperty('--rui-space-1', '5px');
   });
   await expect(input).toHaveCSS('height', '44px');

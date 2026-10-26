@@ -4,6 +4,13 @@ Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧�
 
 0.4 的 Lab 是基础、复杂、AI 三层组件目录，当前提供 70 / 39 / 20 个组件族；Workbench 则将共享组件组合成 Agent、文件与差异、设置工作面。基础包含 50 个官方 shadcn / Base UI base-nova 生成族及 20 个本地组合族，复杂与 AI 在其上组合。组件库仍服务于设置、表格、表单、导航、弹层和其他桌面场景；例工程的结构不要求每个消费项目都变成聊天产品。
 
+## 当前组合契约（0.6 候选）
+
+[页面组合与默认主题](composition.md)定义应用与库的职责、默认尺寸和升级边界。
+基础 Stack、Inline、Grid、Text、Heading、PageHeader、Panel 支持无应用 CSS 的工作台组合。
+默认 Button、Input、Select 使用相同高度与字号；Card、Panel、Empty 使用 surface 圆角。
+下文历史测量保留其日期，当前默认值以 tokens.json 和上述契约为准。
+
 ## 先确认什么
 
 先在例工程确认**工作场景与整体结构**：主任务是否清楚、阅读是否舒适、侧栏和工具栏是否安静、输入与辅助面板是否处于合理位置。涉及风格调整时，先实际查看同一工作场景的参考图，再比较颜色、边界、字重、节奏与布局；不能仅凭产品功能文案推断视觉。
@@ -61,7 +68,7 @@ CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中�
 | --- | --- | --- |
 | 辅助文字 / 紧凑 UI / 常规 UI / 阅读正文 | 12 / 13 / 14 / 16 px | 数字按浏览器根字号 16 px 折算；不要为塞入文字继续缩小正文。 |
 | 常规 / 中等 / 半粗字重 | 400 / 500 / 600 | 控件与正文优先 400，主要导航和标题按层级使用 500；600 用于需要明确强调的内容，避免每个标签都加粗。 |
-| 紧凑：XS / SM / default / LG 控件 | 24 / 28 / 32 / 36 px | 此行是通用控件尺度；Button 默认使用独立的 button-height，见下文。 |
+| 紧凑：XS / SM / default / LG 控件 | 24 / 28 / 32 / 36 px | 默认 Button、Input、Select 共用同一控件尺度。 |
 | 舒适：XS / SM / default / LG 控件 | 28 / 32 / 36 / 40 px | 比紧凑增加一级 4px，保留相同界面字号。 |
 | 既有布局：紧凑 / 舒适行高角色 | 36 / 40 px | `--rui-row-height` 保留为布局角色；不是 DataTable 所有数据行的固定高度。 |
 | 既有布局：紧凑 / 舒适面板内距 | 16 / 20 px | `--rui-panel-padding` 保留；通用组件内容区使用下表的 `--rui-content-padding`。 |
@@ -246,7 +253,7 @@ Card 是 React 组合组件，Header / Content / Footer 是独立区域；data-s
 
 紧凑卡片外层纵向padding和内部操作区分隔后的纵向padding使用同一compact-surface-padding-y；不要以content-gap-sm替代边缘内距。AgentTaskCard、确认浮层等内分隔可以保留横向缩进，但分隔线上方内容gap与分隔线下方操作padding各有角色。
 
-默认Toggle、Tabs触发器、Menubar触发器和普通Button共享button-height；带框Tabs外层另加control-inset，line变体直接使用动作高度。Button icon-sm内图标与SM文字按钮一致。工具栏SelectTrigger size="xs"使用动作高度，表单default / sm维持字段尺度。Table展开器在两种密度使用相应XS动作高度。
+默认Toggle、Tabs触发器、Menubar触发器和普通Button共享button-height；带框Tabs外层另加control-inset，line变体直接使用动作高度。Button icon-sm内图标与SM文字按钮一致。SelectTrigger 的 xs/sm/default 使用对应控件尺度，默认与 Button、Input 对齐。Table展开器在两种密度使用相应XS动作高度。
 
 全目录记录与专用尺寸例外见 [边距与操作审计](validation-surfaces-and-actions.md)。
 

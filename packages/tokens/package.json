@@ -1,6 +1,6 @@
 {
   "name": "@reito/tokens",
-  "version": "0.5.8",
+  "version": "0.6.0-next.0",
   "type": "module",
   "description": "Original graphite desktop design tokens with dark/light themes and two densities",
   "exports": {

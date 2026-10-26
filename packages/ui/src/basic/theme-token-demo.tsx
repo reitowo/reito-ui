@@ -28,7 +28,12 @@ export function ThemeTokenDemo() {
   const [draft, setDraft] = useState('保留当前工作区');
   const [selected, setSelected] = useState('尚未操作');
   const tokens: ThemeTokenOverrides = {
-    semantic: larger ? { 'control-height-sm': 'var(--rui-control-height)' } : {},
+    semantic: larger
+      ? {
+          'button-height': 'var(--rui-control-height-lg)',
+          'control-height-sm': 'var(--rui-control-height-lg)',
+        }
+      : {},
     components: {
       button: buttonOnly ? { height: 'var(--rui-control-height-xs)' } : {},
       card: compactCard

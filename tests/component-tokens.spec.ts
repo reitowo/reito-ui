@@ -34,11 +34,11 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
     const trigger = example.getByRole('button', { name: 'Token 示例菜单', exact: true });
     const nested = example.getByRole('button', { name: '嵌套继承操作', exact: true });
     const input = example.getByRole('textbox', { name: 'Token 示例工作区' });
-    const initialHeight = density === 'compact' ? 28 : 32;
-    const largerHeight = density === 'compact' ? 32 : 36;
+    const initialHeight = density === 'compact' ? 32 : 36;
+    const largerHeight = density === 'compact' ? 36 : 40;
     await expect(save).toHaveCSS('height', `${initialHeight}px`);
     expect(await example.evaluate(n => n.closest('[data-theme]')?.getAttribute('data-theme'))).toBe(mode);
-    await expect(input).toHaveCSS('height', `${largerHeight}px`);
+    await expect(input).toHaveCSS('height', `${initialHeight}px`);
     await input.fill('切换尺寸仍保留草稿');
     await example.getByRole('combobox', { name: '共享动作尺寸' }).click();
     await page.getByRole('option', { name: '增加一级', exact: true }).click();
@@ -80,10 +80,10 @@ for (const mode of ['dark', 'light']) for (const density of ['compact', 'comfort
 test('raw CSS base aliases remain live at the document and density scopes', async ({ page }) => {
   await page.goto('/?layer=basic&component=button');
   const save = page.getByRole('button', { name: '保存更改', exact: true });
-  await page.evaluate(() => document.documentElement.style.setProperty('--rui-control-height-sm', '34px'));
+  await page.evaluate(() => { document.documentElement.style.setProperty('--rui-control-height', '34px'); document.documentElement.style.setProperty('--rui-control-height-sm', '34px'); });
   await expect(save).toHaveCSS('height', '34px');
   await page.goto('/?layer=basic&component=dropdown-menu');
-  await page.evaluate(() => document.documentElement.style.setProperty('--rui-control-height-sm', '34px'));
+  await page.evaluate(() => { document.documentElement.style.setProperty('--rui-control-height', '34px'); document.documentElement.style.setProperty('--rui-control-height-sm', '34px'); });
   await page.getByRole('button', { name: '任务操作', exact: true }).click();
   await expect(page.getByRole('menuitemcheckbox', { name: '置顶任务' })).toHaveCSS('height', '34px');
   await page.evaluate(() => document.documentElement.style.setProperty('--rui-line-interface', '22px'));
