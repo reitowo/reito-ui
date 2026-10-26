@@ -5,9 +5,10 @@ const source = await readFile('packages/ui/src/basic/composition-demo.tsx', 'utf
 const body = source.slice(source.indexOf('/** Public components only:'));
 const imports = `import { useId, useState } from 'react';
 import {
-  Stack, Inline, Grid, Text, Heading, PageHeader, Panel, Button, Input, Field, FieldLabel,
+  Inline, Grid, Text, Heading, Page, Panel, Button, Input, Field, FieldLabel,
   Empty, EmptyHeader, EmptyTitle, EmptyDescription, ItemGroup, Item, ItemContent, ItemActions,
-  ItemSeparator, SelectInput, ReitoThemeProvider, type DensityMode, type ThemeMode,
+  ItemSeparator, SelectInput, Tabs, TabsList, TabsTrigger, TabsContent,
+  ReitoThemeProvider, type DensityMode, type ThemeMode,
 } from '@reito/ui/basic';
 
 `;

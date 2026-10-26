@@ -1,11 +1,12 @@
 import { useId, useState } from 'react';
-import { Stack, Inline, Grid, Text, Heading, PageHeader, Panel } from './composition.js';
+import { Inline, Grid, Text, Heading, Page, Panel } from './composition.js';
 import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
 import { Field, FieldLabel } from '../primitives/field.js';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '../primitives/empty.js';
 import { ItemGroup, Item, ItemContent, ItemActions, ItemSeparator } from '../primitives/item.js';
 import { SelectInput } from './select-input.js';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../primitives/tabs.js';
 import { ReitoThemeProvider, type DensityMode, type ThemeMode } from '../theme.js';
 
 /** Public components only: this recipe also runs against the packed library without application CSS. */
@@ -33,12 +34,13 @@ export function CompositionDemo({
           : undefined
       }
     >
-      <Stack inset gap="section" aria-label="积木组合示例">
-        <PageHeader
-          title="消息工作台"
-          description="查询消息、查看上下文并跟进处理。"
-          actions={<Button>新增规则</Button>}
-        />
+      <Page
+        inset
+        aria-label="积木组合示例"
+        title="消息工作台"
+        description="查询消息、查看上下文并跟进处理。"
+        actions={<Button>新增规则</Button>}
+      >
         <Panel title="筛选消息">
           <Inline align="end">
             <Field>
@@ -118,7 +120,92 @@ export function CompositionDemo({
             </Empty>
           </Panel>
         </Grid>
-      </Stack>
+      </Page>
     </ReitoThemeProvider>
+  );
+}
+
+/** Page title, tabs and panel content share library spacing without an application stylesheet. */
+export function PageTabsDemo({
+  variant = 'line',
+  orientation = 'horizontal',
+}: { variant?: 'default' | 'line'; orientation?: 'horizontal' | 'vertical' } = {}) {
+  const id = useId();
+  const [draft, setDraft] = useState('');
+  return (
+    <Page inset title="模型权限申请" aria-label="页签页面示例">
+      <Tabs defaultValue="requests" orientation={orientation}>
+        <TabsList variant={variant} aria-label="模型权限管理">
+          <TabsTrigger value="requests">申请记录</TabsTrigger>
+          <TabsTrigger value="tiers">权限档位</TabsTrigger>
+          <TabsTrigger value="history">包含较长名称与完整审批信息的历史申请记录</TabsTrigger>
+          <TabsTrigger value="disabled" disabled>
+            停用功能
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="requests" keepMounted>
+          <Panel title="申请记录">
+            <Field>
+              <FieldLabel htmlFor={id}>用途草稿</FieldLabel>
+              <Input id={id} value={draft} onChange={(event) => setDraft(event.target.value)} />
+            </Field>
+          </Panel>
+        </TabsContent>
+        <TabsContent value="tiers">
+          <Panel title="权限档位" flush>
+            <Empty>
+              <EmptyHeader>
+                <EmptyTitle>暂无权限档位</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
+          </Panel>
+        </TabsContent>
+        <TabsContent value="history">
+          <Panel title="历史申请" flush>
+            <Empty>
+              <EmptyHeader>
+                <EmptyTitle>暂无历史申请</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
+          </Panel>
+        </TabsContent>
+      </Tabs>
+    </Page>
+  );
+}
+
+/** Described pages use the same header-to-body spacing as pages with tabs and no subtitle. */
+export function KnowledgePageDemo() {
+  const id = useId();
+  return (
+    <Page
+      inset
+      title="知识库"
+      description="检索已发布内容，管理知识来源与审核"
+      aria-label="内容页面示例"
+    >
+      <Panel title="检索知识">
+        <Field>
+          <FieldLabel htmlFor={id}>检索内容</FieldLabel>
+          <Input id={id} />
+        </Field>
+      </Panel>
+      <Grid>
+        <Panel title="内容与审核" flush>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>暂无知识内容</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        </Panel>
+        <Panel title="知识来源" flush>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>暂无知识来源</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        </Panel>
+      </Grid>
+    </Page>
   );
 }

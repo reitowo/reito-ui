@@ -9,7 +9,11 @@ function Tabs({ className, orientation = 'horizontal', ...props }: TabsPrimitive
     <TabsPrimitive.Root
       data-slot="tabs"
       data-orientation={orientation}
-      className={cn('group/tabs flex gap-2 data-horizontal:flex-col', className)}
+      orientation={orientation}
+      className={cn(
+        'group/tabs flex min-w-0 gap-[var(--rui-content-gap)] data-horizontal:flex-col',
+        className,
+      )}
       {...props}
     />
   );
@@ -18,22 +22,31 @@ function Tabs({ className, orientation = 'horizontal', ...props }: TabsPrimitive
 const tabsListVariants = cva(
   [
     // Layout
-    'group/tabs-list inline-flex w-fit items-center justify-center',
+    'group/tabs-list inline-flex w-fit max-w-full items-center justify-center',
+    'group-data-horizontal/tabs:justify-start group-data-horizontal/tabs:overflow-x-auto',
+    'group-data-horizontal/tabs:[scrollbar-width:none]',
     // Surface
-    'rounded-lg',
+    'rounded-[var(--rui-radius-control)]',
     // Spacing
     'p-[var(--rui-control-inset)]',
     // Typography
     'text-muted-foreground',
     // Component state
-    'group-data-horizontal/tabs:h-[calc(var(--rui-button-height)+var(--rui-control-inset)*2)] data-[variant=line]:h-[var(--rui-button-height)] data-[variant=line]:p-0 group-data-vertical/tabs:h-fit',
+    'group-data-horizontal/tabs:h-[calc(var(--rui-button-height)+var(--rui-control-inset)*2)]',
+    'group-data-horizontal/tabs:data-[variant=line]:h-[calc(var(--rui-button-height)+var(--rui-border-width))]',
+    'data-[variant=line]:p-0 group-data-vertical/tabs:h-fit',
     'group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none',
   ],
   {
     variants: {
       variant: {
         default: 'bg-muted',
-        line: 'gap-1 bg-transparent',
+        line: [
+          'gap-[var(--rui-content-gap-sm)] bg-transparent',
+          'group-data-horizontal/tabs:w-full',
+          'group-data-horizontal/tabs:border-b group-data-horizontal/tabs:border-border',
+          'group-data-vertical/tabs:border-r group-data-vertical/tabs:border-border',
+        ],
       },
     },
     defaultVariants: {
@@ -65,12 +78,13 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
         [
           // Layout
           'relative inline-flex h-[var(--rui-button-height)] flex-1 items-center justify-center',
+          'group-data-[variant=line]/tabs-list:flex-none',
           // Spacing
           'gap-1.5',
           // Surface
           'rounded-sm border border-transparent',
           // Spacing
-          'px-1.5 py-0',
+          'px-[var(--rui-button-padding-x)] py-0',
           // Typography
           'text-[length:var(--rui-action-font-size)] font-normal whitespace-nowrap text-muted-foreground',
           // Motion
@@ -80,7 +94,8 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
           // Pointer interaction
           'hover:text-foreground',
           // Keyboard focus
-          'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring',
+          'focus-visible:border-ring focus-visible:ring-[length:var(--rui-focus-width)]',
+          'focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring',
           // Disabled state
           'disabled:pointer-events-none disabled:opacity-[var(--rui-opacity-disabled)]',
           // Child and composition rules
@@ -90,18 +105,30 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
           // Dark theme
           'dark:text-muted-foreground dark:hover:text-foreground',
           // Component state
-          'group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none',
+          'group-data-[variant=default]/tabs-list:data-active:shadow-sm',
+          'group-data-[variant=line]/tabs-list:data-active:shadow-none',
           // Child and composition rules
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3",
+          '[&_svg]:pointer-events-none [&_svg]:shrink-0',
+          "[&_svg:not([class*='size-'])]:size-3",
         ],
-        'group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent',
-        'data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground',
+        'group-data-[variant=line]/tabs-list:rounded-none group-data-[variant=line]/tabs-list:border-0',
+        'group-data-[variant=line]/tabs-list:bg-transparent',
+        'group-data-[variant=line]/tabs-list:data-active:bg-transparent',
+        'dark:group-data-[variant=line]/tabs-list:data-active:border-transparent',
+        'dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent',
+        'data-active:bg-background data-active:text-foreground',
+        'dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground',
         [
           // Layout
           'after:absolute after:bg-foreground after:opacity-0 after:transition-opacity',
           // Component state
-          'group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[calc(-1*(var(--rui-control-inset)+2*var(--rui-border-width)))] group-data-horizontal/tabs:after:h-[var(--rui-outline-width)]',
-          'group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-[var(--rui-outline-width)] group-data-[variant=line]/tabs-list:data-active:after:opacity-100',
+          'group-data-horizontal/tabs:after:inset-x-0',
+          'group-data-horizontal/tabs:after:bottom-[calc(-1*var(--rui-border-width))]',
+          'group-data-horizontal/tabs:after:h-[var(--rui-outline-width)]',
+          'group-data-vertical/tabs:after:inset-y-0',
+          'group-data-vertical/tabs:after:right-[calc(-1*var(--rui-border-width))]',
+          'group-data-vertical/tabs:after:w-[var(--rui-outline-width)]',
+          'group-data-[variant=line]/tabs-list:data-active:after:opacity-100',
         ],
         className,
       )}
@@ -114,7 +141,7 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel
       data-slot="tabs-content"
-      className={cn('rui-scroll-focus flex-1 text-sm', className)}
+      className={cn('rui-scroll-focus min-w-0 flex-1 text-sm', className)}
       {...props}
     />
   );

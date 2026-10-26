@@ -24,7 +24,9 @@ maintained source for the dashboard shell. Copy relationships from them, not fro
 
 | Need | Components | Composition rule |
 | --- | --- | --- |
-| Page heading | PageHeader | Title, description, actions; wraps without custom margins |
+| Complete page | Page | Title, description, actions; owns header-to-content spacing |
+| Standalone heading | PageHeader | For a container that already owns layout; no outside margins |
+| Page tabs | Tabs, TabsList, TabsTrigger, TabsContent | line for page navigation; no gap compensation |
 | Vertical flow | Stack | gap="small/normal/section/none"; inset supplies the outer content edge |
 | Actions, metadata, form row | Inline | Wraps; baseline for author/time, end for fields/actions |
 | Peer sections | Grid | minColumnWidth="xs/sm/md"; collapses inside narrow containers |
@@ -94,6 +96,14 @@ Exactly one component supplies each content edge.
   own their padding.
 - Related text uses `gap="small"`; separate sections use `gap="section"`. No pixel values need to
   be copied into the app.
+
+Page supplies section-gap between its header and body, and content-gap between body sections.
+PageHeader uses compact-surface-gap between title and description. Tabs supplies content-gap between
+navigation and panels. Use Page consistently for ordinary pages instead of native headings with
+per-page margins. Use inset only when the outer container does not already supply the page edge.
+Both Tabs variants scroll long labels internally; line labels keep their natural width and share
+one baseline with the active indicator. Preserve drafts with application state and keepMounted when
+the form DOM must remain present. Theme overrides use the same public spacing roles.
 
 ## Forms
 

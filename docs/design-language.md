@@ -62,6 +62,12 @@ Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧�
 
 ## 字体、密度与尺度
 
+普通页面使用 Page 统一页头到内容的距离：紧凑 16px、舒适 20px、dense 12px，来自 section-gap。
+标题与说明使用 compact-surface-gap；Tabs 导航到面板使用 content-gap。
+这些间距各有一个所有者，页面不通过重复 margin 或指示线溢出来补齐。
+line Tabs 是有完整底边的页面导航，标签保持自然宽度；default Tabs 保留分段控件外观。
+两种样式的长标签在导航内部滚动，键盘聚焦和完整名称都保持可达。详情见[页面组合](composition.md)。
+
 CSS 实际随附开源 Inter Variable 字体，UI 默认13px；Segoe UI 和中文系统字体补足字符覆盖。字体规则由公共包统一定义，Lab、Storybook 和消费工程不分别设置。代码使用 Cascadia Code、SFMono-Regular、Consolas 等等宽字体回退。
 
 | 项目 | 当前 token 值 | 规则 |
