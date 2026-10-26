@@ -53,3 +53,46 @@ test('theme overrides reach composition slots and do not double inset lists', as
   await expect(page.locator('[data-slot=item-group]')).toHaveCSS('row-gap', '0px');
   await expect(page.locator('[data-slot=panel-body][data-flush]').first()).toHaveCSS('padding', '0px');
 });
+
+test('createTheme presets, nested Theme scopes and component defaults', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/?theme-api');
+  const html = page.locator('html');
+  await expect(html).toHaveAttribute('data-theme', 'light');
+  await expect(html).toHaveAttribute('data-density', 'comfortable');
+  const primary = (testId: string) =>
+    page.getByTestId(testId).evaluate(node => getComputedStyle(node).getPropertyValue('--rui-primary').trim());
+
+  const rootDefault = page.getByTestId('root-default');
+  await expect(rootDefault).toHaveAttribute('data-variant', 'outline');
+  await expect(rootDefault).toHaveCSS('height', '40px');
+  await expect(rootDefault).toHaveCSS('border-radius', '10px');
+  await expect(page.getByTestId('root-explicit')).toHaveAttribute('data-variant', 'default');
+
+  const local = page.locator('[data-rui-theme=""]').filter({ has: page.getByTestId('local-scope') }).last();
+  await expect(local).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByTestId('local-default')).toHaveAttribute('data-variant', 'secondary');
+  await expect(page.getByTestId('local-default')).toHaveAttribute('data-size', 'sm');
+  await expect(page.getByTestId('local-explicit')).toHaveAttribute('data-variant', 'ghost');
+  await expect(page.getByTestId('local-explicit')).toHaveAttribute('data-size', 'sm');
+  const rootPrimary = await primary('root-default');
+  const localPrimary = await primary('local-default');
+  expect(localPrimary).not.toBe(rootPrimary);
+
+  const bodies = page.getByTestId('local-scope').locator('[data-slot=panel-body]');
+  await expect(bodies.nth(0)).toHaveAttribute('data-flush', 'true');
+  await expect(bodies.nth(1)).not.toHaveAttribute('data-flush');
+
+  const select = page.getByRole('combobox', { name: '局部范围' });
+  await expect(select).toContainText('选择范围');
+  await select.click();
+  const option = page.getByRole('option', { name: '我的会话', exact: true });
+  await expect(option).toBeVisible();
+  await expect(option.locator('xpath=ancestor::*[@data-rui-theme="portal"]')).toHaveAttribute('data-theme', 'dark');
+  expect(await option.evaluate(node => getComputedStyle(node).getPropertyValue('--rui-primary').trim())).toBe(localPrimary);
+  await option.click();
+  await expect(select).toContainText('我的会话');
+  await page.screenshot({ path: '.dev/composition-theme-api.png', fullPage: true });
+  expect(errors).toEqual([]);
+});
