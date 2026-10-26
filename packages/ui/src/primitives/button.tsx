@@ -1,4 +1,4 @@
-import { useThemeColor, type ThemeColor } from '../theme.js';
+import { useThemeColor, useThemeDefaults, type ThemeColor } from '../theme.js';
 import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils.js';
@@ -100,14 +100,18 @@ const buttonVariants = cva(
 
 function Button({
   className,
-  color,
+  color: colorProp,
   style,
-  variant = 'default',
-  size = 'default',
+  variant: variantProp,
+  size: sizeProp,
   ...props
 }: Omit<ButtonPrimitive.Props, 'color'> & { color?: ThemeColor } & VariantProps<
     typeof buttonVariants
   >) {
+  const themed = useThemeDefaults('Button');
+  const color = colorProp ?? themed.color;
+  const variant = variantProp ?? themed.variant ?? 'default';
+  const size = sizeProp ?? themed.size ?? 'default';
   const colorStyle = useThemeColor(color);
   return (
     <ButtonPrimitive

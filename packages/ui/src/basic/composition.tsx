@@ -1,5 +1,6 @@
 import { useId, type ComponentProps, type ReactNode } from 'react';
 import { cn } from '../lib/utils.js';
+import { useThemeDefaults } from '../theme.js';
 
 export type ContentGap = 'none' | 'small' | 'normal' | 'section';
 const gaps: Record<ContentGap, string> = {
@@ -174,13 +175,15 @@ export function Panel({
   description,
   actions,
   footer,
-  flush = false,
+  flush: flushProp,
   children,
   className,
   ...props
 }: Omit<ComponentProps<'section'>, 'title'> &
   HeaderContent & { footer?: ReactNode; flush?: boolean }) {
   const titleId = useId();
+  const themed = useThemeDefaults('Panel');
+  const flush = flushProp ?? themed.flush ?? false;
   return (
     <section
       data-slot="panel"

@@ -16,6 +16,8 @@ import {
   type NeutralPalette,
   type ThemeTokenOverrides,
 } from '@reito/tokens/themes';
+import type { VariantProps } from 'class-variance-authority';
+import type { buttonVariants } from './primitives/button.js';
 
 export type {
   ColorPalette,
@@ -40,16 +42,31 @@ export type ThemeColors = {
   danger: ColorPalette;
   info: ColorPalette;
 };
+/** Prop defaults a theme scope feeds to descendants. Props passed to a component always win. */
+export type ThemeComponentDefaults = {
+  Button?: VariantProps<typeof buttonVariants> & { color?: ThemeColor };
+  Panel?: { flush?: boolean };
+  SelectInput?: { placeholder?: string };
+};
+/** A shareable theme preset. Build one with createTheme and pass it to a provider's theme prop. */
+export type ThemeConfig = {
+  mode?: ThemeMode;
+  colors?: Partial<ThemeColors>;
+  density?: DensityMode;
+  tokens?: ThemeTokenOverrides;
+  defaults?: ThemeComponentDefaults;
+};
 type ThemeState = {
   mode: ThemeMode;
   scheme: 'dark' | 'light';
   density: DensityMode;
   colors: ThemeColors;
   tokens: ThemeTokenOverrides;
+  defaults: ThemeComponentDefaults;
   style: CSSProperties;
   documentRoot: boolean;
 };
-const defaults: ThemeColors = {
+const defaultColors: ThemeColors = {
   primary: 'neutral',
   neutral: 'graphite',
   success: 'green',
@@ -88,6 +105,34 @@ function mergeTokens(
     Object.assign(components, { [key]: { ...components[key], ...local?.components?.[key] } });
   }
   return { semantic: { ...parent?.semantic, ...local?.semantic }, components };
+}
+
+function mergeDefaults(
+  parent?: ThemeComponentDefaults,
+  local?: ThemeComponentDefaults,
+): ThemeComponentDefaults {
+  const merged: ThemeComponentDefaults = { ...parent };
+  for (const key of Object.keys(local ?? {}) as Array<keyof ThemeComponentDefaults>) {
+    Object.assign(merged, { [key]: { ...parent?.[key], ...local?.[key] } });
+  }
+  return merged;
+}
+
+/**
+ * Builds a typed theme preset from ordered layers; later layers win, like extending a base preset.
+ * Colors and component defaults merge per field, token overrides merge per component.
+ */
+export function createTheme(...layers: ThemeConfig[]): ThemeConfig {
+  return layers.reduce<ThemeConfig>(
+    (theme, layer) => ({
+      mode: layer.mode ?? theme.mode,
+      colors: { ...theme.colors, ...layer.colors },
+      density: layer.density ?? theme.density,
+      tokens: mergeTokens(theme.tokens, layer.tokens),
+      defaults: mergeDefaults(theme.defaults, layer.defaults),
+    }),
+    {},
+  );
 }
 
 function themeStyle(
@@ -131,26 +176,35 @@ function themeStyle(
   return { ...aliases(values), colorScheme: scheme };
 }
 
-/** A theme scope. `root` also themes document chrome and non-React surfaces. */
+export type ReitoThemeProviderProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> &
+  ThemeConfig & {
+    /** A createTheme preset. The individual props above override its fields. */
+    theme?: ThemeConfig;
+    root?: boolean;
+    children?: ReactNode;
+  };
+export type ThemeProps = Omit<ReitoThemeProviderProps, 'root'>;
+
+/**
+ * A theme scope. Merge order is parent scope, then `theme`, then individual props.
+ * `root` also themes document chrome and non-React surfaces.
+ */
 export function ReitoThemeProvider({
-  mode,
+  theme,
+  mode: modeProp,
   colors,
-  density,
+  density: densityProp,
   tokens,
+  defaults,
   root = false,
   children,
   style,
   className,
   ...props
-}: Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
-  mode?: ThemeMode;
-  colors?: Partial<ThemeColors>;
-  density?: DensityMode;
-  tokens?: ThemeTokenOverrides;
-  root?: boolean;
-  children?: ReactNode;
-}) {
+}: ReitoThemeProviderProps) {
   const parent = useContext(ThemeContext);
+  const mode = modeProp ?? theme?.mode;
+  const density = densityProp ?? theme?.density;
   const selectedMode = mode ?? parent?.mode ?? 'dark';
   const systemScheme = useSyncExternalStore(
     selectedMode === 'system' ? subscribeSystem : noSubscribe,
@@ -159,8 +213,8 @@ export function ReitoThemeProvider({
   );
   const scheme = selectedMode === 'system' ? systemScheme : selectedMode;
   const state = useMemo<ThemeState>(() => {
-    const merged = { ...defaults, ...parent?.colors, ...colors };
-    const mergedTokens = mergeTokens(parent?.tokens, tokens);
+    const merged = { ...defaultColors, ...parent?.colors, ...theme?.colors, ...colors };
+    const mergedTokens = mergeTokens(mergeTokens(parent?.tokens, theme?.tokens), tokens);
     const mergedDensity = density ?? parent?.density ?? 'compact';
     return {
       mode: selectedMode,
@@ -168,6 +222,7 @@ export function ReitoThemeProvider({
       density: mergedDensity,
       colors: merged,
       tokens: mergedTokens,
+      defaults: mergeDefaults(mergeDefaults(parent?.defaults, theme?.defaults), defaults),
       style: themeStyle(scheme, merged, mergedDensity, mergedTokens),
       documentRoot: root,
     };
@@ -176,6 +231,7 @@ export function ReitoThemeProvider({
     scheme,
     density,
     parent,
+    theme,
     colors?.primary,
     colors?.neutral,
     colors?.success,
@@ -183,6 +239,7 @@ export function ReitoThemeProvider({
     colors?.danger,
     colors?.info,
     tokens,
+    defaults,
     root,
   ]);
   useBrowserLayoutEffect(() => {
@@ -246,15 +303,33 @@ export function ThemePortalScope({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Local theme scope for a subtree: colors, mode, density, tokens and component prop defaults
+ * apply to descendants only. Use ReitoThemeProvider root once for the application.
+ */
+export function Theme(props: ThemeProps) {
+  return <ReitoThemeProvider {...props} root={false} />;
+}
+
 export function useReitoTheme() {
   return useContext(ThemeContext);
+}
+
+const noDefaults = {};
+/** Theme-provided defaults for a component; apply them only to props the caller left undefined. */
+export function useThemeDefaults<Name extends keyof ThemeComponentDefaults>(
+  name: Name,
+): NonNullable<ThemeComponentDefaults[Name]> {
+  return (useContext(ThemeContext)?.defaults[name] ?? noDefaults) as NonNullable<
+    ThemeComponentDefaults[Name]
+  >;
 }
 
 /** Shared component color recipe; explicit colors never alter geometry or focus. */
 export function useThemeColor(color?: ThemeColor): CSSProperties | undefined {
   const theme = useContext(ThemeContext);
   if (!color) return undefined;
-  const settings = theme?.colors ?? defaults;
+  const settings = theme?.colors ?? defaultColors;
   const family =
     color === 'primary'
       ? settings.primary
