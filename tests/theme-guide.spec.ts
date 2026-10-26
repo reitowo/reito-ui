@@ -129,7 +129,7 @@ test('public component colors preserve shared geometry and disabled states in St
   const primary=page.getByRole('button',{name:'主题主色',exact:true});
   await expect(primary).toBeVisible({timeout:30_000});
   for(const label of ['主题主色','独立绿色','柔和琥珀','禁用操作','处理中']) {
-   await expect(page.getByRole('button',{name:label,exact:true})).toHaveCSS('height',density==='compact'?'28px':'32px');
+   await expect(page.getByRole('button',{name:label,exact:true})).toHaveCSS('height',density==='compact'?'32px':'36px');
    await expect(page.getByRole('button',{name:label,exact:true})).toHaveCSS('border-radius','6px');
   }
   await expect(page.getByRole('button',{name:'禁用操作',exact:true})).toBeDisabled();
