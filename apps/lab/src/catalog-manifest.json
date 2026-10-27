@@ -3,10 +3,10 @@
     "basic": 76,
     "complex": 44,
     "ai": 24,
-    "affect": 88
+    "affect": 103
   },
-  "total": 232,
-  "stories": 1560,
+  "total": 247,
+  "stories": 1575,
   "entries": [
     {
       "layer": "basic",
@@ -2326,6 +2326,156 @@
       "storyId": "模式-usage-meter--default",
       "sourceFile": "packages/ui/src/affect/catalog.tsx",
       "demo": "UsageMeterDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-chat",
+      "name": "AgentChat 代理对话",
+      "description": "公开文档重建：编排对话、在场代理与简报",
+      "storyId": "模式-agent-chat--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentChatDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-run",
+      "name": "AgentRun 代理运行",
+      "description": "公开文档重建：计划、工具、审批与草稿",
+      "storyId": "模式-agent-run--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentRunDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "analytics",
+      "name": "Analytics 分析",
+      "description": "公开文档重建：指标、渠道与产品表",
+      "storyId": "模式-analytics--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AnalyticsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-app-shell-flat",
+      "name": "AppShellFlat 扁平壳",
+      "description": "公开文档重建：发丝分割的边缘铺满壳。模式层兄弟。",
+      "storyId": "模式-app-shell-flat--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AppShellFlatDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-app-shell-inset",
+      "name": "AppShell 嵌套壳",
+      "description": "公开文档重建：侧栏、项目与账户框。模式层兄弟。",
+      "storyId": "模式-app-shell-inset--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AppShellInsetDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-app-shell-workspace-flat",
+      "name": "AppShellWorkspaceFlat 扁平工作区",
+      "description": "公开文档重建：扁平壳加右侧工作区。模式层兄弟。",
+      "storyId": "模式-app-shell-workspace-flat--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AppShellWorkspaceFlatDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-app-shell-workspace-inset",
+      "name": "AppShellWorkspace 嵌套工作区",
+      "description": "公开文档重建：嵌套壳加工具与建议。模式层兄弟。",
+      "storyId": "模式-app-shell-workspace-inset--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AppShellWorkspaceInsetDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "assistant-home",
+      "name": "AssistantHome 助手首页",
+      "description": "公开文档重建：问候、提示与已连接应用",
+      "storyId": "模式-assistant-home--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AssistantHomeDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "crm",
+      "name": "CRM 客户",
+      "description": "公开文档重建：管道标签与可编辑表",
+      "storyId": "模式-crm--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CrmDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "evals",
+      "name": "Evals 评测",
+      "description": "公开文档重建：通过率、提示差与用例",
+      "storyId": "模式-evals--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "EvalsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "folder",
+      "name": "Folder 文件夹详情",
+      "description": "公开文档重建：面包屑与文件预览卡",
+      "storyId": "模式-folder--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "FolderDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "folders",
+      "name": "Folders 文件夹总览",
+      "description": "公开文档重建：搜索、排序与网格/列表",
+      "storyId": "模式-folders--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "FoldersDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "integrations",
+      "name": "Integrations 集成目录",
+      "description": "公开文档重建：分类、搜索与连接状态",
+      "storyId": "模式-integrations--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "IntegrationsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "onboarding",
+      "name": "Onboarding 新手引导",
+      "description": "公开文档重建：四步设置与清单",
+      "storyId": "模式-onboarding--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "OnboardingDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "settings-billing",
+      "name": "SettingsBilling 设置与账单",
+      "description": "公开文档重建：方案、用量、发票与密钥",
+      "storyId": "模式-settings-billing--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "SettingsBillingDemo",
       "stories": 1
     }
   ]
