@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { staticSitePaths } from './src/routes.ts';
+import { reitoDocs } from './site/docs-plugin.ts';
 
 /** GitHub Pages has no SPA fallback. Copy the shell to 404.html and known routes. */
 function prerenderSite(): Plugin {
@@ -30,10 +31,11 @@ function prerenderSite(): Plugin {
 
 export default defineConfig({
   base: process.env.VITE_BASE_PATH || '/',
-  plugins: [react(), tailwindcss(), prerenderSite()],
+  plugins: [react(), tailwindcss(), prerenderSite(), reitoDocs()],
   resolve: { alias: [
     { find: /^@reito\/ui\/styles\.css$/, replacement: fileURLToPath(new URL('../../packages/ui/src/styles.css', import.meta.url)) },
     { find: /^@reito\/ui\/basic$/, replacement: fileURLToPath(new URL('../../packages/ui/src/basic.ts', import.meta.url)) },
+    { find: /^@reito\/ui\/ai$/, replacement: fileURLToPath(new URL('../../packages/ui/src/ai/index.ts', import.meta.url)) },
     { find: /^@reito\/ui$/, replacement: fileURLToPath(new URL('../../packages/ui/src/index.ts', import.meta.url)) },
   ] },
 });

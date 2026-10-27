@@ -18,10 +18,13 @@ test('homepage preview filters, updates state, switches code and opens tokens', 
   await expect(page.getByRole('button', { name: '查看设计变量' })).toBeFocused();
 });
 
-test('component links still open Lab, and Lab brand returns home', async ({ page }) => {
-  await page.goto('/'); await page.getByRole('button', { name: '浏览组件', exact: true }).click();
+test('component links open the gallery, and Lab brand returns home', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: '浏览组件', exact: true }).click();
+  await expect(page).toHaveURL(/\/gallery\/?$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('组件库');
+  await page.goto('/components/button');
   await expect(page.getByTestId('component-preview')).toBeVisible();
-  await expect(page).toHaveURL(/\/components\/button/);
   await page.locator('.lab-brand').click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText('构建一致的界面');
 });
