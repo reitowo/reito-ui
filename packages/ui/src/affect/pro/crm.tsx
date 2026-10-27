@@ -6,7 +6,7 @@ import { DataTable } from './data-table.js';
 
 export type CrmScreenProps = Pick<AppShellProps, 'onNavigate' | 'workspace' | 'user' | 'className'>;
 
-const views = ['全部', '洽谈', '已签约'];
+const views = ['全部', '洽谈', '已签约'] as const;
 const rows = {
   全部: [
     { id: 'north', name: '北区医疗', stage: '洽谈', owner: '阿宁', value: 48 },
