@@ -502,6 +502,26 @@ export function TabOverload({ className }: TabOverloadProps) {
   );
 }
 
+export {
+  GlassFolder,
+  GlowKeyboard,
+  IntegrationFlow,
+  OutreachBranches,
+  ProjectFlow,
+  VoiceOrb,
+  WorldMap,
+  type Continent,
+  type GlassFolderProps,
+  type GlowKeyboardProps,
+  type IntegrationFlowItem,
+  type IntegrationFlowProps,
+  type OutreachBranchesProps,
+  type ProjectFlowProps,
+  type VoiceOrbProps,
+  type VoiceOrbState,
+  type WorldMapProps,
+} from './pro.js';
+
 export type TeamInviteAvatar = { src: string; name?: string };
 export type TeamInviteProps = {
   avatars: [TeamInviteAvatar, TeamInviteAvatar, TeamInviteAvatar];

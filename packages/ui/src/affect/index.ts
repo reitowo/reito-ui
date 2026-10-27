@@ -77,6 +77,64 @@ export {
   type Testimonial,
   type TestimonialWallProps,
 } from './blocks/testimonial-wall.js';
+export { AgentGallery, type AgentGalleryProps, type GalleryItem } from './blocks/agent-gallery.js';
+export {
+  AiWorkspace,
+  type AiWorkspaceProps,
+  type WorkspaceConversation,
+  type WorkspaceMessage,
+  type WorkspaceProject,
+} from './blocks/ai-workspace.js';
+export {
+  AppDirectory,
+  type AppCategory,
+  type AppDirectoryProps,
+  type DirectoryApp,
+} from './blocks/app-directory.js';
+export {
+  ClientContext,
+  type ClientContextProps,
+  type ContextClient,
+  type ContextEntry,
+  type ContextFile,
+  type ContextKpi,
+  type ContextReport,
+} from './blocks/client-context.js';
+export {
+  InvoiceCredit,
+  type InvoiceCreditProps,
+  type InvoiceLine,
+  type InvoiceParty,
+} from './blocks/invoice-credit.js';
+export {
+  KpiBoard,
+  type KpiBoardData,
+  type KpiBoardProps,
+  type KpiFocus,
+  type KpiOverview,
+  type KpiStat,
+} from './blocks/kpi-board.js';
+export {
+  MetricsDashboard,
+  type MetricsDashboardProps,
+  type MetricsMetric,
+  type MetricsRange,
+} from './blocks/metrics-dashboard.js';
+export {
+  PricingPlans,
+  type PricingFeature,
+  type PricingPlan,
+  type PricingPlansProps,
+} from './blocks/pricing-plans.js';
+export {
+  TaskBoard,
+  type BoardSubtask,
+  type BoardTask,
+  type TaskBoardProps,
+  type TaskLabel,
+  type TaskPerson,
+  type TaskStatus,
+} from './blocks/task-board.js';
 export {
   GridBackground,
   type GridBackgroundProps,
@@ -90,6 +148,10 @@ export {
   type ShimmerTextProps,
 } from './motion/shimmer-loader.js';
 export { TextReveal, type TextRevealProps } from './motion/text-reveal.js';
+export { BlurCrossfade, type BlurCrossfadeProps } from './motion/blur-crossfade.js';
+export { GradientFloor, type GradientFloorProps } from './motion/gradient-floor.js';
+export { GradientText, type GradientTextProps } from './motion/gradient-text.js';
+export { TiltCard, type TiltCardProps } from './motion/tilt-card.js';
 export * from './illustrations/index.js';
 export {
   ThinkingState,

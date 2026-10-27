@@ -18,10 +18,23 @@ import { TipsPanel } from './tips-panel.js';
 import { ToolCallCard, ToolCallGroup } from './tool-call-card.js';
 import { LogoMarquee } from './blocks/logo-marquee.js';
 import { TestimonialWall } from './blocks/testimonial-wall.js';
+import { AgentGallery } from './blocks/agent-gallery.js';
+import { AiWorkspace } from './blocks/ai-workspace.js';
+import { AppDirectory } from './blocks/app-directory.js';
+import { ClientContext } from './blocks/client-context.js';
+import { InvoiceCredit } from './blocks/invoice-credit.js';
+import { KpiBoard, type KpiBoardData } from './blocks/kpi-board.js';
+import { MetricsDashboard } from './blocks/metrics-dashboard.js';
+import { PricingPlans } from './blocks/pricing-plans.js';
+import { TaskBoard } from './blocks/task-board.js';
 import { GridBackground } from './motion/grid-background.js';
 import { NumberTicker } from './motion/number-ticker.js';
 import { ShimmerText, Skeleton } from './motion/shimmer-loader.js';
 import { TextReveal } from './motion/text-reveal.js';
+import { BlurCrossfade } from './motion/blur-crossfade.js';
+import { GradientFloor } from './motion/gradient-floor.js';
+import { GradientText } from './motion/gradient-text.js';
+import { TiltCard } from './motion/tilt-card.js';
 import {
   AgentTeam,
   CoverFlow,
@@ -29,17 +42,24 @@ import {
   EnrichmentOrbit,
   FrostCloud,
   GhostedChat,
+  GlassFolder,
   GlowCloud,
+  GlowKeyboard,
   IntegrationBeam,
+  IntegrationFlow,
   IntegrationGrid,
   LayerStack,
   LeadSourcing,
   LogoCluster,
   ModelWheel,
+  OutreachBranches,
+  ProjectFlow,
   RegionDach,
   SideFolder,
   TabOverload,
   TeamInvite,
+  VoiceOrb,
+  WorldMap,
 } from './illustrations/index.js';
 import { ThinkingState } from './pro/thinking-state.js';
 import { ChatComposer } from './pro/chat-composer.js';
@@ -415,6 +435,145 @@ export function TestimonialWallDemo() {
   );
 }
 
+export function AgentGalleryDemo() {
+  return <AgentGallery title="跑完手册的代理" subtitle="点开一侧面板看步骤与护栏。" />;
+}
+
+export function AiWorkspaceDemo() {
+  return <AiWorkspace userName="阿宁" workspace="R" />;
+}
+
+export function AppDirectoryDemo() {
+  return (
+    <AppDirectory
+      title="集成目录"
+      subtitle="搜索、分类并连接示例应用。"
+      apps={[
+        {
+          id: 'mail',
+          name: '邮箱',
+          vendor: '本地',
+          description: '同步往来邮件。',
+          categories: ['沟通'],
+          essential: true,
+          connected: true,
+        },
+        {
+          id: 'docs',
+          name: '文档',
+          vendor: '本地',
+          description: '打开共享文件夹。',
+          categories: ['效率'],
+          connected: true,
+        },
+        {
+          id: 'board',
+          name: '看板',
+          vendor: '本地',
+          description: '把任务排进列。',
+          categories: ['工程'],
+        },
+        {
+          id: 'billing',
+          name: '账单',
+          vendor: '本地',
+          description: '导出发票。',
+          categories: ['财务'],
+        },
+      ]}
+    />
+  );
+}
+
+export function ClientContextDemo() {
+  return <ClientContext me={{ name: '阿宁' }} />;
+}
+
+export function InvoiceCreditDemo() {
+  return <InvoiceCredit invoiceNo="INV-2041" creditNo="CN-0117" />;
+}
+
+const kpiSample: Record<string, KpiBoardData> = {
+  '7d': {
+    stats: [
+      { id: 'rev', label: '收入', series: [1200, 1400, 1300, 1600], previous: 4800 },
+      { id: 'ord', label: '订单', series: [20, 22, 19, 24], previous: 76 },
+      { id: 'ref', label: '退款', series: [2, 1, 2, 1], previous: 8, lowerIsBetter: true },
+    ],
+    overview: {
+      labels: ['一', '二', '三', '四'],
+      current: [1200, 1400, 1300, 1600],
+      previous: [1100, 1200, 1250, 1300],
+      segments: {
+        all: { current: [1200, 1400, 1300, 1600], previous: [1100, 1200, 1250, 1300] },
+        pro: { current: [800, 900, 860, 980], previous: [700, 760, 800, 820] },
+      },
+    },
+    focus: { title: '席位', value: 42, series: [8, 10, 11, 13], labels: ['一', '二', '三', '四'] },
+  },
+  '30d': {
+    stats: [
+      { id: 'rev', label: '收入', series: [4200, 4600, 4400, 5100], previous: 16800 },
+      { id: 'ord', label: '订单', series: [80, 88, 84, 96], previous: 310 },
+      { id: 'ref', label: '退款', series: [6, 4, 5, 3], previous: 22, lowerIsBetter: true },
+    ],
+    overview: {
+      labels: ['W1', 'W2', 'W3', 'W4'],
+      current: [4200, 4600, 4400, 5100],
+      previous: [3900, 4100, 4000, 4300],
+      segments: {
+        all: { current: [4200, 4600, 4400, 5100], previous: [3900, 4100, 4000, 4300] },
+        pro: { current: [2600, 2800, 2700, 3100], previous: [2400, 2500, 2550, 2600] },
+      },
+    },
+    focus: {
+      title: '席位',
+      value: 128,
+      series: [28, 30, 32, 38],
+      labels: ['W1', 'W2', 'W3', 'W4'],
+    },
+  },
+};
+
+export function KpiBoardDemo() {
+  return (
+    <KpiBoard
+      title="总览"
+      data={kpiSample}
+      ranges={[
+        { id: '7d', label: '近 7 天' },
+        { id: '30d', label: '近 30 天' },
+      ]}
+      defaultRange="30d"
+      segments={[
+        { id: 'all', label: '全部' },
+        { id: 'pro', label: 'Pro' },
+      ]}
+      compareLabel="对比上期"
+      setup={{ label: '设置', onClick: () => undefined }}
+      action={{ label: '打开明细', onClick: () => undefined }}
+    />
+  );
+}
+
+export function MetricsDashboardDemo() {
+  return <MetricsDashboard title="销售" site="Northwind 示例店" />;
+}
+
+export function PricingPlansDemo() {
+  return (
+    <PricingPlans
+      title="选择方案"
+      subtitle="本地示例价格，不是对外报价。"
+      defaultBilling="yearly"
+    />
+  );
+}
+
+export function TaskBoardDemo() {
+  return <TaskBoard path={['Northwind', '发布', 'Sprint 12']} />;
+}
+
 export function GridBackgroundDemo() {
   return (
     <GridBackground className="grid min-h-40 place-items-center">
@@ -513,6 +672,92 @@ export function TabOverloadDemo() {
 export function TeamInviteDemo() {
   return (
     <TeamInvite avatars={[{ src: portraits[0] }, { src: portraits[1] }, { src: portraits[2] }]} />
+  );
+}
+
+export function GlassFolderDemo() {
+  return <GlassFolder />;
+}
+export function GlowKeyboardDemo() {
+  return <GlowKeyboard />;
+}
+export function IntegrationFlowDemo() {
+  return <IntegrationFlow />;
+}
+export function OutreachBranchesDemo() {
+  return <OutreachBranches />;
+}
+export function ProjectFlowDemo() {
+  return <ProjectFlow />;
+}
+export function VoiceOrbDemo() {
+  const [state, setState] = useState<'idle' | 'listening' | 'thinking' | 'speaking'>('idle');
+  return (
+    <VoiceOrb
+      state={state}
+      onPress={() =>
+        setState((current) =>
+          current === 'idle'
+            ? 'listening'
+            : current === 'listening'
+              ? 'thinking'
+              : current === 'thinking'
+                ? 'speaking'
+                : 'idle',
+        )
+      }
+    />
+  );
+}
+export function WorldMapDemo() {
+  return <WorldMap />;
+}
+
+export function BlurCrossfadeDemo() {
+  const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  return (
+    <AffectDemoFrame>
+      <Button
+        type="button"
+        onClick={() => {
+          setStatus('saving');
+          window.setTimeout(() => setStatus('saved'), 700);
+        }}
+      >
+        <BlurCrossfade id={status} morph="both" as="span">
+          {status === 'saving' ? '保存中…' : status === 'saved' ? '已保存' : '保存'}
+        </BlurCrossfade>
+      </Button>
+    </AffectDemoFrame>
+  );
+}
+
+export function GradientFloorDemo() {
+  return (
+    <GradientFloor className="grid place-items-center">
+      <Text>从底边亮起的语义渐变。</Text>
+    </GradientFloor>
+  );
+}
+
+export function GradientTextDemo() {
+  return (
+    <Text>
+      让人愿意停留的 <GradientText>界面。</GradientText>
+    </Text>
+  );
+}
+
+export function TiltCardDemo() {
+  return (
+    <TiltCard>
+      <div className="grid gap-1 p-[var(--rui-content-padding)]">
+        <Text>示例卡</Text>
+        <Text variant="caption" tone="muted">
+          指针移动时轻倾。
+        </Text>
+      </div>
+    </TiltCard>
   );
 }
 
@@ -2382,5 +2627,125 @@ export const affectCatalog: AffectCatalogEntry[] = [
     name: 'SettingsBilling 设置与账单',
     description: '公开文档重建：方案、用量、发票与密钥',
     component: SettingsBillingDemo,
+  },
+  {
+    id: 'agent-gallery',
+    name: 'AgentGallery 代理画廊',
+    description: '公开文档重建：轮播展开代理步骤与护栏',
+    component: AgentGalleryDemo,
+  },
+  {
+    id: 'ai-workspace',
+    name: 'AiWorkspace 助手工作区',
+    description: '公开文档重建：侧栏、对话与项目，组合 ChatComposer',
+    component: AiWorkspaceDemo,
+  },
+  {
+    id: 'app-directory',
+    name: 'AppDirectory 应用目录',
+    description: '公开文档重建：分类、搜索与连接流程',
+    component: AppDirectoryDemo,
+  },
+  {
+    id: 'client-context',
+    name: 'ClientContext 客户上下文',
+    description: '公开文档重建：客户切换、KPI 与时间线',
+    component: ClientContextDemo,
+  },
+  {
+    id: 'invoice-credit',
+    name: 'InvoiceCredit 发票与贷记',
+    description: '公开文档重建：发票/贷记单叠放与开具',
+    component: InvoiceCreditDemo,
+  },
+  {
+    id: 'kpi-board',
+    name: 'KpiBoard 指标板',
+    description: '公开文档重建：趋势卡、总览图与焦点卡',
+    component: KpiBoardDemo,
+  },
+  {
+    id: 'metrics-dashboard',
+    name: 'MetricsDashboard 指标仪表',
+    description: '公开文档重建：KPI 选度量、折线或柱状',
+    component: MetricsDashboardDemo,
+  },
+  {
+    id: 'pricing-plans',
+    name: 'PricingPlans 定价方案',
+    description: '公开文档重建：月/年切换与方案卡',
+    component: PricingPlansDemo,
+  },
+  {
+    id: 'task-board',
+    name: 'TaskBoard 任务板',
+    description: '公开文档重建：看板、筛选与详情改状态',
+    component: TaskBoardDemo,
+  },
+  {
+    id: 'glass-folder',
+    name: 'GlassFolder 磨砂文件夹',
+    description: '公开文档重建：悬停掀起示意文档',
+    component: GlassFolderDemo,
+  },
+  {
+    id: 'glow-keyboard',
+    name: 'GlowKeyboard 光键盘',
+    description: '公开文档重建：示例输入自打字，聚焦即停',
+    component: GlowKeyboardDemo,
+  },
+  {
+    id: 'integration-flow',
+    name: 'IntegrationFlow 集成流',
+    description: '公开文档重建：通用标记沿弧线轮转',
+    component: IntegrationFlowDemo,
+  },
+  {
+    id: 'outreach-branches',
+    name: 'OutreachBranches 外展支线',
+    description: '公开文档重建：一条动作分出三条通道',
+    component: OutreachBranchesDemo,
+  },
+  {
+    id: 'project-flow',
+    name: 'ProjectFlow 项目流',
+    description: '公开文档重建：客户任务分出卡片',
+    component: ProjectFlowDemo,
+  },
+  {
+    id: 'voice-orb',
+    name: 'VoiceOrb 语音球',
+    description: '公开文档重建：听/想/说状态的语义球体',
+    component: VoiceOrbDemo,
+  },
+  {
+    id: 'world-map',
+    name: 'WorldMap 世界地图',
+    description: '公开文档重建：简化大洲形状与切换',
+    component: WorldMapDemo,
+  },
+  {
+    id: 'blur-crossfade',
+    name: 'BlurCrossfade 模糊交叉淡入',
+    description: '公开文档重建：内容替换时模糊过渡',
+    component: BlurCrossfadeDemo,
+  },
+  {
+    id: 'gradient-floor',
+    name: 'GradientFloor 渐变地面',
+    description: '公开文档重建：底边语义光晕',
+    component: GradientFloorDemo,
+  },
+  {
+    id: 'gradient-text',
+    name: 'GradientText 渐变文字',
+    description: '公开文档重建：短词扫过语义渐变',
+    component: GradientTextDemo,
+  },
+  {
+    id: 'tilt-card',
+    name: 'TiltCard 倾斜卡',
+    description: '公开文档重建：指针倾斜，减少动效时静止',
+    component: TiltCardDemo,
   },
 ];

@@ -3,10 +3,10 @@
     "basic": 76,
     "complex": 44,
     "ai": 24,
-    "affect": 103
+    "affect": 123
   },
-  "total": 247,
-  "stories": 1575,
+  "total": 267,
+  "stories": 1595,
   "entries": [
     {
       "layer": "basic",
@@ -2476,6 +2476,206 @@
       "storyId": "模式-settings-billing--default",
       "sourceFile": "packages/ui/src/affect/catalog.tsx",
       "demo": "SettingsBillingDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-gallery",
+      "name": "AgentGallery 代理画廊",
+      "description": "公开文档重建：轮播展开代理步骤与护栏",
+      "storyId": "模式-agent-gallery--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentGalleryDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "ai-workspace",
+      "name": "AiWorkspace 助手工作区",
+      "description": "公开文档重建：侧栏、对话与项目，组合 ChatComposer",
+      "storyId": "模式-ai-workspace--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AiWorkspaceDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "app-directory",
+      "name": "AppDirectory 应用目录",
+      "description": "公开文档重建：分类、搜索与连接流程",
+      "storyId": "模式-app-directory--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AppDirectoryDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "client-context",
+      "name": "ClientContext 客户上下文",
+      "description": "公开文档重建：客户切换、KPI 与时间线",
+      "storyId": "模式-client-context--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ClientContextDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "invoice-credit",
+      "name": "InvoiceCredit 发票与贷记",
+      "description": "公开文档重建：发票/贷记单叠放与开具",
+      "storyId": "模式-invoice-credit--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "InvoiceCreditDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "kpi-board",
+      "name": "KpiBoard 指标板",
+      "description": "公开文档重建：趋势卡、总览图与焦点卡",
+      "storyId": "模式-kpi-board--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "KpiBoardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "metrics-dashboard",
+      "name": "MetricsDashboard 指标仪表",
+      "description": "公开文档重建：KPI 选度量、折线或柱状",
+      "storyId": "模式-metrics-dashboard--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "MetricsDashboardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "pricing-plans",
+      "name": "PricingPlans 定价方案",
+      "description": "公开文档重建：月/年切换与方案卡",
+      "storyId": "模式-pricing-plans--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "PricingPlansDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "task-board",
+      "name": "TaskBoard 任务板",
+      "description": "公开文档重建：看板、筛选与详情改状态",
+      "storyId": "模式-task-board--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TaskBoardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "glass-folder",
+      "name": "GlassFolder 磨砂文件夹",
+      "description": "公开文档重建：悬停掀起示意文档",
+      "storyId": "模式-glass-folder--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GlassFolderDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "glow-keyboard",
+      "name": "GlowKeyboard 光键盘",
+      "description": "公开文档重建：示例输入自打字，聚焦即停",
+      "storyId": "模式-glow-keyboard--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GlowKeyboardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "integration-flow",
+      "name": "IntegrationFlow 集成流",
+      "description": "公开文档重建：通用标记沿弧线轮转",
+      "storyId": "模式-integration-flow--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "IntegrationFlowDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "outreach-branches",
+      "name": "OutreachBranches 外展支线",
+      "description": "公开文档重建：一条动作分出三条通道",
+      "storyId": "模式-outreach-branches--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "OutreachBranchesDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "project-flow",
+      "name": "ProjectFlow 项目流",
+      "description": "公开文档重建：客户任务分出卡片",
+      "storyId": "模式-project-flow--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ProjectFlowDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "voice-orb",
+      "name": "VoiceOrb 语音球",
+      "description": "公开文档重建：听/想/说状态的语义球体",
+      "storyId": "模式-voice-orb--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "VoiceOrbDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "world-map",
+      "name": "WorldMap 世界地图",
+      "description": "公开文档重建：简化大洲形状与切换",
+      "storyId": "模式-world-map--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "WorldMapDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "blur-crossfade",
+      "name": "BlurCrossfade 模糊交叉淡入",
+      "description": "公开文档重建：内容替换时模糊过渡",
+      "storyId": "模式-blur-crossfade--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "BlurCrossfadeDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "gradient-floor",
+      "name": "GradientFloor 渐变地面",
+      "description": "公开文档重建：底边语义光晕",
+      "storyId": "模式-gradient-floor--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GradientFloorDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "gradient-text",
+      "name": "GradientText 渐变文字",
+      "description": "公开文档重建：短词扫过语义渐变",
+      "storyId": "模式-gradient-text--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GradientTextDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "tilt-card",
+      "name": "TiltCard 倾斜卡",
+      "description": "公开文档重建：指针倾斜，减少动效时静止",
+      "storyId": "模式-tilt-card--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TiltCardDemo",
       "stories": 1
     }
   ]
