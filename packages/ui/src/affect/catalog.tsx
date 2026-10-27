@@ -603,7 +603,7 @@ export interface AffectCatalogEntry {
 
 export const affectCatalog: AffectCatalogEntry[] = [
   {
-    id: 'button',
+    id: 'affect-button',
     name: 'Button 按钮适配',
     description: 'Affect API 覆盖 Reito Button，含加载与干净外观',
     component: ButtonDemo,
@@ -639,7 +639,7 @@ export const affectCatalog: AffectCatalogEntry[] = [
     component: FilterMenuDemo,
   },
   {
-    id: 'message-actions',
+    id: 'affect-message-actions',
     name: 'MessageActions 消息操作条',
     description: '复制、重试、反馈、朗读与版本',
     component: MessageActionsDemo,
