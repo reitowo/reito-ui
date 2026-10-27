@@ -3,10 +3,10 @@
     "basic": 76,
     "complex": 44,
     "ai": 24,
-    "affect": 75
+    "affect": 88
   },
-  "total": 219,
-  "stories": 1546,
+  "total": 232,
+  "stories": 1559,
   "entries": [
     {
       "layer": "basic",
@@ -2196,6 +2196,136 @@
       "storyId": "模式-setup-guide--default",
       "sourceFile": "packages/ui/src/affect/catalog.tsx",
       "demo": "SetupGuideDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "billing-schedule",
+      "name": "BillingSchedule 账单计划",
+      "description": "公开文档重建：阶段、产品行与合计",
+      "storyId": "模式-billing-schedule--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "BillingScheduleDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "breakdown-chart",
+      "name": "BreakdownChart 分解图",
+      "description": "公开文档重建：切片、分段与堆叠条",
+      "storyId": "模式-breakdown-chart--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "BreakdownChartDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-combobox",
+      "name": "Combobox 组合框",
+      "description": "公开文档重建：多选、分组与可创建。模式层兄弟。",
+      "storyId": "模式-combobox--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AffectComboboxDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "compact-breakdown",
+      "name": "CompactBreakdown 紧凑构成",
+      "description": "公开文档重建：周期与排名条",
+      "storyId": "模式-compact-breakdown--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CompactBreakdownDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-data-table",
+      "name": "DataTable 数据表",
+      "description": "公开文档重建：勾选、排序与格内编辑。模式层兄弟。",
+      "storyId": "模式-data-table--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AffectDataTableDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-date-range-picker",
+      "name": "DateRangePicker 日期范围",
+      "description": "公开文档重建：预设与对比周期。模式层兄弟。",
+      "storyId": "模式-date-range-picker--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AffectDateRangePickerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-dropzone",
+      "name": "Dropzone 拖放上传",
+      "description": "公开文档重建：拖入、进度与重试。模式层兄弟。",
+      "storyId": "模式-dropzone--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AffectDropzoneDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "experiment-card",
+      "name": "ExperimentCard 实验卡",
+      "description": "公开文档重建：方案对比与选赢家",
+      "storyId": "模式-experiment-card--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ExperimentCardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "integration-settings",
+      "name": "IntegrationSettings 集成设置",
+      "description": "公开文档重建：开关、密钥与脏保存条",
+      "storyId": "模式-integration-settings--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "IntegrationSettingsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "kpi-chart",
+      "name": "KpiChart 指标图",
+      "description": "公开文档重建：折线、键盘与礼貌提示",
+      "storyId": "模式-kpi-chart--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "KpiChartDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "stepper-form",
+      "name": "StepperForm 分步表单",
+      "description": "公开文档重建：步骤、校验与核对",
+      "storyId": "模式-stepper-form--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "StepperFormDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-toaster",
+      "name": "Toaster 轻提示",
+      "description": "公开文档重建：模块级 toast。模式层兄弟。",
+      "storyId": "模式-toaster--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AffectToasterDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "usage-meter",
+      "name": "UsageMeter 用量条",
+      "description": "公开文档重建：堆叠额度、日线和限额",
+      "storyId": "模式-usage-meter--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "UsageMeterDemo",
       "stories": 1
     }
   ]

@@ -76,6 +76,28 @@ import { FanoutGrid } from './pro/fan-out-grid.js';
 import { ProjectCard } from './pro/project-card.js';
 import { IntegrationPicker } from './pro/integration-picker.js';
 import { SetupGuide } from './pro/setup-guide.js';
+import { BillingSchedule } from './pro/billing-schedule.js';
+import { BreakdownChart } from './pro/breakdown-chart.js';
+import { Combobox } from './pro/combobox.js';
+import { CompactBreakdown } from './pro/compact-breakdown.js';
+import { DataTable } from './pro/data-table.js';
+import { DateRangePicker } from './pro/date-range-picker.js';
+import { Dropzone } from './pro/dropzone.js';
+import { ExperimentCard } from './pro/experiment-card.js';
+import { IntegrationSettings } from './pro/integration-settings.js';
+import { KpiChart } from './pro/kpi-chart.js';
+import {
+  StepperChoices,
+  StepperField,
+  StepperForm,
+  StepperInput,
+  StepperReview,
+  StepperSuccess,
+  StepperTags,
+  type Step,
+} from './pro/stepper-form.js';
+import { Toaster, toast } from './pro/toaster.js';
+import { UsageMeter } from './pro/usage-meter.js';
 import { AffectDemoFrame } from './shared.js';
 import { Inline, Stack, Text } from '../basic/composition.js';
 
@@ -1294,6 +1316,296 @@ export function SetupGuideDemo() {
   );
 }
 
+export function BillingScheduleDemo() {
+  return <BillingSchedule />;
+}
+
+export function BreakdownChartDemo() {
+  return (
+    <BreakdownChart
+      title="工作量"
+      records={[
+        { team: '设计', week: '本周', hours: 18 },
+        { team: '工程', week: '本周', hours: 26 },
+        { team: '设计', week: '上周', hours: 12 },
+        { team: '工程', week: '上周', hours: 22 },
+      ]}
+      dimensions={[
+        { key: 'team', label: '团队', values: ['设计', '工程'] },
+        { key: 'week', label: '周期', values: ['本周', '上周'] },
+      ]}
+      measures={[{ key: 'hours', label: '小时', field: 'hours' }]}
+    />
+  );
+}
+
+export function AffectComboboxDemo() {
+  return (
+    <Combobox
+      label="成员"
+      defaultOpen
+      defaultValue={['ning']}
+      creatable
+      options={[
+        { value: 'ning', label: '阿宁', hint: '设计', group: '内部' },
+        { value: 'lin', label: '林可', hint: '工程', group: '内部' },
+        { value: 'guest', label: '访客', group: '外部' },
+      ]}
+    />
+  );
+}
+
+export function CompactBreakdownDemo() {
+  return (
+    <CompactBreakdown
+      title="渠道"
+      delta={0.12}
+      periods={[
+        { id: 'week', label: '本周' },
+        { id: 'month', label: '本月' },
+      ]}
+      items={[
+        { label: '自然搜索', value: 46 },
+        { label: '付费', value: 28 },
+        { label: '推荐', value: 16 },
+      ]}
+    />
+  );
+}
+
+export function AffectDataTableDemo() {
+  return (
+    <DataTable
+      title="项目"
+      columns={[
+        { key: 'name', label: '名称', type: 'title', editable: true },
+        { key: 'status', label: '状态', type: 'tag', options: ['进行中', '完成'] },
+        { key: 'hours', label: '小时', type: 'number' },
+      ]}
+      rows={[
+        { id: 'onboard', name: '入职流程', status: '进行中', hours: 12 },
+        { id: 'billing', name: '账单页', status: '完成', hours: 8 },
+      ]}
+    />
+  );
+}
+
+export function AffectDateRangePickerDemo() {
+  return <DateRangePicker defaultOpen today={new Date('2026-10-17')} />;
+}
+
+export function AffectDropzoneDemo() {
+  return <Dropzone accept={['.png', '.pdf']} hint="示例：不会实际上传" />;
+}
+
+export function ExperimentCardDemo() {
+  return (
+    <ExperimentCard
+      title="结账页标题"
+      status={{ label: '进行中', tone: 'green' }}
+      defaultOpen
+      metrics={[
+        { id: 'cvr', label: '转化率', format: (value) => `${value.toFixed(1)}%` },
+        { id: 'rev', label: '收入', format: (value) => `$${value}` },
+      ]}
+      variants={[
+        {
+          id: 'a',
+          key: 'A',
+          name: '原标题',
+          control: true,
+          values: { cvr: 3.1, rev: 920 },
+          visitors: 1200,
+        },
+        { id: 'b', key: 'B', name: '短标题', values: { cvr: 3.8, rev: 1100 }, visitors: 1180 },
+      ]}
+      action={{ label: '采用', onClick: () => undefined }}
+    />
+  );
+}
+
+export function IntegrationSettingsDemo() {
+  return (
+    <IntegrationSettings
+      name="站点分析"
+      count={2}
+      meta="已连接"
+      defaultValues={{ enabled: true, siteUrl: 'example.com', apiKey: 'rk_demo' }}
+    />
+  );
+}
+
+export function KpiChartDemo() {
+  return (
+    <KpiChart
+      title="收入"
+      value="$96.4k"
+      delta={7900}
+      footer="主要渠道"
+      labels={['3/3', '3/4', '3/5', '3/6']}
+      series={[
+        { label: '自然', values: [4600, 4900, 5200, 5400] },
+        { label: '付费', values: [3100, 3400, 3200, 3600] },
+      ]}
+    />
+  );
+}
+
+type OnboardingValues = { name: string; slug: string; invites: string[]; plan: string };
+
+const onboardingSteps: Step<OnboardingValues>[] = [
+  {
+    id: 'workspace',
+    title: '工作区',
+    heading: '命名工作区',
+    render: ({ values, setValues }) => (
+      <>
+        <StepperField name="name" label="工作区名称">
+          <StepperInput
+            value={values.name}
+            onChange={(event) =>
+              setValues({
+                name: event.target.value,
+                slug: event.target.value.toLowerCase().replace(/\s+/g, '-'),
+              })
+            }
+          />
+        </StepperField>
+        <StepperField name="slug" label="工作区地址">
+          <StepperInput
+            prefix="reito.app/"
+            value={values.slug}
+            onChange={(event) => setValues({ slug: event.target.value })}
+          />
+        </StepperField>
+      </>
+    ),
+    validate: (values) => ({ name: values.name.trim() ? undefined : '请填写名称' }),
+  },
+  {
+    id: 'team',
+    title: '团队',
+    render: ({ values, setValues }) => (
+      <StepperField name="invites" label="邀请邮箱" optional>
+        <StepperTags value={values.invites} onChange={(invites) => setValues({ invites })} />
+      </StepperField>
+    ),
+  },
+  {
+    id: 'plan',
+    title: '方案',
+    render: ({ values, setValues }) => (
+      <StepperChoices
+        label="方案"
+        value={values.plan}
+        onChange={(plan) => setValues({ plan })}
+        options={[
+          { value: 'pro', title: '专业版', aside: '$29', description: '适合小团队' },
+          {
+            value: 'team',
+            title: '团队版',
+            aside: '$79',
+            badge: '常用',
+            description: '含更多席位',
+          },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'review',
+    title: '核对',
+    render: ({ values, goTo }) => (
+      <StepperReview
+        onEdit={goTo}
+        rows={[
+          { label: '工作区', value: values.name || '未填写', step: 'workspace' },
+          { label: '方案', value: values.plan, step: 'plan' },
+        ]}
+      />
+    ),
+  },
+];
+
+export function StepperFormDemo() {
+  return (
+    <StepperForm<OnboardingValues>
+      steps={onboardingSteps}
+      initialValues={{ name: '本地演示', slug: 'local-demo', invites: [], plan: 'pro' }}
+      submitLabel="创建工作区"
+      success={(values, reset) => (
+        <StepperSuccess title="已创建" description={`${values.name} · ${values.plan}`}>
+          <Button variant="ghost" onClick={reset}>
+            再走一遍
+          </Button>
+        </StepperSuccess>
+      )}
+    />
+  );
+}
+
+export function AffectToasterDemo() {
+  return (
+    <div className="relative min-h-[var(--rui-container-3xs)]">
+      <Inline>
+        <Button onClick={() => toast.success('草稿已保存', { description: '本地示例，没有发送' })}>
+          成功
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => toast.error('同步失败', { description: '可稍后重试' })}
+        >
+          失败
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() =>
+            toast('已移到回收站', {
+              description: '示例文件',
+              action: { label: '撤销', onClick: () => undefined },
+            })
+          }
+        >
+          带操作
+        </Button>
+      </Inline>
+      <Toaster position="bottom-right" inline />
+    </div>
+  );
+}
+
+export function UsageMeterDemo() {
+  return (
+    <UsageMeter
+      title="Reito AI"
+      plan="专业版"
+      total={10000}
+      used={[
+        { label: '对话', value: 3980 },
+        { label: '搜索', value: 1640 },
+        { label: '图片', value: 820 },
+      ]}
+      limits={[
+        { label: '席位', used: 8, total: 10 },
+        { label: '存储', used: 3.2, total: 5, unit: 'GB', decimals: 1 },
+        { label: '项目', used: 12, total: null },
+      ]}
+      daily={[
+        { label: '1 日', value: 210 },
+        { label: '2 日', value: 280 },
+        { label: '3 日', value: 190 },
+        { label: '4 日', value: 320 },
+        { label: '5 日', value: null },
+      ]}
+      periods={[
+        { id: 'month', label: '本月' },
+        { id: 'last', label: '上月' },
+      ]}
+      resetAt="2026-11-17"
+    />
+  );
+}
+
 export interface AffectCatalogEntry {
   id: string;
   name: string;
@@ -1741,5 +2053,83 @@ export const affectCatalog: AffectCatalogEntry[] = [
     name: 'SetupGuide 设置指南',
     description: '公开文档重建：分组清单与顺序解锁',
     component: SetupGuideDemo,
+  },
+  {
+    id: 'billing-schedule',
+    name: 'BillingSchedule 账单计划',
+    description: '公开文档重建：阶段、产品行与合计',
+    component: BillingScheduleDemo,
+  },
+  {
+    id: 'breakdown-chart',
+    name: 'BreakdownChart 分解图',
+    description: '公开文档重建：切片、分段与堆叠条',
+    component: BreakdownChartDemo,
+  },
+  {
+    id: 'affect-combobox',
+    name: 'Combobox 组合框',
+    description: '公开文档重建：多选、分组与可创建。模式层兄弟。',
+    component: AffectComboboxDemo,
+  },
+  {
+    id: 'compact-breakdown',
+    name: 'CompactBreakdown 紧凑构成',
+    description: '公开文档重建：周期与排名条',
+    component: CompactBreakdownDemo,
+  },
+  {
+    id: 'affect-data-table',
+    name: 'DataTable 数据表',
+    description: '公开文档重建：勾选、排序与格内编辑。模式层兄弟。',
+    component: AffectDataTableDemo,
+  },
+  {
+    id: 'affect-date-range-picker',
+    name: 'DateRangePicker 日期范围',
+    description: '公开文档重建：预设与对比周期。模式层兄弟。',
+    component: AffectDateRangePickerDemo,
+  },
+  {
+    id: 'affect-dropzone',
+    name: 'Dropzone 拖放上传',
+    description: '公开文档重建：拖入、进度与重试。模式层兄弟。',
+    component: AffectDropzoneDemo,
+  },
+  {
+    id: 'experiment-card',
+    name: 'ExperimentCard 实验卡',
+    description: '公开文档重建：方案对比与选赢家',
+    component: ExperimentCardDemo,
+  },
+  {
+    id: 'integration-settings',
+    name: 'IntegrationSettings 集成设置',
+    description: '公开文档重建：开关、密钥与脏保存条',
+    component: IntegrationSettingsDemo,
+  },
+  {
+    id: 'kpi-chart',
+    name: 'KpiChart 指标图',
+    description: '公开文档重建：折线、键盘与礼貌提示',
+    component: KpiChartDemo,
+  },
+  {
+    id: 'stepper-form',
+    name: 'StepperForm 分步表单',
+    description: '公开文档重建：步骤、校验与核对',
+    component: StepperFormDemo,
+  },
+  {
+    id: 'affect-toaster',
+    name: 'Toaster 轻提示',
+    description: '公开文档重建：模块级 toast。模式层兄弟。',
+    component: AffectToasterDemo,
+  },
+  {
+    id: 'usage-meter',
+    name: 'UsageMeter 用量条',
+    description: '公开文档重建：堆叠额度、日线和限额',
+    component: UsageMeterDemo,
   },
 ];

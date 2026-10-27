@@ -14,9 +14,9 @@ function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
           'rounded-[var(--rui-component-input-radius)] border',
           fieldStateClassName,
           // Spacing
-          'px-2.5 py-2',
+          'px-[var(--rui-component-input-padding-x)] py-[var(--rui-compact-surface-padding-y)]',
           // Typography
-          'text-sm',
+          'text-[length:var(--rui-component-input-font-size)]',
           // Surface
           'outline-none',
           // Layout
