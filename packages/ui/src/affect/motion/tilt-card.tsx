@@ -78,7 +78,7 @@ export function TiltCard({
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-40"
             style={{
-              background: `radial-gradient(circle at var(--affect-glare-x) var(--affect-glare-y), var(--rui-background), transparent 55%)`,
+              background: `radial-gradient(circle at var(--affect-glare-x) var(--affect-glare-y), var(--rui-hover), transparent 55%)`,
             }}
           />
         ) : null}
