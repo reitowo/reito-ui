@@ -21,7 +21,7 @@ function RadioGroup({
           : { ...colorStyle, ...style }
       }
       data-slot="radio-group"
-      className={cn('grid w-full gap-2', className)}
+      className={cn('grid w-full gap-[var(--rui-content-gap-sm)]', className)}
       {...props}
     />
   );

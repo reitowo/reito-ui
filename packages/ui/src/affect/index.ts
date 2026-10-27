@@ -285,4 +285,89 @@ export {
   type SetupGuideProps,
   type SetupTask,
 } from './pro/setup-guide.js';
+export {
+  BillingSchedule,
+  type BillingScheduleProps,
+  type BillingScheduleValue,
+  type CatalogItem,
+  type ScheduleLine,
+} from './pro/billing-schedule.js';
+export {
+  BreakdownChart,
+  type BreakdownChartProps,
+  type BreakdownRecord,
+  type Dimension,
+  type Measure,
+} from './pro/breakdown-chart.js';
+export { Combobox, type AffectComboboxProps, type ComboboxOption } from './pro/combobox.js';
+export {
+  CompactBreakdown,
+  type BreakdownItem,
+  type CompactBreakdownProps,
+} from './pro/compact-breakdown.js';
+export {
+  DataTable,
+  type AffectDataTableProps,
+  type DataColumn,
+  type DataRow,
+} from './pro/data-table.js';
+export {
+  DateRangePicker,
+  type CompareMode,
+  type DatePreset,
+  type DateRange,
+  type DateRangePickerProps,
+} from './pro/date-range-picker.js';
+export {
+  Dropzone,
+  type DropzoneProps,
+  type UploadItem,
+  type UploadStatus,
+} from './pro/dropzone.js';
+export {
+  ExperimentCard,
+  type ExperimentCardProps,
+  type ExperimentMetric,
+  type ExperimentTone,
+  type ExperimentVariant,
+} from './pro/experiment-card.js';
+export {
+  IntegrationSettings,
+  type IntegrationSettingsProps,
+  type IntegrationSettingsValues,
+} from './pro/integration-settings.js';
+export { KpiChart, type KpiChartProps, type KpiSeries } from './pro/kpi-chart.js';
+export {
+  StepperChoices,
+  StepperField,
+  StepperForm,
+  StepperInput,
+  StepperReview,
+  StepperSuccess,
+  StepperTags,
+  type Step,
+  type StepperChoicesProps,
+  type StepperFieldProps,
+  type StepperFormProps,
+  type StepperInputProps,
+  type StepperReviewProps,
+  type StepperSuccessProps,
+  type StepperTagsProps,
+} from './pro/stepper-form.js';
+export {
+  Toaster,
+  toast,
+  type ToastId,
+  type ToastOptions,
+  type ToasterProps,
+} from './pro/toaster.js';
+export {
+  UsageMeter,
+  type UsageDay,
+  type UsageLimit,
+  type UsageMeterProps,
+  type UsagePart,
+  type UsagePeriod,
+  type UsageState,
+} from './pro/usage-meter.js';
 export type { AffectAppearance } from './shared.js';
