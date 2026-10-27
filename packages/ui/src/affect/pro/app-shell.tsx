@@ -404,7 +404,7 @@ function ShellFrame({
               <Heading size="item">{title}</Heading>
             </Inline>
             <Inline>
-              {header && header !== false ? (
+              {header && typeof header === 'object' && header.actions ? (
                 header.actions
               ) : (
                 <Button type="button" size="xs" variant="ghost">
