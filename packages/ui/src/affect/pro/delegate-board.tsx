@@ -135,7 +135,7 @@ export function DelegateBoard({
           />
         </Inline>
       </Inline>
-      <div className="grid gap-[var(--rui-content-gap)] @min-[560px]:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]">
+      <div className="grid gap-[var(--rui-content-gap)] @md:grid-cols-[minmax(0,var(--rui-container-3xs))_minmax(0,1fr)]">
         <section aria-label="未分配" className="grid gap-1">
           <Text variant="interface">未分配 {unassigned.length}</Text>
           <ul className="grid gap-1">

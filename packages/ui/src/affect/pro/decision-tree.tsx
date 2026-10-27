@@ -96,7 +96,7 @@ export function DecisionTree({
         </Text>
       </Inline>
       {current ? (
-        <Stack className="@min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] @min-[640px]:grid">
+        <Stack className="@md:grid @md:grid-cols-2">
           <Stack gap="small">
             <Inline>
               {current.icon}

@@ -125,7 +125,7 @@ export function IntegrationPicker({
   return (
     <section
       className={cn(
-        '@container grid gap-[var(--rui-content-gap)] rounded-[var(--rui-radius-surface)] border border-border bg-card p-[var(--rui-content-padding)] @min-[560px]:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]',
+        '@container grid gap-[var(--rui-content-gap)] rounded-[var(--rui-radius-surface)] border border-border bg-card p-[var(--rui-content-padding)] @md:grid-cols-[minmax(0,var(--rui-container-xs))_minmax(0,1fr)]',
         className,
       )}
     >

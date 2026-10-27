@@ -30,7 +30,7 @@ export type AgentLedgerProps = {
   className?: string;
 };
 
-function dependents(entries: LedgerEntry[], id: string) {
+function dependents(entries: LedgerEntry[], id: string): string[] {
   const extra = entries.filter((entry) => entry.dependsOn?.includes(id)).map((entry) => entry.id);
   return [id, ...extra.flatMap((item) => dependents(entries, item))];
 }

@@ -29,7 +29,7 @@ export function SetupGuide({
   className,
 }: SetupGuideProps) {
   const [items, setItems] = useState(groups);
-  const [openId, setOpenId] = useState(groups[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(groups[0]?.id ?? null);
   const tasks = flatten(items);
   const doneIds = tasks.filter((task) => task.done).map((task) => task.id);
   const value = tasks.length ? Math.round((doneIds.length / tasks.length) * 100) : 0;
