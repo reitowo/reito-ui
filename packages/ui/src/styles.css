@@ -15,9 +15,9 @@
       :where([data-theme='dark'] [data-theme='light'], [data-theme='dark'] [data-theme='light'] *)
     ),
   &:where(
-      [data-theme='dark'] [data-theme='light'] [data-theme='dark'],
-      [data-theme='dark'] [data-theme='light'] [data-theme='dark'] *
-    ) {
+    [data-theme='dark'] [data-theme='light'] [data-theme='dark'],
+    [data-theme='dark'] [data-theme='light'] [data-theme='dark'] *
+  ) {
     @slot;
   }
 }
