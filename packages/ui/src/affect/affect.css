@@ -1,0 +1,67 @@
+@keyframes affect-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.affect-grid-lines {
+  background-image:
+    linear-gradient(
+      var(--affect-grid-color) var(--rui-border-width),
+      transparent var(--rui-border-width)
+    ),
+    linear-gradient(
+      90deg,
+      var(--affect-grid-color) var(--rui-border-width),
+      transparent var(--rui-border-width)
+    );
+  background-size: var(--affect-grid-size) var(--affect-grid-size);
+}
+
+@keyframes affect-grid {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: var(--affect-grid-shift);
+  }
+}
+
+@keyframes affect-grid-reveal {
+  from {
+    clip-path: circle(0);
+  }
+  to {
+    clip-path: circle(150%);
+  }
+}
+
+@keyframes affect-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes affect-marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes affect-column {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}

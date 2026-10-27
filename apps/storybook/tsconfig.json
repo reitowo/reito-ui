@@ -1,1 +1,13 @@
-{"extends": "../../tsconfig.base.json", "compilerOptions": {"noEmit": true, "types": ["vite/client"]}, "include": ["stories", ".storybook"]}
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "@reito/ui/basic": ["../../packages/ui/src/basic.ts"],
+      "@reito/ui/affect": ["../../packages/ui/src/affect/index.ts"],
+      "@reito/ui": ["../../packages/ui/src/index.ts"]
+    }
+  },
+  "include": ["stories", ".storybook"]
+}

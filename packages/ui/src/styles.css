@@ -6,6 +6,7 @@
 @import '../../tokens/dist/tailwind.css';
 @import './ai/markdown-content.css';
 @import './complex/rich-text-editor.css';
+@import './affect/affect.css';
 @source "./";
 @custom-variant dark {
   @scope ([data-theme="dark"], .dark) to ([data-theme], .dark) {

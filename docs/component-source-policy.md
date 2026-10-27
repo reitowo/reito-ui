@@ -1,8 +1,8 @@
 # Component source organization
 
 Reito UI uses a layered, compositional design system. Its public layers are
-basic, complex, and AI. These describe responsibility and dependency direction,
-rather than component size or an inheritance hierarchy.
+basic, complex, AI, and affect/pattern (`模式`). These describe responsibility
+and dependency direction, rather than component size or an inheritance hierarchy.
 
 ## Responsibilities
 
@@ -13,6 +13,7 @@ rather than component size or an inheritance hierarchy.
 | Styled foundation | Adapt interaction primitives to the shared visual contract | Button, Dialog, Select, Field |
 | Composed features | Combine foundation controls and explicit data/state callbacks | AsyncCombobox, DataTable, RichTextEditor, Transfer |
 | AI presentation | Compose messages, inputs, tools, decisions, and artifacts | Composer, ToolCall, PermissionRequest |
+| Affect / pattern | Token-backed affectUI-shaped surfaces; wrap existing primitives | ToolCallCard, ChatComposer, LogoMarquee |
 | Host application | Own business data, network requests, execution, and persistence | Lab demos and consuming applications |
 
 Several patterns coexist:

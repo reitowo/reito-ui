@@ -2,10 +2,11 @@
   "counts": {
     "basic": 76,
     "complex": 44,
-    "ai": 24
+    "ai": 24,
+    "affect": 48
   },
-  "total": 144,
-  "stories": 1477,
+  "total": 192,
+  "stories": 1520,
   "entries": [
     {
       "layer": "basic",
@@ -1446,6 +1447,486 @@
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "CheckpointDemo",
       "stories": 10
+    },
+    {
+      "layer": "affect",
+      "id": "button",
+      "name": "Button 按钮适配",
+      "description": "Affect API 覆盖 Reito Button，含加载与干净外观",
+      "storyId": "模式-button--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ButtonDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "change-summary",
+      "name": "ChangeSummary 变化摘要",
+      "description": "一行一个指标与语义趋势",
+      "storyId": "模式-change-summary--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ChangeSummaryDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "comment-thread",
+      "name": "CommentThread 评论串",
+      "description": "评论、折叠详情与本地回复",
+      "storyId": "模式-comment-thread--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CommentThreadDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "decision-inbox",
+      "name": "DecisionInbox 决策收件箱",
+      "description": "两项快速回答，完成后离开列表",
+      "storyId": "模式-decision-inbox--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "DecisionInboxDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "email-draft",
+      "name": "EmailDraft 邮件草稿",
+      "description": "语气、收件人、附件与发送回执",
+      "storyId": "模式-email-draft--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "EmailDraftDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "filter-menu",
+      "name": "FilterMenu 筛选菜单",
+      "description": "分组筛选与可移除芯片",
+      "storyId": "模式-filter-menu--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "FilterMenuDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "message-actions",
+      "name": "MessageActions 消息操作条",
+      "description": "复制、重试、反馈、朗读与版本",
+      "storyId": "模式-message-actions--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "MessageActionsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "notification-stack",
+      "name": "NotificationStack 通知叠卡",
+      "description": "关闭前卡后露出下一张",
+      "storyId": "模式-notification-stack--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "NotificationStackDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "otp-input",
+      "name": "OtpInput 验证码输入",
+      "description": "复用 InputOTP，带状态与重发",
+      "storyId": "模式-otp-input--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "OtpInputDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "profile-menu",
+      "name": "ProfileMenu 账户菜单",
+      "description": "用户、动作与资料进度",
+      "storyId": "模式-profile-menu--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ProfileMenuDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "progress-tracker",
+      "name": "ProgressTracker 进度清单",
+      "description": "清单与进度条",
+      "storyId": "模式-progress-tracker--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ProgressTrackerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "reaction-bar",
+      "name": "ReactionBar 反应条",
+      "description": "点赞等动作与翻滚计数",
+      "storyId": "模式-reaction-bar--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ReactionBarDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "segmented-control",
+      "name": "SegmentedControl 分段控件",
+      "description": "托盘或下划线分段",
+      "storyId": "模式-segmented-control--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "SegmentedControlDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "smart-recommendation",
+      "name": "SmartRecommendation 智能建议",
+      "description": "信号、备选、采用与撤销",
+      "storyId": "模式-smart-recommendation--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "SmartRecommendationDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "thinking-loader",
+      "name": "ThinkingLoader 思考加载",
+      "description": "阶段标签与完成态",
+      "storyId": "模式-thinking-loader--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ThinkingLoaderDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "tips-panel",
+      "name": "TipsPanel 提示面板",
+      "description": "短提示与完成状态",
+      "storyId": "模式-tips-panel--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TipsPanelDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "tool-call-card",
+      "name": "ToolCallCard 工具调用卡",
+      "description": "参数、结果、重试与分组",
+      "storyId": "模式-tool-call-card--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ToolCallCardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "logo-marquee",
+      "name": "LogoMarquee 标志滚动",
+      "description": "信任条循环，减少动效时静止",
+      "storyId": "模式-logo-marquee--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "LogoMarqueeDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "testimonial-wall",
+      "name": "TestimonialWall 评价墙",
+      "description": "多列评价循环",
+      "storyId": "模式-testimonial-wall--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TestimonialWallDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "grid-background",
+      "name": "GridBackground 网格背景",
+      "description": "内容后的细线网格",
+      "storyId": "模式-grid-background--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GridBackgroundDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "number-ticker",
+      "name": "NumberTicker 数字翻滚",
+      "description": "格式化数字滚入",
+      "storyId": "模式-number-ticker--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "NumberTickerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "shimmer-loader",
+      "name": "ShimmerLoader 微光加载",
+      "description": "骨架与微光文字",
+      "storyId": "模式-shimmer-loader--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ShimmerLoaderDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "text-reveal",
+      "name": "TextReveal 文字显现",
+      "description": "进入视口后逐词显现",
+      "storyId": "模式-text-reveal--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TextRevealDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-team",
+      "name": "AgentTeam 代理团队",
+      "description": "提示分出三个角色",
+      "storyId": "模式-agent-team--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentTeamDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "cover-flow",
+      "name": "CoverFlow 封面流",
+      "description": "封面浏览",
+      "storyId": "模式-cover-flow--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CoverFlowDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "empty-calendar",
+      "name": "EmptyCalendar 空日历",
+      "description": "空闲日历卡片",
+      "storyId": "模式-empty-calendar--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "EmptyCalendarDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "enrichment-orbit",
+      "name": "EnrichmentOrbit 富集轨道",
+      "description": "中心节点与环绕标记",
+      "storyId": "模式-enrichment-orbit--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "EnrichmentOrbitDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "frost-cloud",
+      "name": "FrostCloud 霜云",
+      "description": "可点击的霜云示意",
+      "storyId": "模式-frost-cloud--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "FrostCloudDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "ghosted-chat",
+      "name": "GhostedChat 已读未回",
+      "description": "已读未回的对话示意",
+      "storyId": "模式-ghosted-chat--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GhostedChatDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "glow-cloud",
+      "name": "GlowCloud 光云",
+      "description": "发光云示意",
+      "storyId": "模式-glow-cloud--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "GlowCloudDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "integration-beam",
+      "name": "IntegrationBeam 集成光束",
+      "description": "工具与产品之间的连接",
+      "storyId": "模式-integration-beam--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "IntegrationBeamDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "integration-grid",
+      "name": "IntegrationGrid 集成蜂窝",
+      "description": "中心产品与周围工具",
+      "storyId": "模式-integration-grid--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "IntegrationGridDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "layer-stack",
+      "name": "LayerStack 层叠",
+      "description": "选中层抬起",
+      "storyId": "模式-layer-stack--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "LayerStackDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "lead-sourcing",
+      "name": "LeadSourcing 线索来源",
+      "description": "来源与助手连接",
+      "storyId": "模式-lead-sourcing--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "LeadSourcingDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "logo-cluster",
+      "name": "LogoCluster 标志簇",
+      "description": "中心标志与周围标记",
+      "storyId": "模式-logo-cluster--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "LogoClusterDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "model-wheel",
+      "name": "ModelWheel 模型轮",
+      "description": "模型名单",
+      "storyId": "模式-model-wheel--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ModelWheelDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "region-dach",
+      "name": "RegionDach 区域地图",
+      "description": "可切换区域的示意地图",
+      "storyId": "模式-region-dach--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "RegionDachDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "side-folder",
+      "name": "SideFolder 侧向文件夹",
+      "description": "悬停滑出的文件夹",
+      "storyId": "模式-side-folder--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "SideFolderDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "tab-overload",
+      "name": "TabOverload 标签过载",
+      "description": "重叠标签跟随悬停",
+      "storyId": "模式-tab-overload--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TabOverloadDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "team-invite",
+      "name": "TeamInvite 邀请队友",
+      "description": "把新成员拖进空位",
+      "storyId": "模式-team-invite--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TeamInviteDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "thinking-state",
+      "name": "ThinkingState 思考状态",
+      "description": "公开文档重建：计时、来源与步骤",
+      "storyId": "模式-thinking-state--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ThinkingStateDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "chat-composer",
+      "name": "ChatComposer 对话输入",
+      "description": "公开文档重建：模型、语音与批准",
+      "storyId": "模式-chat-composer--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ChatComposerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-plan",
+      "name": "AgentPlan 代理计划",
+      "description": "公开文档重建：可编辑步骤与运行",
+      "storyId": "模式-agent-plan--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentPlanDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "approval-card",
+      "name": "ApprovalCard 审批卡",
+      "description": "公开文档重建：风险、倒计时与批准",
+      "storyId": "模式-approval-card--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ApprovalCardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "command-menu",
+      "name": "CommandMenu 命令菜单",
+      "description": "公开文档重建：搜索并运行命令",
+      "storyId": "模式-command-menu--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CommandMenuDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "model-picker",
+      "name": "ModelPicker 模型选择",
+      "description": "公开文档重建：速度质量成本与思考",
+      "storyId": "模式-model-picker--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ModelPickerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "review-center",
+      "name": "ReviewCenter 审查中心",
+      "description": "公开文档重建：按风险审查队列",
+      "storyId": "模式-review-center--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ReviewCenterDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-inbox",
+      "name": "AgentInbox 代理收件箱",
+      "description": "公开文档重建：后台任务看板",
+      "storyId": "模式-agent-inbox--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentInboxDemo",
+      "stories": 1
     }
   ]
 }

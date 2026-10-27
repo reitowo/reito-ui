@@ -19,15 +19,16 @@
 
 `SelectInput` 接受 `options: { value: string | number; label: ReactNode; disabled?: boolean }[]`、受控 `value` 或 `defaultValue`。`null` 表示未选择；选中时返回该选项的值。`id/ref/aria-*/onBlur` 作用于可聚焦按钮，`name/form/required` 由 Base UI 表单输入处理。
 
-## 三层入口
+## 入口分层
 
 ```tsx
 import { Button, Dialog, DialogContent, DialogTitle } from '@reito/ui/basic';
 import { ConfirmPopover, DataTable, SettingsSection, SplitButton, UserInfo, WorkspacePane } from '@reito/ui/complex';
 import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
+import { ChatComposer, ToolCallCard, LogoMarquee } from '@reito/ui/affect';
 ```
 
-根入口 `@reito/ui` 也导出三层 API，子入口便于表达依赖层次。演示 catalog 不从公共入口导出。以实际 `.d.ts`、源码和 Storybook 的组合为准，不能假设每个控件都接受通用 `size`、`tone` 或 `loading`。
+根入口 `@reito/ui` 导出基础、复杂与 AI。模式层只从 `@reito/ui/affect` 导入，避免与已有 `Button` / `MessageActions` 撞名。演示 catalog 不从公共入口导出。以实际 `.d.ts`、源码和 Storybook 的组合为准，不能假设每个控件都接受通用 `size`、`tone` 或 `loading`。Affect 表面的许可与免费 / 公开重建边界见 [affect-surface.md](affect-surface.md)。
 
 若消费项目本身使用 Tailwind 4，在它的主 CSS 中导入 `@reito/tokens/tailwind` 来扩展应用自己的语义 utility。已经编译的组件 CSS 仍从 `@reito/ui/styles.css` 加载；不需要重新扫描 node_modules 来维持组件基本外观。
 

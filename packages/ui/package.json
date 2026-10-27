@@ -24,6 +24,10 @@
       "types": "./dist/ai/index.d.ts",
       "import": "./dist/ai.js"
     },
+    "./affect": {
+      "types": "./dist/affect/index.d.ts",
+      "import": "./dist/affect.js"
+    },
     "./native": {
       "types": "./dist/native.d.ts",
       "import": "./dist/native.js"

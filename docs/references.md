@@ -464,7 +464,10 @@ Reito 据此调整自己的共享灰阶与界面尺度，并添加蓝色强调�
 - **Base UI v1 菜单演示**：[Base UI Menu 文档](https://base-ui.com/react/components/menu) 的圆角演示。参考的是同心几何关系（弹层圆角 = 条目圆角 + 弹层内距、内缩分隔线、图标与文字间距），具体取值写在 `components.menu` 中，未复制演示样式表。
 - **依赖**：`@base-ui/react` 由 1.8.0 升级到 1.9.0（MIT，见 `packages/ui/THIRD_PARTY_NOTICES.md`）。该版本的变更日志以修复与性能为主；Combobox / Autocomplete 的自动卸载与 `actionsRef` 解耦不影响本库，本库没有使用 `actionsRef`。
 
-
 ## Dashboard 组件边界（2026-10-28）
 
 只读核对 Nuxt UI v4 的 DashboardGroup／Sidebar／Panel／Navbar，以及移动端 Toggle 与桌面 Collapse 的接口和区域职责。来源与 Reito 的原创实现边界见 [Dashboard 组件与迁移](dashboard-composition.md#参考)。Reito 复用自己的 React／Base UI 组件与 tokens，未复制 Vue 代码、CSS 或品牌素材。
+
+## affectUI 表面（2026-10-27）
+
+公开目录与 API 说明来自 [affectui.com/llms.txt](https://www.affectui.com/llms.txt) 和 [组件页](https://www.affectui.com/components/)。免费 MIT 子集对照 [flohoeller/affectui](https://github.com/flohoeller/affectui)（检索时 LICENSE 为 MIT）。本库只参考行为、公开 prop 和预览结构，用 Graphite tokens 与现有原语再实现，没有复制 affectUI 的 BEM / `<style href>` 样式块，也没有取得或嵌入 Pro registry、付费文件或品牌 SVG 路径。Phase 2 的 Thinking State、Chat Composer、Agent Plan、Approval Card、Command Menu、Model Picker、Review Center、Agent Inbox 是按公开文档重建的交互意图，不能称为 Pro 源码移植。分层、许可与入口见 [affect-surface.md](affect-surface.md)。
