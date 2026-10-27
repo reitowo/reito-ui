@@ -36,7 +36,7 @@ export function GradientFloor({ children, speed = 3, className }: GradientFloorP
       <div
         aria-hidden="true"
         className={cn(
-          'pointer-events-none absolute inset-x-[10%] bottom-0 h-1/3 bg-[radial-gradient(ellipse_at_bottom,var(--rui-background),transparent_80%)] opacity-80',
+          'pointer-events-none absolute inset-x-[10%] bottom-0 h-1/3 bg-[radial-gradient(ellipse_at_bottom,var(--rui-hover),transparent_80%)] opacity-80',
           !reduced &&
             speed > 0 &&
             'animate-[affect-pulse_calc(var(--affect-floor-duration)*1.2)_ease-in-out_infinite]',

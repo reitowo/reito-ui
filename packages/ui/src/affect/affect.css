@@ -68,9 +68,9 @@
 
 @keyframes affect-pulse {
   from {
-    opacity: 0.35;
+    transform: translateY(var(--rui-space-1));
   }
   to {
-    opacity: 1;
+    transform: translateY(0);
   }
 }

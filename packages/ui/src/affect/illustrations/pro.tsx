@@ -297,7 +297,6 @@ export function VoiceOrb({
   style,
 }: VoiceOrbProps) {
   const reduced = usePrefersReducedMotion();
-  const edge = size ?? tokenMetrics['space-16'] * 3;
   const loud = Math.min(1, Math.max(0, level ?? (state === 'idle' ? 0.2 : 0.55)));
   const text =
     label === false
@@ -317,8 +316,14 @@ export function VoiceOrb({
           'animate-[affect-pulse_calc(var(--rui-motion-duration-lg)*7)_ease-in-out_infinite]',
       )}
       style={{
-        width: `calc(${edge} * 1px)`,
-        height: `calc(${edge} * 1px)`,
+        width:
+          size == null
+            ? 'calc(var(--rui-space-16) * 3)'
+            : `calc(${size} * var(--rui-space-1) / ${tokenMetrics['space-1']})`,
+        height:
+          size == null
+            ? 'calc(var(--rui-space-16) * 3)'
+            : `calc(${size} * var(--rui-space-1) / ${tokenMetrics['space-1']})`,
         boxShadow:
           state === 'listening'
             ? `0 0 calc(${loud} * var(--rui-space-6)) var(--rui-accent)`
