@@ -3,6 +3,8 @@ import {
   CompositionDemo,
   PageTabsDemo,
   KnowledgePageDemo,
+  RegionPageDemo,
+  RegionShellDemo,
 } from '../../../../packages/ui/src/basic/composition-demo.js';
 
 const meta = {
@@ -26,3 +28,18 @@ export const VerticalTabs: Story = {
   name: '纵向页签页面',
   render: () => <PageTabsDemo orientation="vertical" />,
 };
+
+export const PageRegions: Story = { name: '页面与面板区域', render: () => <RegionPageDemo /> };
+export const AdmissionRegions: Story = {
+  name: '消息接纳区域',
+  render: () => <RegionPageDemo page="admissions" state="records" />,
+};
+export const LoadingRegions: Story = {
+  name: '区域加载态',
+  render: () => <RegionPageDemo state="loading" />,
+};
+export const ErrorRegions: Story = {
+  name: '区域错误态',
+  render: () => <RegionPageDemo state="error" />,
+};
+export const ShellRegions: Story = { name: '导航与工作台区域', render: () => <RegionShellDemo /> };

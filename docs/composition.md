@@ -10,6 +10,52 @@
 全局主题可以写成 createTheme 预设传给 theme；局部变化用 Theme 包住子树，详见 docs/theme-guide.md。
 样式已经编译，消费工程不需要 Tailwind、扫描 node_modules 或复制字体规则。
 
+## 页面区域：先确定 Shell → Page → Panel
+
+普通运营、列表和表单页面按区域组合；不需要先研究一串布局工具再自行编写 content/body 样式。
+
+| 区域 | 公开入口 | 所有权 |
+| --- | --- | --- |
+| 应用外壳 | Shell、Shell.Sidebar、Shell.Main | 导航与主区域，宿主提供高度，窄容器保留导航 |
+| 顶栏 | Shell.Topbar | 高度、对齐、边界与内距 |
+| 工作内容 | Shell.Content | 独立滚动与键盘停靠；不叠加页面 padding |
+| 整页 | Page、Page.Header、Page.Content | 页头到正文间距，inset 只提供一次页面边缘 |
+| 内容面板 | Panel、Panel.Header、Panel.Content、Panel.Footer | 标题身份、面板表面与一层内距 |
+
+```tsx
+<Shell>
+  <Shell.Sidebar>{navigation}</Shell.Sidebar>
+  <Shell.Main>
+    <Shell.Topbar>{breadcrumbs}</Shell.Topbar>
+    <Shell.Content>
+      <Page inset>
+        <Page.Header title="消息接纳" description="查看归属与处理进度" actions={refresh} />
+        <Page.Content>
+          {summary}
+          <Panel flush>
+            <Panel.Header title="接纳记录" />
+            <Panel.Content>{recordsOrEmpty}</Panel.Content>
+            <Panel.Footer>{pagination}</Panel.Footer>
+          </Panel>
+        </Page.Content>
+      </Page>
+    </Shell.Content>
+  </Shell.Main>
+</Shell>
+```
+
+Header、Content、Footer 始终带所属区域。Shell.Content 管滚动，Page 管页面边缘，Panel.Content 管面板内距。
+Page.Content 的 gap 继承 Page.gap，允许独立选择语义 gap；Panel.Content 的 flush 继承 Panel 和主题默认值，
+局部 flush 属性可以覆盖。Header 中标题、说明和操作使用同一文字与间距角色，调用者不补 margin。
+Panel 必须提供标题（简写 title 或 Panel.Header）或 aria-label；标题关联在服务端渲染时即可用。
+命名区域必须是各自根组件的后代，嵌套 Panel 的身份和内距不会覆盖外层。
+
+现有 `<Page title=…>` 和 `<Panel title=…>` 简写继续使用这些区域实现，不添加第二层正文。
+旧 PageHeader 导出保持兼容；新配方优先使用 Page.Header。AppShell／WorkspacePreset 的既有复杂分栏不变。
+需要分栏切换、检查器或持久化布局时继续使用对应工作区组件，Shell 不自动执行路由、认证或保存配置。
+权限申请把 Tabs 放在 Page.Content 内，Tabs.Content 再放 Panel；消息接纳把摘要与记录 Panel 依次放在正文流中。
+完整可运行例子见 `RegionPageDemo`／`RegionShellDemo` 和 Storybook“页面与面板区域”。
+
 ## 组合所有权
 
 - Stack 提供纵向间距，inset 显式提供内容内距；Inline 对齐并自动换行。

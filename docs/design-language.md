@@ -141,6 +141,9 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 ## 桌面布局与阅读空间
 
+普通页面按 Shell、Page、Panel 的区域接口组合，Header／Content／Footer 带所属区域。
+滚动、页面边缘、面板内距分别由 Shell.Content、Page inset、Panel.Content 持有；详细规则见 [页面组合](composition.md)。
+
 密度是样式能力，不是默认产品功能。消费应用默认使用 compact，不应自动在标题栏、工具栏或设置页加入「紧凑 / 舒适」切换；只有用户明确要求时才提供入口。Lab 和 Storybook 为检查组件保留密度工具，Workbench 业务示例不默认展示该入口。两种密度的 token 支持和验证要求不变。
 
 初始布局 token 为侧栏 224 px、检查器 272 px、阅读宽度 720 px、画布最大宽度 1480 px、标题栏 42 px、状态栏 28 px。它们是默认值，不是强迫所有页面保持多栏的最小宽度。

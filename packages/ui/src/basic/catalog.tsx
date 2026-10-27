@@ -1669,7 +1669,7 @@ export const basicCatalog: BasicCatalogEntry[] = [
     id: 'composition',
     name: 'Composition / 页面积木',
     description:
-      'Page 统一页头与内容间距，Stack、Inline、Grid、Text、Heading 和 Panel 组合工作页面。',
+      'Shell、Page、Panel 按区域分组，Header／Content／Footer 共用主题间距，兼容原简写组合。',
     component: CompositionDemo,
   },
   {

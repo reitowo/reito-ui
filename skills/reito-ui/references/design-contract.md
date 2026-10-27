@@ -10,10 +10,10 @@ These screen types have one supported structure. Use it even for a quick prototy
 
 | Screen | Required structure | Reference |
 | --- | --- | --- |
-| Dashboard / admin / ops | `SidebarProvider` → `Sidebar` + `AppShell` → `WorkspacePreset`; slot content in `Stack inset` | [layouts/dashboard.md](layouts/dashboard.md) |
-| List-detail | Same shell: list or `DataTable` in the `workspace` slot, the selected record in the `inspector` slot. Narrow widths switch the active panel; do not build a second responsive layout | [layouts/dashboard.md](layouts/dashboard.md) |
-| Settings | `Stack inset` → (`PageHeader`) → `SettingsSection` → `SettingsRow`; read-only facts in `PropertyList` | [layouts/settings.md](layouts/settings.md) |
-| Page body without a shell | `Stack inset gap="section"` → `PageHeader` → `Panel`/`Grid` of `Panel`s | [../assets/workbench.tsx](../assets/workbench.tsx) |
+| Complex dashboard / split workspace | `SidebarProvider` → `Sidebar` + `AppShell` → `WorkspacePreset`; slot content in `Stack inset` | [layouts/dashboard.md](layouts/dashboard.md) |
+| List-detail with inspector | Same shell: list or `DataTable` in the `workspace` slot, the selected record in the `inspector` slot. Narrow widths switch the active panel; do not build a second responsive layout | [layouts/dashboard.md](layouts/dashboard.md) |
+| Settings | `Page inset` → `Page.Header` + `Page.Content` → `SettingsSection` → `SettingsRow`; read-only facts in `PropertyList` | [layouts/settings.md](layouts/settings.md) |
+| Page body without a shell | `Page inset` → `Page.Header` + `Page.Content` → `Panel`/`Grid` | [../assets/workbench.tsx](../assets/workbench.tsx) |
 | Form | `Form` + `FormField` (validated) or `FieldGroup` + `Field` (local) | [§ Forms](#forms) |
 | Conversation | `Conversation` + `Message` + one `Composer` | [§ Conversation](#conversation) |
 
@@ -24,13 +24,14 @@ maintained source for the dashboard shell. Copy relationships from them, not fro
 
 | Need | Components | Composition rule |
 | --- | --- | --- |
-| Complete page | Page | Title, description, actions; owns header-to-content spacing |
+| Ordinary ops/list/form shell | Shell.Sidebar, Shell.Main, Shell.Topbar, Shell.Content | Host height; named navigation and scrolling regions |
+| Complete page | Page.Header, Page.Content | Page owns edge and header-to-content spacing |
 | Standalone heading | PageHeader | For a container that already owns layout; no outside margins |
 | Page tabs | Tabs, TabsList, TabsTrigger, TabsContent | line for page navigation; no gap compensation |
 | Vertical flow | Stack | gap="small/normal/section/none"; inset supplies the outer content edge |
 | Actions, metadata, form row | Inline | Wraps; baseline for author/time, end for fields/actions |
 | Peer sections | Grid | minColumnWidth="xs/sm/md"; collapses inside narrow containers |
-| Section | Panel | title, description, actions, footer; flush for self-inset content |
+| Section | Panel.Header, Panel.Content, Panel.Footer | Panel owns title identity and inset; flush for self-inset content |
 | Widget | Card and slots | Header/body/footer own their insets; avoid cards around every record |
 | Text | Text, Heading | Role controls style; heading level controls document semantics |
 | Form | FieldGroup, Field, FieldLabel, FieldDescription, FieldError | Field owns related spacing |

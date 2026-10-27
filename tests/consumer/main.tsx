@@ -7,6 +7,8 @@ import {
   CompositionDemo,
   PageTabsDemo,
   KnowledgePageDemo,
+  RegionPageDemo,
+  RegionShellDemo,
 } from '../../skills/reito-ui/assets/workbench.js';
 import { ThemeApiDemo } from './theme-api.js';
 
@@ -25,7 +27,14 @@ createRoot(document.getElementById('root')!).render(
         query.has('pageGap') ? { semantic: { 'section-gap': 'var(--rui-space-6)' } } : undefined
       }
     >
-      {query.get('page') === 'tabs' ? (
+      {query.get('page') === 'regions' ? (
+        <RegionPageDemo
+          page={query.get('kind') === 'admissions' ? 'admissions' : 'requests'}
+          state={(query.get('state') as 'empty' | 'loading' | 'error' | 'records') || 'empty'}
+        />
+      ) : query.get('page') === 'shell' ? (
+        <RegionShellDemo />
+      ) : query.get('page') === 'tabs' ? (
         <PageTabsDemo
           variant={query.get('variant') === 'default' ? 'default' : 'line'}
           orientation={query.get('orientation') === 'vertical' ? 'vertical' : 'horizontal'}
