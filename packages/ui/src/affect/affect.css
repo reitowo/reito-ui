@@ -65,3 +65,12 @@
     transform: translateY(-50%);
   }
 }
+
+@keyframes affect-pulse {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
