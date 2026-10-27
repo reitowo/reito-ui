@@ -3,8 +3,8 @@ import { expect, test } from '@playwright/test';
 test('docs introduction, navigation and markdown mirror', async ({ page, request }) => {
   await page.goto('/docs/introduction');
   await expect(page.getByRole('heading', { level: 1, name: '介绍' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: '文档导航' }).getByRole('link', { name: '安装' })).toBeVisible();
-  await page.getByRole('navigation', { name: '文档导航' }).getByRole('link', { name: '安装' }).click();
+  await expect(page.getByRole('navigation', { name: '文档导航' }).getByRole('link', { name: '安装', exact: true })).toBeVisible();
+  await page.getByRole('navigation', { name: '文档导航' }).getByRole('link', { name: '安装', exact: true }).click();
   await expect(page).toHaveURL(/\/docs\/installation\/?$/);
   await expect(page.getByRole('heading', { level: 1, name: '安装' })).toBeVisible();
   const markdown = await request.get('/docs/installation.md');
@@ -16,7 +16,7 @@ test('docs introduction, navigation and markdown mirror', async ({ page, request
 test('theming and using-with-AI pages expose llms endpoints', async ({ page, request }) => {
   await page.goto('/docs/theming');
   await expect(page.getByRole('heading', { level: 1, name: '主题' })).toBeVisible();
-  await expect(page.getByText('--rui-radius')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /全局圆角/ })).toBeVisible();
   await page.goto('/docs/ai');
   await expect(page.getByRole('heading', { level: 1, name: '与 AI 协作' })).toBeVisible();
   const index = await request.get('/llms.txt');
@@ -39,8 +39,8 @@ test('gallery lists components and opens a detail preview', async ({ page }) => 
   await page.locator('[data-component="button"]').click();
   await expect(page).toHaveURL(/\/gallery\/button\/?$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Button' })).toBeVisible();
-  await expect(page.getByTestId('site-component-preview')).toBeVisible();
-  await page.getByRole('main').getByRole('button', { name: '文档' }).click();
+  await expect(page.getByTestId('site-component-preview').first()).toBeVisible();
+  await page.getByRole('main').getByRole('button', { name: '文档', exact: true }).click();
   await expect(page).toHaveURL(/\/docs\/components\/button\/?$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Button' })).toBeVisible();
 });

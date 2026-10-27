@@ -65,7 +65,7 @@ function DocsSidebar({ current, onNavigate, open }: { current: string; onNavigat
   return (
     <aside className={`docs-sidebar ${open ? 'is-open' : ''}`} aria-label="文档导航">
       <div className="docs-filter"><Search className="size-3.5" aria-hidden="true" /><Input aria-label="筛选文档" placeholder="筛选文档…" value={query} onChange={(event) => setQuery(event.target.value)} /></div>
-      <nav className="docs-nav">
+      <nav className="docs-nav" aria-label="文档导航">
         {docs.sections.map((section) => {
           const items = section.slugs.map((slug) => pages.get(slug)!).filter((page) => !normalized || `${page.title} ${page.description} ${page.slug}`.toLowerCase().includes(normalized));
           if (!items.length) return null;
