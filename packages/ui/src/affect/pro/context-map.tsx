@@ -141,20 +141,21 @@ export function ContextMap({
             </Inline>
           ) : null}
           {agents?.length ? (
-            <label className="inline-flex items-center gap-1 text-[length:var(--rui-font-caption)]">
-              代理
-              <select
-                value={currentAgent?.id}
-                onChange={(event) => onAgentChange?.(event.target.value)}
-                className="rounded-[var(--rui-radius)] border border-border bg-background px-1"
-              >
-                {agents.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Inline>
+              {agents.map((item) => (
+                <Button
+                  key={item.id}
+                  type="button"
+                  size="xs"
+                  variant={currentAgent?.id === item.id ? 'secondary' : 'ghost'}
+                  aria-pressed={currentAgent?.id === item.id}
+                  onClick={() => onAgentChange?.(item.id)}
+                >
+                  {item.icon}
+                  {item.name}
+                </Button>
+              ))}
+            </Inline>
           ) : null}
         </Inline>
       </Inline>
