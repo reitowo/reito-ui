@@ -63,6 +63,19 @@ import { ParallelAttempts } from './pro/parallel-attempts.js';
 import { TraceWaterfall } from './pro/trace-waterfall.js';
 import { CommentsPanel } from './pro/comments-panel.js';
 import { PromptLibrary } from './pro/prompt-library.js';
+import { AgentCursors } from './pro/agent-cursors.js';
+import { AgentGraph } from './pro/agent-graph.js';
+import { AgentLedger } from './pro/agent-ledger.js';
+import { AgentQueue } from './pro/agent-queue.js';
+import { ConflictRadar } from './pro/conflict-radar.js';
+import { ContextMap } from './pro/context-map.js';
+import { ContextWindow } from './pro/context-window.js';
+import { DecisionTree } from './pro/decision-tree.js';
+import { DelegateBoard } from './pro/delegate-board.js';
+import { FanoutGrid } from './pro/fan-out-grid.js';
+import { ProjectCard } from './pro/project-card.js';
+import { IntegrationPicker } from './pro/integration-picker.js';
+import { SetupGuide } from './pro/setup-guide.js';
 import { AffectDemoFrame } from './shared.js';
 import { Inline, Stack, Text } from '../basic/composition.js';
 
@@ -967,6 +980,320 @@ export function PromptLibraryDemo() {
   );
 }
 
+export function AgentCursorsDemo() {
+  return (
+    <AgentCursors
+      title="上线说明"
+      agents={[
+        { id: 'writer', name: '撰稿', cost: 0.04 },
+        { id: 'reviewer', name: '校对', cost: 0.02 },
+      ]}
+      blocks={[
+        { id: 'h', kind: 'heading', text: '本周上线' },
+        { id: 'p', kind: 'paragraph', text: '把共享令牌收进本地示例，不再连接外部模型。' },
+      ]}
+      cursors={{ writer: { block: 'p', at: 4, doing: '改写' } }}
+      suggestions={[
+        {
+          id: 's1',
+          agent: 'reviewer',
+          block: 'p',
+          at: 2,
+          remove: '共享令牌',
+          insert: '演示数据',
+          note: '避免读者以为这是真实密钥',
+        },
+      ]}
+      comments={[{ id: 'c1', agent: 'writer', block: 'p', text: '标题要不要更短？' }]}
+    />
+  );
+}
+
+export function AgentGraphDemo() {
+  const now = Date.now();
+  return (
+    <AgentGraph
+      nodes={[
+        {
+          id: 'lead',
+          name: '编排',
+          kind: 'agent',
+          lead: true,
+          status: 'working',
+          doing: '分派',
+          cost: 0.08,
+        },
+        { id: 'writer', name: '撰稿', kind: 'agent', status: 'waiting', doing: '等你看草稿' },
+        { id: 'search', name: '检索', kind: 'tool', status: 'done' },
+        { id: 'you', name: '你', kind: 'user' },
+      ]}
+      edges={[
+        ['lead', 'writer'],
+        ['lead', 'search'],
+        ['writer', 'you'],
+      ]}
+      calls={[
+        { id: '1', from: 'lead', to: 'search', at: now - 4000, status: 'ok', label: '检索文档' },
+        { id: '2', from: 'lead', to: 'writer', at: now - 1000, status: 'pending' },
+      ]}
+      now={now}
+    />
+  );
+}
+
+export function AgentLedgerDemo() {
+  const now = Date.now();
+  return (
+    <AgentLedger
+      agent="计费代理"
+      entries={[
+        {
+          id: 'plan',
+          action: '改套餐',
+          target: 'acme',
+          system: '计费',
+          at: now - 120000,
+          change: ['试用', '团队版'],
+          reversible: true,
+        },
+        {
+          id: 'mail',
+          action: '发确认信',
+          target: 'ops@local',
+          system: '邮件',
+          at: now - 60000,
+          dependsOn: ['plan'],
+          reversible: true,
+        },
+        {
+          id: 'charge',
+          action: '扣款',
+          target: '$49',
+          system: '支付',
+          at: now - 30000,
+          reversible: false,
+          dependsOn: ['plan'],
+        },
+      ]}
+      now={now}
+    />
+  );
+}
+
+export function AgentQueueDemo() {
+  const now = Date.now();
+  return (
+    <AgentQueue
+      name="夜间批"
+      workers={[
+        { id: 'a', name: '工作者 A' },
+        { id: 'b', name: '工作者 B' },
+      ]}
+      jobs={[
+        {
+          id: '1',
+          name: '摘要 12 封邮件',
+          kind: 'llm',
+          status: 'running',
+          enqueuedAt: now - 20000,
+          worker: 'a',
+          progress: 0.4,
+        },
+        {
+          id: '2',
+          name: '同步议题',
+          kind: 'tool',
+          status: 'queued',
+          enqueuedAt: now - 8000,
+          priority: 'high',
+        },
+        { id: '3', name: '写发布说明', kind: 'agent', status: 'queued', enqueuedAt: now - 4000 },
+      ]}
+      now={now}
+      onPromote={() => undefined}
+      onCancel={() => undefined}
+      onPausedChange={() => undefined}
+      onConcurrencyChange={() => undefined}
+    />
+  );
+}
+
+export function ConflictRadarDemo() {
+  return (
+    <ConflictRadar
+      agents={[
+        { id: 'alpha', name: 'Alpha', model: '主分支', status: 'done' },
+        { id: 'beta', name: 'Beta', model: '修复分支', status: 'done' },
+      ]}
+      files={[
+        {
+          path: 'packages/ui/src/affect/shared.tsx',
+          edits: [
+            { agentId: 'alpha', lines: [12, 24], summary: '抽出 formatAgo' },
+            { agentId: 'beta', lines: [20, 28], summary: '改成相对日期' },
+          ],
+        },
+        {
+          path: 'docs/affect-surface.md',
+          edits: [{ agentId: 'alpha', lines: [10, 16], summary: '补许可说明' }],
+        },
+      ]}
+    />
+  );
+}
+
+export function ContextMapDemo() {
+  return (
+    <ContextMap
+      model="示例模型"
+      limit={200000}
+      blocks={[
+        { id: 'system', label: '系统提示', kind: 'system', tokens: 6200 },
+        { id: 'tools', label: '工具定义', kind: 'tools', tokens: 14800 },
+        {
+          id: 'spec',
+          label: 'design-language.md',
+          kind: 'file',
+          tokens: 8200,
+          detail: '0:09 读入',
+        },
+        { id: 'chat', label: '对话', kind: 'chat', tokens: 41000 },
+        { id: 'run', label: '检查结果', kind: 'result', tokens: 22400 },
+      ]}
+      compaction={null}
+    />
+  );
+}
+
+export function ContextWindowDemo() {
+  return (
+    <ContextWindow
+      limit={200000}
+      model="示例模型"
+      parts={[
+        { id: 'system', label: '系统提示', tokens: 4200, locked: true },
+        { id: 'tools', label: '工具', tokens: 12800 },
+        {
+          id: 'files',
+          label: '文件',
+          items: [
+            { id: 'tokens', label: 'tokens.json', tokens: 9400 },
+            { id: 'surface', label: 'affect-surface.md', tokens: 4300 },
+          ],
+        },
+        { id: 'chat', label: '对话', tokens: 108600, compact: true },
+      ]}
+    />
+  );
+}
+
+export function DecisionTreeDemo() {
+  return (
+    <DecisionTree
+      decisions={[
+        {
+          id: 'dupes',
+          question: '三位成员有两份有效订阅，怎么处理？',
+          context: '结账中断时重复下单。',
+          agent: '计费代理',
+          risk: 'high',
+          options: [
+            {
+              label: '取消较新的一份',
+              pick: true,
+              effects: ['取消 3 份订阅 · 可恢复', '发送 3 封邮件'],
+            },
+            { label: '退较新的一份', effects: ['退款 $147 · 不可恢复'] },
+            { label: '先问成员', effects: ['发送 3 封邮件 · 等待回复'] },
+          ],
+        },
+      ]}
+    />
+  );
+}
+
+export function DelegateBoardDemo() {
+  return (
+    <DelegateBoard
+      agents={[
+        { id: 'writer', name: '撰稿', model: '快模型', current: 12, rate: 0.02 },
+        { id: 'reviewer', name: '校对', model: '稳模型', current: 4, rate: 0.03 },
+      ]}
+      tasks={[
+        { id: 'notes', title: '写发布说明', estimate: 18 },
+        { id: 'review', title: '校对上线清单', estimate: 10, agentId: 'reviewer' },
+        { id: 'mail', title: '通知内部', estimate: 8 },
+      ]}
+    />
+  );
+}
+
+export function FanoutGridDemo() {
+  return (
+    <FanoutGrid
+      job="整理 12 条线索"
+      workers={4}
+      now={40000}
+      tasks={[
+        { id: '1', label: 'a.local', status: 'done', start: 0, end: 8000, cost: 0.01 },
+        { id: '2', label: 'b.local', status: 'done', start: 2000, end: 11000, cost: 0.01 },
+        { id: '3', label: 'c.local', status: 'running', worker: 'W2', start: 12000 },
+        { id: '4', label: 'd.local', status: 'retrying', attempts: 2, start: 15000 },
+        { id: '5', label: 'e.local', status: 'failed', error: '超时', attempts: 3 },
+        { id: '6', label: 'f.local', status: 'queued' },
+        { id: '7', label: 'g.local', status: 'queued' },
+        { id: '8', label: 'h.local', status: 'queued' },
+      ]}
+      onRetry={() => undefined}
+    />
+  );
+}
+
+export function ProjectCardDemo() {
+  return (
+    <ProjectCard
+      title="入职流程"
+      status="progress"
+      due="10 月 24 日"
+      trigger="click"
+      defaultOpen
+      members={[{ name: '阿宁' }, { name: '林可' }]}
+      tasks={[
+        { id: 'welcome', label: '欢迎页', done: true, assignee: '阿宁' },
+        { id: 'workspace', label: '工作区', done: true, assignee: '林可' },
+        { id: 'invite', label: '邀请同事', assignee: '阿宁' },
+      ]}
+      action={{ label: '打开', onClick: () => undefined }}
+    />
+  );
+}
+
+export function IntegrationPickerDemo() {
+  return <IntegrationPicker appName="Reito" />;
+}
+
+export function SetupGuideDemo() {
+  return (
+    <SetupGuide
+      groups={[
+        {
+          id: 'workspace',
+          title: '建立工作区',
+          tasks: [
+            { id: 'name', label: '填写工作区名称' },
+            { id: 'invite', label: '邀请同事' },
+          ],
+        },
+        {
+          id: 'verify',
+          title: '验证账户',
+          tasks: [{ id: 'email', label: '确认邮箱', done: true }],
+        },
+      ]}
+    />
+  );
+}
+
 export interface AffectCatalogEntry {
   id: string;
   name: string;
@@ -1336,5 +1663,83 @@ export const affectCatalog: AffectCatalogEntry[] = [
     name: 'PromptLibrary 提示库',
     description: '公开文档重建：模板变量与预览',
     component: PromptLibraryDemo,
+  },
+  {
+    id: 'agent-cursors',
+    name: 'AgentCursors 代理光标',
+    description: '公开文档重建：文档内指针、建议与评论',
+    component: AgentCursorsDemo,
+  },
+  {
+    id: 'agent-graph',
+    name: 'AgentGraph 代理图',
+    description: '公开文档重建：代理、工具与调用热度',
+    component: AgentGraphDemo,
+  },
+  {
+    id: 'agent-ledger',
+    name: 'AgentLedger 代理账本',
+    description: '公开文档重建：改动、依赖与撤销链',
+    component: AgentLedgerDemo,
+  },
+  {
+    id: 'agent-queue',
+    name: 'AgentQueue 代理队列',
+    description: '公开文档重建：等待、工作者与限流',
+    component: AgentQueueDemo,
+  },
+  {
+    id: 'conflict-radar',
+    name: 'ConflictRadar 冲突雷达',
+    description: '公开文档重建：并行改动与合并选择',
+    component: ConflictRadarDemo,
+  },
+  {
+    id: 'context-map',
+    name: 'ContextMap 上下文地图',
+    description: '公开文档重建：窗口占用与压缩前后',
+    component: ContextMapDemo,
+  },
+  {
+    id: 'context-window',
+    name: 'ContextWindow 上下文窗口',
+    description: '公开文档重建：单元格子、移除与压缩',
+    component: ContextWindowDemo,
+  },
+  {
+    id: 'decision-tree',
+    name: 'DecisionTree 决策树',
+    description: '公开文档重建：分支后果与自写指示',
+    component: DecisionTreeDemo,
+  },
+  {
+    id: 'delegate-board',
+    name: 'DelegateBoard 委派看板',
+    description: '公开文档重建：把任务交给空闲代理',
+    component: DelegateBoardDemo,
+  },
+  {
+    id: 'fan-out-grid',
+    name: 'FanoutGrid 分发网格',
+    description: '公开文档重建：批量任务格子与重试',
+    component: FanoutGridDemo,
+  },
+  {
+    id: 'project-card',
+    name: 'ProjectCard 项目卡',
+    description: '公开文档重建：展开子任务、状态与成员',
+    component: ProjectCardDemo,
+  },
+  {
+    id: 'integration-picker',
+    name: 'IntegrationPicker 集成选择',
+    description: '公开文档重建：搜索服务并开关连接',
+    component: IntegrationPickerDemo,
+  },
+  {
+    id: 'setup-guide',
+    name: 'SetupGuide 设置指南',
+    description: '公开文档重建：分组清单与顺序解锁',
+    component: SetupGuideDemo,
   },
 ];

@@ -50,6 +50,16 @@ export function formatDollars(amount: number) {
   return `$${amount.toFixed(digits)}`;
 }
 
+export function formatAgo(at: number, now: number) {
+  const seconds = Math.max(0, Math.round((now - at) / 1000));
+  if (seconds < 45) return `${Math.max(1, seconds)}s 前`;
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes} 分钟前`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours} 小时前`;
+  return `${Math.round(hours / 24)} 天前`;
+}
+
 export function useTickingNow(active: boolean, now?: number) {
   const [tick, setTick] = useState(() => now ?? Date.now());
   useEffect(() => {
