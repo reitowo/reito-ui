@@ -41,7 +41,9 @@ export function diffWords(original: string, suggested: string): DiffSegment[] {
   for (let i = rows - 1; i >= 0; i -= 1) {
     for (let j = cols - 1; j >= 0; j -= 1) {
       table[i]![j] =
-        left[i] === right[j] ? (table[i + 1]![j + 1] ?? 0) + 1 : Math.max(table[i + 1]![j] ?? 0, table[i]![j + 1] ?? 0);
+        left[i] === right[j]
+          ? (table[i + 1]![j + 1] ?? 0) + 1
+          : Math.max(table[i + 1]![j] ?? 0, table[i]![j + 1] ?? 0);
     }
   }
   const raw: DiffSegment[] = [];
@@ -94,7 +96,10 @@ export function InlineDiff({
   ref,
   className,
 }: InlineDiffProps) {
-  const parts = useMemo(() => changes ?? diffWords(original, suggested), [changes, original, suggested]);
+  const parts = useMemo(
+    () => changes ?? diffWords(original, suggested),
+    [changes, original, suggested],
+  );
   const changeIndexes = useMemo(
     () => parts.flatMap((part, index) => (part.type === 'change' ? [index] : [])),
     [parts],
@@ -198,16 +203,21 @@ export function InlineDiff({
               aria-label={`建议 ${order} / ${changeIndexes.length}：用「${part.insert}」替换「${part.remove}」。Y 接受，N 拒绝`}
               onClick={() => setFocus(index)}
               onKeyDown={(event) => {
-                if (event.key === 'y' || event.key === 'Y' || event.key === 'Enter') decide(index, 'accept');
+                if (event.key === 'y' || event.key === 'Y' || event.key === 'Enter')
+                  decide(index, 'accept');
                 if (event.key === 'n' || event.key === 'N' || event.key === 'Backspace')
                   decide(index, 'reject');
                 if (event.key === 'Escape') setFocus(null);
               }}
             >
               {part.remove ? (
-                <span className="bg-destructive/15 text-destructive line-through">{part.remove}</span>
+                <span className="bg-destructive/15 text-destructive line-through">
+                  {part.remove}
+                </span>
               ) : null}
-              {part.insert ? <span className="bg-success/15 text-success">{part.insert}</span> : null}
+              {part.insert ? (
+                <span className="bg-success/15 text-success">{part.insert}</span>
+              ) : null}
             </button>
           );
         })}
@@ -215,22 +225,53 @@ export function InlineDiff({
       <Inline className="justify-between">
         {pending.length ? (
           <Inline>
-            <Button type="button" size="icon-xs" variant="ghost" aria-label="上一处" onClick={() => step(-1)}>
+            <Button
+              type="button"
+              size="icon-xs"
+              variant="ghost"
+              aria-label="上一处"
+              onClick={() => step(-1)}
+            >
               <ChevronLeft />
             </Button>
-            <Button type="button" size="icon-xs" variant="ghost" aria-label="下一处" onClick={() => step(1)}>
+            <Button
+              type="button"
+              size="icon-xs"
+              variant="ghost"
+              aria-label="下一处"
+              onClick={() => step(1)}
+            >
               <ChevronRight />
             </Button>
-            <Button type="button" size="xs" onClick={() => focus != null && decide(focus, 'accept')}>
+            <Button
+              type="button"
+              size="xs"
+              onClick={() => focus != null && decide(focus, 'accept')}
+            >
               接受
             </Button>
-            <Button type="button" size="xs" variant="outline" onClick={() => focus != null && decide(focus, 'reject')}>
+            <Button
+              type="button"
+              size="xs"
+              variant="outline"
+              onClick={() => focus != null && decide(focus, 'reject')}
+            >
               拒绝
             </Button>
-            <Button type="button" size="xs" variant="ghost" onClick={() => pending.forEach((index) => decide(index, 'accept'))}>
+            <Button
+              type="button"
+              size="xs"
+              variant="ghost"
+              onClick={() => pending.forEach((index) => decide(index, 'accept'))}
+            >
               全部接受
             </Button>
-            <Button type="button" size="xs" variant="ghost" onClick={() => pending.forEach((index) => decide(index, 'reject'))}>
+            <Button
+              type="button"
+              size="xs"
+              variant="ghost"
+              onClick={() => pending.forEach((index) => decide(index, 'reject'))}
+            >
               全部拒绝
             </Button>
           </Inline>

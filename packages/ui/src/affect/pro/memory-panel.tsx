@@ -65,7 +65,9 @@ export function MemoryPanel({
   const [editing, setEditing] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [creating, setCreating] = useState(false);
-  const [createCategory, setCreateCategory] = useState(categories?.[0] ?? memories[0]?.category ?? '工作');
+  const [createCategory, setCreateCategory] = useState(
+    categories?.[0] ?? memories[0]?.category ?? '工作',
+  );
   const [forgotten, setForgotten] = useState<Memory | null>(null);
   const items = onChange ? memories : internal;
   const on = enabled ?? useMemory;
@@ -85,7 +87,10 @@ export function MemoryPanel({
     commit(items.filter((item) => item.id !== memory.id));
     onForget?.(memory.id);
     setForgotten(memory);
-    window.setTimeout(() => setForgotten((current) => (current?.id === memory.id ? null : current)), hold);
+    window.setTimeout(
+      () => setForgotten((current) => (current?.id === memory.id ? null : current)),
+      hold,
+    );
   }
 
   const grouped = useMemo(() => {
@@ -95,7 +100,9 @@ export function MemoryPanel({
       list.push(item);
       map.set(item.category, list);
     }
-    return groups.filter((group) => map.has(group)).map((group) => [group, map.get(group)!] as const);
+    return groups
+      .filter((group) => map.has(group))
+      .map((group) => [group, map.get(group)!] as const);
   }, [visible, groups]);
 
   return (
@@ -127,11 +134,7 @@ export function MemoryPanel({
           新对话不会使用或保存记忆。这里的内容不会删除。
         </Text>
       ) : null}
-      <div
-        role="radiogroup"
-        aria-label="分类"
-        className="flex gap-1 overflow-x-auto"
-      >
+      <div role="radiogroup" aria-label="分类" className="flex gap-1 overflow-x-auto">
         {['all', ...groups].map((group) => (
           <Button
             key={group}
@@ -168,7 +171,10 @@ export function MemoryPanel({
               <Text variant="interface">{group}</Text>
               <ul className="grid gap-2">
                 {list.map((memory) => (
-                  <li key={memory.id} className="grid gap-1 rounded-[var(--rui-radius)] border border-border p-2">
+                  <li
+                    key={memory.id}
+                    className="grid gap-1 rounded-[var(--rui-radius)] border border-border p-2"
+                  >
                     {editing === memory.id ? (
                       <Textarea
                         value={draft}
@@ -177,7 +183,11 @@ export function MemoryPanel({
                         onKeyDown={(event) => {
                           if (event.key === 'Enter' && !event.shiftKey) {
                             event.preventDefault();
-                            commit(items.map((item) => (item.id === memory.id ? { ...item, text: draft } : item)));
+                            commit(
+                              items.map((item) =>
+                                item.id === memory.id ? { ...item, text: draft } : item,
+                              ),
+                            );
                             onEdit?.(memory.id, draft);
                             setEditing(null);
                           }
@@ -185,7 +195,9 @@ export function MemoryPanel({
                         }}
                       />
                     ) : (
-                      <Text className={cn(memory.paused && 'text-muted-foreground')}>{memory.text}</Text>
+                      <Text className={cn(memory.paused && 'text-muted-foreground')}>
+                        {memory.text}
+                      </Text>
                     )}
                     <Inline className="justify-between">
                       <Text as="span" variant="caption" tone="muted">
@@ -302,9 +314,7 @@ export function MemoryPanel({
       )}
       <Inline className="justify-between">
         <Text variant="caption" tone="muted" aria-live="polite">
-          {forgotten
-            ? `已忘记「${forgotten.text}」`
-            : `${visible.length} / ${items.length} 条`}
+          {forgotten ? `已忘记「${forgotten.text}」` : `${visible.length} / ${items.length} 条`}
         </Text>
         {forgotten ? (
           <Button

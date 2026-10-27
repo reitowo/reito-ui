@@ -161,9 +161,7 @@ export function CitedAnswer({
                   const marks = current.highlight?.length
                     ? current.highlight
                     : sharedWords(current.quote ?? '', sentences);
-                  const hit = marks.some((mark) =>
-                    word.toLowerCase().includes(mark.toLowerCase()),
-                  );
+                  const hit = marks.some((mark) => word.toLowerCase().includes(mark.toLowerCase()));
                   return (
                     <span key={index} className={hit ? 'bg-background' : undefined}>
                       {word}

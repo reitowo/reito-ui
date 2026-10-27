@@ -42,9 +42,15 @@ export type TraceWaterfallProps = {
   className?: string;
 };
 
-function flatten(span: TraceSpan, depth: number, hidden: Set<string>, list: { span: TraceSpan; depth: number }[]) {
+function flatten(
+  span: TraceSpan,
+  depth: number,
+  hidden: Set<string>,
+  list: { span: TraceSpan; depth: number }[],
+) {
   list.push({ span, depth });
-  if (!hidden.has(span.id)) span.children?.forEach((child) => flatten(child, depth + 1, hidden, list));
+  if (!hidden.has(span.id))
+    span.children?.forEach((child) => flatten(child, depth + 1, hidden, list));
   return list;
 }
 
@@ -52,7 +58,10 @@ function rollup(span: TraceSpan): { cost: number; tokens: number; end: number } 
   const kids = span.children?.map(rollup) ?? [];
   return {
     cost: (span.cost ?? 0) + kids.reduce((sum, item) => sum + item.cost, 0),
-    tokens: (span.tokensIn ?? 0) + (span.tokensOut ?? 0) + kids.reduce((sum, item) => sum + item.tokens, 0),
+    tokens:
+      (span.tokensIn ?? 0) +
+      (span.tokensOut ?? 0) +
+      kids.reduce((sum, item) => sum + item.tokens, 0),
     end: Math.max(span.end ?? span.start, ...kids.map((item) => item.end), span.start),
   };
 }
@@ -159,8 +168,9 @@ export function TraceWaterfall({
           {root.input ? ` · ${root.input}` : ''}
         </Heading>
         <Text variant="caption" tone="muted" aria-live="polite">
-          {live ? '实时' : root.status === 'failed' ? '失败' : '完成'} · {formatDuration(axis / 1000)} ·{' '}
-          {formatCost(totals.cost)} · {Math.round(totals.tokens / 100) / 10}k tokens
+          {live ? '实时' : root.status === 'failed' ? '失败' : '完成'} ·{' '}
+          {formatDuration(axis / 1000)} · {formatCost(totals.cost)} ·{' '}
+          {Math.round(totals.tokens / 100) / 10}k tokens
         </Text>
       </Inline>
       <div role="tree" className="grid gap-1">
@@ -203,7 +213,9 @@ export function TraceWaterfall({
                       );
                     }}
                   >
-                    <ChevronDown className={cn('size-3', folded.includes(span.id) && '-rotate-90')} />
+                    <ChevronDown
+                      className={cn('size-3', folded.includes(span.id) && '-rotate-90')}
+                    />
                   </Button>
                 ) : (
                   <span className="size-6" />
@@ -213,16 +225,26 @@ export function TraceWaterfall({
                   {span.name}
                 </Text>
                 {span.detail ? (
-                  <Text as="span" variant="caption" tone="muted" className="@min-[360px]:inline hidden">
+                  <Text
+                    as="span"
+                    variant="caption"
+                    tone="muted"
+                    className="@min-[360px]:inline hidden"
+                  >
                     {span.detail}
                   </Text>
                 ) : null}
-                {markSlowest && slowest?.id === span.id ? <Badge variant="secondary">最慢</Badge> : null}
+                {markSlowest && slowest?.id === span.id ? (
+                  <Badge variant="secondary">最慢</Badge>
+                ) : null}
                 <Text as="span" variant="caption" tone="muted">
                   {formatDuration((end - span.start) / 1000)} · {formatCost(own.cost)}
                 </Text>
               </Inline>
-              <div className="relative h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
+              <div
+                className="relative h-2 overflow-hidden rounded-full bg-muted"
+                aria-hidden="true"
+              >
                 <div
                   className={cn(
                     'absolute top-0 h-full rounded-full',
@@ -243,14 +265,24 @@ export function TraceWaterfall({
         >
           <Inline className="justify-between">
             <Text variant="interface">{current.name}</Text>
-            <Button type="button" size="icon-xs" variant="ghost" aria-label="关闭" onClick={() => setOpen(null)}>
+            <Button
+              type="button"
+              size="icon-xs"
+              variant="ghost"
+              aria-label="关闭"
+              onClick={() => setOpen(null)}
+            >
               <X />
             </Button>
           </Inline>
           <Stack gap="small">
             {current.input ? <Text variant="caption">输入：{current.input}</Text> : null}
             {current.output ? <Text variant="caption">输出：{current.output}</Text> : null}
-            {current.error ? <Text variant="caption" className="text-destructive">{current.error}</Text> : null}
+            {current.error ? (
+              <Text variant="caption" className="text-destructive">
+                {current.error}
+              </Text>
+            ) : null}
             <Text variant="caption" tone="muted">
               {(current.tokensIn ?? 0) + (current.tokensOut ?? 0)} tokens
               {current.model ? ` · ${current.model}` : ''}

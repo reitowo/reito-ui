@@ -788,8 +788,20 @@ export function MemoryPanelDemo() {
   return (
     <MemoryPanel
       memories={[
-        { id: '1', text: '默认使用紧凑密度。', category: '工作', source: '对话', date: '9 月 28 日' },
-        { id: '2', text: '令牌写在 tokens.json。', category: '项目', source: '对话', date: '10 月 3 日' },
+        {
+          id: '1',
+          text: '默认使用紧凑密度。',
+          category: '工作',
+          source: '对话',
+          date: '9 月 28 日',
+        },
+        {
+          id: '2',
+          text: '令牌写在 tokens.json。',
+          category: '项目',
+          source: '对话',
+          date: '10 月 3 日',
+        },
         { id: '3', text: '周五发发布说明。', category: '工作', source: '对话', date: '10 月 9 日' },
       ]}
     />

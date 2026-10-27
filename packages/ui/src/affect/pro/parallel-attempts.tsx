@@ -85,10 +85,7 @@ export function ParallelAttempts({
                   {attempt.approach}
                 </Text>
               </Inline>
-              <div
-                className="h-1.5 overflow-hidden rounded-full bg-muted"
-                aria-hidden="true"
-              >
+              <div className="h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden="true">
                 <div
                   className={cn(
                     'h-full rounded-full',

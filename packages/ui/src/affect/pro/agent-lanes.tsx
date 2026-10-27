@@ -84,7 +84,9 @@ export function AgentLanes({
         {agents.map((agent) => {
           const items = resolved.filter((task) => task.agentId === agent.id);
           const waiting = items.some((task) => task.status === 'waiting');
-          const idle = !items.some((task) => task.status === 'running' || task.status === 'waiting');
+          const idle = !items.some(
+            (task) => task.status === 'running' || task.status === 'waiting',
+          );
           return (
             <div key={agent.id} className="@container grid gap-1">
               <Inline>
@@ -101,7 +103,10 @@ export function AgentLanes({
                   {waiting ? '需要你' : idle ? '空闲' : '忙碌'}
                 </Badge>
               </Inline>
-              <ol aria-label={agent.name} className="relative min-h-[var(--rui-control-height)] overflow-hidden rounded-[var(--rui-radius)] bg-muted">
+              <ol
+                aria-label={agent.name}
+                className="relative min-h-[var(--rui-control-height)] overflow-hidden rounded-[var(--rui-radius)] bg-muted"
+              >
                 {items.map((task) => {
                   const start = Math.max(task.start, windowStart);
                   const end = task.end ?? windowEnd;
@@ -142,7 +147,11 @@ export function AgentLanes({
                             ) : null}
                             {task.status === 'waiting' ? (
                               <Inline>
-                                <Button type="button" size="xs" onClick={() => decide(task, 'done')}>
+                                <Button
+                                  type="button"
+                                  size="xs"
+                                  onClick={() => decide(task, 'done')}
+                                >
                                   批准
                                 </Button>
                                 <Button
@@ -155,7 +164,12 @@ export function AgentLanes({
                                 </Button>
                               </Inline>
                             ) : onOpen ? (
-                              <Button type="button" size="xs" variant="ghost" onClick={() => onOpen(task)}>
+                              <Button
+                                type="button"
+                                size="xs"
+                                variant="ghost"
+                                onClick={() => onOpen(task)}
+                              >
                                 打开
                               </Button>
                             ) : null}

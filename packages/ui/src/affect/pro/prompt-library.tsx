@@ -142,14 +142,18 @@ export function PromptLibrary({
       {template ? (
         <Stack>
           <Text variant="caption" tone="muted" aria-live="polite">
-            {live || `${names.filter((name) => values[name]?.trim()).length} / ${names.length} 已填写`}
+            {live ||
+              `${names.filter((name) => values[name]?.trim()).length} / ${names.length} 已填写`}
           </Text>
           <p className="text-[length:var(--rui-font-reading)] leading-[var(--rui-line-reading)]">
             {template.body.split(tokenPattern()).map((chunk, index) => {
               if (index % 2 === 1) {
                 const name = chunk;
                 return (
-                  <label key={`${name}-${index}`} className="mx-0.5 inline-flex flex-col align-baseline">
+                  <label
+                    key={`${name}-${index}`}
+                    className="mx-0.5 inline-flex flex-col align-baseline"
+                  >
                     <span className="sr-only">
                       {name}
                       {template.variables?.[name]?.description
@@ -189,7 +193,9 @@ export function PromptLibrary({
           {names.map((name) => (
             <Label key={name} className="sr-only">
               {name}
-              {template.variables?.[name]?.description ? ` — ${template.variables[name]?.description}` : ''}
+              {template.variables?.[name]?.description
+                ? ` — ${template.variables[name]?.description}`
+                : ''}
             </Label>
           ))}
           <Inline className="justify-between">

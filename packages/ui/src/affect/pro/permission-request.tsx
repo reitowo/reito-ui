@@ -10,7 +10,12 @@ import { formatClock, initials, useTickingNow } from '../shared.js';
 
 export type PermissionRisk = 'safe' | 'risky' | 'destructive';
 export type PermissionScope = 'once' | 'timed' | 'always';
-export type PermissionDecision = { allow: boolean; scope: PermissionScope; at: number; until?: number };
+export type PermissionDecision = {
+  allow: boolean;
+  scope: PermissionScope;
+  at: number;
+  until?: number;
+};
 export type PermissionPreview = { id: string; label: string; meta?: string; icon?: ReactNode };
 export type PermissionRequestProps = {
   agent: { name: string; model?: string; avatar?: ReactNode };
@@ -193,7 +198,10 @@ export function PermissionRequest({
           </Text>
           <ul className="grid gap-1">
             {shown.map((item) => (
-              <li key={item.id} className="flex justify-between gap-2 text-[length:var(--rui-font-caption)]">
+              <li
+                key={item.id}
+                className="flex justify-between gap-2 text-[length:var(--rui-font-caption)]"
+              >
                 <span>
                   {item.icon} {item.label}
                 </span>

@@ -98,7 +98,11 @@ export function AgentSteering({
         <Stack gap="none">
           <Heading size="item">{title}</Heading>
           <Text variant="caption" tone="muted">
-            {status === 'running' ? `运行中 · ${formatDuration(elapsed)}` : status === 'paused' ? '已暂停' : '已完成'}
+            {status === 'running'
+              ? `运行中 · ${formatDuration(elapsed)}`
+              : status === 'paused'
+                ? '已暂停'
+                : '已完成'}
             {agent ? ` · ${agent}` : ''}
           </Text>
         </Stack>
@@ -141,7 +145,10 @@ export function AgentSteering({
             {step.notes?.length ? (
               <ul className="ml-8 grid gap-1">
                 {step.notes.map((note) => (
-                  <li key={note.id} className="text-[length:var(--rui-font-caption)] text-muted-foreground">
+                  <li
+                    key={note.id}
+                    className="text-[length:var(--rui-font-caption)] text-muted-foreground"
+                  >
                     {note.picked === 'now' ? '立即：' : '下一步：'}
                     {note.text}
                   </li>
@@ -156,13 +163,21 @@ export function AgentSteering({
           {waiting.length ? (
             <ul className="grid gap-1">
               {waiting.map((note) => (
-                <li key={note.id} className="flex items-center justify-between gap-2 rounded-[var(--rui-radius)] bg-muted px-2 py-1">
+                <li
+                  key={note.id}
+                  className="flex items-center justify-between gap-2 rounded-[var(--rui-radius)] bg-muted px-2 py-1"
+                >
                   <Text as="span" variant="caption">
                     {note.text}
                   </Text>
                   <Inline>
                     {onInterrupt ? (
-                      <Button type="button" size="xs" variant="ghost" onClick={() => interrupt(note.text, note.id)}>
+                      <Button
+                        type="button"
+                        size="xs"
+                        variant="ghost"
+                        onClick={() => interrupt(note.text, note.id)}
+                      >
                         现在
                       </Button>
                     ) : null}
