@@ -49,6 +49,20 @@ import { CommandMenu } from './pro/command-menu.js';
 import { ModelPicker } from './pro/model-picker.js';
 import { ReviewCenter } from './pro/review-center.js';
 import { AgentInbox } from './pro/agent-inbox.js';
+import { AIAnswer } from './pro/ai-answer.js';
+import { CitedAnswer } from './pro/cited-answer.js';
+import { WritingAssistant } from './pro/writing-assistant.js';
+import { PermissionRequest } from './pro/permission-request.js';
+import { AgentSteering } from './pro/agent-steering.js';
+import { AgentTree } from './pro/agent-tree.js';
+import { AgentLanes } from './pro/agent-lanes.js';
+import { AutonomyDial } from './pro/autonomy-dial.js';
+import { InlineDiff } from './pro/inline-diff.js';
+import { MemoryPanel } from './pro/memory-panel.js';
+import { ParallelAttempts } from './pro/parallel-attempts.js';
+import { TraceWaterfall } from './pro/trace-waterfall.js';
+import { CommentsPanel } from './pro/comments-panel.js';
+import { PromptLibrary } from './pro/prompt-library.js';
 import { AffectDemoFrame } from './shared.js';
 import { Inline, Stack, Text } from '../basic/composition.js';
 
@@ -594,6 +608,353 @@ export function AgentInboxDemo() {
   );
 }
 
+export function AIAnswerDemo() {
+  return (
+    <AIAnswer
+      question="工作区该用哪套密度？"
+      sources={[
+        { title: '设计语言', name: '规范', snippet: '紧凑是默认密度。' },
+        { title: '令牌政策', name: '令牌', snippet: '视觉尺寸走共享令牌。' },
+      ]}
+      answer={'默认使用**紧凑**密度。[1] 检查组件时可以切到舒适，但产品界面不必放开关。[2]'}
+      followUps={['圆角怎么定？', '深色主题差在哪？']}
+    />
+  );
+}
+
+export function CitedAnswerDemo() {
+  return (
+    <CitedAnswer
+      pagesRead={8}
+      sources={[
+        {
+          id: 'lang',
+          title: '设计语言',
+          site: 'docs',
+          quote: '紧凑是默认密度，舒适留给长文阅读。',
+        },
+        { id: 'tokens', title: '令牌政策', site: 'docs', quote: '不要在组件里写死像素。' },
+      ]}
+      segments={[
+        { text: '紧凑是默认密度，', cite: ['lang'] },
+        { text: '舒适留给长文阅读。', cite: ['lang'], paragraph: false },
+        { text: '尺寸都走共享令牌，不要写死像素。', cite: ['tokens'], paragraph: true },
+      ]}
+      action={{ label: '追问', onClick: () => undefined }}
+    />
+  );
+}
+
+export function WritingAssistantDemo() {
+  return <WritingAssistant name="本地助手" tagline="只改你贴进来的句子。" />;
+}
+
+export function PermissionRequestDemo() {
+  return (
+    <PermissionRequest
+      agent={{ name: '示例助手', model: '本地' }}
+      action="推送到主分支"
+      target="reito-ui"
+      risk="risky"
+      reason="检查已经通过，接下来会打开拉取请求。"
+      preview={[
+        { id: 'a', label: 'packages/ui/src/affect/index.ts', meta: '+40' },
+        { id: 'b', label: 'docs/affect-surface.md', meta: '+6' },
+        { id: 'c', label: '发布预览', meta: '本地' },
+      ]}
+    />
+  );
+}
+
+export function AgentSteeringDemo() {
+  const started = Date.now() - 126000;
+  return (
+    <AgentSteering
+      title="拆分用户表"
+      agent="示例助手"
+      startedAt={started}
+      steps={[
+        { id: '1', title: '读取 schema', status: 'done', duration: 1400 },
+        { id: '2', title: '规划拆分', status: 'done', duration: 500 },
+        { id: '3', title: '写迁移', status: 'active', startedAt: Date.now() - 20000 },
+        { id: '4', title: '预演', status: 'pending' },
+      ]}
+    />
+  );
+}
+
+export function AgentTreeDemo() {
+  return (
+    <AgentTree
+      root={{
+        id: 'root',
+        name: '编排器',
+        model: '示例',
+        task: '周五前上线定价页',
+        status: 'running',
+        cost: 0.12,
+        started: Date.now() - 180000,
+        children: [
+          {
+            id: 'research',
+            name: '调研',
+            task: '收集竞品价格',
+            status: 'done',
+            cost: 0.04,
+            started: Date.now() - 170000,
+            ended: Date.now() - 90000,
+          },
+          {
+            id: 'writer',
+            name: '撰稿',
+            task: '起草定价文案',
+            status: 'waiting',
+            ask: '用年度还是月度作为默认？',
+            cost: 0.03,
+            started: Date.now() - 80000,
+          },
+        ],
+      }}
+    />
+  );
+}
+
+export function AgentLanesDemo() {
+  const now = Date.now();
+  return (
+    <AgentLanes
+      now={now}
+      agents={[
+        { id: 'research', name: '调研', model: '示例' },
+        { id: 'writer', name: '撰稿', model: '轻量' },
+        { id: 'ops', name: '运维', model: '示例' },
+      ]}
+      tasks={[
+        {
+          id: 't1',
+          agentId: 'research',
+          title: '竞品价格',
+          status: 'done',
+          start: now - 20 * 60 * 1000,
+          end: now - 12 * 60 * 1000,
+          summary: '整理了三家公开套餐',
+        },
+        {
+          id: 't2',
+          agentId: 'writer',
+          title: '定价页草稿',
+          status: 'running',
+          start: now - 8 * 60 * 1000,
+        },
+        {
+          id: 't3',
+          agentId: 'ops',
+          title: '轮换密钥',
+          status: 'waiting',
+          start: now - 4 * 60 * 1000,
+          ask: '是否轮换预览环境密钥？',
+        },
+      ]}
+    />
+  );
+}
+
+export function AutonomyDialDemo() {
+  return (
+    <AutonomyDial
+      actions={[
+        { id: 'read', label: '读取文件', risk: 'safe' },
+        { id: 'draft', label: '起草邮件', risk: 'safe' },
+        { id: 'crm', label: '更新客户记录', risk: 'risky' },
+        { id: 'send', label: '发送邮件', risk: 'risky' },
+        { id: 'delete', label: '删除文件', risk: 'destructive' },
+        { id: 'spend', label: '支出费用', risk: 'destructive' },
+      ]}
+    />
+  );
+}
+
+export function InlineDiffDemo() {
+  return (
+    <InlineDiff
+      label="建议 · 写短一点"
+      original="我们非常高兴地宣布，新的仪表盘现在已经对所有用户开放。它比以前快很多，而且你现在可以把任意报表导出为 CSV。"
+      suggested="新仪表盘已对所有用户开放。它比以前快一倍，并且可以把任意报表导出为 CSV。"
+    />
+  );
+}
+
+export function MemoryPanelDemo() {
+  return (
+    <MemoryPanel
+      memories={[
+        { id: '1', text: '默认使用紧凑密度。', category: '工作', source: '对话', date: '9 月 28 日' },
+        { id: '2', text: '令牌写在 tokens.json。', category: '项目', source: '对话', date: '10 月 3 日' },
+        { id: '3', text: '周五发发布说明。', category: '工作', source: '对话', date: '10 月 9 日' },
+      ]}
+    />
+  );
+}
+
+export function ParallelAttemptsDemo() {
+  return (
+    <ParallelAttempts
+      task="修结账测试"
+      attempts={[
+        {
+          id: 'a',
+          name: '示例 A',
+          approach: '重试',
+          status: 'done',
+          progress: 1,
+          score: 86,
+          took: 14000,
+          cost: 0.04,
+          note: '加上退避后通过',
+        },
+        {
+          id: 'b',
+          name: '示例 B',
+          approach: '隔离',
+          status: 'done',
+          progress: 1,
+          score: 71,
+          took: 18000,
+          cost: 0.03,
+        },
+        {
+          id: 'c',
+          name: '示例 C',
+          approach: '重写',
+          status: 'failed',
+          progress: 0.4,
+          note: '超时',
+        },
+      ]}
+    />
+  );
+}
+
+export function TraceWaterfallDemo() {
+  return (
+    <TraceWaterfall
+      startedAt={Date.now() - 7000}
+      root={{
+        id: 'run',
+        name: '编排器',
+        kind: 'agent',
+        status: 'done',
+        start: 0,
+        end: 7000,
+        cost: 0.1,
+        tokensIn: 2100,
+        tokensOut: 1900,
+        input: '规划上线',
+        children: [
+          {
+            id: 'plan',
+            name: '规划',
+            kind: 'llm',
+            status: 'done',
+            start: 200,
+            end: 2400,
+            detail: '示例模型',
+            cost: 0.06,
+            tokensIn: 1200,
+            tokensOut: 800,
+          },
+          {
+            id: 'read',
+            name: 'read_file',
+            kind: 'tool',
+            status: 'done',
+            start: 2500,
+            end: 3100,
+            detail: 'design-language.md',
+            cost: 0.01,
+          },
+          {
+            id: 'write',
+            name: '起草',
+            kind: 'llm',
+            status: 'done',
+            start: 3200,
+            end: 6900,
+            cost: 0.03,
+            tokensIn: 900,
+            tokensOut: 1100,
+          },
+        ],
+      }}
+    />
+  );
+}
+
+export function CommentsPanelDemo() {
+  return (
+    <CommentsPanel
+      comments={[
+        {
+          id: '1',
+          author: { name: '阿宁' },
+          createdAt: Date.now() - 120000,
+          text: '/edit 把「客户」都改成「成员」。',
+        },
+        {
+          id: '2',
+          author: { name: '林可' },
+          createdAt: Date.now() - 300000,
+          text: '首屏要不要提折扣？',
+        },
+        {
+          id: '3',
+          author: { name: '苏衡' },
+          createdAt: Date.now() - 660000,
+          text: '移动端插画看起来不错。',
+          resolved: true,
+        },
+      ]}
+    />
+  );
+}
+
+export function PromptLibraryDemo() {
+  const [used, setUsed] = useState('');
+  return (
+    <AffectDemoFrame className="max-w-xl">
+      <PromptLibrary
+        templates={[
+          {
+            id: 'summary',
+            title: '会议纪要',
+            category: '笔记',
+            body: '把下面的会议整理给 {audience}，不超过 {length}。先写决定，再列出关于 {topic} 的未决问题。',
+            variables: {
+              audience: { description: '谁来读' },
+              length: { description: '篇幅', default: '150 字' },
+              topic: { description: '未决问题的主题' },
+            },
+          },
+          {
+            id: 'release',
+            title: '发布说明',
+            category: '工程',
+            body: '用 {tone} 语气写一版 {product} 的发布说明。',
+            variables: {
+              tone: { description: '语气', default: '克制' },
+              product: { description: '产品名' },
+            },
+          },
+        ]}
+        onUse={(prompt) => setUsed(prompt)}
+      />
+      <Text variant="caption" tone="muted">
+        {used || '填完变量后可以使用提示。'}
+      </Text>
+    </AffectDemoFrame>
+  );
+}
+
 export interface AffectCatalogEntry {
   id: string;
   name: string;
@@ -879,5 +1240,89 @@ export const affectCatalog: AffectCatalogEntry[] = [
     name: 'AgentInbox 代理收件箱',
     description: '公开文档重建：后台任务看板',
     component: AgentInboxDemo,
+  },
+  {
+    id: 'ai-answer',
+    name: 'AIAnswer 带出处回答',
+    description: '公开文档重建：来源卡、引用与追问',
+    component: AIAnswerDemo,
+  },
+  {
+    id: 'cited-answer',
+    name: 'CitedAnswer 引用对照',
+    description: '公开文档重建：句子与来源互亮',
+    component: CitedAnswerDemo,
+  },
+  {
+    id: 'writing-assistant',
+    name: 'WritingAssistant 写作助手',
+    description: '公开文档重建：建议、流式回复与口述',
+    component: WritingAssistantDemo,
+  },
+  {
+    id: 'affect-permission-request',
+    name: 'PermissionRequest 权限请求',
+    description: '公开文档重建：一次、限时或始终授权',
+    component: PermissionRequestDemo,
+  },
+  {
+    id: 'agent-steering',
+    name: 'AgentSteering 运行中引导',
+    description: '公开文档重建：排队便条或立即打断',
+    component: AgentSteeringDemo,
+  },
+  {
+    id: 'agent-tree',
+    name: 'AgentTree 代理树',
+    description: '公开文档重建：编排与子代理成本',
+    component: AgentTreeDemo,
+  },
+  {
+    id: 'agent-lanes',
+    name: 'AgentLanes 代理泳道',
+    description: '公开文档重建：并行时间线与交接',
+    component: AgentLanesDemo,
+  },
+  {
+    id: 'autonomy-dial',
+    name: 'AutonomyDial 自主程度',
+    description: '公开文档重建：三级权限与锁定',
+    component: AutonomyDialDemo,
+  },
+  {
+    id: 'inline-diff',
+    name: 'InlineDiff 行内改写',
+    description: '公开文档重建：逐处接受或拒绝',
+    component: InlineDiffDemo,
+  },
+  {
+    id: 'memory-panel',
+    name: 'MemoryPanel 记忆面板',
+    description: '公开文档重建：分组编辑、暂停与忘记',
+    component: MemoryPanelDemo,
+  },
+  {
+    id: 'parallel-attempts',
+    name: 'ParallelAttempts 并行尝试',
+    description: '公开文档重建：多路竞赛与择优',
+    component: ParallelAttemptsDemo,
+  },
+  {
+    id: 'trace-waterfall',
+    name: 'TraceWaterfall 轨迹瀑布',
+    description: '公开文档重建：耗时、费用与最慢调用',
+    component: TraceWaterfallDemo,
+  },
+  {
+    id: 'comments-panel',
+    name: 'CommentsPanel 评论面板',
+    description: '公开文档重建：筛选、/edit 与解决',
+    component: CommentsPanelDemo,
+  },
+  {
+    id: 'prompt-library',
+    name: 'PromptLibrary 提示库',
+    description: '公开文档重建：模板变量与预览',
+    component: PromptLibraryDemo,
   },
 ];

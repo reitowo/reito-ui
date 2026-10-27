@@ -127,4 +127,76 @@ export {
   type AgentInboxView,
   type AgentTask,
 } from './pro/agent-inbox.js';
+export { AIAnswer, type AIAnswerProps, type AnswerSource } from './pro/ai-answer.js';
+export {
+  CitedAnswer,
+  type CitedAnswerProps,
+  type CitedSegment,
+  type CitedSource,
+} from './pro/cited-answer.js';
+export { WritingAssistant, type WritingAssistantProps } from './pro/writing-assistant.js';
+export {
+  PermissionRequest,
+  type PermissionDecision as AffectPermissionDecision,
+  type PermissionPreview,
+  type PermissionRequestProps,
+  type PermissionRisk,
+  type PermissionScope,
+} from './pro/permission-request.js';
+export {
+  AgentSteering,
+  type AgentSteeringProps,
+  type SteerNote,
+  type SteerStep,
+} from './pro/agent-steering.js';
+export {
+  AgentTree,
+  type AgentTreeProps,
+  type TreeAgent,
+  type TreeAgentStatus,
+} from './pro/agent-tree.js';
+export {
+  AgentLanes,
+  type AgentLanesProps,
+  type LaneAgent,
+  type LaneTask,
+} from './pro/agent-lanes.js';
+export {
+  AutonomyDial,
+  asksFirst,
+  type AgentAction,
+  type AutonomyDialProps,
+  type AutonomyLevel,
+} from './pro/autonomy-dial.js';
+export {
+  InlineDiff,
+  diffWords,
+  type DiffSegment,
+  type InlineDiffHandle,
+  type InlineDiffProps,
+} from './pro/inline-diff.js';
+export { MemoryPanel, type Memory, type MemoryPanelProps } from './pro/memory-panel.js';
+export {
+  ParallelAttempts,
+  type Attempt,
+  type ParallelAttemptsProps,
+} from './pro/parallel-attempts.js';
+export {
+  TraceWaterfall,
+  type TraceKind,
+  type TraceSpan,
+  type TraceWaterfallProps,
+} from './pro/trace-waterfall.js';
+export {
+  CommentsPanel,
+  type CommentAuthor,
+  type CommentsPanelProps,
+  type PanelComment,
+} from './pro/comments-panel.js';
+export {
+  PromptLibrary,
+  type PromptLibraryProps,
+  type PromptTemplate,
+  type PromptVariable,
+} from './pro/prompt-library.js';
 export type { AffectAppearance } from './shared.js';

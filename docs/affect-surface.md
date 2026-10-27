@@ -7,7 +7,7 @@
 | 范围 | 来源 | 本库做法 |
 | --- | --- | --- |
 | Phase 1 免费组件、blocks、插画、motion | [flohoeller/affectui](https://github.com/flohoeller/affectui)（MIT） | 只参考公开行为与 API；实现使用 `@reito/ui` 原语、`--rui-*` 与 Tailwind token 桥。clean 变体合并为 `appearance?: 'default' \| 'clean'`，不复制 `*-clean` 文件。 |
-| Phase 2 高价值 Pro AI 表面 | [affectui.com 组件页](https://www.affectui.com/components/) 与 [llms.txt](https://www.affectui.com/llms.txt) 的公开 prop / 预览描述 | **没有拉取 Pro registry 或付费源码。** Thinking State、Chat Composer、Agent Plan、Approval Card、Command Menu、Model Picker、Review Center、Agent Inbox 是按公开文档重建的交互意图，不声称与 Pro 源码逐行一致。 |
+| Phase 2 高价值 Pro AI 表面 | [affectui.com 组件页](https://www.affectui.com/components/) 与 [llms.txt](https://www.affectui.com/llms.txt) 的公开 prop / 预览描述 | **没有拉取 Pro registry 或付费源码。** Thinking State、Chat Composer、Agent Plan、Approval Card、Command Menu、Model Picker、Review Center、Agent Inbox、AI Answer、Cited Answer、Writing Assistant、Permission Request、Agent Steering、Agent Tree、Agent Lanes、Autonomy Dial、Inline Diff、Memory Panel、Parallel Attempts、Trace Waterfall、Comments Panel、Prompt Library 是按公开文档重建的交互意图，不声称与 Pro 源码逐行一致。 |
 | 插画 | 免费 17 件的公开 API | 保留交互意图与命名；标记是通用色块，不复制品牌 SVG 路径或专有素材。 |
 
 MIT 参考仓库的许可证仍属于原作者。本层的 React / token 实现是 Reito 原创再实现，随 `@reito/ui` 以 MIT 发布。产品许可与参考出处总表见 [references.md](references.md)。

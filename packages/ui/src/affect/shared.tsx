@@ -45,6 +45,25 @@ export function formatClock(seconds: number) {
   return `${Math.floor(value / 60)}:${pad(value % 60)}`;
 }
 
+export function formatDollars(amount: number) {
+  const digits = Math.abs(amount) >= 1 ? 2 : 3;
+  return `$${amount.toFixed(digits)}`;
+}
+
+export function useTickingNow(active: boolean, now?: number) {
+  const [tick, setTick] = useState(() => now ?? Date.now());
+  useEffect(() => {
+    if (now != null) {
+      setTick(now);
+      return;
+    }
+    if (!active) return;
+    const timer = window.setInterval(() => setTick(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [active, now]);
+  return now ?? tick;
+}
+
 export function surfaceClass(appearance: AffectAppearance = 'default') {
   return appearance === 'clean'
     ? 'rounded-[var(--rui-radius-surface)] border border-border bg-card text-card-foreground'
