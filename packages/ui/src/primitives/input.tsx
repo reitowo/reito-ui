@@ -16,7 +16,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
           'rounded-[var(--rui-component-input-radius)] border',
           fieldStateClassName,
           // Spacing
-          'px-[var(--rui-component-input-padding-x)] py-1',
+          'px-[var(--rui-component-input-padding-x)] py-0',
           // Typography
           'text-[length:var(--rui-component-input-font-size)]',
           // Surface

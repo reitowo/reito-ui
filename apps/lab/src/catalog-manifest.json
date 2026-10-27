@@ -3,10 +3,10 @@
     "basic": 76,
     "complex": 44,
     "ai": 24,
-    "affect": 62
+    "affect": 75
   },
-  "total": 206,
-  "stories": 1534,
+  "total": 219,
+  "stories": 1546,
   "entries": [
     {
       "layer": "basic",
@@ -2066,6 +2066,136 @@
       "storyId": "模式-prompt-library--default",
       "sourceFile": "packages/ui/src/affect/catalog.tsx",
       "demo": "PromptLibraryDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-cursors",
+      "name": "AgentCursors 代理光标",
+      "description": "公开文档重建：文档内指针、建议与评论",
+      "storyId": "模式-agent-cursors--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentCursorsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-graph",
+      "name": "AgentGraph 代理图",
+      "description": "公开文档重建：代理、工具与调用热度",
+      "storyId": "模式-agent-graph--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentGraphDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-ledger",
+      "name": "AgentLedger 代理账本",
+      "description": "公开文档重建：改动、依赖与撤销链",
+      "storyId": "模式-agent-ledger--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentLedgerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-queue",
+      "name": "AgentQueue 代理队列",
+      "description": "公开文档重建：等待、工作者与限流",
+      "storyId": "模式-agent-queue--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentQueueDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "conflict-radar",
+      "name": "ConflictRadar 冲突雷达",
+      "description": "公开文档重建：并行改动与合并选择",
+      "storyId": "模式-conflict-radar--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ConflictRadarDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "context-map",
+      "name": "ContextMap 上下文地图",
+      "description": "公开文档重建：窗口占用与压缩前后",
+      "storyId": "模式-context-map--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ContextMapDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "context-window",
+      "name": "ContextWindow 上下文窗口",
+      "description": "公开文档重建：单元格子、移除与压缩",
+      "storyId": "模式-context-window--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ContextWindowDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "decision-tree",
+      "name": "DecisionTree 决策树",
+      "description": "公开文档重建：分支后果与自写指示",
+      "storyId": "模式-decision-tree--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "DecisionTreeDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "delegate-board",
+      "name": "DelegateBoard 委派看板",
+      "description": "公开文档重建：把任务交给空闲代理",
+      "storyId": "模式-delegate-board--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "DelegateBoardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "fan-out-grid",
+      "name": "FanoutGrid 分发网格",
+      "description": "公开文档重建：批量任务格子与重试",
+      "storyId": "模式-fan-out-grid--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "FanoutGridDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "project-card",
+      "name": "ProjectCard 项目卡",
+      "description": "公开文档重建：展开子任务、状态与成员",
+      "storyId": "模式-project-card--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ProjectCardDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "integration-picker",
+      "name": "IntegrationPicker 集成选择",
+      "description": "公开文档重建：搜索服务并开关连接",
+      "storyId": "模式-integration-picker--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "IntegrationPickerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "setup-guide",
+      "name": "SetupGuide 设置指南",
+      "description": "公开文档重建：分组清单与顺序解锁",
+      "storyId": "模式-setup-guide--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "SetupGuideDemo",
       "stories": 1
     }
   ]

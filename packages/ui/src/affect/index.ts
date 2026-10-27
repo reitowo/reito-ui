@@ -199,4 +199,90 @@ export {
   type PromptTemplate,
   type PromptVariable,
 } from './pro/prompt-library.js';
+export {
+  AgentCursors,
+  acceptSuggestion,
+  type AgentCursor,
+  type AgentCursorsProps,
+  type CursorAgent,
+  type DocBlock,
+  type DocComment,
+  type DocSuggestion,
+} from './pro/agent-cursors.js';
+export {
+  AgentGraph,
+  type AgentGraphProps,
+  type GraphCall,
+  type GraphKind,
+  type GraphNode,
+  type GraphStatus,
+} from './pro/agent-graph.js';
+export { AgentLedger, type AgentLedgerProps, type LedgerEntry } from './pro/agent-ledger.js';
+export {
+  AgentQueue,
+  type AgentQueueProps,
+  type QueueJob,
+  type QueueWorker,
+} from './pro/agent-queue.js';
+export {
+  ConflictRadar,
+  type ConflictRadarProps,
+  type RadarAgent,
+  type RadarEdit,
+  type RadarFile,
+} from './pro/conflict-radar.js';
+export {
+  ContextMap,
+  type ContextAgent,
+  type ContextBlock,
+  type ContextCompaction,
+  type ContextKind,
+  type ContextMapProps,
+} from './pro/context-map.js';
+export {
+  ContextWindow,
+  type ContextItem,
+  type ContextPart,
+  type ContextWindowProps,
+} from './pro/context-window.js';
+export {
+  DecisionTree,
+  type Decision as TreeDecision,
+  type DecisionChoice,
+  type DecisionFlag,
+  type DecisionOption,
+  type DecisionText,
+  type DecisionTreeProps,
+} from './pro/decision-tree.js';
+export {
+  DelegateBoard,
+  type DelegateAgent,
+  type DelegateBoardProps,
+  type DelegateMode,
+  type DelegateTask,
+} from './pro/delegate-board.js';
+export {
+  FanoutGrid,
+  type FanoutGridProps,
+  type FanoutStatus,
+  type FanoutTask,
+} from './pro/fan-out-grid.js';
+export {
+  ProjectCard,
+  type ProjectCardProps,
+  type ProjectMember,
+  type ProjectOption,
+  type ProjectTask,
+} from './pro/project-card.js';
+export {
+  IntegrationPicker,
+  type Integration,
+  type IntegrationPickerProps,
+} from './pro/integration-picker.js';
+export {
+  SetupGuide,
+  type SetupGroup,
+  type SetupGuideProps,
+  type SetupTask,
+} from './pro/setup-guide.js';
 export type { AffectAppearance } from './shared.js';
