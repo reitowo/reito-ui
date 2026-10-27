@@ -172,7 +172,8 @@ export function DataTable({
               <th className="border-b border-border py-1 pr-2">
                 <Checkbox
                   aria-label="全选"
-                  checked={mixed ? 'mixed' : allChecked}
+                  checked={allChecked}
+                  indeterminate={mixed}
                   onCheckedChange={(value) => {
                     const next = value === true ? items.map((row) => row.id) : [];
                     setChecked(next);

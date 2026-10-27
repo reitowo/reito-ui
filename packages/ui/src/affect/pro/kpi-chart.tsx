@@ -1,4 +1,5 @@
 import { useMemo, useState, type KeyboardEvent } from 'react';
+import { tokenMetrics } from '@reito/tokens/metrics';
 import { Heading, Inline, Text } from '../../basic/composition.js';
 import { cn } from '../../lib/utils.js';
 
@@ -48,9 +49,12 @@ export function KpiChart({
   const last = Math.max(0, labels.length - 1);
   const [index, setIndex] = useState(defaultIndex ?? last);
   const [active, setActive] = useState(false);
-  const width = 420;
-  const height = 132;
-  const pad = 10;
+  const width = tokenMetrics['container-sm'];
+  const height = tokenMetrics['space-16'] * 2;
+  const pad = tokenMetrics['space-2'];
+  const stroke = tokenMetrics['outline-width'];
+  const guide = tokenMetrics['border-width'];
+  const dot = tokenMetrics['space-1'];
   const values = series.flatMap((item) => item.values);
   const min = Math.min(0, ...values);
   const max = Math.max(1, ...values);
@@ -131,7 +135,7 @@ export function KpiChart({
               y1={pad}
               y2={height - pad}
               className="stroke-border"
-              strokeWidth="1"
+              strokeWidth={guide}
             />
           ) : null}
           {series.map((item, seriesIndex) => (
@@ -139,7 +143,7 @@ export function KpiChart({
               key={item.label}
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth={stroke}
               className={cn('motion-reduce:transition-none', strokes[seriesIndex % strokes.length])}
               points={item.values.map((n, i) => `${x(i)},${y(n)}`).join(' ')}
             />
@@ -149,7 +153,7 @@ export function KpiChart({
               key={`${item.label}-dot`}
               cx={x(index)}
               cy={y(item.values[index] ?? 0)}
-              r="3"
+              r={dot}
               fill="currentColor"
               className={strokes[seriesIndex % strokes.length]}
             />
