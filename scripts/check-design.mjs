@@ -19,13 +19,13 @@ for (const file of (await Promise.all(['packages/ui/src','apps/lab/src','apps/wo
     problems.push(`${file}: use SelectInput or Select; browser pickers belong only in the explicit native compatibility entry/demo`);
   }
 }
-const featureSources = (await Promise.all(['packages/ui/src/basic','packages/ui/src/complex','packages/ui/src/ai','apps/lab/src','apps/workbench/src'].map(files))).flat().filter(file => /\.[jt]sx?$/.test(file));
+const featureSources = (await Promise.all(['packages/ui/src/basic','packages/ui/src/complex','packages/ui/src/ai','packages/ui/src/affect','apps/lab/src','apps/workbench/src'].map(files))).flat().filter(file => /\.[jt]sx?$/.test(file));
 for (const file of featureSources) {
   const content = await readFile(file, 'utf8');
   if (/\b(?:bg|text|border|ring|fill|stroke)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d+\b/.test(content)) problems.push(`${file}: raw Tailwind palette; use a semantic role`);
 }
 for (const file of (await Promise.all(['packages/ui/src/primitives','packages/ui/src/basic'].map(files))).flat().filter(file => /\.[jt]sx?$/.test(file))) {
-  if (/from\s+['"][^'"]*\/(?:complex|ai)\//.test(await readFile(file,'utf8'))) problems.push(`${file}: foundation must not depend on application layers`);
+  if (/from\s+['"][^'"]*\/(?:complex|ai|affect)\//.test(await readFile(file,'utf8'))) problems.push(`${file}: foundation must not depend on application layers`);
 }
 for (const file of styles) for (const [,name] of (await readFile(file, 'utf8')).matchAll(/(--rui-[\w-]+)\s*:/g)) defined.add(name);
 for (const file of styles) {

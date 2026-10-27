@@ -9,7 +9,7 @@ function variable(source,name) { let found;function visit(node){if(ts.isVariable
 const property = (object,name) => object?.properties?.find(p=>p.name?.getText().replace(/['"]/g,'')===name)?.initializer;
 const string = node => node && ts.isStringLiteral(node) ? node.text : undefined;
 const stories=[];
-for(const layer of ['basic','complex','ai']) {
+for(const layer of ['basic','complex','ai','affect']) {
   for(const file of await readdir(`apps/storybook/stories/${layer}`)) {
     if(!file.endsWith('.stories.tsx'))continue;
     const path=`apps/storybook/stories/${layer}/${file}`;
@@ -25,7 +25,7 @@ for(const layer of ['basic','complex','ai']) {
   }
 }
 const entries=[];
-for(const layer of ['basic','complex','ai']) {
+for(const layer of ['basic','complex','ai','affect']) {
   const file=`packages/ui/src/${layer}/catalog.tsx`;
   const source=parse(file,await readFile(file,'utf8'));
   const array=variable(source,`${layer}Catalog`);
@@ -43,7 +43,7 @@ for(const layer of ['basic','complex','ai']) {
     entries.push({layer,id,name,description,storyId:matches[0].id,sourceFile:file,demo,stories:matches[0].storyCount});
   }
 }
-const counts=Object.fromEntries(['basic','complex','ai'].map(layer=>[layer,entries.filter(e=>e.layer===layer).length]));
+const counts=Object.fromEntries(['basic','complex','ai','affect'].map(layer=>[layer,entries.filter(e=>e.layer===layer).length]));
 const content=JSON.stringify({counts,total:entries.length,stories:entries.reduce((sum,e)=>sum+e.stories,0),entries},null,2)+'\n';
 const target='apps/lab/src/catalog-manifest.json';
 if(process.argv.includes('--check')) {if(await readFile(target,'utf8').catch(()=>'')!==content)throw new Error('Catalog changed. Run npm run catalog:build.');}

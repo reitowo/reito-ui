@@ -13,6 +13,9 @@
       "@reito/ui/ai": [
         "../../packages/ui/src/ai/index.ts"
       ],
+      "@reito/ui/affect": [
+        "../../packages/ui/src/affect/index.ts"
+      ],
       "@reito/ui": [
         "../../packages/ui/src/index.ts"
       ]

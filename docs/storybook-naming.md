@@ -2,7 +2,7 @@
 
 ## 目录名称
 
-固定两级：`基础 / EnglishAPI 中文用途`、`复杂 / EnglishAPI 中文用途`、`AI / EnglishAPI 中文用途`。源码 title 中只有一条层级斜线，例如 `基础/Accordion 折叠面板`。英文使用组件 PascalCase，不再混用 Alert Dialog、AlertDialog；中文用简短用途，如“警告对话框”。
+固定两级：`基础 / EnglishAPI 中文用途`、`复杂 / EnglishAPI 中文用途`、`AI / EnglishAPI 中文用途`、`模式 / EnglishAPI 中文用途`。源码 title 中只有一条层级斜线，例如 `基础/Accordion 折叠面板`。英文使用组件 PascalCase，不再混用 Alert Dialog、AlertDialog；中文用简短用途，如“警告对话框”。
 
 组合展示仍放在同一个组件目录。例如 MarkdownContent 与 RichMessage 共用“MarkdownContent 富文本内容”，组合关系写在文档，不用额外斜线制造第三级目录。基础 Table 与复杂 DataTable 分别叫“基础表格”和“数据表格”，InputOTP 与 OneTimeCode 分别叫“验证码输入”和“验证码展示”。
 
