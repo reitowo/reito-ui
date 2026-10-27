@@ -50,7 +50,9 @@ function walk(agent: TreeAgent, visit: (item: TreeAgent) => void) {
 }
 
 function branchCost(agent: TreeAgent): number {
-  return (agent.cost ?? 0) + (agent.children?.reduce((sum, child) => sum + branchCost(child), 0) ?? 0);
+  return (
+    (agent.cost ?? 0) + (agent.children?.reduce((sum, child) => sum + branchCost(child), 0) ?? 0)
+  );
 }
 
 /** Recreated from public Agent Tree docs. Not Pro source. */
@@ -69,7 +71,8 @@ export function AgentTree({
   const [internal, setInternal] = useState(defaultCollapsed);
   const [openAsk, setOpenAsk] = useState<string | null>(null);
   const folded = collapsed ?? internal;
-  const running = root.status === 'running' || Boolean(root.children?.some((item) => item.status === 'running'));
+  const running =
+    root.status === 'running' || Boolean(root.children?.some((item) => item.status === 'running'));
   const clock = useTickingNow(running, now);
   const totals = useMemo(() => {
     let agents = 0;
@@ -153,7 +156,7 @@ export function AgentTree({
                 aria-expanded={openAsk === agent.id}
                 onClick={() => setOpenAsk(openAsk === agent.id ? null : agent.id)}
               >
-                {agent.status === 'waiting' ? agent.ask ?? '需要决定' : agent.error ?? '失败'}
+                {agent.status === 'waiting' ? (agent.ask ?? '需要决定') : (agent.error ?? '失败')}
               </Button>
               {openAsk === agent.id ? (
                 <Inline>
@@ -199,7 +202,10 @@ export function AgentTree({
           ) : null}
         </div>
         {children.length && !hidden ? (
-          <ul role="group" className="mt-[var(--rui-content-gap-sm)] grid gap-[var(--rui-content-gap-sm)]">
+          <ul
+            role="group"
+            className="mt-[var(--rui-content-gap-sm)] grid gap-[var(--rui-content-gap-sm)]"
+          >
             {children.map((child) => renderAgent(child, depth + 1))}
           </ul>
         ) : null}
@@ -217,8 +223,8 @@ export function AgentTree({
       <Inline className="justify-between px-1">
         <Heading size="item">{title}</Heading>
         <Text variant="caption" tone="muted" aria-live="polite">
-          {totals.agents} 个代理 · {totals.live} 运行 · {totals.needs} 需要你 · {totals.failed} 失败 ·{' '}
-          {formatCost(totals.cost)}
+          {totals.agents} 个代理 · {totals.live} 运行 · {totals.needs} 需要你 · {totals.failed} 失败
+          · {formatCost(totals.cost)}
         </Text>
       </Inline>
       <ul role="tree" className="grid gap-[var(--rui-content-gap-sm)]">

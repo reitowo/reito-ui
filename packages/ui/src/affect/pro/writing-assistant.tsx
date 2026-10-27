@@ -48,10 +48,7 @@ export function WritingAssistant({
     const message = text.trim();
     if (!message || writing) return;
     setDraft('');
-    setLines((current) => [
-      ...current,
-      { id: `u-${current.length}`, role: 'user', text: message },
-    ]);
+    setLines((current) => [...current, { id: `u-${current.length}`, role: 'user', text: message }]);
     setWriting(true);
     const reply = await respond(message);
     setLines((current) => [
@@ -71,7 +68,7 @@ export function WritingAssistant({
     };
     const SpeechCtor =
       speech === 'auto'
-        ? (
+        ? ((
             window as unknown as {
               SpeechRecognition?: new () => SpeechRec;
               webkitSpeechRecognition?: new () => SpeechRec;
@@ -81,7 +78,7 @@ export function WritingAssistant({
             window as unknown as {
               webkitSpeechRecognition?: new () => SpeechRec;
             }
-          ).webkitSpeechRecognition
+          ).webkitSpeechRecognition)
         : undefined;
     if (!SpeechCtor) {
       const timer = window.setTimeout(() => {
@@ -139,7 +136,13 @@ export function WritingAssistant({
           <Text>{greeting}</Text>
           <Inline>
             {suggestions.map((item) => (
-              <Button key={item} type="button" size="sm" variant="outline" onClick={() => void send(item)}>
+              <Button
+                key={item}
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => void send(item)}
+              >
                 {item}
               </Button>
             ))}
