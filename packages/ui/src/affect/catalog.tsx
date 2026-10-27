@@ -1,4 +1,4 @@
-import { useState, type ComponentType } from 'react';
+import { useState, type ComponentType, type ReactNode } from 'react';
 import { Button } from './button.js';
 import { ChangeSummary } from './change-summary.js';
 import { CommentThread } from './comment-thread.js';
@@ -98,6 +98,23 @@ import {
 } from './pro/stepper-form.js';
 import { Toaster, toast } from './pro/toaster.js';
 import { UsageMeter } from './pro/usage-meter.js';
+import {
+  AppShell,
+  AppShellFlat,
+  AppShellWorkspace,
+  AppShellWorkspaceFlat,
+} from './pro/app-shell.js';
+import { AgentChatScreen } from './pro/agent-chat.js';
+import { AgentRunScreen } from './pro/agent-run.js';
+import { AnalyticsScreen } from './pro/analytics.js';
+import { AssistantHomeScreen } from './pro/assistant-home.js';
+import { CrmScreen } from './pro/crm.js';
+import { EvalsScreen } from './pro/evals.js';
+import { FolderScreen } from './pro/folder.js';
+import { FilesScreen } from './pro/folders.js';
+import { IntegrationsScreen } from './pro/integrations.js';
+import { OnboardingScreen } from './pro/onboarding.js';
+import { SettingsBillingScreen } from './pro/settings-billing.js';
 import { AffectDemoFrame } from './shared.js';
 import { Inline, Stack, Text } from '../basic/composition.js';
 
@@ -1574,6 +1591,150 @@ export function AffectToasterDemo() {
   );
 }
 
+function ScreenFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="h-[var(--rui-preview-min-height)] min-h-[var(--rui-container-xs)]">
+      {children}
+    </div>
+  );
+}
+
+export function AgentChatDemo() {
+  return (
+    <ScreenFrame>
+      <AgentChatScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function AgentRunDemo() {
+  return (
+    <ScreenFrame>
+      <AgentRunScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function AnalyticsDemo() {
+  return (
+    <ScreenFrame>
+      <AnalyticsScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function AppShellFlatDemo() {
+  return (
+    <ScreenFrame>
+      <AppShellFlat active="New chat" workspace="Reito" user={{ name: '阿宁' }}>
+        <div className="p-[var(--rui-content-padding)]">
+          <Text>边缘铺满的页面示例。</Text>
+        </div>
+      </AppShellFlat>
+    </ScreenFrame>
+  );
+}
+
+export function AppShellInsetDemo() {
+  return (
+    <ScreenFrame>
+      <AppShell active="Folders" workspace="Reito" user={{ name: '阿宁' }}>
+        <div className="p-[var(--rui-content-padding)]">
+          <Text>嵌套在卡片里的页面示例。</Text>
+        </div>
+      </AppShell>
+    </ScreenFrame>
+  );
+}
+
+export function AppShellWorkspaceFlatDemo() {
+  return (
+    <ScreenFrame>
+      <AppShellWorkspaceFlat active="New chat" workspace="Reito" user={{ name: '阿宁' }}>
+        <div className="p-[var(--rui-content-padding)]">
+          <Text>扁平工作区：会话与工具并排。</Text>
+        </div>
+      </AppShellWorkspaceFlat>
+    </ScreenFrame>
+  );
+}
+
+export function AppShellWorkspaceInsetDemo() {
+  return (
+    <ScreenFrame>
+      <AppShellWorkspace active="New chat" workspace="Reito" user={{ name: '阿宁' }}>
+        <div className="p-[var(--rui-content-padding)]">
+          <Text>嵌套工作区：右侧工具与建议。</Text>
+        </div>
+      </AppShellWorkspace>
+    </ScreenFrame>
+  );
+}
+
+export function AssistantHomeDemo() {
+  return (
+    <ScreenFrame>
+      <AssistantHomeScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function CrmDemo() {
+  return (
+    <ScreenFrame>
+      <CrmScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function EvalsDemo() {
+  return (
+    <ScreenFrame>
+      <EvalsScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function FolderDemo() {
+  return (
+    <ScreenFrame>
+      <FolderScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function FoldersDemo() {
+  return (
+    <ScreenFrame>
+      <FilesScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function IntegrationsDemo() {
+  return (
+    <ScreenFrame>
+      <IntegrationsScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function OnboardingDemo() {
+  return (
+    <ScreenFrame>
+      <OnboardingScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
+export function SettingsBillingDemo() {
+  return (
+    <ScreenFrame>
+      <SettingsBillingScreen workspace="Reito" user={{ name: '阿宁' }} />
+    </ScreenFrame>
+  );
+}
+
 export function UsageMeterDemo() {
   return (
     <UsageMeter
@@ -2131,5 +2292,95 @@ export const affectCatalog: AffectCatalogEntry[] = [
     name: 'UsageMeter 用量条',
     description: '公开文档重建：堆叠额度、日线和限额',
     component: UsageMeterDemo,
+  },
+  {
+    id: 'agent-chat',
+    name: 'AgentChat 代理对话',
+    description: '公开文档重建：编排对话、在场代理与简报',
+    component: AgentChatDemo,
+  },
+  {
+    id: 'agent-run',
+    name: 'AgentRun 代理运行',
+    description: '公开文档重建：计划、工具、审批与草稿',
+    component: AgentRunDemo,
+  },
+  {
+    id: 'analytics',
+    name: 'Analytics 分析',
+    description: '公开文档重建：指标、渠道与产品表',
+    component: AnalyticsDemo,
+  },
+  {
+    id: 'affect-app-shell-flat',
+    name: 'AppShellFlat 扁平壳',
+    description: '公开文档重建：发丝分割的边缘铺满壳。模式层兄弟。',
+    component: AppShellFlatDemo,
+  },
+  {
+    id: 'affect-app-shell-inset',
+    name: 'AppShell 嵌套壳',
+    description: '公开文档重建：侧栏、项目与账户框。模式层兄弟。',
+    component: AppShellInsetDemo,
+  },
+  {
+    id: 'affect-app-shell-workspace-flat',
+    name: 'AppShellWorkspaceFlat 扁平工作区',
+    description: '公开文档重建：扁平壳加右侧工作区。模式层兄弟。',
+    component: AppShellWorkspaceFlatDemo,
+  },
+  {
+    id: 'affect-app-shell-workspace-inset',
+    name: 'AppShellWorkspace 嵌套工作区',
+    description: '公开文档重建：嵌套壳加工具与建议。模式层兄弟。',
+    component: AppShellWorkspaceInsetDemo,
+  },
+  {
+    id: 'assistant-home',
+    name: 'AssistantHome 助手首页',
+    description: '公开文档重建：问候、提示与已连接应用',
+    component: AssistantHomeDemo,
+  },
+  {
+    id: 'crm',
+    name: 'CRM 客户',
+    description: '公开文档重建：管道标签与可编辑表',
+    component: CrmDemo,
+  },
+  {
+    id: 'evals',
+    name: 'Evals 评测',
+    description: '公开文档重建：通过率、提示差与用例',
+    component: EvalsDemo,
+  },
+  {
+    id: 'folder',
+    name: 'Folder 文件夹详情',
+    description: '公开文档重建：面包屑与文件预览卡',
+    component: FolderDemo,
+  },
+  {
+    id: 'folders',
+    name: 'Folders 文件夹总览',
+    description: '公开文档重建：搜索、排序与网格/列表',
+    component: FoldersDemo,
+  },
+  {
+    id: 'integrations',
+    name: 'Integrations 集成目录',
+    description: '公开文档重建：分类、搜索与连接状态',
+    component: IntegrationsDemo,
+  },
+  {
+    id: 'onboarding',
+    name: 'Onboarding 新手引导',
+    description: '公开文档重建：四步设置与清单',
+    component: OnboardingDemo,
+  },
+  {
+    id: 'settings-billing',
+    name: 'SettingsBilling 设置与账单',
+    description: '公开文档重建：方案、用量、发票与密钥',
+    component: SettingsBillingDemo,
   },
 ];

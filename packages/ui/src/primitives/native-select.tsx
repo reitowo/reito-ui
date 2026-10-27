@@ -25,13 +25,13 @@ function NativeSelect({ className, size = 'default', ...props }: NativeSelectPro
         data-size={size}
         className={cn([
           // Layout
-          'h-[var(--rui-control-height)] w-full min-w-0 appearance-none',
+          'h-[var(--rui-button-height)] w-full min-w-0 appearance-none',
           // Surface
           'rounded-[var(--rui-component-input-radius)] border border-input bg-transparent',
           // Spacing
-          'py-1 pr-8 pl-2.5',
+          'py-0 pr-8 pl-[var(--rui-component-input-padding-x)]',
           // Typography
-          'text-sm',
+          'text-[length:var(--rui-component-input-font-size)]',
           // Motion
           'transition-colors',
           // Surface

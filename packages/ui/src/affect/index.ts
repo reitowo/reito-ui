@@ -370,4 +370,43 @@ export {
   type UsagePeriod,
   type UsageState,
 } from './pro/usage-meter.js';
+export {
+  AppShell,
+  AppShellFlat,
+  AppShellWorkspace,
+  AppShellWorkspaceFlat,
+  type AppShellProps,
+  type AppShellWorkspaceProps,
+  type ShellGroup,
+  type ShellNavItem,
+  type ShellUser,
+  type ShellWidth,
+  type WorkspaceSource,
+  type WorkspaceTool,
+} from './pro/app-shell.js';
+export { AgentChatScreen, type AgentChatScreenProps } from './pro/agent-chat.js';
+export {
+  AgentRunScreen,
+  type AgentRunScreenProps,
+  type RunApproval,
+  type RunStep,
+  type RunToolCall,
+} from './pro/agent-run.js';
+export { AnalyticsScreen, type AnalyticsScreenProps } from './pro/analytics.js';
+export { AssistantHomeScreen, type AssistantHomeScreenProps } from './pro/assistant-home.js';
+export { CrmScreen, type CrmScreenProps } from './pro/crm.js';
+export { EvalsScreen, type EvalsScreenProps } from './pro/evals.js';
+export { FolderScreen, type FolderScreenProps } from './pro/folder.js';
+export { FilesScreen, FoldersScreen, type FilesScreenProps } from './pro/folders.js';
+export { IntegrationsScreen, type IntegrationsScreenProps } from './pro/integrations.js';
+export {
+  OnboardingScreen,
+  type OnboardingScreenProps,
+  type OnboardingValues,
+} from './pro/onboarding.js';
+export {
+  SettingsBillingScreen,
+  type SettingsBillingScreenProps,
+  type SettingsBillingTab,
+} from './pro/settings-billing.js';
 export type { AffectAppearance } from './shared.js';
