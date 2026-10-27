@@ -3,10 +3,10 @@
     "basic": 76,
     "complex": 44,
     "ai": 24,
-    "affect": 48
+    "affect": 62
   },
-  "total": 192,
-  "stories": 1521,
+  "total": 206,
+  "stories": 1535,
   "entries": [
     {
       "layer": "basic",
@@ -1926,6 +1926,146 @@
       "storyId": "模式-agent-inbox--default",
       "sourceFile": "packages/ui/src/affect/catalog.tsx",
       "demo": "AgentInboxDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "ai-answer",
+      "name": "AIAnswer 带出处回答",
+      "description": "公开文档重建：来源卡、引用与追问",
+      "storyId": "模式-ai-answer--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AIAnswerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "cited-answer",
+      "name": "CitedAnswer 引用对照",
+      "description": "公开文档重建：句子与来源互亮",
+      "storyId": "模式-cited-answer--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CitedAnswerDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "writing-assistant",
+      "name": "WritingAssistant 写作助手",
+      "description": "公开文档重建：建议、流式回复与口述",
+      "storyId": "模式-writing-assistant--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "WritingAssistantDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "affect-permission-request",
+      "name": "PermissionRequest 权限请求",
+      "description": "公开文档重建：一次、限时或始终授权",
+      "storyId": "模式-permission-request--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "PermissionRequestDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-steering",
+      "name": "AgentSteering 运行中引导",
+      "description": "公开文档重建：排队便条或立即打断",
+      "storyId": "模式-agent-steering--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentSteeringDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-tree",
+      "name": "AgentTree 代理树",
+      "description": "公开文档重建：编排与子代理成本",
+      "storyId": "模式-agent-tree--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentTreeDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "agent-lanes",
+      "name": "AgentLanes 代理泳道",
+      "description": "公开文档重建：并行时间线与交接",
+      "storyId": "模式-agent-lanes--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AgentLanesDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "autonomy-dial",
+      "name": "AutonomyDial 自主程度",
+      "description": "公开文档重建：三级权限与锁定",
+      "storyId": "模式-autonomy-dial--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "AutonomyDialDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "inline-diff",
+      "name": "InlineDiff 行内改写",
+      "description": "公开文档重建：逐处接受或拒绝",
+      "storyId": "模式-inline-diff--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "InlineDiffDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "memory-panel",
+      "name": "MemoryPanel 记忆面板",
+      "description": "公开文档重建：分组编辑、暂停与忘记",
+      "storyId": "模式-memory-panel--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "MemoryPanelDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "parallel-attempts",
+      "name": "ParallelAttempts 并行尝试",
+      "description": "公开文档重建：多路竞赛与择优",
+      "storyId": "模式-parallel-attempts--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "ParallelAttemptsDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "trace-waterfall",
+      "name": "TraceWaterfall 轨迹瀑布",
+      "description": "公开文档重建：耗时、费用与最慢调用",
+      "storyId": "模式-trace-waterfall--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "TraceWaterfallDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "comments-panel",
+      "name": "CommentsPanel 评论面板",
+      "description": "公开文档重建：筛选、/edit 与解决",
+      "storyId": "模式-comments-panel--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "CommentsPanelDemo",
+      "stories": 1
+    },
+    {
+      "layer": "affect",
+      "id": "prompt-library",
+      "name": "PromptLibrary 提示库",
+      "description": "公开文档重建：模板变量与预览",
+      "storyId": "模式-prompt-library--default",
+      "sourceFile": "packages/ui/src/affect/catalog.tsx",
+      "demo": "PromptLibraryDemo",
       "stories": 1
     }
   ]
