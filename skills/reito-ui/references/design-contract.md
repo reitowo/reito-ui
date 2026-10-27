@@ -163,6 +163,9 @@ export const appTheme = {
 
 radius-control is the rectangular control role; radius-surface is the panel/card role. Menus and
 composers retain explicit roles.
+Global curvature follows Nuxt UI's --ui-radius model: every radius step is a multiple of
+--rui-radius (default 0.25rem; control = ×1.5, surface = ×2), so set
+`<ReitoThemeProvider radius="0.375rem">` instead of per-component radius CSS.
 
 ## Don't
 

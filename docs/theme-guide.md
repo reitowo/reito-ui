@@ -65,6 +65,31 @@ export const productTheme = createTheme(baseTheme, {
 中加入该组件并在组件内读取 `useThemeDefaults`。显式传 `undefined` 视为未传，会回落到主题默认值。
 密度仍是样式能力而非产品控件；预设里写 density 是应用作者的选择，不把高密度当作默认品牌特征。
 
+## 全局圆角 `--rui-radius`
+
+圆角采用 [Nuxt UI 的 `--ui-radius` 模型](https://ui.nuxt.com/docs/getting-started/theme/css-variables#radius)：一个基准变量 `--rui-radius`（token `foundation.radius`，默认 `0.25rem` = 4px，与 Nuxt 默认一致），阶梯中每一级都是 `calc(var(--rui-radius) * k)`。修改基准即可同步缩放控件、表面、菜单、弹层与对话框，不需要逐组件写 CSS。`radius-full`（9999px）不随基准变化，胶囊与圆形动作保持全圆。
+
+| Reito 级 | 倍数 | 默认 | 对应 Nuxt 级 | 角色 / 典型使用 |
+| --- | --- | --- | --- | --- |
+| `radius-2xs` | × 0.5 | 2px | xs | kbd 等行内标记 |
+| `radius-xs` | × 1 | 4px | sm | Checkbox、菜单条目、Tailwind `rounded` |
+| `radius-sm` | × 1.5 | 6px | md | **`radius-control`**：Button、Input、Select、Textarea、Toggle |
+| `radius-md` | × 2 | 8px | lg | **`radius-surface`**：Card、面板、菜单弹层 |
+| `radius-lg` | × 3 | 12px | xl | Popover、较大面板 |
+| `radius-composer` | × 3.5 | 14px | — | 会话 composer、Dialog（Tailwind `rounded-xl`） |
+| `radius-2xl` / `radius-3xl` | × 4 / × 6 | 16 / 24px | 2xl / 3xl | 大型展示面 |
+
+倍数集合与 Nuxt 相同（0.5、1、1.5、2、3、4、6），只是 Reito 保留了既有的级名：控件一直是 6px 的 `sm`、表面是 8px 的 `md`，因此级名比 Nuxt 高一级。这样选择基准后默认视觉不变，已有 `--rui-radius-*`、`rounded-*` 和组件 token 的使用方无需迁移。Tailwind 的 `rounded-*` 通过生成桥接指向同一组变量；另有 `rounded-control` / `rounded-surface` 直接引用角色。
+
+```tsx
+// 一个旋钮：控件 9px、表面 12px、菜单条目 6px……
+<ReitoThemeProvider root radius="0.375rem">…</ReitoThemeProvider>
+// 等价的类型化 token 覆盖
+<ReitoThemeProvider tokens={{ semantic: { radius: '0.375rem' } }}>…</ReitoThemeProvider>
+```
+
+纯 CSS 宿主可以在 `:root`（或带 `data-theme` / `data-density` 的作用域）上设置 `--rui-radius`；这些作用域会重新绑定阶梯。CSS 自定义属性在声明处求值，因此在普通子元素上只改基准不会传播到已在祖先上计算好的阶梯，请使用 Provider 或上述作用域。需要只改某一角色时，仍可覆盖 `radius-control`、`radius-surface` 或组件 token（如 `components.card.radius`）。
+
 ## 作用域与兼容
 
 Provider 默认仅影响自身子树；root 同时设置 html 的主题、密度和语义变量，卸载恢复原值。嵌套 Provider 合并父级 colors，可独立指定明暗；默认 compact。system 监听系统明暗变化，SSR 首屏使用 dark，客户端挂载后解析系统偏好。持久化由宿主处理，库本身不读写存储。

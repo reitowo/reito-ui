@@ -27,7 +27,7 @@ function NativeSelect({ className, size = 'default', ...props }: NativeSelectPro
           // Layout
           'h-[var(--rui-control-height)] w-full min-w-0 appearance-none',
           // Surface
-          'rounded-lg border border-input bg-transparent',
+          'rounded-[var(--rui-component-input-radius)] border border-input bg-transparent',
           // Spacing
           'py-1 pr-8 pl-2.5',
           // Typography
@@ -45,7 +45,7 @@ function NativeSelect({ className, size = 'default', ...props }: NativeSelectPro
           // Validation state
           'rui-validation',
           // Component state
-          'data-[size=sm]:h-[var(--rui-control-height-sm)] data-[size=sm]:rounded-md data-[size=sm]:py-0.5',
+          'data-[size=sm]:h-[var(--rui-control-height-sm)] data-[size=sm]:py-0.5',
           // Dark theme
           'dark:bg-input/30 dark:hover:bg-input/50',
           // Validation state

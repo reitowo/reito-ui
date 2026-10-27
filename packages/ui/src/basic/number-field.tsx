@@ -48,7 +48,7 @@ export function NumberField({
           // Layout
           'relative flex h-[var(--rui-control-height)] w-full min-w-0 items-center',
           // Surface
-          'rounded-lg border border-input',
+          'rounded-[var(--rui-component-input-radius)] border border-input',
           // Motion
           'transition-colors',
           // Surface

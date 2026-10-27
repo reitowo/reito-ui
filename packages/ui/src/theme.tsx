@@ -180,6 +180,11 @@ export type ReitoThemeProviderProps = Omit<HTMLAttributes<HTMLDivElement>, 'colo
   ThemeConfig & {
     /** A createTheme preset. The individual props above override its fields. */
     theme?: ThemeConfig;
+    /**
+     * Curvature base (`--rui-radius`); every radius step and control/surface role scales
+     * from it. Shorthand for `tokens.semantic.radius`.
+     */
+    radius?: string;
     root?: boolean;
     children?: ReactNode;
   };
@@ -194,6 +199,7 @@ export function ReitoThemeProvider({
   mode: modeProp,
   colors,
   density: densityProp,
+  radius,
   tokens,
   defaults,
   root = false,
@@ -214,7 +220,10 @@ export function ReitoThemeProvider({
   const scheme = selectedMode === 'system' ? systemScheme : selectedMode;
   const state = useMemo<ThemeState>(() => {
     const merged = { ...defaultColors, ...parent?.colors, ...theme?.colors, ...colors };
-    const mergedTokens = mergeTokens(mergeTokens(parent?.tokens, theme?.tokens), tokens);
+    const mergedTokens = mergeTokens(
+      mergeTokens(parent?.tokens, theme?.tokens),
+      radius === undefined ? tokens : mergeTokens(tokens, { semantic: { radius } }),
+    );
     const mergedDensity = density ?? parent?.density ?? 'compact';
     return {
       mode: selectedMode,
@@ -238,6 +247,7 @@ export function ReitoThemeProvider({
     colors?.warning,
     colors?.danger,
     colors?.info,
+    radius,
     tokens,
     defaults,
     root,

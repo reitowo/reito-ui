@@ -10,7 +10,7 @@ const toggleVariants = cva(
     // Spacing
     'gap-1',
     // Surface
-    'rounded-sm',
+    'rounded-control',
     // Typography
     'text-[length:var(--rui-action-font-size)] font-normal whitespace-nowrap',
     // Motion

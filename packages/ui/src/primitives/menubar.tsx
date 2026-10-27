@@ -54,7 +54,7 @@ function MenubarTrigger({ className, ...props }: React.ComponentProps<typeof Dro
     <DropdownMenuTrigger
       data-slot="menubar-trigger"
       className={cn(
-        'flex items-center h-[var(--rui-button-height)] rounded-sm px-2 text-[length:var(--rui-action-font-size)] font-normal outline-hidden select-none hover:bg-muted aria-expanded:bg-muted',
+        'flex items-center h-[var(--rui-button-height)] rounded-control px-2 text-[length:var(--rui-action-font-size)] font-normal outline-hidden select-none hover:bg-muted aria-expanded:bg-muted',
         className,
       )}
       {...props}
