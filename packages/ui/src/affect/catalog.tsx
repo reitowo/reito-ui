@@ -2034,7 +2034,7 @@ export const affectCatalog: AffectCatalogEntry[] = [
   {
     id: 'affect-button',
     name: 'Button 按钮适配',
-    description: 'Affect API 覆盖 Reito Button，含加载与干净外观',
+    description: '公开 MIT Button 表面：32/40/48、软圆角、渐变主色、浅底危险',
     component: ButtonDemo,
   },
   {
