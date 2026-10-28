@@ -15,7 +15,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await expect(root).toHaveCSS('padding-left', density === 'compact' ? '12px' : '16px');
     const firstRow = viewport.getByText('component-01.tsx', { exact: true });
     const lastRow = viewport.getByText('component-18.tsx', { exact: true });
-    await expect(firstRow).toHaveCSS('height', density === 'compact' ? '28px' : '32px');
+    await expect(firstRow).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
     const size = await root.boundingBox();
     const edge = () => viewport.evaluate(n => {
       const r = n.parentElement!.getBoundingClientRect();
@@ -45,6 +45,6 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     // Component aliases can be adjusted without changing row geometry.
     await root.evaluate(n => n.style.setProperty('--rui-component-scroll-area-padding-y', 'var(--rui-space-2)'));
     await expect(root).toHaveCSS('padding-top', '8px');
-    await expect(firstRow).toHaveCSS('height', density === 'compact' ? '28px' : '32px');
+    await expect(firstRow).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
   });
 }

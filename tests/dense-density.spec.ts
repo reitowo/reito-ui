@@ -38,8 +38,8 @@ for (const density of ['compact', 'comfortable', 'dense'] as const) {
     await expect(popup).toHaveCSS('padding-top', '4px');
     const item = popup.locator('[data-slot=dropdown-menu-item]').first();
     await expect(item).toHaveCSS('border-radius', '4px');
-    await expect(item).toHaveCSS('padding-left', { compact: '8px', comfortable: '10px', dense: '6px' }[density]);
-    await expect(item).toHaveCSS('height', { compact: '28px', comfortable: '32px', dense: '20px' }[density]);
+    await expect(item).toHaveCSS('padding-left', { compact: '16px', comfortable: '20px', dense: '12px' }[density]);
+    await expect(item).toHaveCSS('height', { compact: '32px', comfortable: '36px', dense: '24px' }[density]);
     await expect(popup.locator('[data-slot=dropdown-menu-separator]').first()).toHaveCSS('margin-left', '4px');
     await page.keyboard.press('ArrowDown');
     await expect(popup.getByRole('menuitem').first()).toBeFocused();

@@ -74,3 +74,233 @@
     transform: translateY(0);
   }
 }
+
+.affect-button {
+  --affect-btn-h: var(--rui-component-affect-button-height-md);
+  --affect-btn-px: var(--rui-component-affect-button-padding-x-md);
+  --affect-btn-gap: var(--rui-component-affect-button-gap-md);
+  --affect-btn-fs: var(--rui-component-affect-button-font-size-md);
+  --affect-btn-icon: var(--rui-component-affect-button-icon-md);
+  --affect-btn-radius: var(--rui-component-affect-button-radius-md);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--affect-btn-gap);
+  height: var(--affect-btn-h);
+  padding: 0 var(--affect-btn-px);
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: clip;
+  border: var(--rui-border-width) solid transparent;
+  border-radius: var(--affect-btn-radius);
+  font-size: var(--affect-btn-fs);
+  line-height: 1;
+  letter-spacing: var(--rui-component-affect-button-tracking);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--rui-motion-duration) var(--rui-motion-easing),
+    border-color var(--rui-motion-duration) var(--rui-motion-easing),
+    color var(--rui-motion-duration) var(--rui-motion-easing),
+    box-shadow var(--rui-motion-duration) var(--rui-motion-easing),
+    transform var(--rui-motion-duration) var(--rui-motion-easing),
+    opacity var(--rui-motion-duration) var(--rui-motion-easing);
+}
+
+.affect-button[data-size='sm'] {
+  --affect-btn-h: var(--rui-component-affect-button-height-sm);
+  --affect-btn-px: var(--rui-component-affect-button-padding-x-sm);
+  --affect-btn-gap: var(--rui-component-affect-button-gap-sm);
+  --affect-btn-fs: var(--rui-component-affect-button-font-size-sm);
+  --affect-btn-icon: var(--rui-component-affect-button-icon-sm);
+  --affect-btn-radius: var(--rui-component-affect-button-radius-sm);
+}
+
+.affect-button[data-size='lg'] {
+  --affect-btn-h: var(--rui-component-affect-button-height-lg);
+  --affect-btn-px: var(--rui-component-affect-button-padding-x-lg);
+  --affect-btn-gap: var(--rui-component-affect-button-gap-lg);
+  --affect-btn-fs: var(--rui-component-affect-button-font-size-lg);
+  --affect-btn-icon: var(--rui-component-affect-button-icon-lg);
+  --affect-btn-radius: var(--rui-component-affect-button-radius-lg);
+}
+
+.affect-button[data-icon-only] {
+  width: var(--affect-btn-h);
+  padding: 0;
+}
+
+.affect-button[data-variant='primary'] {
+  color: var(--rui-component-affect-button-primary-fg);
+  background:
+    linear-gradient(
+        var(--rui-component-affect-button-primary-top),
+        var(--rui-component-affect-button-primary-bottom)
+      )
+      padding-box,
+    linear-gradient(
+        var(--rui-component-affect-button-edge-top),
+        var(--rui-component-affect-button-edge-mid),
+        var(--rui-component-affect-button-edge-bottom)
+      )
+      border-box;
+  box-shadow: var(--rui-shadow-subtle);
+}
+
+.affect-button[data-variant='primary']:hover:not(:disabled) {
+  background:
+    linear-gradient(
+        var(--rui-component-affect-button-primary-hover-top),
+        var(--rui-component-affect-button-primary-hover-bottom)
+      )
+      padding-box,
+    linear-gradient(
+        var(--rui-component-affect-button-edge-top),
+        var(--rui-component-affect-button-edge-mid),
+        var(--rui-component-affect-button-edge-bottom)
+      )
+      border-box;
+}
+
+.affect-button[data-variant='secondary'] {
+  background: var(--rui-surface);
+  border-color: var(--rui-border);
+  color: var(--rui-text);
+  box-shadow: var(--rui-shadow-subtle);
+}
+
+.affect-button[data-variant='secondary']:hover:not(:disabled) {
+  background: var(--rui-hover);
+}
+
+.affect-button[data-variant='ghost'] {
+  background: transparent;
+  color: var(--rui-text-muted);
+}
+
+.affect-button[data-variant='ghost']:hover:not(:disabled) {
+  background: var(--rui-hover);
+  color: var(--rui-text);
+}
+
+.affect-button[data-variant='destructive'] {
+  background: var(--rui-danger-soft);
+  color: var(--rui-danger);
+}
+
+.affect-button[data-variant='destructive']:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--rui-danger-soft) 88%, var(--rui-danger));
+}
+
+.affect-button[data-appearance='clean'][data-variant='secondary'] {
+  box-shadow: none;
+  background: var(--rui-hover);
+}
+
+.affect-button:active:not(:disabled):not([data-loading]) {
+  transform: scale(var(--rui-component-affect-button-press-scale));
+}
+
+.affect-button:focus-visible {
+  outline: var(--rui-outline-width) solid var(--rui-component-affect-button-focus);
+  outline-offset: var(--rui-outline-width);
+}
+
+.affect-button:disabled {
+  opacity: var(--rui-component-affect-button-disabled-opacity);
+  cursor: default;
+}
+
+.affect-button[data-loading] {
+  cursor: default;
+}
+
+.affect-button__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--affect-btn-icon);
+  height: var(--affect-btn-icon);
+  overflow: hidden;
+}
+
+.affect-button__icon > svg,
+.affect-button__icon > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.affect-button__label {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+}
+
+.affect-button__label::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(
+      90deg,
+      transparent 38%,
+      var(--rui-component-affect-button-shine) 50%,
+      transparent 62%
+    )
+    100% 0 / 300% 100% no-repeat;
+  background-clip: text;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.affect-button[data-loading] .affect-button__label {
+  color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+.affect-button[data-loading] .affect-button__label::after {
+  opacity: 1;
+  animation: affect-button-sweep calc(var(--rui-component-affect-button-load-duration) * 1.6) linear
+    infinite;
+}
+
+.affect-button__spinner {
+  animation: affect-button-spin calc(var(--rui-component-affect-button-load-duration) * 1.4) linear
+    infinite;
+}
+
+@keyframes affect-button-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes affect-button-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .affect-button {
+    transition-duration: var(--rui-motion-duration);
+  }
+  .affect-button[data-loading] .affect-button__label::after {
+    animation: none;
+    opacity: 0;
+  }
+  .affect-button__spinner {
+    animation: none;
+  }
+}

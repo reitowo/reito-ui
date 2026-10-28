@@ -1,6 +1,6 @@
+import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import { LoaderCircle } from 'lucide-react';
 import { type ComponentPropsWithRef, type ReactNode } from 'react';
-import { Button as ReitoButton } from '../primitives/button.js';
 import { cn } from '../lib/utils.js';
 import { type AffectAppearance } from './shared.js';
 
@@ -16,23 +16,7 @@ export type AffectButtonProps = Omit<ComponentPropsWithRef<'button'>, 'color'> &
   appearance?: AffectAppearance;
 };
 
-const variantMap = {
-  primary: 'default',
-  secondary: 'outline',
-  ghost: 'ghost',
-  destructive: 'destructive',
-} as const;
-
-const cleanVariantMap = {
-  primary: 'default',
-  secondary: 'secondary',
-  ghost: 'ghost',
-  destructive: 'destructive',
-} as const;
-
-const sizeMap = { sm: 'sm', md: 'default', lg: 'lg' } as const;
-
-/** Affect-shaped button API over Reito Button. Loading and icons stay local; theme comes from tokens. */
+/** Public MIT Button surface on --rui-* tokens. Not a Reito Button alias. */
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -50,33 +34,37 @@ export function Button({
   const scale = sizes.includes(size) ? size : 'md';
   const hasLabel = children != null && children !== false && children !== '';
   const iconOnly = !hasLabel && Boolean(icon || iconRight);
-  const mapped = (appearance === 'clean' ? cleanVariantMap : variantMap)[tone];
+  const text = typeof children === 'string' ? children : undefined;
   return (
-    <ReitoButton
+    <ButtonPrimitive
       type={type}
-      variant={mapped}
-      size={
-        iconOnly
-          ? scale === 'sm'
-            ? 'icon-sm'
-            : scale === 'lg'
-              ? 'icon-lg'
-              : 'icon'
-          : sizeMap[scale]
-      }
       disabled={disabled || loading}
       aria-busy={loading || undefined}
+      data-slot="affect-button"
+      data-rui-affect-button=""
+      data-variant={tone}
+      data-size={scale}
+      data-loading={loading || undefined}
+      data-icon-only={iconOnly || undefined}
       data-appearance={appearance}
-      className={cn(className)}
+      className={cn('affect-button font-medium', className)}
       {...rest}
     >
-      {loading ? (
-        <LoaderCircle className="animate-spin motion-reduce:animate-none" aria-hidden="true" />
-      ) : (
-        icon
-      )}
-      {hasLabel ? <span className="min-w-0 truncate">{children}</span> : null}
-      {!loading ? iconRight : null}
-    </ReitoButton>
+      {icon || loading ? (
+        <span className="affect-button__icon" aria-hidden="true">
+          {loading ? <LoaderCircle className="affect-button__spinner" /> : icon}
+        </span>
+      ) : null}
+      {hasLabel ? (
+        <span className="affect-button__label" data-text={text}>
+          {children}
+        </span>
+      ) : null}
+      {!loading && iconRight ? (
+        <span className="affect-button__icon" aria-hidden="true">
+          {iconRight}
+        </span>
+      ) : null}
+    </ButtonPrimitive>
   );
 }

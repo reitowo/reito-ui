@@ -133,7 +133,7 @@ export function DataTable({
   return (
     <section
       className={cn(
-        'grid gap-[var(--rui-content-gap)] rounded-[var(--rui-radius-surface)] border border-border bg-card p-[var(--rui-content-padding)]',
+        'grid gap-[var(--rui-content-gap)] overflow-hidden rounded-[var(--rui-radius-lg)] border border-border bg-card p-[var(--rui-content-padding)] shadow-sm',
         className,
       )}
     >
@@ -163,13 +163,13 @@ export function DataTable({
       </Inline>
       <div className="overflow-x-auto" onKeyDown={onKey}>
         <table
-          className="w-full text-left text-[length:var(--rui-font-caption)]"
+          className="w-full border-separate border-spacing-0 text-left text-[length:var(--rui-font-interface)]"
           role="grid"
           aria-label={title}
         >
           <thead>
             <tr>
-              <th className="border-b border-border py-1 pr-2">
+              <th className="border-b border-border px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)] pr-[var(--rui-content-gap-sm)]">
                 <Checkbox
                   aria-label="全选"
                   checked={allChecked}
@@ -182,7 +182,10 @@ export function DataTable({
                 />
               </th>
               {columns.map((column) => (
-                <th key={column.key} className="border-b border-border py-1 font-medium">
+                <th
+                  key={column.key}
+                  className="border-b border-border px-[var(--rui-cell-padding-x)] py-[var(--rui-table-head-padding-y)] font-medium text-muted-foreground"
+                >
                   <Button
                     type="button"
                     size="xs"
@@ -205,8 +208,8 @@ export function DataTable({
           </thead>
           <tbody>
             {sorted.map((row, rowIndex) => (
-              <tr key={row.id}>
-                <td className="border-b border-border py-1 pr-2">
+              <tr key={row.id} className="hover:bg-muted/50">
+                <td className="border-b border-border px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] pr-[var(--rui-content-gap-sm)]">
                   <Checkbox
                     aria-label={`选择 ${row.id}`}
                     checked={checked.includes(row.id)}
@@ -229,7 +232,7 @@ export function DataTable({
                       role="gridcell"
                       aria-selected={active[0] === rowIndex && active[1] === colIndex}
                       className={cn(
-                        'border-b border-border py-1',
+                        'border-b border-border px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)]',
                         active[0] === rowIndex && active[1] === colIndex && 'bg-muted',
                       )}
                       onClick={() => setActive([rowIndex, colIndex])}
