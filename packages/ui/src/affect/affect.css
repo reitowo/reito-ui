@@ -189,12 +189,16 @@
 }
 
 .affect-button[data-variant='destructive'] {
-  background: var(--rui-danger-soft);
+  background: var(--rui-component-affect-button-destructive-bg);
   color: var(--rui-danger);
 }
 
 .affect-button[data-variant='destructive']:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--rui-danger-soft) 88%, var(--rui-danger));
+  background: color-mix(
+    in srgb,
+    var(--rui-component-affect-button-destructive-bg) 88%,
+    var(--rui-danger)
+  );
 }
 
 .affect-button[data-appearance='clean'][data-variant='secondary'] {
