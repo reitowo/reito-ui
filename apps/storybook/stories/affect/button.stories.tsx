@@ -14,7 +14,12 @@ const meta = {
     ),
   ],
   parameters: {
-    docs: { description: { component: 'Affect API 覆盖 Reito Button，含加载与干净外观。' } },
+    docs: {
+      description: {
+        component:
+          'Affect Button 按公开 MIT registry CSS 实现表面语言（32/40/48、软圆角、渐变主按钮、浅底危险），走 --rui-* 令牌，不是 Reito Button 别名。',
+      },
+    },
   },
 } satisfies Meta<typeof ButtonDemo>;
 

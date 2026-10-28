@@ -136,7 +136,7 @@ function Sidebar({
   return (
     <aside
       className={cn(
-        'flex h-full min-h-0 flex-col gap-[var(--rui-content-gap-sm)] bg-muted/40 p-[var(--rui-compact-surface-padding-y)] px-[var(--rui-compact-surface-padding-x)]',
+        'flex h-full min-h-0 flex-col gap-[var(--rui-content-gap)] border-r border-border bg-muted/50 p-[var(--rui-content-padding)]',
         collapsed && '@md:flex hidden',
       )}
     >
@@ -144,7 +144,7 @@ function Sidebar({
         <Inline>
           <span
             aria-hidden="true"
-            className="grid size-6 place-items-center rounded-[var(--rui-radius)] bg-primary text-primary-foreground"
+            className="grid size-[var(--rui-control-height-sm)] place-items-center rounded-[var(--rui-radius-md)] bg-primary text-primary-foreground"
           >
             {workspace.slice(0, 1)}
           </span>
@@ -160,12 +160,12 @@ function Sidebar({
           <PanelRight className="size-3.5 rotate-180" />
         </Button>
       </Inline>
-      <nav className="grid min-h-0 flex-1 gap-1 overflow-auto">
+      <nav className="grid min-h-0 flex-1 gap-[var(--rui-space-1)] overflow-auto">
         {nav.map((item) => (
           <Button
             key={item.label}
             type="button"
-            size="xs"
+            size="sm"
             variant={active === item.label ? 'secondary' : 'ghost'}
             className="w-full justify-start"
             aria-current={active === item.label ? 'page' : undefined}
@@ -176,7 +176,10 @@ function Sidebar({
           </Button>
         ))}
         {groups?.map((group) => (
-          <div key={group.title} className="grid gap-1 pt-[var(--rui-content-gap-sm)]">
+          <div
+            key={group.title}
+            className="grid gap-[var(--rui-space-1)] pt-[var(--rui-content-gap)]"
+          >
             <Text variant="caption" tone="muted">
               {group.title}
             </Text>
@@ -184,7 +187,7 @@ function Sidebar({
               <Button
                 key={item}
                 type="button"
-                size="xs"
+                size="sm"
                 variant={active === item ? 'secondary' : 'ghost'}
                 className="w-full justify-start"
                 onClick={() => onNavigate?.(item)}
@@ -195,7 +198,7 @@ function Sidebar({
           </div>
         ))}
         {projects?.length ? (
-          <div className="grid gap-1 pt-[var(--rui-content-gap-sm)]">
+          <div className="grid gap-[var(--rui-space-1)] pt-[var(--rui-content-gap)]">
             <Text variant="caption" tone="muted">
               项目
             </Text>
@@ -203,7 +206,7 @@ function Sidebar({
               <Button
                 key={item}
                 type="button"
-                size="xs"
+                size="sm"
                 variant={active === item ? 'secondary' : 'ghost'}
                 className="w-full justify-start"
                 onClick={() => onNavigate?.(item)}
@@ -347,8 +350,10 @@ function ShellFrame({
   return (
     <div
       className={cn(
-        '@container flex h-full min-h-[var(--rui-preview-min-height)] overflow-hidden bg-background text-foreground',
-        variant === 'inset' && 'rounded-[var(--rui-radius-surface)] border border-border',
+        '@container flex h-full min-h-[var(--rui-preview-min-height)] overflow-hidden text-foreground',
+        variant === 'inset'
+          ? 'rounded-[var(--rui-radius-lg)] bg-muted p-[var(--rui-space-2)]'
+          : 'bg-background',
         className,
       )}
     >
@@ -388,9 +393,15 @@ function ShellFrame({
           onReset={side.reset}
         />
       ) : null}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div
+        className={cn(
+          'flex min-w-0 flex-1 flex-col overflow-hidden',
+          variant === 'inset' &&
+            'rounded-[var(--rui-radius-md)] border border-border bg-card shadow-sm',
+        )}
+      >
         {header !== false ? (
-          <header className="flex h-[var(--rui-button-height)] items-center justify-between gap-[var(--rui-content-gap-sm)] border-b border-border px-[var(--rui-content-padding)]">
+          <header className="flex h-[var(--rui-control-height-lg)] items-center justify-between gap-[var(--rui-content-gap-sm)] border-b border-border px-[var(--rui-content-padding)]">
             <Inline>
               <label className="sr-only" htmlFor="affect-shell-search">
                 搜索
@@ -430,17 +441,10 @@ function ShellFrame({
           <main
             className={cn(
               'min-h-0 min-w-0 flex-1 overflow-auto',
-              variant === 'inset' && 'bg-muted/30 p-[var(--rui-content-padding)]',
+              variant === 'inset' && 'bg-card p-[var(--rui-content-padding)]',
             )}
           >
-            <div
-              className={cn(
-                variant === 'inset' &&
-                  'min-h-full rounded-[var(--rui-radius-surface)] border border-border bg-card',
-              )}
-            >
-              {children}
-            </div>
+            <div className={cn(variant === 'inset' && 'min-h-full')}>{children}</div>
           </main>
           {panelOpen && (panel || tools) ? (
             <>

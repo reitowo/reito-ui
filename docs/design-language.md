@@ -254,7 +254,7 @@ ScrollArea 默认不添加内容内距。variant="inset" 将组件 padding-x/y �
 
 ## 默认按钮与 Card 区域（2026-10-10）
 
-Button 不传 size 或指定 size="default" 时使用 button-height，compact / comfortable 为28 / 36px。默认图标按钮 size="icon" 也使用该角色。XS 保留24 / 32px；sm 为28 / 36px，新增 md 为原默认的32 / 40px，lg 为36 / 44px；图标尺寸有同样的显式选择。默认按钮字号使用 action-font-size（14px），XS 文字保留 font-interface（13px），圆角使用 radius-sm。默认 Input 与 SelectTrigger 的高度走同一 `button-height`，让三件基础控件在 compact 下对齐 28px（向 affectUI 的高密默认靠拢）；表格行与其它字段仍用独立的 `control-height`（32 / 36px）。Textarea 使用同一 `input-padding-x` 与 `input-font-size`，纵向取 `compact-surface-padding-y`，不再写死 `px-2.5 py-2 text-sm`。默认 NativeSelect 与 InputGroup 也走 `button-height`，附加区内距改用 input / compact surface token。
+Button 不传 size 或指定 size="default" 时使用 button-height，compact / comfortable 为 32 / 36px，与 control-height 和 Base UI v1.9 的 2rem 触发器对齐。默认图标按钮 size="icon" 也使用该角色。XS 保留 24 / 32px；sm 为 28 / 32px，md 为 32 / 36px，lg 为 36 / 40px；图标尺寸有同样的显式选择。默认按钮字号使用 action-font-size（与 font-interface 相同，13px），XS 文字也走 font-interface，圆角使用 radius-control（6px）。默认 Input 与 SelectTrigger 的高度走同一 `button-height`，三件基础控件在 compact 下对齐 32px；表格行与其它字段仍用独立的 `control-height`。Affect 层的 Button 使用自己的 32 / 40 / 48 表面，见 [affect-surface.md](affect-surface.md)。Textarea 使用同一 `input-padding-x` 与 `input-font-size`，纵向取 `compact-surface-padding-y`。默认 NativeSelect 与 InputGroup 也走 `button-height`。
 
 Card 是 React 组合组件，Header / Content / Footer 是独立区域；data-slot 只是标记和样式钩子。Root 负责上下边缘和区域间距，Header / Content 负责横向内距，Footer 负责横纵内距和分隔。区域之间使用 content-gap-sm（8 / 12px），左右使用 compact-surface-padding-x（12 / 16px），边缘纵向使用 compact-surface-padding-y（8 / 12px）。标题 / 说明的局部间距独立保持4px，不将全部区域间距叠进每个子组件。
 

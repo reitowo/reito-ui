@@ -159,6 +159,17 @@ export function ButtonDemo() {
           干净
         </Button>
       </Inline>
+      <Inline>
+        <Button size="sm" variant="secondary">
+          小
+        </Button>
+        <Button size="md" variant="secondary">
+          中
+        </Button>
+        <Button size="lg" variant="secondary">
+          大
+        </Button>
+      </Inline>
     </AffectDemoFrame>
   );
 }

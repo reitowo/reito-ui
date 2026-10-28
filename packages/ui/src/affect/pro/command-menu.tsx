@@ -44,13 +44,12 @@ const defaultGroups: CommandGroup[] = [
   },
 ];
 
-/** Recreated from public Command Menu docs. Wraps Reito CommandSearch. */
+/** Recreated from public Command Menu docs. Single elevated surface, shared menu padding. */
 export function CommandMenu({
   groups = defaultGroups,
   placeholder = '输入命令或搜索…',
   onRun,
   onClose,
-  autoFocus = true,
   className,
 }: CommandMenuProps) {
   const [query, setQuery] = useState('');
@@ -90,7 +89,10 @@ export function CommandMenu({
 
   return (
     <div
-      className={cn('rounded-[var(--rui-radius-surface)] border border-border bg-card', className)}
+      className={cn(
+        'overflow-hidden rounded-[var(--rui-radius-lg)] bg-card shadow-md ring-1 ring-foreground/10',
+        className,
+      )}
     >
       <CommandSearch
         groups={mapped}
@@ -98,6 +100,7 @@ export function CommandMenu({
         onQueryChange={setQuery}
         placeholder={placeholder}
         emptyMessage="没有匹配的命令。按 Enter 询问助手。"
+        className="rounded-none border-0"
         onSelect={(command: SearchCommand) => {
           onRun?.(command.id, query);
           setRan(command.label);
