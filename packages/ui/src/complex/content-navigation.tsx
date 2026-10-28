@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { TreeView, type TreeViewNode } from './tree-view.js';
 import {
-  WorkspacePreset,
-  type WorkspacePresetProps,
-  type WorkspacePresetView,
+  WorkspaceLayout,
+  type WorkspaceLayoutProps,
+  type WorkspaceLayoutView,
 } from './workspace.js';
 import { cx } from './shared.js';
 
@@ -32,10 +32,10 @@ export interface ContentNavigationProps
   emptyMessage?: string;
   emptySectionMessage?: string;
   scrollBehavior?: ScrollBehavior;
-  layoutMode?: WorkspacePresetProps['mode'];
-  layoutView?: WorkspacePresetView;
-  defaultLayoutView?: Partial<WorkspacePresetView>;
-  onLayoutViewChange?: (view: WorkspacePresetView) => void;
+  layoutMode?: WorkspaceLayoutProps['mode'];
+  layoutView?: WorkspaceLayoutView;
+  defaultLayoutView?: Partial<WorkspaceLayoutView>;
+  onLayoutViewChange?: (view: WorkspaceLayoutView) => void;
 }
 
 interface FlatContentSection {
@@ -252,7 +252,7 @@ export function ContentNavigation({
 
   return (
     <div {...props} data-slot="content-navigation" className={cx('min-h-0 min-w-0', className)}>
-      <WorkspacePreset
+      <WorkspaceLayout
         className="h-full rounded-none"
         mode={layoutMode}
         title={title}

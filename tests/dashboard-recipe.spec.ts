@@ -11,18 +11,18 @@ async function openStory(page: Page, story: string, globals = 'theme:dark;densit
 test('dashboard recipe composes the existing application layers', async ({ page }) => {
   await openStory(page, 'default');
   await expect(page.locator('[data-slot="sidebar"]')).toBeVisible();
-  await expect(page.locator('[data-slot="app-shell"]')).toBeVisible();
-  await expect(page.locator('[data-slot="workspace-preset"]')).toBeVisible();
+  await expect(page.locator('[data-slot="dashboard-panel"]')).toBeVisible();
+  await expect(page.locator('[data-slot="workspace-layout"]')).toBeVisible();
   await expect(page.locator('[data-slot="data-table"]')).toBeVisible();
   await expect(page.getByRole('form', { name: '新建本地任务' })).toBeVisible();
-  await expect(page.getByLabel('任务', { exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('link', { name: '任务', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('button', { name: '搜索', exact: true })).toBeVisible();
   await expect(page.getByText('本地交互示例')).toBeVisible();
 });
 
 test('interactive recipe creates, completes and finds a local task', async ({ page }) => {
   await openStory(page, 'interactive');
-  const status = page.locator('[data-slot="app-shell"] footer [role="status"]');
+  const status = page.locator('[data-slot="dashboard-panel"] footer [role="status"]');
   await expect(status).toContainText('已定位：验证 Dashboard 配方');
   await expect(page.getByRole('cell', { name: '验证 Dashboard 配方', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: '完成 验证 Dashboard 配方' })).toBeDisabled();
@@ -59,10 +59,10 @@ test('narrow workspace switches between the table and task form', async ({ page 
 test('mobile sidebar opens, navigates and closes without covering the new page', async ({ page }) => {
   await page.setViewportSize({ width: 560, height: 760 });
   await openStory(page, 'narrow');
-  await page.getByRole('button', { name: '切换导航侧栏' }).click();
+  await page.getByRole('button', { name: '打开导航' }).click();
   const mobileSidebar = page.locator('[data-slot="sidebar"][data-mobile="true"]');
   await expect(mobileSidebar).toBeVisible();
-  await mobileSidebar.getByRole('button', { name: '设置' }).click();
+  await mobileSidebar.getByRole('link', { name: '设置' }).click();
   await expect(mobileSidebar).toBeHidden();
   await expect(page.getByRole('heading', { name: '工作区偏好' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -77,21 +77,21 @@ test('sidebar and inspector preferences survive a reload', async ({ page }) => {
   await page.reload();
   const desktopSidebar = page.locator('[data-slot="sidebar"][data-state]');
   await expect(desktopSidebar).toHaveAttribute('data-state', 'expanded');
-  await page.getByRole('button', { name: '切换导航侧栏' }).click();
+  await page.getByRole('button', { name: '收起导航' }).click();
   await page.getByRole('group', { name: '宽布局面板' }).getByRole('button', { name: '检查器' }).click();
   await expect(desktopSidebar).toHaveAttribute('data-state', 'collapsed');
   await expect(page.getByRole('region', { name: '新建任务' })).toBeHidden();
   await page.reload();
   await expect(desktopSidebar).toHaveAttribute('data-state', 'collapsed');
   await expect(page.getByRole('region', { name: '新建任务' })).toBeHidden();
-  await expect(page.locator('[data-slot="app-shell"] footer [role="status"]')).toContainText('偏好来源：current/current');
+  await expect(page.locator('[data-slot="dashboard-panel"] footer [role="status"]')).toContainText('偏好来源：current/current');
 });
 
 test('Playground Controls change layout, page and data state in one story', async ({ page }) => {
   const story = `${prefix}--playground`;
   await page.goto(`http://127.0.0.1:6007/?path=/story/${encodeURIComponent(story)}`);
   const frame = page.frameLocator('#storybook-preview-iframe');
-  await expect(frame.locator('[data-slot="app-shell"]')).toBeVisible({ timeout: 15_000 });
+  await expect(frame.locator('[data-slot="dashboard-panel"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
   const path = new URL(page.url()).searchParams.get('path');
   await page.locator('[id="control-layoutMode"]').selectOption('narrow');

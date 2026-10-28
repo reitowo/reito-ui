@@ -1,6 +1,6 @@
 # Content 工作面配方
 
-Content 配方把文档集合、页内目录、Markdown 阅读、应用搜索和相邻文档操作放进一个桌面工作面。它直接组合 `ResourceView`、`ContentNavigation`、`MarkdownContent`、`Toolbar`、`ApplicationSearch`、`WorkspacePreset` 与 `AppShell`，不增加公共 Content 原语，也不计入组件族数量。
+Content 配方把文档集合、页内目录、Markdown 阅读、应用搜索和相邻文档操作放进一个桌面工作面。它直接组合 `ResourceView`、`ContentNavigation`、`MarkdownContent`、`Toolbar`、`ApplicationSearch`、`WorkspaceLayout` 与 `DashboardPanel`，不增加公共 Content 原语，也不计入组件族数量。
 
 Storybook 入口为 `复杂 / ContentRecipe 内容工作面配方`。参数调试 Story 可在同一 Canvas 中修改文档列表状态、正文状态、当前文档/章节、查询、列表/网格布局、两层宽窄布局、活动面板、搜索弹层、收藏状态和空态文案。固定预设覆盖默认、窄屏、网格集合、文档库空/加载/失败、正文空/加载/失败及完整交互。
 
@@ -11,7 +11,7 @@ Storybook 入口为 `复杂 / ContentRecipe 内容工作面配方`。参数调�
 - `MarkdownContent` 渲染宿主提供的 CommonMark/GFM 内容，代码与表格保留局部滚动。
 - `ApplicationSearch` 聚合文档、当前章节和相关动作，选择结果写回同一受控文档/章节状态。
 - `Toolbar` 提供搜索、上一篇、下一篇、收藏与复制链接；底部相邻文档导航复用同一选择函数。
-- `WorkspacePreset` 的外层在文档库和阅读器之间响应式切换，内层只管理页内目录与正文。
+- `WorkspaceLayout` 的外层在文档库和阅读器之间响应式切换，内层只管理页内目录与正文。
 
 ## 状态与宿主边界
 

@@ -4,26 +4,31 @@ import { Button } from '../primitives/button.js';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../primitives/resizable.js';
 import { cx } from './shared.js';
 
-export const WORKSPACE_LAYOUT_VERSION = 1 as const;
-export interface WorkspaceLayoutState {
-  version: typeof WORKSPACE_LAYOUT_VERSION;
+export const RESIZABLE_WORKSPACE_VERSION = 1 as const;
+export interface ResizableWorkspaceState {
+  version: typeof RESIZABLE_WORKSPACE_VERSION;
   sidebarOpen: boolean;
   primaryPercent: number;
 }
-export type WorkspaceLayoutSource = 'loading' | 'current' | 'legacy' | 'fallback' | 'unavailable';
-export interface WorkspaceLayoutStorage {
+export type ResizableWorkspaceSource =
+  | 'loading'
+  | 'current'
+  | 'legacy'
+  | 'fallback'
+  | 'unavailable';
+export interface ResizableWorkspaceStorage {
   getItem: (key: string) => string | null;
   setItem: (key: string, value: string) => void;
   removeItem?: (key: string) => void;
 }
-export interface WorkspaceLayoutRestoreOptions {
+export interface ResizableWorkspaceRestoreOptions {
   defaultSidebarOpen?: boolean;
   defaultPrimaryPercent?: number;
   minPanelPercent?: number;
 }
-export interface WorkspaceLayoutRestoreResult {
-  state: WorkspaceLayoutState;
-  source: Exclude<WorkspaceLayoutSource, 'loading' | 'unavailable'>;
+export interface ResizableWorkspaceRestoreResult {
+  state: ResizableWorkspaceState;
+  source: Exclude<ResizableWorkspaceSource, 'loading' | 'unavailable'>;
 }
 
 function workspaceMinimum(value = 20) {
@@ -39,14 +44,16 @@ function validPrimaryPercent(value: unknown, minimum: number): value is number {
   );
 }
 
-function workspaceDefaults(options: WorkspaceLayoutRestoreOptions = {}): WorkspaceLayoutState {
+function workspaceDefaults(
+  options: ResizableWorkspaceRestoreOptions = {},
+): ResizableWorkspaceState {
   const minimum = workspaceMinimum(options.minPanelPercent);
   const candidate = options.defaultPrimaryPercent ?? 60;
   const primaryPercent = validPrimaryPercent(candidate, minimum)
     ? candidate
     : Math.min(100 - minimum, Math.max(minimum, 60));
   return {
-    version: WORKSPACE_LAYOUT_VERSION,
+    version: RESIZABLE_WORKSPACE_VERSION,
     sidebarOpen: options.defaultSidebarOpen ?? true,
     primaryPercent,
   };
@@ -58,7 +65,7 @@ function record(value: unknown): Record<string, unknown> | undefined {
     : undefined;
 }
 
-function browserLayoutStorage(): WorkspaceLayoutStorage | null {
+function browserLayoutStorage(): ResizableWorkspaceStorage | null {
   if (typeof window === 'undefined') return null;
   try {
     return window.localStorage;
@@ -67,16 +74,16 @@ function browserLayoutStorage(): WorkspaceLayoutStorage | null {
   }
 }
 
-function scheduleWorkspaceLayout(callback: () => void) {
+function scheduleResizableWorkspace(callback: () => void) {
   if (typeof requestAnimationFrame === 'function') requestAnimationFrame(callback);
   else queueMicrotask(callback);
 }
 
 /** Restores current and legacy workspace JSON without trusting unavailable sizes or versions. */
-export function restoreWorkspaceLayoutState(
+export function restoreResizableWorkspaceState(
   serialized: string | null | undefined,
-  options: WorkspaceLayoutRestoreOptions = {},
-): WorkspaceLayoutRestoreResult {
+  options: ResizableWorkspaceRestoreOptions = {},
+): ResizableWorkspaceRestoreResult {
   const fallback = workspaceDefaults(options);
   if (!serialized) return { state: fallback, source: 'fallback' };
   let parsed: unknown;
@@ -89,7 +96,7 @@ export function restoreWorkspaceLayoutState(
   if (!value) return { state: fallback, source: 'fallback' };
   const minimum = workspaceMinimum(options.minPanelPercent);
 
-  if (value.version === WORKSPACE_LAYOUT_VERSION) {
+  if (value.version === RESIZABLE_WORKSPACE_VERSION) {
     if (
       typeof value.sidebarOpen !== 'boolean' ||
       !validPrimaryPercent(value.primaryPercent, minimum)
@@ -97,7 +104,7 @@ export function restoreWorkspaceLayoutState(
       return { state: fallback, source: 'fallback' };
     return {
       state: {
-        version: WORKSPACE_LAYOUT_VERSION,
+        version: RESIZABLE_WORKSPACE_VERSION,
         sidebarOpen: value.sidebarOpen,
         primaryPercent: value.primaryPercent,
       },
@@ -114,7 +121,7 @@ export function restoreWorkspaceLayoutState(
   if (!recognized) return { state: fallback, source: 'fallback' };
   return {
     state: {
-      version: WORKSPACE_LAYOUT_VERSION,
+      version: RESIZABLE_WORKSPACE_VERSION,
       sidebarOpen: typeof sidebar === 'boolean' ? sidebar : fallback.sidebarOpen,
       primaryPercent: validPrimaryPercent(primary, minimum) ? primary : fallback.primaryPercent,
     },
@@ -122,63 +129,63 @@ export function restoreWorkspaceLayoutState(
   };
 }
 
-export function serializeWorkspaceLayoutState(
-  state: WorkspaceLayoutState,
-  options: WorkspaceLayoutRestoreOptions = {},
+export function serializeResizableWorkspaceState(
+  state: ResizableWorkspaceState,
+  options: ResizableWorkspaceRestoreOptions = {},
 ) {
   const fallback = workspaceDefaults(options);
   const minimum = workspaceMinimum(options.minPanelPercent);
   return JSON.stringify({
-    version: WORKSPACE_LAYOUT_VERSION,
+    version: RESIZABLE_WORKSPACE_VERSION,
     sidebarOpen: typeof state.sidebarOpen === 'boolean' ? state.sidebarOpen : fallback.sidebarOpen,
     primaryPercent: validPrimaryPercent(state.primaryPercent, minimum)
       ? state.primaryPercent
       : fallback.primaryPercent,
-  } satisfies WorkspaceLayoutState);
+  } satisfies ResizableWorkspaceState);
 }
 
-export interface UseWorkspaceLayoutStateOptions extends WorkspaceLayoutRestoreOptions {
+export interface UseResizableWorkspaceStateOptions extends ResizableWorkspaceRestoreOptions {
   storageKey?: string;
-  storage?: WorkspaceLayoutStorage | null;
+  storage?: ResizableWorkspaceStorage | null;
   onStorageError?: (error: unknown) => void;
 }
-export interface UseWorkspaceLayoutStateResult {
-  state: WorkspaceLayoutState;
-  source: WorkspaceLayoutSource;
+export interface UseResizableWorkspaceStateResult {
+  state: ResizableWorkspaceState;
+  source: ResizableWorkspaceSource;
   setSidebarOpen: (open: boolean) => void;
   setPrimaryPercent: (primaryPercent: number) => void;
   reset: () => void;
 }
 
-export const WORKSPACE_PRESET_VERSION = 1 as const;
-export type WorkspacePresetPanelId = 'navigation' | 'workspace' | 'inspector';
-export interface WorkspacePresetView {
+export const WORKSPACE_LAYOUT_VERSION = 1 as const;
+export type WorkspaceLayoutPanelId = 'navigation' | 'workspace' | 'inspector';
+export interface WorkspaceLayoutView {
   navigationOpen: boolean;
   inspectorOpen: boolean;
-  activePanel: WorkspacePresetPanelId;
+  activePanel: WorkspaceLayoutPanelId;
 }
-export interface WorkspacePresetState extends WorkspacePresetView {
-  version: typeof WORKSPACE_PRESET_VERSION;
+export interface WorkspaceLayoutState extends WorkspaceLayoutView {
+  version: typeof WORKSPACE_LAYOUT_VERSION;
 }
-export interface WorkspacePresetRestoreOptions {
+export interface WorkspaceLayoutRestoreOptions {
   defaultNavigationOpen?: boolean;
   defaultInspectorOpen?: boolean;
-  defaultActivePanel?: WorkspacePresetPanelId;
+  defaultActivePanel?: WorkspaceLayoutPanelId;
 }
-export interface WorkspacePresetRestoreResult {
-  state: WorkspacePresetState;
-  source: Exclude<WorkspaceLayoutSource, 'loading' | 'unavailable'>;
+export interface WorkspaceLayoutRestoreResult {
+  state: WorkspaceLayoutState;
+  source: Exclude<ResizableWorkspaceSource, 'loading' | 'unavailable'>;
 }
 
-function isWorkspacePresetPanel(value: unknown): value is WorkspacePresetPanelId {
+function isWorkspaceLayoutPanel(value: unknown): value is WorkspaceLayoutPanelId {
   return value === 'navigation' || value === 'workspace' || value === 'inspector';
 }
 
 function workspacePresetDefaults(
-  options: WorkspacePresetRestoreOptions = {},
-): WorkspacePresetState {
+  options: WorkspaceLayoutRestoreOptions = {},
+): WorkspaceLayoutState {
   return {
-    version: WORKSPACE_PRESET_VERSION,
+    version: WORKSPACE_LAYOUT_VERSION,
     navigationOpen: options.defaultNavigationOpen ?? true,
     inspectorOpen: options.defaultInspectorOpen ?? true,
     activePanel: options.defaultActivePanel ?? 'workspace',
@@ -186,10 +193,10 @@ function workspacePresetDefaults(
 }
 
 /** Restores a preset's panel visibility without coupling it to ResizableWorkspace sizing. */
-export function restoreWorkspacePresetState(
+export function restoreWorkspaceLayoutState(
   serialized: string | null | undefined,
-  options: WorkspacePresetRestoreOptions = {},
-): WorkspacePresetRestoreResult {
+  options: WorkspaceLayoutRestoreOptions = {},
+): WorkspaceLayoutRestoreResult {
   const fallback = workspacePresetDefaults(options);
   if (!serialized) return { state: fallback, source: 'fallback' };
   let parsed: unknown;
@@ -202,7 +209,7 @@ export function restoreWorkspacePresetState(
   if (!value) return { state: fallback, source: 'fallback' };
   if (
     value.version !== undefined &&
-    value.version !== WORKSPACE_PRESET_VERSION &&
+    value.version !== WORKSPACE_LAYOUT_VERSION &&
     value.version !== 0
   )
     return { state: fallback, source: 'fallback' };
@@ -212,163 +219,75 @@ export function restoreWorkspacePresetState(
   const recognized =
     typeof navigationOpen === 'boolean' ||
     typeof inspectorOpen === 'boolean' ||
-    isWorkspacePresetPanel(activePanel);
+    isWorkspaceLayoutPanel(activePanel);
   if (!recognized) return { state: fallback, source: 'fallback' };
   if (
-    value.version === WORKSPACE_PRESET_VERSION &&
+    value.version === WORKSPACE_LAYOUT_VERSION &&
     (typeof navigationOpen !== 'boolean' ||
       typeof inspectorOpen !== 'boolean' ||
-      !isWorkspacePresetPanel(activePanel))
+      !isWorkspaceLayoutPanel(activePanel))
   )
     return { state: fallback, source: 'fallback' };
   return {
     state: {
-      version: WORKSPACE_PRESET_VERSION,
+      version: WORKSPACE_LAYOUT_VERSION,
       navigationOpen:
         typeof navigationOpen === 'boolean' ? navigationOpen : fallback.navigationOpen,
       inspectorOpen: typeof inspectorOpen === 'boolean' ? inspectorOpen : fallback.inspectorOpen,
-      activePanel: isWorkspacePresetPanel(activePanel) ? activePanel : fallback.activePanel,
+      activePanel: isWorkspaceLayoutPanel(activePanel) ? activePanel : fallback.activePanel,
     },
-    source: value.version === WORKSPACE_PRESET_VERSION ? 'current' : 'legacy',
+    source: value.version === WORKSPACE_LAYOUT_VERSION ? 'current' : 'legacy',
   };
 }
 
-export function serializeWorkspacePresetState(
-  view: WorkspacePresetView,
-  options: WorkspacePresetRestoreOptions = {},
+export function serializeWorkspaceLayoutState(
+  view: WorkspaceLayoutView,
+  options: WorkspaceLayoutRestoreOptions = {},
 ) {
   const fallback = workspacePresetDefaults(options);
   return JSON.stringify({
-    version: WORKSPACE_PRESET_VERSION,
+    version: WORKSPACE_LAYOUT_VERSION,
     navigationOpen:
       typeof view.navigationOpen === 'boolean' ? view.navigationOpen : fallback.navigationOpen,
     inspectorOpen:
       typeof view.inspectorOpen === 'boolean' ? view.inspectorOpen : fallback.inspectorOpen,
-    activePanel: isWorkspacePresetPanel(view.activePanel) ? view.activePanel : fallback.activePanel,
-  } satisfies WorkspacePresetState);
+    activePanel: isWorkspaceLayoutPanel(view.activePanel) ? view.activePanel : fallback.activePanel,
+  } satisfies WorkspaceLayoutState);
 }
 
-export interface UseWorkspacePresetStateOptions extends WorkspacePresetRestoreOptions {
+export interface UseWorkspaceLayoutStateOptions extends WorkspaceLayoutRestoreOptions {
   storageKey?: string;
-  storage?: WorkspaceLayoutStorage | null;
+  storage?: ResizableWorkspaceStorage | null;
   onStorageError?: (error: unknown) => void;
 }
-export interface UseWorkspacePresetStateResult {
-  state: WorkspacePresetState;
-  source: WorkspaceLayoutSource;
+export interface UseWorkspaceLayoutStateResult {
+  state: WorkspaceLayoutState;
+  source: ResizableWorkspaceSource;
   setView: (
-    view: WorkspacePresetView | ((current: WorkspacePresetState) => WorkspacePresetView),
+    view: WorkspaceLayoutView | ((current: WorkspaceLayoutState) => WorkspaceLayoutView),
   ) => void;
   setNavigationOpen: (open: boolean) => void;
   setInspectorOpen: (open: boolean) => void;
-  setActivePanel: (panel: WorkspacePresetPanelId) => void;
+  setActivePanel: (panel: WorkspaceLayoutPanelId) => void;
   reset: () => void;
 }
 
 /** Persists visibility and the narrow-layout panel independently from split percentages. */
-export function useWorkspacePresetState({
+export function useWorkspaceLayoutState({
   storageKey = 'reito.workspace.preset',
   storage,
   defaultNavigationOpen = true,
   defaultInspectorOpen = true,
   defaultActivePanel = 'workspace',
   onStorageError,
-}: UseWorkspacePresetStateOptions = {}): UseWorkspacePresetStateResult {
+}: UseWorkspaceLayoutStateOptions = {}): UseWorkspaceLayoutStateResult {
   const restoreOptions = React.useMemo(
     () => ({ defaultNavigationOpen, defaultInspectorOpen, defaultActivePanel }),
     [defaultActivePanel, defaultInspectorOpen, defaultNavigationOpen],
   );
   const fallback = React.useMemo(() => workspacePresetDefaults(restoreOptions), [restoreOptions]);
-  const [state, setState] = React.useState<WorkspacePresetState>(fallback);
-  const [source, setSource] = React.useState<WorkspaceLayoutSource>('loading');
-  const target = storage === undefined ? browserLayoutStorage() : storage;
-  const storageError = React.useRef(onStorageError);
-  storageError.current = onStorageError;
-
-  React.useEffect(() => {
-    if (!target) {
-      setState(fallback);
-      setSource('unavailable');
-      return;
-    }
-    try {
-      const restored = restoreWorkspacePresetState(target.getItem(storageKey), restoreOptions);
-      setState(restored.state);
-      setSource(restored.source);
-    } catch (error) {
-      setState(fallback);
-      setSource('unavailable');
-      storageError.current?.(error);
-    }
-  }, [fallback, restoreOptions, storageKey, target]);
-
-  React.useEffect(() => {
-    if (!target || source === 'loading' || source === 'unavailable') return;
-    try {
-      target.setItem(storageKey, serializeWorkspacePresetState(state, restoreOptions));
-    } catch (error) {
-      setSource('unavailable');
-      storageError.current?.(error);
-    }
-  }, [restoreOptions, source, state, storageKey, target]);
-
-  React.useEffect(() => {
-    if (typeof window === 'undefined' || !target || target !== browserLayoutStorage()) return;
-    const synchronize = (event: StorageEvent) => {
-      if (event.storageArea !== target || event.key !== storageKey) return;
-      const restored = restoreWorkspacePresetState(event.newValue, restoreOptions);
-      setState(restored.state);
-      setSource(restored.source);
-    };
-    window.addEventListener('storage', synchronize);
-    return () => window.removeEventListener('storage', synchronize);
-  }, [restoreOptions, storageKey, target]);
-
-  const setView = React.useCallback(
-    (next: WorkspacePresetView | ((current: WorkspacePresetState) => WorkspacePresetView)) => {
-      setState((current) => {
-        const view = typeof next === 'function' ? next(current) : next;
-        return { version: WORKSPACE_PRESET_VERSION, ...view };
-      });
-      setSource('current');
-    },
-    [],
-  );
-  const setNavigationOpen = React.useCallback(
-    (navigationOpen: boolean) => setView((current) => ({ ...current, navigationOpen })),
-    [setView],
-  );
-  const setInspectorOpen = React.useCallback(
-    (inspectorOpen: boolean) => setView((current) => ({ ...current, inspectorOpen })),
-    [setView],
-  );
-  const setActivePanel = React.useCallback(
-    (activePanel: WorkspacePresetPanelId) => setView((current) => ({ ...current, activePanel })),
-    [setView],
-  );
-  const reset = React.useCallback(() => {
-    setState(fallback);
-    setSource('fallback');
-  }, [fallback]);
-  return { state, source, setView, setNavigationOpen, setInspectorOpen, setActivePanel, reset };
-}
-
-/** Restores, migrates and persists the shared Sidebar/ResizableWorkspace state. */
-export function useWorkspaceLayoutState({
-  storageKey = 'reito.workspace.layout',
-  storage,
-  defaultSidebarOpen = true,
-  defaultPrimaryPercent = 60,
-  minPanelPercent = 20,
-  onStorageError,
-}: UseWorkspaceLayoutStateOptions = {}): UseWorkspaceLayoutStateResult {
-  const restoreOptions = React.useMemo(
-    () => ({ defaultSidebarOpen, defaultPrimaryPercent, minPanelPercent }),
-    [defaultPrimaryPercent, defaultSidebarOpen, minPanelPercent],
-  );
-  const fallback = React.useMemo(() => workspaceDefaults(restoreOptions), [restoreOptions]);
   const [state, setState] = React.useState<WorkspaceLayoutState>(fallback);
-  const [source, setSource] = React.useState<WorkspaceLayoutSource>('loading');
+  const [source, setSource] = React.useState<ResizableWorkspaceSource>('loading');
   const target = storage === undefined ? browserLayoutStorage() : storage;
   const storageError = React.useRef(onStorageError);
   storageError.current = onStorageError;
@@ -405,6 +324,94 @@ export function useWorkspaceLayoutState({
     const synchronize = (event: StorageEvent) => {
       if (event.storageArea !== target || event.key !== storageKey) return;
       const restored = restoreWorkspaceLayoutState(event.newValue, restoreOptions);
+      setState(restored.state);
+      setSource(restored.source);
+    };
+    window.addEventListener('storage', synchronize);
+    return () => window.removeEventListener('storage', synchronize);
+  }, [restoreOptions, storageKey, target]);
+
+  const setView = React.useCallback(
+    (next: WorkspaceLayoutView | ((current: WorkspaceLayoutState) => WorkspaceLayoutView)) => {
+      setState((current) => {
+        const view = typeof next === 'function' ? next(current) : next;
+        return { version: WORKSPACE_LAYOUT_VERSION, ...view };
+      });
+      setSource('current');
+    },
+    [],
+  );
+  const setNavigationOpen = React.useCallback(
+    (navigationOpen: boolean) => setView((current) => ({ ...current, navigationOpen })),
+    [setView],
+  );
+  const setInspectorOpen = React.useCallback(
+    (inspectorOpen: boolean) => setView((current) => ({ ...current, inspectorOpen })),
+    [setView],
+  );
+  const setActivePanel = React.useCallback(
+    (activePanel: WorkspaceLayoutPanelId) => setView((current) => ({ ...current, activePanel })),
+    [setView],
+  );
+  const reset = React.useCallback(() => {
+    setState(fallback);
+    setSource('fallback');
+  }, [fallback]);
+  return { state, source, setView, setNavigationOpen, setInspectorOpen, setActivePanel, reset };
+}
+
+/** Restores, migrates and persists the shared Sidebar/ResizableWorkspace state. */
+export function useResizableWorkspaceState({
+  storageKey = 'reito.workspace.layout',
+  storage,
+  defaultSidebarOpen = true,
+  defaultPrimaryPercent = 60,
+  minPanelPercent = 20,
+  onStorageError,
+}: UseResizableWorkspaceStateOptions = {}): UseResizableWorkspaceStateResult {
+  const restoreOptions = React.useMemo(
+    () => ({ defaultSidebarOpen, defaultPrimaryPercent, minPanelPercent }),
+    [defaultPrimaryPercent, defaultSidebarOpen, minPanelPercent],
+  );
+  const fallback = React.useMemo(() => workspaceDefaults(restoreOptions), [restoreOptions]);
+  const [state, setState] = React.useState<ResizableWorkspaceState>(fallback);
+  const [source, setSource] = React.useState<ResizableWorkspaceSource>('loading');
+  const target = storage === undefined ? browserLayoutStorage() : storage;
+  const storageError = React.useRef(onStorageError);
+  storageError.current = onStorageError;
+
+  React.useEffect(() => {
+    if (!target) {
+      setState(fallback);
+      setSource('unavailable');
+      return;
+    }
+    try {
+      const restored = restoreResizableWorkspaceState(target.getItem(storageKey), restoreOptions);
+      setState(restored.state);
+      setSource(restored.source);
+    } catch (error) {
+      setState(fallback);
+      setSource('unavailable');
+      storageError.current?.(error);
+    }
+  }, [fallback, restoreOptions, storageKey, target]);
+
+  React.useEffect(() => {
+    if (!target || source === 'loading' || source === 'unavailable') return;
+    try {
+      target.setItem(storageKey, serializeResizableWorkspaceState(state, restoreOptions));
+    } catch (error) {
+      setSource('unavailable');
+      storageError.current?.(error);
+    }
+  }, [restoreOptions, source, state, storageKey, target]);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !target || target !== browserLayoutStorage()) return;
+    const synchronize = (event: StorageEvent) => {
+      if (event.storageArea !== target || event.key !== storageKey) return;
+      const restored = restoreResizableWorkspaceState(event.newValue, restoreOptions);
       setState(restored.state);
       setSource(restored.source);
     };
@@ -496,60 +503,7 @@ export function WorkspacePane({
   );
 }
 
-export interface AppShellProps extends React.HTMLAttributes<HTMLDivElement> {
-  header?: React.ReactNode;
-  sidebar?: React.ReactNode;
-  inspector?: React.ReactNode;
-  footer?: React.ReactNode;
-}
-
-/** Height is supplied by the host. Narrow containers wrap support panels instead of hiding content. */
-export function AppShell({
-  header,
-  sidebar,
-  inspector,
-  footer,
-  children,
-  className,
-  ...props
-}: AppShellProps) {
-  return (
-    <div
-      {...props}
-      data-slot="app-shell"
-      className={cx(
-        '@container flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-background font-sans text-sm text-foreground',
-        className,
-      )}
-    >
-      {header && (
-        <header className="shrink-0 border-b border-border bg-muted/40 px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)]">
-          {header}
-        </header>
-      )}
-      <div className="flex min-h-0 flex-1 flex-col @2xl:flex-row">
-        {sidebar && (
-          <aside className="shrink-0 overflow-auto border-b border-border bg-muted/30 p-[var(--rui-content-padding)] @2xl:w-[var(--rui-sidebar-width)] @2xl:border-r @2xl:border-b-0">
-            {sidebar}
-          </aside>
-        )}
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col">{children}</main>
-        {inspector && (
-          <aside className="shrink-0 overflow-auto border-t border-border p-[var(--rui-content-padding)] @2xl:w-[var(--rui-inspector-width)] @2xl:border-t-0 @2xl:border-l">
-            {inspector}
-          </aside>
-        )}
-      </div>
-      {footer && (
-        <footer className="shrink-0 border-t border-border px-[var(--rui-content-padding)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground">
-          {footer}
-        </footer>
-      )}
-    </div>
-  );
-}
-
-export interface WorkspacePresetSlot {
+export interface WorkspaceLayoutSlot {
   title: React.ReactNode;
   description?: string;
   actions?: React.ReactNode;
@@ -558,17 +512,17 @@ export interface WorkspacePresetSlot {
   scroll?: boolean;
   bodyRef?: React.Ref<HTMLDivElement>;
 }
-export interface WorkspacePresetProps
+export interface WorkspaceLayoutProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'children' | 'onChange'> {
   title?: React.ReactNode;
   toolbar?: React.ReactNode;
   footer?: React.ReactNode;
-  navigation?: WorkspacePresetSlot;
-  workspace: WorkspacePresetSlot;
-  inspector?: WorkspacePresetSlot;
-  view?: WorkspacePresetView;
-  defaultView?: Partial<WorkspacePresetView>;
-  onViewChange?: (view: WorkspacePresetView) => void;
+  navigation?: WorkspaceLayoutSlot;
+  workspace: WorkspaceLayoutSlot;
+  inspector?: WorkspaceLayoutSlot;
+  view?: WorkspaceLayoutView;
+  defaultView?: Partial<WorkspaceLayoutView>;
+  onViewChange?: (view: WorkspaceLayoutView) => void;
   mode?: 'auto' | 'wide' | 'narrow';
   navigationLabel?: string;
   workspaceLabel?: string;
@@ -578,10 +532,10 @@ export interface WorkspacePresetProps
 }
 
 function presetPanelClass(
-  mode: NonNullable<WorkspacePresetProps['mode']>,
+  mode: NonNullable<WorkspaceLayoutProps['mode']>,
   narrowVisible: boolean,
   wideVisible: boolean,
-  position: WorkspacePresetPanelId,
+  position: WorkspaceLayoutPanelId,
 ) {
   const common = 'min-h-0 min-w-0 flex-col';
   const narrow = narrowVisible ? 'flex flex-1' : 'hidden';
@@ -604,7 +558,7 @@ function presetPanelClass(
 }
 
 /** A responsive three-slot composition. WorkspacePane owns each slot's scroll region. */
-export function WorkspacePreset({
+export function WorkspaceLayout({
   title,
   toolbar,
   footer,
@@ -622,11 +576,11 @@ export function WorkspacePreset({
   narrowControlsLabel = '窄布局面板',
   className,
   ...props
-}: WorkspacePresetProps) {
+}: WorkspaceLayoutProps) {
   const navigationId = React.useId();
   const workspaceId = React.useId();
   const inspectorId = React.useId();
-  const [internalView, setInternalView] = React.useState<WorkspacePresetView>({
+  const [internalView, setInternalView] = React.useState<WorkspaceLayoutView>({
     navigationOpen: defaultView?.navigationOpen ?? Boolean(navigation),
     inspectorOpen: defaultView?.inspectorOpen ?? Boolean(inspector),
     activePanel: defaultView?.activePanel ?? 'workspace',
@@ -639,17 +593,17 @@ export function WorkspacePreset({
         ? 'workspace'
         : suppliedView.activePanel;
   const view = { ...suppliedView, activePanel };
-  const updateView = (next: WorkspacePresetView) => {
+  const updateView = (next: WorkspaceLayoutView) => {
     if (viewProp === undefined) setInternalView(next);
     onViewChange?.(next);
   };
-  const choosePanel = (active: WorkspacePresetPanelId) =>
+  const choosePanel = (active: WorkspaceLayoutPanelId) =>
     updateView({ ...view, activePanel: active });
   const wideControls = mode !== 'narrow' && (navigation || inspector);
   const narrowControls = mode !== 'wide' && (navigation || inspector);
   const autoWideClass = mode === 'auto' ? 'hidden @4xl:flex' : 'flex';
   const autoNarrowClass = mode === 'auto' ? 'flex @4xl:hidden' : 'flex';
-  const renderSlot = (slot: WorkspacePresetSlot, id: string) => (
+  const renderSlot = (slot: WorkspaceLayoutSlot, id: string) => (
     <WorkspacePane
       id={id}
       title={slot.title}
@@ -667,7 +621,7 @@ export function WorkspacePreset({
   return (
     <div
       {...props}
-      data-slot="workspace-preset"
+      data-slot="workspace-layout"
       data-mode={mode}
       data-active-panel={view.activePanel}
       className={cx(
@@ -871,7 +825,7 @@ export function ResizableWorkspace({
         onSizesChange?.(sizes, changeMeta);
         onPrimaryPercentChange?.(layout.primary, changeMeta);
         if (controlledRef.current !== undefined && meta.isUserInteraction)
-          scheduleWorkspaceLayout(() => {
+          scheduleResizableWorkspace(() => {
             const expected = controlledRef.current;
             if (expected !== undefined)
               groupRef.current?.setLayout({ primary: expected, secondary: 100 - expected });

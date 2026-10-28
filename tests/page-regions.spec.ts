@@ -1,5 +1,14 @@
 import { expect, test } from '@playwright/test';
 
+test('compiled package exports one named dashboard family and removes retired layout entries', async ({
+  page,
+}) => {
+  await page.goto('/?page=regions');
+  await expect(page.getByTestId('layout-exports')).toHaveText(
+    JSON.stringify({ retired: [], dashboard: true, workspace: true }),
+  );
+});
+
 for (const theme of ['light', 'dark']) {
   for (const density of ['compact', 'comfortable', 'dense']) {
     test(`grouped regions preserve one inset and page rhythm: ${theme}/${density}`, async ({
@@ -46,38 +55,80 @@ for (const theme of ['light', 'dark']) {
   }
 }
 
-test('regional shell and both page states work without application CSS', async ({ page }, info) => {
-  await page.goto('/?page=shell&theme=light');
-  await expect(page.getByRole('main')).toBeVisible();
-  const placement = await page.locator('[data-slot=shell]').evaluate((element) => {
-    const sidebar = element.querySelector('[data-slot=shell-sidebar]')!.getBoundingClientRect();
-    const main = element.querySelector('[data-slot=shell-main]')!.getBoundingClientRect();
-    return {
-      sidebarRight: sidebar.right,
-      mainLeft: main.left,
-      sidebarTop: sidebar.top,
-      mainTop: main.top,
-    };
-  });
-  expect(placement.sidebarRight).toBeLessThanOrEqual(placement.mainLeft);
-  expect(placement.sidebarTop).toBe(placement.mainTop);
-  await expect(page.getByRole('region', { name: '主内容', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: '模型权限申请', exact: true })).toBeVisible();
-  await page.screenshot({ path: info.outputPath('regions-desktop.png'), fullPage: true });
-  await page.getByRole('button', { name: '消息接纳', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '消息接纳', exact: true })).toBeVisible();
-  await page.setViewportSize({ width: 390, height: 900 });
-  await expect(page.getByRole('button', { name: '权限申请', exact: true })).toBeVisible();
-  await expect(page.getByRole('region', { name: '接纳记录', exact: true })).toBeVisible();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  for (const [state, text] of [
-    ['loading', '正在读取记录…'],
-    ['error', '读取失败'],
-    ['records', '张晓明'],
-  ]) {
-    await page.goto(`/?page=regions&kind=admissions&state=${state}`);
-    await expect(page.getByText(text, { exact: true })).toBeVisible();
+for (const theme of ['light', 'dark']) {
+  for (const density of ['compact', 'comfortable', 'dense']) {
+    test(`dashboard owns navigation, collapse and draft preservation: ${theme}/${density}`, async ({
+      page,
+    }, info) => {
+      await page.goto(`/?page=dashboard&theme=${theme}&density=${density}`);
+      const group = page.locator('[data-slot=dashboard-group]');
+      const panel = page.locator('[data-slot=dashboard-panel]');
+      await expect(group).toHaveAttribute('data-layout', 'wide');
+      const rows = await page
+        .getByRole('navigation')
+        .locator('a')
+        .evaluateAll((items) =>
+          items.map((e) => ({
+            width: e.getBoundingClientRect().width,
+            available: e.parentElement!.getBoundingClientRect().width,
+          })),
+        );
+      for (const row of rows) expect(Math.abs(row.width - row.available)).toBeLessThan(1);
+      const footer = await page.locator('[data-slot=sidebar-footer]').boundingBox();
+      const groupBox = await group.boundingBox();
+      expect(footer!.y + footer!.height).toBeCloseTo(groupBox!.y + groupBox!.height, 0);
+      await page.getByRole('tab', { name: '权限档位', exact: true }).click();
+      const draft = page.getByLabel('档位名称草稿');
+      await draft.fill('保留配置草稿');
+      const mainBefore = await panel.boundingBox();
+      await page.getByRole('button', { name: '收起导航', exact: true }).click();
+      await expect
+        .poll(async () => (await panel.boundingBox())!.width)
+        .toBeGreaterThan(mainBefore!.width);
+      await expect(draft).toHaveValue('保留配置草稿');
+      await page.getByRole('button', { name: '展开导航', exact: true }).click();
+      await expect(draft).toHaveValue('保留配置草稿');
+      await expect
+        .poll(async () => (await panel.boundingBox())!.width)
+        .toBeCloseTo(mainBefore!.width, 0);
+      await page.screenshot({ path: info.outputPath('dashboard-desktop.png') });
+      await page.setViewportSize({ width: 390, height: 900 });
+      await expect(group).toHaveAttribute('data-layout', 'narrow');
+      const widthBefore = (await panel.boundingBox())!.width;
+      await page.getByRole('button', { name: '打开导航', exact: true }).click();
+      const dialog = page.getByRole('dialog', { name: '应用导航', exact: true });
+      await expect(dialog).toBeVisible();
+      expect((await panel.boundingBox())!.width).toBe(widthBefore);
+      await page.screenshot({ path: info.outputPath('dashboard-mobile-open.png') });
+      await page.keyboard.press('Escape');
+      await expect(dialog).toHaveCount(0);
+      await expect(page.getByRole('button', { name: '打开导航', exact: true })).toBeFocused();
+      await expect(draft).toHaveValue('保留配置草稿');
+      await page.getByRole('button', { name: '打开导航', exact: true }).click();
+      await dialog.getByRole('link', { name: '消息接纳', exact: true }).click();
+      await expect(dialog).toHaveCount(0);
+      await expect(page.getByRole('heading', { name: '消息接纳', exact: true })).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    });
   }
+}
+
+test('narrow embedded dashboard uses its own width inside a desktop window', async ({
+  page,
+}, info) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/?page=dashboard&bounded=1');
+  const group = page.locator('[data-slot=dashboard-group]');
+  await expect(group).toHaveAttribute('data-layout', 'narrow');
+  expect((await group.boundingBox())!.width).toBeLessThan(500);
+  await page.getByRole('tab', { name: '权限档位', exact: true }).click();
+  await page.getByRole('button', { name: '打开导航', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: '应用导航', exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath('dashboard-bounded.png') });
+  await page.keyboard.press('Escape');
+  await expect(page.getByLabel('档位名称草稿')).toBeVisible();
 });
 
 test('grouped Page follows public theme overrides and Panel titles remain unique', async ({

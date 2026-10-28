@@ -13,7 +13,8 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => expect(consoleErrors.get(page)).toEqual([]));
 
 async function navigate(page: Page, name: 'Agent' | '文件与差异' | '设置') {
-  await page.getByRole('navigation', { name: '工作台导航' }).getByRole('button', { name, exact: true }).click();
+  if (await page.getByRole('button', { name: '打开导航', exact: true }).isVisible()) await page.getByRole('button', { name: '打开导航', exact: true }).click();
+  await page.getByRole('navigation', { name: '工作台导航' }).getByRole('link', { name, exact: true }).click();
 }
 async function accessible(page: Page) {
   await page.evaluate(async () => { await document.fonts.ready; await Promise.all(document.getAnimations().filter(animation => Number.isFinite(animation.effect?.getTiming().iterations ?? Infinity)).map(animation => animation.finished.catch(() => undefined))); });

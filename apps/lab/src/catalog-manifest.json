@@ -1,17 +1,27 @@
 {
   "counts": {
-    "basic": 75,
+    "basic": 76,
     "complex": 44,
     "ai": 24
   },
-  "total": 143,
-  "stories": 1475,
+  "total": 144,
+  "stories": 1477,
   "entries": [
+    {
+      "layer": "basic",
+      "id": "dashboard",
+      "name": "Dashboard / 工作台区域",
+      "description": "统一可用宽度、完整侧栏、导航行、桌面折叠、窄屏抽屉与主区域滚动。",
+      "storyId": "基础-dashboard--default",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "DashboardDemo",
+      "stories": 2
+    },
     {
       "layer": "basic",
       "id": "composition",
       "name": "Composition / 页面积木",
-      "description": "Shell、Page、Panel 按区域分组，Header／Content／Footer 共用主题间距，兼容原简写组合。",
+      "description": "Dashboard 管理完整导航与滚动，Page 与 Panel 分别持有页面和面板区域的主题间距。",
       "storyId": "基础-composition--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CompositionDemo",

@@ -33,6 +33,7 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  position: 'fixed' | 'absolute';
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
@@ -51,6 +52,8 @@ function SidebarProvider({
   open: openProp,
   onOpenChange: setOpenProp,
   persistOpen = true,
+  mobile,
+  position = 'fixed',
   className,
   style,
   children,
@@ -60,9 +63,17 @@ function SidebarProvider({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   persistOpen?: boolean | SidebarPersistenceOptions;
+  /** A bounded DashboardGroup supplies its available-width state. */
+  mobile?: boolean;
+  position?: 'fixed' | 'absolute';
 }) {
-  const isMobile = useIsMobile();
+  const viewportMobile = useIsMobile();
+  const isMobile = mobile ?? viewportMobile;
   const [openMobile, setOpenMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isMobile) setOpenMobile(false);
+  }, [isMobile]);
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -120,8 +131,9 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      position,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, position],
   );
 
   return (
@@ -151,6 +163,7 @@ function Sidebar({
   side = 'left',
   variant = 'sidebar',
   collapsible = 'offcanvas',
+  label = '应用导航',
   className,
   children,
   dir,
@@ -159,8 +172,9 @@ function Sidebar({
   side?: 'left' | 'right';
   variant?: 'sidebar' | 'floating' | 'inset';
   collapsible?: 'offcanvas' | 'icon' | 'none';
+  label?: string;
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const { isMobile, state, openMobile, setOpenMobile, position } = useSidebar();
 
   if (collapsible === 'none') {
     return (
@@ -194,8 +208,8 @@ function Sidebar({
           side={side}
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+            <SheetTitle>{label}</SheetTitle>
+            <SheetDescription>选择页面或关闭导航返回主内容。</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -205,7 +219,7 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-sidebar-foreground md:block"
+      className="group peer block text-sidebar-foreground"
       data-state={state}
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-variant={variant}
@@ -230,14 +244,13 @@ function Sidebar({
         className={cn(
           [
             // Layout
-            'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width)',
+            'inset-y-0 z-10 flex w-(--sidebar-width)',
+            position === 'absolute' ? 'absolute h-full' : 'fixed h-svh',
             // Motion
             'transition-[left,right,width] duration-[var(--rui-duration-normal)] ease-[var(--rui-ease)]',
             // Component state
             'data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0',
             'data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
-            // Layout
-            'md:flex',
           ],
           // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'

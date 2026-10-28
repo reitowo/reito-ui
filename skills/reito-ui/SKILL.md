@@ -11,13 +11,16 @@ should look finished without application CSS.
 
 ## Choose regions before controls
 
-For an ordinary operations, list or form page, start with `Shell` → `Page` → `Panel`.
-Use `Shell.Sidebar`, `Shell.Main`, `Shell.Topbar`, `Shell.Content`; inside the content use
-`Page.Header` and `Page.Content`, then `Panel.Header`, `Panel.Content` and `Panel.Footer`.
-The host supplies shell height; Shell.Content owns scrolling, Page inset owns the page edge,
-and Panel.Content owns one panel inset. Lists, tables and Empty use Panel flush.
-Use the regional examples in assets/workbench.tsx. Existing AppShell/WorkspacePreset layouts
-remain the path for complex split workspaces. Do not build another Content/Body wrapper in the app.
+For ordinary operations, list or form pages use `DashboardGroup` with `DashboardSidebar` and
+`DashboardPanel`. SidebarHeader/Content/Footer are prefixed `DashboardSidebar`; the panel header
+uses `DashboardNavbar`. Use `DashboardNavigationMenu` for navigation and the library's separate
+`DashboardSidebarToggle` / `DashboardSidebarCollapse` controls. The group owns available width,
+narrow overlays and navigation state; applications do not add media queries, hidden or fixed CSS.
+Inside DashboardPanel use `Page.Header` / `Page.Content` and `Panel.Header` / `Panel.Content` /
+`Panel.Footer`. DashboardBody owns scrolling without padding. Page owns its edge, Panel owns one inset.
+Use the executable DashboardDemo in assets/workbench.tsx. Split workspaces use `WorkspaceLayout`;
+resizable two-pane workspaces use `ResizableWorkspace` and `useResizableWorkspaceState`.
+Do not recreate retired generic layout interfaces or combine competing navigation providers.
 
 ## Core rules (always apply)
 
@@ -69,11 +72,11 @@ another (for example settings inside a dashboard slot).
 ## Start
 
 Read the installed `@reito/ui` and `@reito/tokens` versions; they must match. The composition APIs
-(`Shell`, `Page`, `Panel` regions and `Stack`, `Inline`, `Grid`, `Text`, `Heading`) target 0.6.0-next.0 and later;
+(`DashboardGroup`, `Page`, `Panel` regions and `Stack`, `Inline`, `Grid`, `Text`, `Heading`) target 0.6.0-next.0 and later;
 0.5.8 does not export them. Consult public types or the Storybook story when a prop is unclear;
 application authors should not need private component CSS.
 
-Imports: named Shell/Page/Panel regions, basic components and `ReitoThemeProvider` from `@reito/ui/basic`; split workspaces,
+Imports: Dashboard components and named Page/Panel regions, basic components and `ReitoThemeProvider` from `@reito/ui/basic`; split workspaces,
 `DataTable`, `Form`, settings and search from `@reito/ui/complex`; conversation from `@reito/ui/ai`.
 
 ## Compose

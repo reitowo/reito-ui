@@ -3,7 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../../../packages/ui/src/basic.js';
-import { ContentNavigation, type ContentNavigationSection, type WorkspacePresetPanelId, type WorkspacePresetView } from '../../../../packages/ui/src/complex/index.js';
+import { ContentNavigation, type ContentNavigationSection, type WorkspaceLayoutPanelId, type WorkspaceLayoutView } from '../../../../packages/ui/src/complex/index.js';
 import { booleanControl, choiceControl, recipeControl, textControl } from '../feature-controls.js';
 
 function Paragraphs({ label, count = 7 }: { label: string; count?: number }) {
@@ -24,7 +24,7 @@ const meta = { id: "复杂-contentnavigation-文档导航",
   title: "复杂/ContentNavigation 文档导航",
   component: ContentNavigation,
   args: { sections },
-  parameters: { docs: { description: { component: 'ContentNavigation 组合 TreeView 与 WorkspacePreset，使目录选择、正文滚动和受控路由值保持一致。正文节点由宿主提供，组件不绑定 Markdown 解析器或路由库。' } } },
+  parameters: { docs: { description: { component: 'ContentNavigation 组合 TreeView 与 WorkspaceLayout，使目录选择、正文滚动和受控路由值保持一致。正文节点由宿主提供，组件不绑定 Markdown 解析器或路由库。' } } },
 } satisfies Meta<typeof ContentNavigation>;
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -43,7 +43,7 @@ function ControlledExample({ initial = 'overview', mode = 'wide', source = secti
 }
 
 function NavigationVisibilityExample() {
-  const [view, setView] = useState<WorkspacePresetView>({ navigationOpen: false, inspectorOpen: false, activePanel: 'workspace' });
+  const [view, setView] = useState<WorkspaceLayoutView>({ navigationOpen: false, inspectorOpen: false, activePanel: 'workspace' });
   return <ContentNavigation className="h-[var(--rui-container-lg)]" sections={sections} layoutMode="wide" layoutView={view} onLayoutViewChange={setView} title="专注阅读" />;
 }
 
@@ -79,7 +79,7 @@ type PlaygroundArgs = {
   layoutMode: 'auto' | 'wide' | 'narrow';
   current: string;
   navigationOpen: boolean;
-  activePanel: WorkspacePresetPanelId;
+  activePanel: WorkspaceLayoutPanelId;
   scrollBehavior: ScrollBehavior;
   title: string;
   navigationTitle: string;
@@ -119,7 +119,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       ...(args.emptySection ? [{ id: 'empty', title: '暂未编写的章节' }] : []),
       ...(args.longTitle ? [{ id: 'long', title: '这是一个非常长的章节标题，用于验证紧凑导航列中的截断与正文工作面中的自然换行行为', content: <Paragraphs label="长标题" /> }] : []),
     ];
-    const view: WorkspacePresetView = { navigationOpen: args.navigationOpen, inspectorOpen: false, activePanel: args.activePanel };
+    const view: WorkspaceLayoutView = { navigationOpen: args.navigationOpen, inspectorOpen: false, activePanel: args.activePanel };
     return <ContentNavigation className="h-[var(--rui-container-lg)]" sections={source} value={args.current} onValueChange={(current) => updateArgs({ current })} layoutMode={args.layoutMode} layoutView={view} onLayoutViewChange={next => updateArgs({ navigationOpen: next.navigationOpen, activePanel: next.activePanel })} scrollBehavior={args.scrollBehavior} title={args.title} navigationTitle={args.navigationTitle} contentTitle={args.contentTitle} emptyMessage={args.emptyMessage} emptySectionMessage={args.emptySectionMessage} />;
   },
 };

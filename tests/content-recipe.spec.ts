@@ -10,8 +10,8 @@ async function openStory(page: Page, story: string, globals = 'theme:dark;densit
 
 test('content recipe composes collection, navigation, reading and related actions', async ({ page }) => {
   await openStory(page, 'default');
-  await expect(page.locator('[data-slot="app-shell"]')).toBeVisible();
-  await expect(page.locator('[data-slot="workspace-preset"]')).toHaveCount(2);
+  await expect(page.locator('[data-slot="dashboard-panel"]')).toBeVisible();
+  await expect(page.locator('[data-slot="workspace-layout"]')).toHaveCount(2);
   await expect(page.locator('[data-slot="resource-view"]')).toBeVisible();
   await expect(page.locator('[data-slot="content-navigation"]')).toBeVisible();
   await expect(page.locator('[data-slot="markdown-content"]')).toHaveCount(3);
@@ -25,7 +25,7 @@ test('library selection opens one document and resets its section', async ({ pag
   await page.getByRole('button', { name: '选择 设计 Tokens' }).click();
   await expect(page.getByRole('heading', { name: '设计 Tokens' })).toBeVisible();
   await expect(page.getByRole('treeitem', { name: /唯一来源/ })).toHaveAttribute('aria-current', 'location');
-  await expect(page.locator('[data-slot="app-shell"] footer [role="status"]')).toContainText('已在本地打开：设计 Tokens');
+  await expect(page.locator('[data-slot="dashboard-panel"] footer [role="status"]')).toContainText('已在本地打开：设计 Tokens');
 });
 
 test('narrow recipe moves from library to document and table of contents', async ({ page }) => {
@@ -83,21 +83,21 @@ test('application search opens documents and positions current sections', async 
   await page.getByRole('combobox', { name: '搜索文档与章节' }).fill('宿主职责');
   await dialog.getByRole('option', { name: /宿主职责/ }).click();
   await expect(page.getByRole('treeitem', { name: /宿主职责/ })).toHaveAttribute('aria-current', 'location');
-  await expect(page.locator('[data-slot="app-shell"] footer [role="status"]')).toContainText('已定位：宿主职责');
+  await expect(page.locator('[data-slot="dashboard-panel"] footer [role="status"]')).toContainText('已定位：宿主职责');
 });
 
 test('interactive preset selects, navigates and preserves a toolbar toggle', async ({ page }) => {
   await openStory(page, 'interactive');
   await expect(page.getByRole('heading', { name: '语义角色' })).toBeVisible();
   await expect(page.getByRole('button', { name: '收藏' })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-slot="app-shell"] footer [role="status"]')).toContainText('已在本地收藏当前文档');
+  await expect(page.locator('[data-slot="dashboard-panel"] footer [role="status"]')).toContainText('已在本地收藏当前文档');
 });
 
 test('Playground Controls change collection, reader and layout state in one story', async ({ page }) => {
   const story = `${prefix}--playground`;
   await page.goto(`http://127.0.0.1:6007/?path=/story/${encodeURIComponent(story)}`);
   const frame = page.frameLocator('#storybook-preview-iframe');
-  await expect(frame.locator('[data-slot="app-shell"]')).toBeVisible({ timeout: 15_000 });
+  await expect(frame.locator('[data-slot="dashboard-panel"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
   const path = new URL(page.url()).searchParams.get('path');
   await page.locator('[id="control-layoutMode"]').selectOption('narrow');

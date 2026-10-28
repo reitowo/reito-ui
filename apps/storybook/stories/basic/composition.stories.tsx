@@ -4,7 +4,7 @@ import {
   PageTabsDemo,
   KnowledgePageDemo,
   RegionPageDemo,
-  RegionShellDemo,
+  DashboardDemo,
 } from '../../../../packages/ui/src/basic/composition-demo.js';
 
 const meta = {
@@ -42,4 +42,4 @@ export const ErrorRegions: Story = {
   name: '区域错误态',
   render: () => <RegionPageDemo state="error" />,
 };
-export const ShellRegions: Story = { name: '导航与工作台区域', render: () => <RegionShellDemo /> };
+export const ShellRegions: Story = { name: '导航与工作台区域', render: () => <DashboardDemo /> };

@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client';
 import '@reito/tokens/css';
 import '@reito/ui/styles.css';
 import { ReitoThemeProvider, Text, type DensityMode } from '@reito/ui/basic';
+import * as Basic from '@reito/ui/basic';
+import * as Complex from '@reito/ui/complex';
 import {
   CompositionDemo,
   PageTabsDemo,
   KnowledgePageDemo,
   RegionPageDemo,
-  RegionShellDemo,
+  DashboardDemo,
 } from '../../skills/reito-ui/assets/workbench.js';
 import { ThemeApiDemo } from './theme-api.js';
 
@@ -32,8 +34,8 @@ createRoot(document.getElementById('root')!).render(
           page={query.get('kind') === 'admissions' ? 'admissions' : 'requests'}
           state={(query.get('state') as 'empty' | 'loading' | 'error' | 'records') || 'empty'}
         />
-      ) : query.get('page') === 'shell' ? (
-        <RegionShellDemo />
+      ) : query.get('page') === 'dashboard' ? (
+        <DashboardDemo bounded={query.has('bounded')} />
       ) : query.get('page') === 'tabs' ? (
         <PageTabsDemo
           variant={query.get('variant') === 'default' ? 'default' : 'line'}
@@ -46,6 +48,21 @@ createRoot(document.getElementById('root')!).render(
       )}
       <Text className="font-mono" data-testid="mono">
         session_id_012345
+      </Text>
+      <Text data-testid="layout-exports">
+        {JSON.stringify({
+          retired: ['Shell', 'AppShell', 'WorkspacePreset'].filter(
+            (name) => name in Basic || name in Complex,
+          ),
+          dashboard: [
+            'DashboardGroup',
+            'DashboardSidebar',
+            'DashboardPanel',
+            'DashboardNavbar',
+            'DashboardNavigationMenu',
+          ].every((name) => name in Basic),
+          workspace: 'WorkspaceLayout' in Complex && 'useResizableWorkspaceState' in Complex,
+        })}
       </Text>
     </ReitoThemeProvider>
   ),
