@@ -13,7 +13,7 @@ const meta = { id: "基础-sidebar",
     docs: {
       description: {
         component:
-          "搜索、分组、活动行与页脚。SidebarProvider 支持受控展开状态，并可关闭或配置 Cookie 持久化；应用也可由 useWorkspaceLayoutState 统一保存侧栏与分栏。使用官方 shadcn Base UI / base-nova 组合 API。",
+          "搜索、分组、活动行与页脚。SidebarProvider 支持受控展开状态，并可关闭或配置 Cookie 持久化；应用也可由 useResizableWorkspaceState 统一保存侧栏与分栏。使用官方 shadcn Base UI / base-nova 组合 API。",
       },
     },
   },

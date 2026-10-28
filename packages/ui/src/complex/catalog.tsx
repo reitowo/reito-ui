@@ -24,6 +24,7 @@ import {
 import { Button } from '../primitives/button.js';
 import { Badge } from '../primitives/badge.js';
 import { Input } from '../primitives/input.js';
+import { DashboardPanel } from '../basic/dashboard.js';
 import { Switch } from '../primitives/switch.js';
 import { DiffViewer, type DiffHunk } from './diff-viewer.js';
 import { LogViewer, type LogEntry } from './log-viewer.js';
@@ -54,7 +55,6 @@ import { OverlayProvider, useOverlay } from './overlay-provider.js';
 import type { LocalDateTimeValue } from '../basic.js';
 export { FormDemo } from './form-demo.js';
 import {
-  AppShell,
   Cascader,
   CommandSearch,
   ContentNavigation,
@@ -1136,7 +1136,7 @@ export function WorkspaceDemo() {
   const [selected, setSelected] = useState('button');
   const [sizes, setSizes] = useState({ primary: 30, secondary: 70 });
   return (
-    <AppShell
+    <DashboardPanel
       className="h-[480px]"
       header={
         <div className="flex items-center justify-between gap-3">
@@ -1176,7 +1176,7 @@ export function WorkspaceDemo() {
           </WorkspacePane>
         }
       />
-    </AppShell>
+    </DashboardPanel>
   );
 }
 

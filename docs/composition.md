@@ -10,6 +10,48 @@
 全局主题可以写成 createTheme 预设传给 theme；局部变化用 Theme 包住子树，详见 docs/theme-guide.md。
 样式已经编译，消费工程不需要 Tailwind、扫描 node_modules 或复制字体规则。
 
+## 明确区域：Dashboard → Page → Panel
+
+工作台只使用一套完整导航组件，公共名称与职责见 [Dashboard 组合](dashboard-composition.md)。
+
+| 层级 | 公共组件 | 所有权 |
+| --- | --- | --- |
+| 工作台 | DashboardGroup | 可用高度、宽度和统一导航状态 |
+| 侧栏 | DashboardSidebar、DashboardSidebarHeader／Content／Footer | 桌面宽度、抽屉、品牌、滚动导航、底部身份 |
+| 导航 | DashboardNavigationMenu、DashboardSidebarToggle／Collapse | 整行选中态、移动端打开、桌面折叠 |
+| 主区域 | DashboardPanel、DashboardNavbar、DashboardBody、DashboardFooter | 顶栏、唯一滚动正文和底部 |
+| 页面 | Page.Header、Page.Content | 页面边缘、页头和正文的间距 |
+| 面板 | Panel.Header、Panel.Content、Panel.Footer | 标题身份、单层正文内距和操作 |
+
+```tsx
+<DashboardGroup>
+  <DashboardSidebar>
+    <DashboardSidebarHeader>{brand}</DashboardSidebarHeader>
+    <DashboardSidebarContent><DashboardNavigationMenu groups={navigation} /></DashboardSidebarContent>
+    <DashboardSidebarFooter>{identity}</DashboardSidebarFooter>
+  </DashboardSidebar>
+  <DashboardPanel header={<DashboardNavbar title="消息接纳" />}>
+    <Page inset>
+      <Page.Header title="消息接纳" actions={refresh} />
+      <Page.Content>
+        <Panel flush>
+          <Panel.Header title="接纳记录" />
+          <Panel.Content>{recordsOrEmpty}</Panel.Content>
+          <Panel.Footer>{pagination}</Panel.Footer>
+        </Panel>
+      </Page.Content>
+    </Page>
+  </DashboardPanel>
+</DashboardGroup>
+```
+
+DashboardBody 管滚动且不增加 padding；Page 管页面边缘，Panel.Content 管面板内距。
+组件拥有导航的容器断点、移动端弹层和焦点，不要求应用实现 matchMedia、hidden 或固定定位。
+Page.Content 的 gap 继承 Page.gap；Panel.Content 的 flush 继承 Panel 与主题默认值，并可显式覆盖。
+Panel 提供标题或 aria-label，命名区域是各自根组件的后代；嵌套面板的身份与内距保持独立。
+Page／Panel 的简写属性继续复用同一区域实现。高级拆分面板使用 WorkspaceLayout 或 ResizableWorkspace。
+可运行例子见 DashboardDemo／RegionPageDemo；便携示例、Storybook 和编译消费测试保持同源。
+
 ## 组合所有权
 
 - Stack 提供纵向间距，inset 显式提供内容内距；Inline 对齐并自动换行。

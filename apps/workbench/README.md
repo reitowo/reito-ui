@@ -23,7 +23,7 @@ npx playwright test -c apps/workbench/playwright.config.ts
 
 ## 复用方式
 
-`src/App.tsx` 只从公共 `@reito/ui` 导入组件，不复制组件实现。`AppShell` 与 `WorkspacePane` 管理布局，页面只持有业务状态和回调。`src/data.ts` 明确提供资源、日志、队列和差异数据；`src/app.css` 只定义应用布局并引用共享语义令牌。
+`src/App.tsx` 只从公共 `@reito/ui` 导入组件，不复制组件实现。`DashboardPanel` 与 `WorkspacePane` 管理布局，页面只持有业务状态和回调。`src/data.ts` 明确提供资源、日志、队列和差异数据；`src/app.css` 只定义应用布局并引用共享语义令牌。
 
 Vite 和 TypeScript 的 alias 用于仓库内开发，可以直接验证尚未打包的公共入口。将此示例迁移到独立工程时，安装相同版本的 `@reito/ui`、`@reito/tokens` 并移除仓库源码 alias；主题和密度仍放在 `document.documentElement`。同时把 `src/app.css` 顶部指向仓库的 `@reference` 替换为下面两行，让消费项目生成自己的布局 utilities；组件本身仍从 `@reito/ui/styles.css` 加载已编译样式。
 

@@ -1,4 +1,4 @@
-import { useId, type ComponentProps, type ReactNode } from 'react';
+import { createContext, useContext, useId, type ComponentProps, type ReactNode } from 'react';
 import { cn } from '../lib/utils.js';
 import { useThemeDefaults } from '../theme.js';
 
@@ -169,8 +169,18 @@ export function PageHeader({
   );
 }
 
-/** A complete page owns the header-to-body gap; content sections do not add header margins. */
-export function Page({
+const PageGapContext = createContext<ContentGap>('normal');
+
+function PageContent({ gap, ...props }: ComponentProps<typeof Stack>) {
+  const inheritedGap = useContext(PageGapContext);
+  return <Stack data-slot="page-content" gap={gap ?? inheritedGap} {...props} />;
+}
+
+export type PageProps = Omit<ComponentProps<'section'>, 'title'> &
+  Partial<HeaderContent> & { gap?: ContentGap; inset?: boolean };
+
+/** Page owns the outer edge and header-to-content gap; explicit slots never add another content wrapper. */
+function PageRoot({
   title,
   description,
   actions,
@@ -179,83 +189,154 @@ export function Page({
   children,
   className,
   ...props
-}: Omit<ComponentProps<'section'>, 'title'> &
-  HeaderContent & { gap?: ContentGap; inset?: boolean }) {
+}: PageProps) {
   return (
-    <section
-      data-slot="page"
+    <PageGapContext.Provider value={gap}>
+      <section
+        data-slot="page"
+        className={cn(
+          'flex min-w-0 flex-col gap-[var(--rui-section-gap)]',
+          inset && 'p-[var(--rui-content-padding)]',
+          className,
+        )}
+        {...props}
+      >
+        {title !== undefined ? (
+          <>
+            <PageHeader title={title} description={description} actions={actions} />
+            <PageContent>{children}</PageContent>
+          </>
+        ) : (
+          children
+        )}
+      </section>
+    </PageGapContext.Provider>
+  );
+}
+
+/** Grouped names expose each page region; the title shortcut retains the same implementation. */
+export const Page = Object.assign(PageRoot, { Header: PageHeader, Content: PageContent });
+
+interface PanelLayout {
+  titleId: string;
+  flush: boolean;
+}
+const PanelContext = createContext<PanelLayout | null>(null);
+function usePanelLayout(): PanelLayout {
+  const context = useContext(PanelContext);
+  if (!context) throw new Error('Panel regions must be rendered inside Panel.');
+  return context;
+}
+
+function PanelHeader({
+  title,
+  description,
+  actions,
+  className,
+  ...props
+}: Omit<ComponentProps<'header'>, 'title'> & HeaderContent) {
+  const { titleId } = usePanelLayout();
+  return (
+    <header
+      data-slot="panel-header"
       className={cn(
-        'flex min-w-0 flex-col gap-[var(--rui-section-gap)]',
-        inset && 'p-[var(--rui-content-padding)]',
+        'flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)]',
+        'border-b border-border p-[var(--rui-content-padding)]',
         className,
       )}
       {...props}
     >
-      <PageHeader title={title} description={description} actions={actions} />
-      <Stack data-slot="page-content" gap={gap}>
-        {children}
+      <Stack gap="small">
+        <Heading id={titleId}>{title}</Heading>
+        {description && (
+          <Text variant="interface" tone="muted">
+            {description}
+          </Text>
+        )}
       </Stack>
-    </section>
+      {actions && <Inline>{actions}</Inline>}
+    </header>
   );
 }
 
-/** A section has one inset owner. Flush bodies accept lists, tables and Empty directly. */
-export function Panel({
+function PanelContent({
+  flush: override,
+  className,
+  ...props
+}: ComponentProps<'div'> & { flush?: boolean }) {
+  const { flush: inherited } = usePanelLayout();
+  const flush = override ?? inherited;
+  return (
+    <div
+      data-slot="panel-body"
+      data-flush={flush || undefined}
+      className={cn('min-w-0', !flush && 'p-[var(--rui-content-padding)]', className)}
+      {...props}
+    />
+  );
+}
+
+function PanelFooter({ children, className, ...props }: ComponentProps<'div'>) {
+  usePanelLayout();
+  return (
+    <div
+      data-slot="panel-footer"
+      className={cn('border-t border-border p-[var(--rui-content-padding)]', className)}
+      {...props}
+    >
+      <Inline>{children}</Inline>
+    </div>
+  );
+}
+
+export type PanelProps = Omit<ComponentProps<'section'>, 'title'> &
+  Partial<HeaderContent> & {
+    footer?: ReactNode;
+    flush?: boolean;
+  };
+
+/** Panel owns its accessible title and one content inset; lists, tables and Empty use flush. */
+function PanelRoot({
   title,
   description,
   actions,
   footer,
-  flush: flushProp,
+  flush: override,
   children,
   className,
   ...props
-}: Omit<ComponentProps<'section'>, 'title'> &
-  HeaderContent & { footer?: ReactNode; flush?: boolean }) {
+}: PanelProps) {
   const titleId = useId();
   const themed = useThemeDefaults('Panel');
-  const flush = flushProp ?? themed.flush ?? false;
+  const flush = override ?? themed.flush ?? false;
   return (
-    <section
-      data-slot="panel"
-      aria-labelledby={titleId}
-      className={cn(
-        'min-w-0 overflow-hidden rounded-[var(--rui-radius-surface)] border border-border bg-card text-card-foreground',
-        className,
-      )}
-      {...props}
-    >
-      <header
-        data-slot="panel-header"
+    <PanelContext.Provider value={{ titleId, flush }}>
+      <section
+        data-slot="panel"
+        aria-labelledby={props['aria-label'] ? undefined : titleId}
         className={cn(
-          'flex flex-wrap items-center justify-between gap-[var(--rui-content-gap-sm)]',
-          'border-b border-border p-[var(--rui-content-padding)]',
+          'min-w-0 overflow-hidden rounded-[var(--rui-radius-surface)]',
+          'border border-border bg-card text-card-foreground',
+          className,
         )}
+        {...props}
       >
-        <Stack gap="small">
-          <Heading id={titleId}>{title}</Heading>
-          {description && (
-            <Text variant="interface" tone="muted">
-              {description}
-            </Text>
-          )}
-        </Stack>
-        {actions && <Inline>{actions}</Inline>}
-      </header>
-      <div
-        data-slot="panel-body"
-        data-flush={flush || undefined}
-        className={flush ? 'min-w-0' : 'min-w-0 p-[var(--rui-content-padding)]'}
-      >
-        {children}
-      </div>
-      {footer && (
-        <div
-          data-slot="panel-footer"
-          className="border-t border-border p-[var(--rui-content-padding)]"
-        >
-          <Inline>{footer}</Inline>
-        </div>
-      )}
-    </section>
+        {title !== undefined ? (
+          <>
+            <PanelHeader title={title} description={description} actions={actions} />
+            <PanelContent>{children}</PanelContent>
+          </>
+        ) : (
+          children
+        )}
+        {footer && <PanelFooter>{footer}</PanelFooter>}
+      </section>
+    </PanelContext.Provider>
   );
 }
+
+export const Panel = Object.assign(PanelRoot, {
+  Header: PanelHeader,
+  Content: PanelContent,
+  Footer: PanelFooter,
+});

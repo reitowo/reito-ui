@@ -463,3 +463,8 @@ Reito 据此调整自己的共享灰阶与界面尺度，并添加蓝色强调�
 - **高密轨迹面板**：用户提供的深色开发工具“编辑轨迹”面板截图（第三方浏览器扩展的事件轨迹，原图约 1024×864）。实际观察：一行卡片头含时间、类型、标题、右对齐耗时与小标签；卡片内为可折叠源码首行与“N 行”计数、截断的绿色等宽结果行；错误卡只有红色边界与文字；顶部为 open / read / write 三条刻度通道，列表中有 “TURN 1” 分组标签，右下角为浮动“回到最新”胶囊。用于确定 dense 的文字、行高、内距、圆角与组件结构；数值为本项目估算后的原创取值，不复制截图中的品牌名称、URL、字体或资产。Lab 复刻页使用 example.com 地址和“示例扩展”名称，全部为本地数据。
 - **Base UI v1 菜单演示**：[Base UI Menu 文档](https://base-ui.com/react/components/menu) 的圆角演示。参考的是同心几何关系（弹层圆角 = 条目圆角 + 弹层内距、内缩分隔线、图标与文字间距），具体取值写在 `components.menu` 中，未复制演示样式表。
 - **依赖**：`@base-ui/react` 由 1.8.0 升级到 1.9.0（MIT，见 `packages/ui/THIRD_PARTY_NOTICES.md`）。该版本的变更日志以修复与性能为主；Combobox / Autocomplete 的自动卸载与 `actionsRef` 解耦不影响本库，本库没有使用 `actionsRef`。
+
+
+## Dashboard 组件边界（2026-10-28）
+
+只读核对 Nuxt UI v4 的 DashboardGroup／Sidebar／Panel／Navbar，以及移动端 Toggle 与桌面 Collapse 的接口和区域职责。来源与 Reito 的原创实现边界见 [Dashboard 组件与迁移](dashboard-composition.md#参考)。Reito 复用自己的 React／Base UI 组件与 tokens，未复制 Vue 代码、CSS 或品牌素材。

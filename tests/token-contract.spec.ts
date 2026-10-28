@@ -64,11 +64,24 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
 test('generated container breakpoints preserve desktop and narrow workspace layout', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(process.env.REITO_WORKBENCH_URL || 'http://127.0.0.1:5175/');
-  const panels = page.locator('.workbench-shell > div').first();
-  await expect(panels).toHaveCSS('flex-direction', 'row');
+  const dashboard = page.locator('[data-slot="dashboard-group"]');
+  await expect(dashboard).toHaveAttribute('data-layout', 'wide');
   const navigation = page.getByRole('navigation', { name: '工作台导航' });
   expect((await navigation.boundingBox())!.width).toBeLessThan(300);
   await page.setViewportSize({ width: 640, height: 720 });
-  await expect(panels).toHaveCSS('flex-direction', 'column');
-  await expect(page.getByRole('textbox', { name: '消息草稿', exact: true })).toBeVisible();
+  await expect(dashboard).toHaveAttribute('data-layout', 'narrow');
+  const draft = page.getByRole('textbox', { name: '消息草稿', exact: true });
+  await expect(draft).toBeVisible();
+  await draft.fill('窄屏导航保持会话草稿');
+  const before = await draft.boundingBox();
+  await page.getByRole('button', { name: '打开导航', exact: true }).click();
+  const drawer = page.getByRole('dialog');
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole('navigation', { name: '工作台导航' })).toBeVisible();
+  const after = await page.locator('textarea[aria-label="消息草稿"]').boundingBox();
+  expect(after?.width).toBe(before?.width);
+  await page.keyboard.press('Escape');
+  await expect(drawer).toBeHidden();
+  await expect(draft).toHaveValue('窄屏导航保持会话草稿');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

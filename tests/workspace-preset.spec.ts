@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import {
-  restoreWorkspacePresetState,
-  serializeWorkspacePresetState,
+  restoreWorkspaceLayoutState,
+  serializeWorkspaceLayoutState,
 } from '../packages/ui/src/complex/workspace.js';
 
 const prefix = '复杂-workspace-工作区布局';
@@ -13,11 +13,11 @@ async function openStory(page: Page, story: string, globals = 'theme:dark;densit
 }
 
 test('restores current and legacy preset state', () => {
-  expect(restoreWorkspacePresetState(JSON.stringify({ version: 1, navigationOpen: false, inspectorOpen: true, activePanel: 'inspector' }))).toEqual({
+  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 1, navigationOpen: false, inspectorOpen: true, activePanel: 'inspector' }))).toEqual({
     source: 'current',
     state: { version: 1, navigationOpen: false, inspectorOpen: true, activePanel: 'inspector' },
   });
-  expect(restoreWorkspacePresetState(JSON.stringify({ navigation: true, inspector: false, panel: 'navigation' }))).toEqual({
+  expect(restoreWorkspaceLayoutState(JSON.stringify({ navigation: true, inspector: false, panel: 'navigation' }))).toEqual({
     source: 'legacy',
     state: { version: 1, navigationOpen: true, inspectorOpen: false, activePanel: 'navigation' },
   });
@@ -26,14 +26,14 @@ test('restores current and legacy preset state', () => {
 test('rejects malformed, unknown and incomplete current records', () => {
   const options = { defaultNavigationOpen: false, defaultInspectorOpen: false, defaultActivePanel: 'workspace' as const };
   const fallback = { source: 'fallback', state: { version: 1, navigationOpen: false, inspectorOpen: false, activePanel: 'workspace' } };
-  expect(restoreWorkspacePresetState('{', options)).toEqual(fallback);
-  expect(restoreWorkspacePresetState(JSON.stringify({ version: 2, navigationOpen: true, inspectorOpen: true, activePanel: 'workspace' }), options)).toEqual(fallback);
-  expect(restoreWorkspacePresetState(JSON.stringify({ version: 1, navigationOpen: true, activePanel: 'workspace' }), options)).toEqual(fallback);
-  expect(restoreWorkspacePresetState(JSON.stringify({ version: 1, navigationOpen: true, inspectorOpen: true, activePanel: 'unknown' }), options)).toEqual(fallback);
+  expect(restoreWorkspaceLayoutState('{', options)).toEqual(fallback);
+  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 2, navigationOpen: true, inspectorOpen: true, activePanel: 'workspace' }), options)).toEqual(fallback);
+  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 1, navigationOpen: true, activePanel: 'workspace' }), options)).toEqual(fallback);
+  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 1, navigationOpen: true, inspectorOpen: true, activePanel: 'unknown' }), options)).toEqual(fallback);
 });
 
 test('serializes only the versioned preset schema', () => {
-  expect(JSON.parse(serializeWorkspacePresetState({ navigationOpen: false, inspectorOpen: true, activePanel: 'navigation' }))).toEqual({
+  expect(JSON.parse(serializeWorkspaceLayoutState({ navigationOpen: false, inspectorOpen: true, activePanel: 'navigation' }))).toEqual({
     version: 1,
     navigationOpen: false,
     inspectorOpen: true,
@@ -42,7 +42,7 @@ test('serializes only the versioned preset schema', () => {
 });
 
 test('wide preset toggles support panels while keeping the workspace visible', async ({ page }) => {
-  await page.addInitScript(() => localStorage.removeItem('reito.story.workspace-preset'));
+  await page.addInitScript(() => localStorage.removeItem('reito.story.workspace-layout'));
   await openStory(page, 'preset-desktop');
   const workspace = page.getByRole('region', { name: 'Workspace.tsx' });
   const navigation = page.getByRole('region', { name: '项目' });
@@ -60,12 +60,12 @@ test('wide preset toggles support panels while keeping the workspace visible', a
 
 test('wide panel visibility persists across reload', async ({ page }) => {
   await openStory(page, 'preset-desktop');
-  await page.evaluate(() => localStorage.removeItem('reito.story.workspace-preset'));
+  await page.evaluate(() => localStorage.removeItem('reito.story.workspace-layout'));
   await page.reload();
   const group = page.getByRole('group', { name: '宽布局面板' });
   await group.getByRole('button', { name: '导航' }).click();
   await group.getByRole('button', { name: '检查器' }).click();
-  await expect.poll(() => page.evaluate(() => localStorage.getItem('reito.story.workspace-preset'))).toContain('"navigationOpen":false');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('reito.story.workspace-layout'))).toContain('"navigationOpen":false');
   await page.reload();
   await expect(page.getByRole('status')).toHaveCount(0);
   await expect(page.getByText(/来源：current/)).toBeVisible();
@@ -78,8 +78,8 @@ test('browser storage events synchronize preset state', async ({ page }) => {
   await openStory(page, 'preset-desktop');
   await page.evaluate(() => {
     const value = JSON.stringify({ version: 1, navigationOpen: false, inspectorOpen: true, activePanel: 'inspector' });
-    localStorage.setItem('reito.story.workspace-preset', value);
-    window.dispatchEvent(new StorageEvent('storage', { key: 'reito.story.workspace-preset', newValue: value, storageArea: localStorage }));
+    localStorage.setItem('reito.story.workspace-layout', value);
+    window.dispatchEvent(new StorageEvent('storage', { key: 'reito.story.workspace-layout', newValue: value, storageArea: localStorage }));
   });
   await expect(page.getByText(/来源：current · 当前：inspector · 导航：关 · 检查器：开/)).toBeVisible();
   await expect(page.getByRole('region', { name: '项目' })).toBeHidden();
@@ -103,7 +103,7 @@ test('auto preset responds to its container instead of the viewport', async ({ p
   await openStory(page, 'preset-auto');
   await expect(page.getByRole('group', { name: '宽布局面板' })).toBeVisible();
   await expect(page.getByRole('group', { name: '窄布局面板' })).toBeHidden();
-  await page.locator('[data-slot="workspace-preset"]').evaluate(element => { (element as HTMLElement).style.width = '24rem'; });
+  await page.locator('[data-slot="workspace-layout"]').evaluate(element => { (element as HTMLElement).style.width = '24rem'; });
   await expect(page.getByRole('group', { name: '窄布局面板' })).toBeVisible();
   await expect(page.getByRole('group', { name: '宽布局面板' })).toBeHidden();
   await expect(page.getByRole('region', { name: 'Workspace.tsx' })).toBeVisible();
@@ -142,7 +142,7 @@ test('Playground Controls switch preset modes and panels without changing storie
   const story = `${prefix}--playground`;
   await page.goto(`http://127.0.0.1:6007/?path=/story/${encodeURIComponent(story)}`);
   const frame = page.frameLocator('#storybook-preview-iframe');
-  await expect(frame.locator('[data-slot="workspace-preset"]')).toBeVisible({ timeout: 15_000 });
+  await expect(frame.locator('[data-slot="workspace-layout"]')).toBeVisible({ timeout: 15_000 });
   await page.getByRole('tab', { name: /^Controls/ }).click();
   const path = new URL(page.url()).searchParams.get('path');
   await page.locator('[id="control-presetMode"]').selectOption('narrow');
@@ -160,5 +160,5 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } })).violations)).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: `.logs/workspace-preset/${theme}-${density}.png`, fullPage: true });
+  await page.screenshot({ path: `.logs/workspace-layout/${theme}-${density}.png`, fullPage: true });
 });

@@ -9,6 +9,19 @@ The library owns control geometry, typography, internal spacing, surfaces, focus
 The application owns content, routes, business state and commands. A screen built from this skill
 should look finished without application CSS.
 
+## Choose regions before controls
+
+For ordinary operations, list or form pages use `DashboardGroup` with `DashboardSidebar` and
+`DashboardPanel`. SidebarHeader/Content/Footer are prefixed `DashboardSidebar`; the panel header
+uses `DashboardNavbar`. Use `DashboardNavigationMenu` for navigation and the library's separate
+`DashboardSidebarToggle` / `DashboardSidebarCollapse` controls. The group owns available width,
+narrow overlays and navigation state; applications do not add media queries, hidden or fixed CSS.
+Inside DashboardPanel use `Page.Header` / `Page.Content` and `Panel.Header` / `Panel.Content` /
+`Panel.Footer`. DashboardBody owns scrolling without padding. Page owns its edge, Panel owns one inset.
+Use the executable DashboardDemo in assets/workbench.tsx. Split workspaces use `WorkspaceLayout`;
+resizable two-pane workspaces use `ResizableWorkspace` and `useResizableWorkspaceState`.
+Do not recreate retired generic layout interfaces or combine competing navigation providers.
+
 ## Core rules (always apply)
 
 1. **Theme root.** Import `@reito/tokens/css` then `@reito/ui/styles.css` once. Wrap the app in
@@ -25,10 +38,11 @@ should look finished without application CSS.
    Use `Stack`/`Inline`/`Grid` `gap`, `Stack inset`, `Panel` (padded or `flush`), `Heading size`,
    `Text variant/tone` and documented control props. Copied structural shell classes in the
    layout references are the only exception.
-5. **Load the layout reference before writing a screen** (see routing below). A dashboard or any
-   app with a sidebar uses `SidebarProvider` → `Sidebar` → `AppShell` → `WorkspacePreset` exactly
-   as in [layouts/dashboard.md](references/layouts/dashboard.md). Never invent a shell from divs.
-6. **One inset owner per surface.** `Stack inset` or a padded `Panel` body supplies the edge;
+5. **Load the matching layout before writing a screen.** Ordinary list, operations and form
+   pages use the named regions in [layouts/page.md](references/layouts/page.md).
+   Complex split workspaces use [layouts/dashboard.md](references/layouts/dashboard.md).
+   Do not invent a shell or Content/Body wrapper from divs.
+6. **One inset owner per surface.** `Page inset` supplies the page edge; `Panel.Content` supplies the panel edge;
    lists, tables and `Empty` use `Panel flush`. Never pad inside an already padded body.
 7. **Panel for sections, not Card for records.** Records go in `ItemGroup`/`Item` or `DataTable`
    inside one `Panel`. `Card` is for a standalone widget, never one per row or per number.
@@ -47,7 +61,8 @@ another (for example settings inside a dashboard slot).
 
 | Task | Load |
 | --- | --- |
-| Dashboard, admin, task/ops workspace, list-detail, any app with a sidebar | [layouts/dashboard.md](references/layouts/dashboard.md) |
+| Ordinary operations, list, form page, simple sidebar | [layouts/page.md](references/layouts/page.md) |
+| Complex dashboard, split workspace, list-detail with inspector | [layouts/dashboard.md](references/layouts/dashboard.md) |
 | Settings, preferences, account, project configuration | [layouts/settings.md](references/layouts/settings.md) |
 | Forms, filters, create/edit dialogs | [design-contract.md § Forms](references/design-contract.md#forms) |
 | Chat, assistant, agent conversation | [design-contract.md § Conversation](references/design-contract.md#conversation) |
@@ -57,11 +72,11 @@ another (for example settings inside a dashboard slot).
 ## Start
 
 Read the installed `@reito/ui` and `@reito/tokens` versions; they must match. The composition APIs
-(`Stack`, `Inline`, `Grid`, `Text`, `Heading`, `PageHeader`, `Panel`) target 0.6.0-next.0 and later;
+(`DashboardGroup`, `Page`, `Panel` regions and `Stack`, `Inline`, `Grid`, `Text`, `Heading`) target 0.6.0-next.0 and later;
 0.5.8 does not export them. Consult public types or the Storybook story when a prop is unclear;
 application authors should not need private component CSS.
 
-Imports: basic components, composition and `ReitoThemeProvider` from `@reito/ui/basic`; shells,
+Imports: Dashboard components and named Page/Panel regions, basic components and `ReitoThemeProvider` from `@reito/ui/basic`; split workspaces,
 `DataTable`, `Form`, settings and search from `@reito/ui/complex`; conversation from `@reito/ui/ai`.
 
 ## Compose

@@ -7,7 +7,7 @@ Graphite 是面向个人桌面工具的原创设计语言：中性灰阶、紧�
 ## 当前组合契约（0.6 候选）
 
 [页面组合与默认主题](composition.md)定义应用与库的职责、默认尺寸和升级边界。
-基础 Stack、Inline、Grid、Text、Heading、PageHeader、Panel 支持无应用 CSS 的工作台组合。
+Dashboard 组件管理完整导航与滚动；Stack、Inline、Grid、Text、Heading、Page、Panel 支持无应用 CSS 的工作台组合。
 默认 Button、Input、Select 使用相同高度与字号；Card、Panel、Empty 使用 surface 圆角。
 下文历史测量保留其日期，当前默认值以 tokens.json 和上述契约为准。
 
@@ -141,6 +141,9 @@ RichTextEditor 的正文直接构成编辑工作面，默认最小高度为 `--r
 
 ## 桌面布局与阅读空间
 
+普通页面按 Shell、Page、Panel 的区域接口组合，Header／Content／Footer 带所属区域。
+滚动、页面边缘、面板内距分别由 Shell.Content、Page inset、Panel.Content 持有；详细规则见 [页面组合](composition.md)。
+
 密度是样式能力，不是默认产品功能。消费应用默认使用 compact，不应自动在标题栏、工具栏或设置页加入「紧凑 / 舒适」切换；只有用户明确要求时才提供入口。Lab 和 Storybook 为检查组件保留密度工具，Workbench 业务示例不默认展示该入口。两种密度的 token 支持和验证要求不变。
 
 初始布局 token 为侧栏 224 px、检查器 272 px、阅读宽度 720 px、画布最大宽度 1480 px、标题栏 42 px、状态栏 28 px。它们是默认值，不是强迫所有页面保持多栏的最小宽度。
@@ -175,7 +178,7 @@ InlineEdit 只承载单个短文本或数字的显示与编辑事务。显示态
 
 OverlayProvider 是声明式 Dialog、Sheet、AlertDialog 之上的可选命令式事务层。调用方获得稳定句柄和明确结果，不需要把临时浮层塞进业务全局状态；内容可更新、可打开子层，也可以批量关闭。栈中只有顶层进入可访问交互面，子层关闭后焦点回到父层入口；关闭父层会结束其上的子事务，Provider 卸载会结束全部等待。固定局部弹层仍直接组合基础组件，不要为每个 Dialog 都引入服务。
 
-Workspace 布局偏好把 Sidebar 展开状态和分栏百分比保存在同一个版本化记录中。受控分栏只把指针或键盘产生的最终比例交给宿主保存；首次挂载、外部同步和容器缩放不能覆盖用户偏好。未知版本、损坏记录、违反最小栏宽的尺寸和不可用存储都回到明确默认值。若 `useWorkspaceLayoutState` 统一持久化，应关闭 Sidebar 自带的 Cookie 写入，避免两个来源竞争。
+Workspace 布局偏好把 Sidebar 展开状态和分栏百分比保存在同一个版本化记录中。受控分栏只把指针或键盘产生的最终比例交给宿主保存；首次挂载、外部同步和容器缩放不能覆盖用户偏好。未知版本、损坏记录、违反最小栏宽的尺寸和不可用存储都回到明确默认值。若 `useResizableWorkspaceState` 统一持久化，应关闭 Sidebar 自带的 Cookie 写入，避免两个来源竞争。
 
 三槽工作区预设让主工作面始终拥有剩余空间，导航与检查器使用共享宽度 token。宽容器可独立开关辅助面板；窄容器只显示一个活动槽位，并在同一短工具栏中提供可达切换。每个槽位只拥有一个滚动区域，标题和状态底栏不随内容滚动。预设层只管理槽位、显隐和窄屏选择；可调整比例仍由 `ResizableWorkspace` 负责，两个持久化记录不混用。
 

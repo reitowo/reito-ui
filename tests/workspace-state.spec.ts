@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import {
-  restoreWorkspaceLayoutState,
-  serializeWorkspaceLayoutState,
+  restoreResizableWorkspaceState,
+  serializeResizableWorkspaceState,
 } from '../packages/ui/src/complex/workspace.js';
 
 const prefix = '复杂-workspace-工作区布局';
@@ -13,14 +13,14 @@ async function openStory(page: Page, story: string, globals = 'theme:dark;densit
 }
 
 test('restores the current layout schema', () => {
-  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 1, sidebarOpen: false, primaryPercent: 42 }), { minPanelPercent: 20 })).toEqual({
+  expect(restoreResizableWorkspaceState(JSON.stringify({ version: 1, sidebarOpen: false, primaryPercent: 42 }), { minPanelPercent: 20 })).toEqual({
     source: 'current',
     state: { version: 1, sidebarOpen: false, primaryPercent: 42 },
   });
 });
 
 test('migrates recognized legacy layout fields', () => {
-  expect(restoreWorkspaceLayoutState(JSON.stringify({ sidebar: false, layout: { primary: 42, secondary: 58 } }), { minPanelPercent: 20 })).toEqual({
+  expect(restoreResizableWorkspaceState(JSON.stringify({ sidebar: false, layout: { primary: 42, secondary: 58 } }), { minPanelPercent: 20 })).toEqual({
     source: 'legacy',
     state: { version: 1, sidebarOpen: false, primaryPercent: 42 },
   });
@@ -29,13 +29,13 @@ test('migrates recognized legacy layout fields', () => {
 test('rejects malformed, unknown-version and unavailable current sizes', () => {
   const options = { defaultSidebarOpen: true, defaultPrimaryPercent: 38, minPanelPercent: 20 };
   const fallback = { source: 'fallback', state: { version: 1, sidebarOpen: true, primaryPercent: 38 } };
-  expect(restoreWorkspaceLayoutState('{', options)).toEqual(fallback);
-  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 2, sidebarOpen: false, primaryPercent: 42 }), options)).toEqual(fallback);
-  expect(restoreWorkspaceLayoutState(JSON.stringify({ version: 1, sidebarOpen: false, primaryPercent: 140 }), options)).toEqual(fallback);
+  expect(restoreResizableWorkspaceState('{', options)).toEqual(fallback);
+  expect(restoreResizableWorkspaceState(JSON.stringify({ version: 2, sidebarOpen: false, primaryPercent: 42 }), options)).toEqual(fallback);
+  expect(restoreResizableWorkspaceState(JSON.stringify({ version: 1, sidebarOpen: false, primaryPercent: 140 }), options)).toEqual(fallback);
 });
 
 test('serializes only the normalized current schema', () => {
-  expect(JSON.parse(serializeWorkspaceLayoutState({ version: 1, sidebarOpen: false, primaryPercent: 140 }, { defaultPrimaryPercent: 38, minPanelPercent: 20 }))).toEqual({
+  expect(JSON.parse(serializeResizableWorkspaceState({ version: 1, sidebarOpen: false, primaryPercent: 140 }, { defaultPrimaryPercent: 38, minPanelPercent: 20 }))).toEqual({
     version: 1,
     sidebarOpen: false,
     primaryPercent: 38,

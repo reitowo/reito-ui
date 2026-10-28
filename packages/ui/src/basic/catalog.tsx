@@ -1,4 +1,4 @@
-import { CompositionDemo } from './composition-demo.js';
+import { CompositionDemo, DashboardDemo } from './composition-demo.js';
 import { tokenMetrics } from '@reito/tokens/metrics';
 import { OneTimeCodeDemo } from './one-time-code-demo.js';
 import { ScrollTopDemo } from './scroll-top-demo.js';
@@ -1666,10 +1666,15 @@ export function JumpToLatestDemo() {
 
 export const basicCatalog: BasicCatalogEntry[] = [
   {
+    id: 'dashboard',
+    name: 'Dashboard / 工作台区域',
+    description: '统一可用宽度、完整侧栏、导航行、桌面折叠、窄屏抽屉与主区域滚动。',
+    component: DashboardDemo,
+  },
+  {
     id: 'composition',
     name: 'Composition / 页面积木',
-    description:
-      'Page 统一页头与内容间距，Stack、Inline、Grid、Text、Heading 和 Panel 组合工作页面。',
+    description: 'Dashboard 管理完整导航与滚动，Page 与 Panel 分别持有页面和面板区域的主题间距。',
     component: CompositionDemo,
   },
   {
