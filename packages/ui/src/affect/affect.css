@@ -267,7 +267,7 @@
 }
 
 .affect-button[data-loading] .affect-button__label::after {
-  opacity: 1;
+  opacity: var(--rui-component-affect-button-shine-opacity);
   animation: affect-button-sweep calc(var(--rui-component-affect-button-load-duration) * 1.6) linear
     infinite;
 }
