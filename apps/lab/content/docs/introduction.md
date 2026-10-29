@@ -9,15 +9,16 @@ Reito UI 是一套面向桌面工具的 React 组件库。它以 Graphite 中性
 
 组件建立在固定版本的 shadcn / Base UI（base-nova）原语之上，保留 Base UI 的键盘行为与无障碍语义；颜色、间距、字号、圆角与动效全部来自 `@reito/tokens` 生成的设计变量。
 
-## 三层组件
+## 四层组件
 
 | 层 | 入口 | 适合 |
 | --- | --- | --- |
 | 基础 | `@reito/ui/basic` | 按钮、表单输入、选择、导航、反馈、页面积木（Page、Panel、Stack、Inline、Grid、Text、Heading） |
 | 复杂 | `@reito/ui/complex` | 数据表格、树与层级选择、表单管理、富文本、设置、工作区外壳与搜索 |
 | AI | `@reito/ui/ai` | Composer、消息与结构化 parts、工具调用、上下文、权限、产物与任务流 |
+| 模式 | `@reito/ui/affect` | Affect 风格的控件、工作面、动效与插画，使用共享主题和密度 |
 
-依赖方向固定为基础 → 复杂 / AI：基础层不依赖业务层。根入口 `@reito/ui` 同时导出三层 API，子入口便于表达依赖层次。
+依赖方向固定为基础 → 复杂 / AI / 模式：基础层不依赖业务层。根入口 `@reito/ui` 同时导出基础、复杂与 AI API；模式层通过 `@reito/ui/affect` 单独导入，避免同名组件冲突。
 
 ## 设计原则
 

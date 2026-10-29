@@ -101,7 +101,8 @@ export function TraceWaterfall({
   const folded = collapsed ?? internalFold;
   const open = openId === undefined ? internalOpen : openId;
   const live = root.status === 'running';
-  const clock = useTickingNow(live, startedAt != null ? (now ?? Date.now() - startedAt) : now);
+  const timestamp = useTickingNow(live, now);
+  const clock = now ?? (startedAt != null ? timestamp - startedAt : timestamp);
   const hidden = new Set(folded);
   const rows = flatten(root, 0, hidden, []);
   const totals = rollup(root);

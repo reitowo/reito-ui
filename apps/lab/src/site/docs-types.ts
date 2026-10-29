@@ -1,6 +1,6 @@
 export interface DocComponent {
   id: string;
-  layer: 'basic' | 'complex' | 'ai';
+  layer: 'basic' | 'complex' | 'ai' | 'affect';
   layerName: string;
   importPath: string;
   name: string;

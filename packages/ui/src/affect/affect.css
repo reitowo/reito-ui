@@ -248,7 +248,13 @@
   line-height: normal;
 }
 
-.affect-button__label::after {
+.affect-button__shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.affect-button__shine::after {
   content: attr(data-text);
   position: absolute;
   inset: 0;
@@ -270,7 +276,7 @@
   color: color-mix(in srgb, currentColor 55%, transparent);
 }
 
-.affect-button[data-loading] .affect-button__label::after {
+.affect-button[data-loading] .affect-button__shine::after {
   opacity: var(--rui-component-affect-button-shine-opacity);
   animation: affect-button-sweep calc(var(--rui-component-affect-button-load-duration) * 1.6) linear
     infinite;
@@ -300,7 +306,7 @@
   .affect-button {
     transition-duration: var(--rui-motion-duration);
   }
-  .affect-button[data-loading] .affect-button__label::after {
+  .affect-button[data-loading] .affect-button__shine::after {
     animation: none;
     opacity: 0;
   }

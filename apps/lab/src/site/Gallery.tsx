@@ -8,12 +8,13 @@ import { SiteFrame, storyLink } from './SiteFrame';
 const ComponentPreview = lazy(() => import('./ComponentPreview'));
 
 type Entry = (typeof manifest.entries)[number];
-type Filter = 'all' | 'basic' | 'complex' | 'ai' | 'patterns';
+type Filter = 'all' | 'basic' | 'complex' | 'ai' | 'affect' | 'patterns';
 
 export const layerMeta = {
   basic: { name: '基础', icon: Blocks, description: '按钮、表单、导航、反馈与页面积木。' },
   complex: { name: '复杂', icon: Braces, description: '表格、树、表单管理、设置与工作区。' },
   ai: { name: 'AI', icon: Sparkles, description: '对话、上下文、工具调用、产物与任务流。' },
+  affect: { name: '模式', icon: LayoutTemplate, description: 'Affect 风格的组件与工作面，共享 Reito 主题和密度。' },
 } as const;
 
 const recipes = [
@@ -92,7 +93,7 @@ function GalleryIndex() {
     <main id="site-main" className="site-container gallery-main">
       <div className="gallery-intro">
         <h1>组件库</h1>
-        <p>{manifest.total} 个组件族的实时预览，按基础、复杂与 AI 三层组织。打开任意组件查看大尺寸预览、文档与 Storybook 参数调试。</p>
+        <p>{manifest.total} 个组件族的实时预览，按基础、复杂、AI 与模式四层组织。打开任意组件查看大尺寸预览、文档与 Storybook 参数调试。</p>
       </div>
       <div className="gallery-toolbar">
         <Tabs value={filter} onValueChange={(value) => setFilter(value as Filter)}>

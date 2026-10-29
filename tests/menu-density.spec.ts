@@ -2,14 +2,16 @@ import { expect, test, type Locator } from '@playwright/test';
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
   test(`${theme}/${density}: theme and shared menu rows keep desktop density`, async ({ page }) => {
+    const runtimeErrors: string[] = [];
+    page.on('console', message => { if (message.type() === 'error' && message.text().includes('Maximum update depth')) runtimeErrors.push(message.text()); });
     await page.addInitScript(({ theme, density }) => {
       localStorage.setItem('reito-theme', theme);
       localStorage.setItem('reito-density', density);
     }, { theme, density });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    const rowHeight = density === 'compact' ? 28 : 32;
+    const rowHeight = density === 'compact' ? 32 : 36;
     async function expectRow(row: Locator) {
-      await expect(row).toHaveCSS('font-size', '13px');
+      await expect(row).toHaveCSS('font-size', '14px');
       await expect(row).toHaveCSS('height', `${rowHeight}px`);
       const padding = await row.evaluate(n => {
         const style = getComputedStyle(n);
@@ -30,7 +32,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await expectRow(blue);
     const colors = page.locator('[data-slot=dropdown-menu-sub-content]');
     await expect(colors.getByRole('menuitemradio')).toHaveCount(18);
-    // A full compact palette fits 18 rows without the former 648px column.
+    // The Base UI menu track remains bounded to the declared row height.
     const paletteHeight = await colors.evaluate(n => n.getBoundingClientRect().height);
     expect(paletteHeight).toBeLessThanOrEqual(18 * rowHeight + 8);
     await blue.press('End');
@@ -57,5 +59,6 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await page.goto('/?layer=basic&component=select');
     await page.getByRole('combobox', { name: '选择执行位置', exact: true }).click();
     await expectRow(page.getByRole('option', { name: '本地工作区', exact: true }));
+    expect(runtimeErrors).toEqual([]);
   });
 }
