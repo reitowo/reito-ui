@@ -4,6 +4,7 @@ storybook-static/
 test-results/
 playwright-report/
 .logs/
+.dev/
 artifacts/
 *.tsbuildinfo
 .env

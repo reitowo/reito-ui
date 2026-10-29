@@ -66,7 +66,7 @@ test('Playground refreshKey reloads in Controls without changing Story tabs', as
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: loaded async tree stays compact and accessible`, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 }); const tree = await open(page, 'playground', `theme:${theme};density:${density}`);
   const workspace = tree.getByRole('treeitem', { name: /workspace/ }); await expect(tree.getByRole('treeitem', { name: 'App.tsx' })).toBeVisible();
-  expect(await workspace.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 32);
+  expect(await workspace.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 28);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

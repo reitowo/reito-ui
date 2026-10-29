@@ -1,3 +1,4 @@
+import { ReitoThemeProvider, type DensityMode, type ThemeColors, type NeutralPalette } from '@reito/ui/basic';
 import type { Preview } from '@storybook/react-vite';
 import { useLayoutEffect, type ReactNode } from 'react';
 import { TooltipProvider } from '../../../packages/ui/src/primitives/tooltip';
@@ -6,18 +7,20 @@ import '@reito/tokens/css';
 import '@reito/ui/styles.css';
 import '../stories/storybook.css';
 
-function ThemeFrame({ theme, density, docs, children }: { theme: string; density: string; docs: boolean; children: ReactNode }) {
+function ThemeFrame({ theme, density, primary, neutral, docs, children }: { theme: string; density: string; primary: ThemeColors["primary"]; neutral: NeutralPalette; docs: boolean; children: ReactNode }) {
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.density = density;
     document.documentElement.style.colorScheme = theme;
   }, [theme, density]);
-  return <TooltipProvider><div className={`reito-root sb-theme-frame${docs ? ' sb-docs-frame' : ''}`} data-theme={theme} data-density={density}>{children}</div></TooltipProvider>;
+  return <ReitoThemeProvider root mode={theme as "dark" | "light"} density={density as DensityMode} colors={{primary,neutral}}><TooltipProvider><div className={`reito-root sb-theme-frame${docs ? ' sb-docs-frame' : ''}`} data-theme={theme} data-density={density}>{children}</div></TooltipProvider></ReitoThemeProvider>;
 }
 
 const preview: Preview = {
   tags: ['autodocs'],
   globalTypes: {
+    primary: { description: '主操作与选中控件颜色', toolbar: { title: '主色', icon: 'paintbrush', items: ['neutral','blue','green','violet','amber','rose'] } },
+    neutral: { description: '工作面中性色系', toolbar: { title: '底色', icon: 'circle', items: ['graphite','gray','zinc','slate','stone','neutral'] } },
     theme: {
       description: '共享语义主题，包含浮层。',
       toolbar: { title: '主题', icon: 'circlehollow', dynamicTitle: true, items: [
@@ -27,13 +30,13 @@ const preview: Preview = {
     density: {
       description: '共享控件高度与间距，保持文字可读。',
       toolbar: { title: '密度', icon: 'component', dynamicTitle: true, items: [
-        { value: 'compact', title: '紧凑' }, { value: 'comfortable', title: '舒适' },
+        { value: 'compact', title: '紧凑' }, { value: 'comfortable', title: '舒适' }, { value: 'dense', title: '高密' },
       ] },
     },
   },
-  initialGlobals: { theme: 'dark', density: 'compact' },
+  initialGlobals: { theme: 'dark', density: 'compact', primary: 'neutral', neutral: 'graphite' },
   decorators: [(Story, context) => (
-    <ThemeFrame theme={String(context.globals.theme)} density={String(context.globals.density)} docs={context.viewMode === 'docs'}>
+    <ThemeFrame theme={String(context.globals.theme)} density={String(context.globals.density)} primary={context.globals.primary as ThemeColors["primary"]} neutral={context.globals.neutral as NeutralPalette} docs={context.viewMode === 'docs'}>
       <Story />
     </ThemeFrame>
   )],

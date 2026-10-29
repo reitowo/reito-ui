@@ -1,10 +1,14 @@
-# Reito UI / Graphite 0.4
+# Reito UI 0.5.8
+
+应用搭建入口：[页面组合与默认主题](docs/composition.md) · [可安装 skill](skills/reito-ui/SKILL.md)。
 
 基于 **shadcn/ui + Base UI + Tailwind CSS 4** 的个人 React 组件库。以 Cursor 的紧凑工作界面为主要方向，按 **基础 → 复杂 → AI** 分层。提供中性深浅主题、两档密度、真实字体、Storybook 与可操作的组件例工程。
 
 0.3 建立了 shadcn / Base UI 重建基础；0.4 持续补充高频与富功能组件，并将表格、内容区和 AI 组件的密度统一到共享 tokens。基础层包含 50 个固定版本官方 CLI 生成族和 20 个本地组合族，复杂与 AI 层在其上组合。这里的外观与 API 是本库实现，不能称作 Cursor / Claude 的官方组件。
 
 本轮重点是 [表格与 AI 内容密度](docs/density-v04.md)：紧凑表格上下 6px、左右 10px，AI 内容内距 12px，代码产物不重复叠加留白。最终验证和 MultiSelect 打开状态的扫描限制见 [验证记录](docs/validation.md)。
+
+当前版本支持运行时配色、全组件总览，以及基础变量 → 语义角色 → 组件 token 的继承与局部微调。新增能力、默认密度调整和验证范围见 [0.5.8 发布说明](docs/release-0.5.8.md)。
 
 ## 打开与确认
 
@@ -15,15 +19,16 @@ npm run dev
 npm run storybook
 ```
 
-- [组件 Lab](http://127.0.0.1:5173/)：131 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
-- [Storybook](http://127.0.0.1:6006/)：131 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
+- [公开站点](http://127.0.0.1:5173/)：首页、[文档](http://127.0.0.1:5173/docs/introduction)、[组件库](http://127.0.0.1:5173/gallery)，以及给编码助手的 [`/llms.txt`](http://127.0.0.1:5173/llms.txt)。
+- [组件 Lab](http://127.0.0.1:5173/components/button)：139 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
+- [Storybook](http://127.0.0.1:6006/)：139 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
 - [Workbench](http://127.0.0.1:5175/)：另开终端运行 `npm run dev:workbench`，查看 Agent、文件与差异、设置三个组合工作面。消息、文件与任务均为本地示例，主题和密度保存在当前浏览器。
 
 | 层 | 组件族 | 代表内容 | 公共入口 |
 | --- | ---: | --- | --- |
-| 基础 | 70 | Button、表单、InputTags、AsyncCombobox、ColorPicker、日期时间输入、PasswordInput、InputMask、Listbox、MeterGroup、Rating、Knob、Gallery、Carousel、ImageCompare、菜单、弹层与布局 | `@reito/ui/basic` |
-| 复杂 | 40 | Form、数据表格/树表格、虚拟列表/网格、树与层级选择、富文本、终端、SplitButton、ConfirmPopover、User 信息行、设置、工作区与数据工具 | `@reito/ui/complex` |
-| AI | 21 | Composer、消息、结构化 parts、工具、上下文、权限、产物、任务流，以及 MarkdownContent / RichMessage | `@reito/ui/ai` |
+| 基础 | 72 | Button、表单、InputTags、AsyncCombobox、ColorPicker、日期时间输入、PasswordInput、InputMask、Listbox、MeterGroup、Rating、Knob、Gallery、Carousel、ImageCompare、菜单、弹层与布局 | `@reito/ui/basic` |
+| 复杂 | 43 | Form、数据表格/树表格、虚拟列表/网格、树与层级选择、富文本、终端、SplitButton、ConfirmPopover、User 信息行、设置、工作区与数据工具 | `@reito/ui/complex` |
+| AI | 24 | Composer、消息、结构化 parts、工具、上下文、权限、产物、任务流，以及 MarkdownContent / RichMessage | `@reito/ui/ai` |
 
 “组件族”按使用用途统计，包含多个组合子组件，不等于命名导出数量。计数和 Storybook 链接来自生成的 [catalog manifest](apps/lab/src/catalog-manifest.json)。Lab 支持 [直接打开 DiffViewer](http://127.0.0.1:5173/?layer=complex&component=diff-viewer)。见 [分层、契约和组合示例](docs/component-layering.md)。
 
@@ -35,7 +40,7 @@ npm run storybook
 npm run pack:library
 ```
 
-同时安装 `artifacts/reito-tokens-0.4.1.tgz` 和 `artifacts/reito-ui-0.4.1.tgz`，然后：
+同时安装 `artifacts/reito-tokens-0.5.8.tgz` 和 `artifacts/reito-ui-0.5.8.tgz`，然后：
 
 ```tsx
 import '@reito/tokens/css';
@@ -45,9 +50,11 @@ import { DataTable } from '@reito/ui/complex';
 import { Composer } from '@reito/ui/ai';
 ```
 
-在 `<html>` 设置 `data-theme="dark" data-density="compact"`。包面向 React 19 / ESM，带 TypeScript 声明和已编译 CSS；消费工程无需 shadcn CLI 或 Tailwind 构建才能显示组件。CSS 包含 Tailwind Preflight 与 Inter Variable 字体，接入现有应用时一次性加载。未发布到 npm。
+在 `<html>` 设置 `data-theme="dark" data-density="compact"`。包面向 React 19 / ESM，带 TypeScript 声明和已编译 CSS；消费工程无需 shadcn CLI 或 Tailwind 构建才能显示组件。CSS 包含 Tailwind Preflight 与 Inter Variable 字体，接入现有应用时一次性加载。已发布到 npm；可运行 `npm install @reito/ui@0.5.8 @reito/tokens@0.5.8` 安装本版。
 
 完整操作、Tailwind 接入、0.2 API 迁移和 0.3 → 0.4 密度变更见 [复用指南](docs/reuse-guide.md)。
+
+设置页与弹窗可复用 [SettingsSection / SettingsRow](docs/components/settings-section.md) 的平铺分组、可点击标签和纵向控件布局。
 
 ## 工程结构
 

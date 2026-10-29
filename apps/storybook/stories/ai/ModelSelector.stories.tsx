@@ -33,8 +33,8 @@ export const Empty: Story = { name: "没有可用模型", args: { value: null, o
 export const Default: Story = { name: "默认显示" };
 
 export const Playground: Story = {
-  name: "参数调试", args: { value: 'auto', compact: false, disabled: false, label: '选择模型' },
-  argTypes: { value: choiceControl([null, ...demoModels.filter(option => !option.disabled).map(option => option.id)]), compact: booleanControl, disabled: booleanControl, label: textControl },
-  parameters: { controls: { include: ['value', 'compact', 'disabled', 'label'] } },
+  name: "参数调试", args: { value: 'auto', compact: false, size: 'default', disabled: false, label: '选择模型' },
+  argTypes: { value: choiceControl([null, ...demoModels.filter(option => !option.disabled).map(option => option.id)]), compact: booleanControl, size: choiceControl(['xs', 'sm', 'default']), disabled: booleanControl, label: textControl },
+  parameters: { controls: { include: ['value', 'compact', 'size', 'disabled', 'label'] } },
   render: function PlaygroundRender(args) { const [, updateArgs] = useArgs(); return <ModelSelector {...args} onValueChange={value => updateArgs({ value })} />; },
 };

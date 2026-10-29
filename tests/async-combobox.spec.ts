@@ -66,6 +66,8 @@ test('keyboard navigation selects a remote option', async ({ page }) => {
   const input = await open(page, 'overview');
   await input.fill('type');
   await expect(page.getByRole('option', { name: /TypeScript/ })).toBeVisible();
+  // TypeScript is also in the initial results; wait for the filtered response before choosing.
+  await expect(page.getByRole('option')).toHaveCount(1);
   await input.press('ArrowDown');
   await input.press('Enter');
   await expect(page.locator('output')).toContainText('value=typescript');
@@ -98,7 +100,7 @@ test('Playground changes query rules and disabled state in the same Storybook ta
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: token height, async popup accessibility and narrow containment`, async ({ page }) => {
   await page.setViewportSize({ width: 560, height: 720 });
   const input = await open(page, 'minimum-query', `theme:${theme};density:${density}`);
-  expect(await input.locator('..').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await input.locator('..').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await input.fill('re');
   await expect(page.getByRole('option', { name: /React/ })).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

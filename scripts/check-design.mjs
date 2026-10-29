@@ -40,10 +40,10 @@ const luminance = rgb => rgb.map(n=>n <= .04045 ? n/12.92 : ((n+.055)/1.055)**2.
 const ratio = (a,b) => { const values=[luminance(color(a)),luminance(color(b))].sort((x,y)=>y-x); return (values[0]+.05)/(values[1]+.05); };
 let contrastChecks = 0;
 for (const [theme,values] of Object.entries(data.themes)) {
-  const pairs = ['text','text-secondary','text-muted'].flatMap(fg=>['bg','surface','elevated','hover','active'].map(bg=>[fg,bg,4.5]));
+  const pairs = ['text','text-secondary','text-muted'].flatMap(fg=>['bg','surface','elevated','hover','active','sunken'].map(bg=>[fg,bg,4.5]));
   const syntaxRoles = ['comment','keyword','string','number','function','type','property','operator','punctuation'];
-  pairs.push(...syntaxRoles.flatMap(role=>['bg','surface','elevated'].map(bg=>[`syntax-${role}`,bg,4.5])));
-  pairs.push(['on-primary','primary',4.5], ...['accent','success','warning','danger'].map(name=>[name,`${name}-soft`,4.5]), ...['bg','surface','elevated'].map(bg=>['border-strong',bg,3]));
+  pairs.push(...syntaxRoles.flatMap(role=>['bg','surface','elevated','sunken'].map(bg=>[`syntax-${role}`,bg,4.5])));
+  pairs.push(['on-primary','primary',4.5], ['on-primary','primary-hover',4.5], ['on-action-accent','action-accent-hover',4.5], ['on-action-accent','action-accent',4.5], ...['accent','success','warning','danger'].map(name=>[name,`${name}-soft`,4.5]), ...['bg','surface','elevated'].map(bg=>['border-strong',bg,3]), ...['success','danger'].map(fg=>[fg,'sunken',4.5]));
   for (const [fg,bg,min] of pairs) { contrastChecks++; const actual=ratio(values[fg],values[bg]); if(actual<min) problems.push(`${theme}: ${fg} on ${bg} contrast ${actual.toFixed(2)} < ${min}`); }
 }
 if (problems.length) throw new Error(problems.join('\n'));

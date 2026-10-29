@@ -1,4 +1,5 @@
 import { chooseSelectOption, storybookUrl } from './select-option';
+import { axeViolations } from './axe-scan';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
@@ -87,11 +88,13 @@ test('Playground enables export and view props without changing tabs', async ({ 
 });
 
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: preference popover stays accessible and contained`, async ({ page }) => {
+  // Measure settled colors; popup entry opacity is covered by motion tests.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 720, height: 900 });
   const table = await open(page, 'saved-views', `theme:${theme};density:${density}`);
   await table.getByRole('button', { name: '视图' }).click();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  expect(await axeViolations(page, { rules: { region: { enabled: false } } })).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/data-table-preferences/${theme}-${density}.png`, fullPage: true });
 });

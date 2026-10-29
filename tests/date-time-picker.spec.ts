@@ -116,7 +116,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await open(page, 'cross-day-range', `theme:${theme};density:${density}`);
   const date = page.locator('[data-slot="input-date"]');
   const time = page.locator('[data-slot="input-time"]');
-  const expectedHeight = density === 'compact' ? 32 : 40;
+  const expectedHeight = density === 'compact' ? 32 : 36;
   expect(await date.evaluate(element => element.getBoundingClientRect().height)).toBe(expectedHeight);
   expect(await time.evaluate(element => element.getBoundingClientRect().height)).toBe(expectedHeight);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

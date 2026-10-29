@@ -103,7 +103,7 @@
   "runtimeDependencies": {
     "@base-ui/react": {
       "generatedRange": "^1.8.0",
-      "resolvedVersion": "1.8.0"
+      "resolvedVersion": "1.9.0"
     },
     "class-variance-authority": {
       "generatedRange": "^0.7.1",

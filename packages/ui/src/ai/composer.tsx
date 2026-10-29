@@ -3,7 +3,12 @@ import { ArrowUp, File, LoaderCircle, Square, UserRound } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Textarea } from '../primitives/textarea.js';
 import { ContextPill } from './context.js';
-import { FileUpload, type FileUploadHandle, type FileUploadProps, type QueuedFile } from '../complex/file-upload.js';
+import {
+  FileUpload,
+  type FileUploadHandle,
+  type FileUploadProps,
+  type QueuedFile,
+} from '../complex/file-upload.js';
 import { classes } from './shared.js';
 
 export type ComposerMentionKind = 'file' | 'person';
@@ -52,7 +57,10 @@ export interface ComposerDraft {
 
 export interface ComposerProps {
   /** Enables local file selection, paste and drop. Upload transport is supplied by the host. */
-  attachmentOptions?: Pick<FileUploadProps, 'accept' | 'maxSize' | 'maxFiles' | 'preview' | 'transport'>;
+  attachmentOptions?: Pick<
+    FileUploadProps,
+    'accept' | 'maxSize' | 'maxFiles' | 'preview' | 'transport'
+  >;
   value?: string;
   defaultValue?: string;
   draft?: ComposerDraft;
@@ -83,25 +91,44 @@ export interface ComposerProps {
 }
 
 type ComposerTrigger = { kind: 'command' | 'mention'; start: number; end: number; query: string };
-type ComposerSuggestion = { key: string; label: string; description?: string; disabled?: boolean; command?: ComposerCommandItem; mention?: ComposerMentionItem };
+type ComposerSuggestion = {
+  key: string;
+  label: string;
+  description?: string;
+  disabled?: boolean;
+  command?: ComposerCommandItem;
+  mention?: ComposerMentionItem;
+};
 
 function validMentions(text: string, mentions: readonly ComposerMentionValue[]) {
-  return mentions.filter(mention => mention.start >= 0 && mention.end <= text.length && mention.start < mention.end && text.slice(mention.start, mention.end) === `@${mention.label}`);
+  return mentions.filter(
+    (mention) =>
+      mention.start >= 0 &&
+      mention.end <= text.length &&
+      mention.start < mention.end &&
+      text.slice(mention.start, mention.end) === `@${mention.label}`,
+  );
 }
 
 function rebaseMentions(previous: string, next: string, mentions: readonly ComposerMentionValue[]) {
   let start = 0;
-  while (start < previous.length && start < next.length && previous[start] === next[start]) start += 1;
+  while (start < previous.length && start < next.length && previous[start] === next[start])
+    start += 1;
   let previousEnd = previous.length;
   let nextEnd = next.length;
-  while (previousEnd > start && nextEnd > start && previous[previousEnd - 1] === next[nextEnd - 1]) {
+  while (
+    previousEnd > start &&
+    nextEnd > start &&
+    previous[previousEnd - 1] === next[nextEnd - 1]
+  ) {
     previousEnd -= 1;
     nextEnd -= 1;
   }
   const delta = nextEnd - previousEnd;
-  return validMentions(previous, mentions).flatMap(mention => {
+  return validMentions(previous, mentions).flatMap((mention) => {
     if (mention.end <= start) return [mention];
-    if (mention.start >= previousEnd) return [{ ...mention, start: mention.start + delta, end: mention.end + delta }];
+    if (mention.start >= previousEnd)
+      return [{ ...mention, start: mention.start + delta, end: mention.end + delta }];
     return [];
   });
 }
@@ -114,30 +141,84 @@ function triggerAt(text: string, caret: number): ComposerTrigger | undefined {
   return { kind: match[2] === '/' ? 'command' : 'mention', start, end: caret, query: match[3] };
 }
 
-function searchable(item: { label: string; description?: string; keywords?: readonly string[] }, query: string) {
+function searchable(
+  item: { label: string; description?: string; keywords?: readonly string[] },
+  query: string,
+) {
   const normalized = query.trim().toLocaleLowerCase();
-  return !normalized || [item.label, item.description ?? '', ...(item.keywords ?? [])].some(value => value.toLocaleLowerCase().includes(normalized));
+  return (
+    !normalized ||
+    [item.label, item.description ?? '', ...(item.keywords ?? [])].some((value) =>
+      value.toLocaleLowerCase().includes(normalized),
+    )
+  );
 }
 
 function sameDraft(left: ComposerDraft, right: ComposerDraft) {
-  return left.text === right.text
-    && (left.attachments?.length ?? 0) === (right.attachments?.length ?? 0)
-    && (left.attachments ?? []).every((file, index) => {
+  return (
+    left.text === right.text &&
+    (left.attachments?.length ?? 0) === (right.attachments?.length ?? 0) &&
+    (left.attachments ?? []).every((file, index) => {
       const other = right.attachments?.[index];
-      return other && file.id === other.id && file.file === other.file && file.status === other.status;
-    })
-    && left.contextIds.join('\u0000') === right.contextIds.join('\u0000')
-    && left.mentions.length === right.mentions.length
-    && left.mentions.every((mention, index) => {
+      return (
+        other && file.id === other.id && file.file === other.file && file.status === other.status
+      );
+    }) &&
+    left.contextIds.join('\u0000') === right.contextIds.join('\u0000') &&
+    left.mentions.length === right.mentions.length &&
+    left.mentions.every((mention, index) => {
       const other = right.mentions[index];
-      return other && mention.key === other.key && mention.itemId === other.itemId && mention.label === other.label && mention.kind === other.kind && mention.start === other.start && mention.end === other.end;
-    });
+      return (
+        other &&
+        mention.key === other.key &&
+        mention.itemId === other.itemId &&
+        mention.label === other.label &&
+        mention.kind === other.kind &&
+        mention.start === other.start &&
+        mention.end === other.end
+      );
+    })
+  );
 }
 
 /** Clears only a successfully submitted, unchanged draft. Rejected submissions remain editable. */
-export function Composer({ attachmentOptions, value, defaultValue = '', draft, defaultDraft, onValueChange, onDraftChange, onSubmit, onSubmitDraft, commandItems = [], mentionItems = [], contextItems: suppliedContextItems, onCommandSelect, onMentionSelect, onContextRemove, onStop, running = false, disabled = false, placeholder = '描述你的下一步…', label = '消息草稿', submitLabel = '发送消息', stopLabel = '停止生成', toolbar, context, hint = 'Enter 发送 · Shift + Enter 换行', error, className }: ComposerProps) {
-  const [internalDraft, setInternalDraft] = useState<ComposerDraft>(() => defaultDraft ?? { text: defaultValue, mentions: [], contextIds: [] });
-  const contextItems = suppliedContextItems ?? (draft?.contextIds ?? internalDraft.contextIds).map(id => ({ id, label: id } as ComposerContextItem));
+export function Composer({
+  attachmentOptions,
+  value,
+  defaultValue = '',
+  draft,
+  defaultDraft,
+  onValueChange,
+  onDraftChange,
+  onSubmit,
+  onSubmitDraft,
+  commandItems = [],
+  mentionItems = [],
+  contextItems: suppliedContextItems,
+  onCommandSelect,
+  onMentionSelect,
+  onContextRemove,
+  onStop,
+  running = false,
+  disabled = false,
+  placeholder = '描述你的下一步…',
+  label = '消息草稿',
+  submitLabel = '发送消息',
+  stopLabel = '停止生成',
+  toolbar,
+  context,
+  hint = 'Enter 发送 · Shift + Enter 换行',
+  error,
+  className,
+}: ComposerProps) {
+  const [internalDraft, setInternalDraft] = useState<ComposerDraft>(
+    () => defaultDraft ?? { text: defaultValue, mentions: [], contextIds: [] },
+  );
+  const contextItems =
+    suppliedContextItems ??
+    (draft?.contextIds ?? internalDraft.contextIds).map(
+      (id) => ({ id, label: id }) as ComposerContextItem,
+    );
   const [submitting, setSubmitting] = useState(false);
   const [submissionError, setSubmissionError] = useState('');
   const [candidateTrigger, setTrigger] = useState<ComposerTrigger>();
@@ -151,9 +232,14 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
   const currentDraft = useRef<ComposerDraft>({
     text,
     mentions: validMentions(text, draft?.mentions ?? internalDraft.mentions),
-    contextIds: contextItems.map(item => item.id),
+    contextIds: contextItems.map((item) => item.id),
   });
-  currentDraft.current = { text, mentions: validMentions(text, draft?.mentions ?? internalDraft.mentions), contextIds: contextItems.map(item => item.id), ...(draftAttachments ? { attachments: draftAttachments } : {}) };
+  currentDraft.current = {
+    text,
+    mentions: validMentions(text, draft?.mentions ?? internalDraft.mentions),
+    contextIds: contextItems.map((item) => item.id),
+    ...(draftAttachments ? { attachments: draftAttachments } : {}),
+  };
   const inFlight = useRef(false);
   const composing = useRef(false);
   const hintId = useId();
@@ -161,19 +247,50 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
   const suggestionId = useId();
   const errorMessage = error ?? submissionError;
   const attachments = currentDraft.current.attachments ?? [];
-  const attachmentsBlocked = attachments.length > 0 && (!onSubmitDraft || attachments.some(item => attachmentOptions?.transport ? item.status !== 'success' : item.status === 'uploading' || item.status === 'error' || item.status === 'canceled'));
+  const attachmentsBlocked =
+    attachments.length > 0 &&
+    (!onSubmitDraft ||
+      attachments.some((item) =>
+        attachmentOptions?.transport
+          ? item.status !== 'success'
+          : item.status === 'uploading' || item.status === 'error' || item.status === 'canceled',
+      ));
   const canSubmit = Boolean(text.trim() || attachments.length) && !attachmentsBlocked;
-  const trigger = !disabled && !submitting && candidateTrigger &&
-    text.slice(candidateTrigger.start, candidateTrigger.end) === `${candidateTrigger.kind === 'command' ? '/' : '@'}${candidateTrigger.query}` &&
-    (candidateTrigger.kind === 'command' ? commandItems.length : mentionItems.length) ? candidateTrigger : undefined;
+  const trigger =
+    !disabled &&
+    !submitting &&
+    candidateTrigger &&
+    text.slice(candidateTrigger.start, candidateTrigger.end) ===
+      `${candidateTrigger.kind === 'command' ? '/' : '@'}${candidateTrigger.query}` &&
+    (candidateTrigger.kind === 'command' ? commandItems.length : mentionItems.length)
+      ? candidateTrigger
+      : undefined;
 
-  const suggestions: ComposerSuggestion[] = trigger?.kind === 'command'
-    ? commandItems.filter(item => searchable(item, trigger.query)).map(item => ({ key: `command:${item.id}`, label: item.label, description: item.description, disabled: item.disabled, command: item }))
-    : trigger?.kind === 'mention'
-      ? mentionItems.filter(item => searchable(item, trigger.query)).map(item => ({ key: `mention:${item.kind}:${item.id}`, label: item.label, description: item.description, disabled: item.disabled, mention: item }))
-      : [];
-  const usableSuggestions = suggestions.filter(item => !item.disabled);
-  const selectedKey = usableSuggestions[Math.min(activeSuggestion, usableSuggestions.length - 1)]?.key;
+  const suggestions: ComposerSuggestion[] =
+    trigger?.kind === 'command'
+      ? commandItems
+          .filter((item) => searchable(item, trigger.query))
+          .map((item) => ({
+            key: `command:${item.id}`,
+            label: item.label,
+            description: item.description,
+            disabled: item.disabled,
+            command: item,
+          }))
+      : trigger?.kind === 'mention'
+        ? mentionItems
+            .filter((item) => searchable(item, trigger.query))
+            .map((item) => ({
+              key: `mention:${item.kind}:${item.id}`,
+              label: item.label,
+              description: item.description,
+              disabled: item.disabled,
+              mention: item,
+            }))
+        : [];
+  const usableSuggestions = suggestions.filter((item) => !item.disabled);
+  const selectedKey =
+    usableSuggestions[Math.min(activeSuggestion, usableSuggestions.length - 1)]?.key;
 
   useEffect(() => {
     selectedOptionRef.current?.scrollIntoView({ block: 'nearest' });
@@ -187,7 +304,11 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
   }
 
   function update(next: ComposerDraft) {
-    const normalized = { ...next, mentions: validMentions(next.text, next.mentions), contextIds: contextItems.map(item => item.id) };
+    const normalized = {
+      ...next,
+      mentions: validMentions(next.text, next.mentions),
+      contextIds: contextItems.map((item) => item.id),
+    };
     if (draft === undefined) setInternalDraft(normalized);
     currentDraft.current = normalized;
     onValueChange?.(normalized.text);
@@ -196,7 +317,11 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
   }
 
   function updateText(nextText: string, caret?: number) {
-    update({ ...currentDraft.current, text: nextText, mentions: rebaseMentions(currentDraft.current.text, nextText, currentDraft.current.mentions) });
+    update({
+      ...currentDraft.current,
+      text: nextText,
+      mentions: rebaseMentions(currentDraft.current.text, nextText, currentDraft.current.mentions),
+    });
     const nextTrigger = triggerAt(nextText, caret ?? nextText.length);
     setTrigger(nextTrigger);
     setActiveSuggestion(0);
@@ -206,7 +331,11 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
     if (!trigger) return currentDraft.current;
     const previous = currentDraft.current;
     const nextText = `${previous.text.slice(0, trigger.start)}${replacement}${previous.text.slice(trigger.end)}`;
-    const next = { ...previous, text: nextText, mentions: rebaseMentions(previous.text, nextText, previous.mentions) };
+    const next = {
+      ...previous,
+      text: nextText,
+      mentions: rebaseMentions(previous.text, nextText, previous.mentions),
+    };
     update(next);
     setTrigger(undefined);
     setActiveSuggestion(0);
@@ -228,9 +357,22 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
       const replacement = `${token} `;
       const nextText = `${previous.text.slice(0, trigger.start)}${replacement}${previous.text.slice(trigger.end)}`;
       let key: string;
-      do { key = `${item.kind}:${item.id}:${++mentionSequence.current}`; } while (previous.mentions.some(mention => mention.key === key));
-      const mention: ComposerMentionValue = { key, itemId: item.id, label: item.label, kind: item.kind, start: trigger.start, end: trigger.start + token.length };
-      const next = { ...previous, text: nextText, mentions: [...rebaseMentions(previous.text, nextText, previous.mentions), mention] };
+      do {
+        key = `${item.kind}:${item.id}:${++mentionSequence.current}`;
+      } while (previous.mentions.some((mention) => mention.key === key));
+      const mention: ComposerMentionValue = {
+        key,
+        itemId: item.id,
+        label: item.label,
+        kind: item.kind,
+        start: trigger.start,
+        end: trigger.start + token.length,
+      };
+      const next = {
+        ...previous,
+        text: nextText,
+        mentions: [...rebaseMentions(previous.text, nextText, previous.mentions), mention],
+      };
       update(next);
       setTrigger(undefined);
       setActiveSuggestion(0);
@@ -241,12 +383,22 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
 
   function removeMention(key: string) {
     if (disabled || inFlight.current) return;
-    const mention = currentDraft.current.mentions.find(item => item.key === key);
+    const mention = currentDraft.current.mentions.find((item) => item.key === key);
     if (!mention) return;
     const trailing = currentDraft.current.text[mention.end] === ' ' ? 1 : 0;
     const nextText = `${currentDraft.current.text.slice(0, mention.start)}${currentDraft.current.text.slice(mention.end + trailing)}`;
     const delta = mention.end + trailing - mention.start;
-    update({ ...currentDraft.current, text: nextText, mentions: currentDraft.current.mentions.filter(item => item.key !== key).map(item => item.start > mention.start ? { ...item, start: item.start - delta, end: item.end - delta } : item) });
+    update({
+      ...currentDraft.current,
+      text: nextText,
+      mentions: currentDraft.current.mentions
+        .filter((item) => item.key !== key)
+        .map((item) =>
+          item.start > mention.start
+            ? { ...item, start: item.start - delta, end: item.end - delta }
+            : item,
+        ),
+    });
     focusAt(mention.start);
   }
 
@@ -259,115 +411,280 @@ export function Composer({ attachmentOptions, value, defaultValue = '', draft, d
     try {
       if (onSubmitDraft) await onSubmitDraft(submittedDraft);
       else await onSubmit(submittedDraft.text);
-      if (sameDraft(currentDraft.current, submittedDraft)) update({ text: '', mentions: [], contextIds: contextItems.map(item => item.id) });
+      if (sameDraft(currentDraft.current, submittedDraft))
+        update({ text: '', mentions: [], contextIds: contextItems.map((item) => item.id) });
     } catch (reason) {
-      setSubmissionError(reason instanceof Error ? reason.message : '提交失败，草稿已保留。请重试。');
+      setSubmissionError(
+        reason instanceof Error ? reason.message : '提交失败，草稿已保留。请重试。',
+      );
     } finally {
       inFlight.current = false;
       setSubmitting(false);
     }
   }
 
-  return <form className={classes('grid min-w-0 gap-2', className)} onSubmit={event => { event.preventDefault(); void submit(); }} aria-label={`${label}输入区`}
-    onPaste={event => {
-      if (!attachmentOptions || !event.clipboardData.files.length) return;
-      event.preventDefault();
-      if (!disabled && !submitting) uploadRef.current?.addFiles(Array.from(event.clipboardData.files));
-    }}
-    onDragOver={event => { if (attachmentOptions && event.dataTransfer.types.includes('Files')) event.preventDefault(); }}
-    onDrop={event => {
-      if (!attachmentOptions || !event.dataTransfer.files.length) return;
-      event.preventDefault();
-      if (!disabled && !submitting) uploadRef.current?.addFiles(Array.from(event.dataTransfer.files));
-    }}>
-    <div className="overflow-hidden rounded-[var(--rui-radius-composer)] border border-input bg-[var(--rui-composer-bg)] shadow-xs focus-within:ring-[length:var(--rui-outline-width)] focus-within:ring-ring/30">
-      {Boolean(context || contextItems.length || currentDraft.current.mentions.length) && <div role="group" aria-label="草稿上下文与提及" className="flex min-w-0 flex-wrap gap-1.5 px-[var(--rui-content-padding)] pt-[var(--rui-content-gap-sm)]">
-        {context}
-        {contextItems.map(item => <ContextPill key={item.id} label={item.label} icon={item.icon} disabled={disabled || submitting || item.disabled} onRemove={onContextRemove ? () => onContextRemove(item.id) : undefined}>{item.label}</ContextPill>)}
-        {currentDraft.current.mentions.map(mention => <ContextPill key={mention.key} label={`@${mention.label}`} icon={mention.kind === 'file' ? <File /> : <UserRound />} disabled={disabled || submitting} onRemove={() => removeMention(mention.key)}>@{mention.label}</ContextPill>)}
-      </div>}
-      <Textarea
-        ref={textareaRef}
-        aria-label={label}
-        aria-describedby={[hint ? hintId : '', errorMessage ? errorId : ''].filter(Boolean).join(' ') || undefined}
-        aria-invalid={Boolean(errorMessage)}
-        aria-autocomplete={commandItems.length || mentionItems.length ? 'list' : 'none'}
-        aria-controls={trigger ? suggestionId : undefined}
-        aria-activedescendant={trigger && usableSuggestions.length ? `${suggestionId}-${usableSuggestions[Math.min(activeSuggestion, usableSuggestions.length - 1)]?.key}` : undefined}
-        className="min-h-[var(--rui-composer-input-height)] resize-y rounded-none border-0 bg-transparent px-[var(--rui-content-padding)] py-[var(--rui-content-gap-sm)] text-base shadow-none focus-visible:ring-0 md:text-base dark:bg-transparent"
-        value={text}
-        rows={2}
-        disabled={disabled || submitting}
-        placeholder={placeholder}
-        onChange={event => updateText(event.target.value, event.target.selectionStart)}
-        onSelect={event => {
-          if (composing.current) return;
-          const next = event.currentTarget.selectionStart === event.currentTarget.selectionEnd
-            ? triggerAt(event.currentTarget.value, event.currentTarget.selectionStart) : undefined;
-          if (next?.start === candidateTrigger?.start && next?.end === candidateTrigger?.end && next?.query === candidateTrigger?.query && next?.kind === candidateTrigger?.kind) return;
-          setTrigger(next);
-          setActiveSuggestion(0);
-        }}
-        onCompositionStart={() => { composing.current = true; }}
-        onCompositionEnd={event => { composing.current = false; setTrigger(triggerAt(event.currentTarget.value, event.currentTarget.selectionStart)); setActiveSuggestion(0); }}
-        onKeyDown={event => {
-          if (event.nativeEvent.isComposing || composing.current || event.keyCode === 229) return;
-          if (trigger && usableSuggestions.length) {
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+  return (
+    <form
+      className={classes('grid min-w-0 gap-2', className)}
+      onSubmit={(event) => {
+        event.preventDefault();
+        void submit();
+      }}
+      aria-label={`${label}输入区`}
+      onPaste={(event) => {
+        if (!attachmentOptions || !event.clipboardData.files.length) return;
+        event.preventDefault();
+        if (!disabled && !submitting)
+          uploadRef.current?.addFiles(Array.from(event.clipboardData.files));
+      }}
+      onDragOver={(event) => {
+        if (attachmentOptions && event.dataTransfer.types.includes('Files')) event.preventDefault();
+      }}
+      onDrop={(event) => {
+        if (!attachmentOptions || !event.dataTransfer.files.length) return;
+        event.preventDefault();
+        if (!disabled && !submitting)
+          uploadRef.current?.addFiles(Array.from(event.dataTransfer.files));
+      }}
+    >
+      <div className="overflow-hidden rounded-[var(--rui-radius-composer)] border border-input bg-[var(--rui-composer-bg)] shadow-xs focus-within:ring-[length:var(--rui-focus-width)] focus-within:ring-ring/30">
+        {Boolean(context || contextItems.length || currentDraft.current.mentions.length) && (
+          <div
+            role="group"
+            aria-label="草稿上下文与提及"
+            className="flex min-w-0 flex-wrap gap-1.5 px-[var(--rui-content-padding)] pt-[var(--rui-content-gap-sm)]"
+          >
+            {context}
+            {contextItems.map((item) => (
+              <ContextPill
+                key={item.id}
+                label={item.label}
+                icon={item.icon}
+                disabled={disabled || submitting || item.disabled}
+                onRemove={onContextRemove ? () => onContextRemove(item.id) : undefined}
+              >
+                {item.label}
+              </ContextPill>
+            ))}
+            {currentDraft.current.mentions.map((mention) => (
+              <ContextPill
+                key={mention.key}
+                label={`@${mention.label}`}
+                icon={mention.kind === 'file' ? <File /> : <UserRound />}
+                disabled={disabled || submitting}
+                onRemove={() => removeMention(mention.key)}
+              >
+                @{mention.label}
+              </ContextPill>
+            ))}
+          </div>
+        )}
+        <Textarea
+          ref={textareaRef}
+          aria-label={label}
+          aria-describedby={
+            [hint ? hintId : '', errorMessage ? errorId : ''].filter(Boolean).join(' ') || undefined
+          }
+          aria-invalid={Boolean(errorMessage)}
+          aria-autocomplete={commandItems.length || mentionItems.length ? 'list' : 'none'}
+          aria-controls={trigger ? suggestionId : undefined}
+          aria-activedescendant={
+            trigger && usableSuggestions.length
+              ? `${suggestionId}-${usableSuggestions[Math.min(activeSuggestion, usableSuggestions.length - 1)]?.key}`
+              : undefined
+          }
+          className="min-h-[var(--rui-composer-input-height)] resize-y rounded-none border-0 bg-transparent px-[var(--rui-content-padding)] py-[var(--rui-content-gap-sm)] text-base shadow-none focus-visible:ring-0 md:text-base dark:bg-transparent"
+          value={text}
+          rows={2}
+          disabled={disabled || submitting}
+          placeholder={placeholder}
+          onChange={(event) => updateText(event.target.value, event.target.selectionStart)}
+          onSelect={(event) => {
+            if (composing.current) return;
+            const next =
+              event.currentTarget.selectionStart === event.currentTarget.selectionEnd
+                ? triggerAt(event.currentTarget.value, event.currentTarget.selectionStart)
+                : undefined;
+            if (
+              next?.start === candidateTrigger?.start &&
+              next?.end === candidateTrigger?.end &&
+              next?.query === candidateTrigger?.query &&
+              next?.kind === candidateTrigger?.kind
+            )
+              return;
+            setTrigger(next);
+            setActiveSuggestion(0);
+          }}
+          onCompositionStart={() => {
+            composing.current = true;
+          }}
+          onCompositionEnd={(event) => {
+            composing.current = false;
+            setTrigger(triggerAt(event.currentTarget.value, event.currentTarget.selectionStart));
+            setActiveSuggestion(0);
+          }}
+          onKeyDown={(event) => {
+            if (event.nativeEvent.isComposing || composing.current || event.keyCode === 229) return;
+            if (trigger && usableSuggestions.length) {
+              if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                setActiveSuggestion(
+                  (index) =>
+                    (index + (event.key === 'ArrowDown' ? 1 : -1) + usableSuggestions.length) %
+                    usableSuggestions.length,
+                );
+                return;
+              }
+              if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                const selected =
+                  usableSuggestions[Math.min(activeSuggestion, usableSuggestions.length - 1)];
+                if (selected) selectSuggestion(selected);
+                return;
+              }
+            }
+            if (trigger && event.key === 'Escape') {
               event.preventDefault();
-              setActiveSuggestion(index => (index + (event.key === 'ArrowDown' ? 1 : -1) + usableSuggestions.length) % usableSuggestions.length);
+              setTrigger(undefined);
               return;
             }
-            if (event.key === 'Enter' && !event.shiftKey) {
+            if (trigger && event.key === 'Enter' && !event.shiftKey) {
               event.preventDefault();
-              const selected = usableSuggestions[Math.min(activeSuggestion, usableSuggestions.length - 1)];
-              if (selected) selectSuggestion(selected);
               return;
             }
-          }
-          if (trigger && event.key === 'Escape') {
-            event.preventDefault();
-            setTrigger(undefined);
-            return;
-          }
-          if (trigger && event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); return; }
-          if (event.key === 'Tab') setTrigger(undefined);
-          if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing && !composing.current && event.keyCode !== 229) {
-            event.preventDefault();
-            void submit();
-          }
-        }}
-      />
-      {attachmentOptions && <div className="px-[var(--rui-content-padding)] pb-[var(--rui-content-gap-sm)]">
-        <FileUpload {...attachmentOptions} ref={uploadRef} variant="compact" value={attachments} onValueChange={next => update({ ...currentDraft.current, attachments: next })} disabled={disabled || submitting} label="添加附件" />
-        {attachmentsBlocked && <p role="status" className="mt-1 text-xs text-muted-foreground">{!onSubmitDraft ? '请配置结构化提交以发送附件' : '请完成附件上传，或移除未就绪的附件'}</p>}
-      </div>}
-      {trigger && <div id={suggestionId} role="listbox" aria-label={trigger.kind === 'command' ? '斜杠命令' : '提及建议'} className="max-h-[var(--rui-container-md)] min-w-0 overflow-y-auto border-t border-border bg-popover p-[var(--rui-content-gap-sm)]">
-        {suggestions.length ? <div className="grid gap-1">{suggestions.map(suggestion => {
-          const usableIndex = usableSuggestions.findIndex(item => item.key === suggestion.key);
-          const selected = usableIndex >= 0 && usableIndex === Math.min(activeSuggestion, usableSuggestions.length - 1);
-          return <button
-            key={suggestion.key}
-            ref={selected ? selectedOptionRef : undefined}
-            id={`${suggestionId}-${suggestion.key}`}
-            type="button"
-            role="option"
-            aria-selected={selected}
-            disabled={suggestion.disabled}
-            tabIndex={-1}
-            className={classes('grid min-w-0 rounded-md px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-left text-sm hover:bg-accent focus-visible:outline-[length:var(--rui-outline-width)] focus-visible:outline-ring disabled:opacity-50', selected && 'bg-accent')}
-            onMouseDown={event => event.preventDefault()}
-            onClick={() => selectSuggestion(suggestion)}
-          ><span className="truncate font-medium">{trigger.kind === 'command' ? '/' : '@'}{suggestion.label}</span>{suggestion.description && <span className="truncate text-xs text-muted-foreground">{suggestion.description}</span>}</button>;
-        })}</div> : <p className="px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground">没有匹配项</p>}
-      </div>}
-      <div className="flex min-w-0 flex-wrap items-center gap-2 px-[var(--rui-content-gap-sm)] pb-[var(--rui-content-gap-sm)]">
-        {toolbar && <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">{toolbar}</div>}
-        {running ? <Button type="button" size="sm" variant="outline" className="ml-auto" aria-label={stopLabel} disabled={disabled || !onStop} onClick={event => { event.preventDefault(); onStop?.(); }}><Square className="size-3.5" aria-hidden="true" />停止</Button>
-          : <Button type="submit" size="sm" className="ml-auto" aria-label={submitting ? '正在提交' : submitLabel} disabled={disabled || submitting || !canSubmit}>{submitting ? <LoaderCircle className="size-4 motion-safe:animate-spin" aria-hidden="true" /> : <ArrowUp className="size-4" aria-hidden="true" />}</Button>}
+            if (event.key === 'Tab') setTrigger(undefined);
+            if (
+              event.key === 'Enter' &&
+              !event.shiftKey &&
+              !event.nativeEvent.isComposing &&
+              !composing.current &&
+              event.keyCode !== 229
+            ) {
+              event.preventDefault();
+              void submit();
+            }
+          }}
+        />
+        {attachmentOptions && (
+          <div className="px-[var(--rui-content-padding)] pb-[var(--rui-content-gap-sm)]">
+            <FileUpload
+              {...attachmentOptions}
+              ref={uploadRef}
+              variant="compact"
+              value={attachments}
+              onValueChange={(next) => update({ ...currentDraft.current, attachments: next })}
+              disabled={disabled || submitting}
+              label="添加附件"
+            />
+            {attachmentsBlocked && (
+              <p role="status" className="mt-1 text-xs text-muted-foreground">
+                {!onSubmitDraft
+                  ? '请配置结构化提交以发送附件'
+                  : '请完成附件上传，或移除未就绪的附件'}
+              </p>
+            )}
+          </div>
+        )}
+        {trigger && (
+          <div
+            id={suggestionId}
+            role="listbox"
+            aria-label={trigger.kind === 'command' ? '斜杠命令' : '提及建议'}
+            className="max-h-[var(--rui-container-md)] min-w-0 overflow-y-auto border-t border-border bg-popover p-[var(--rui-content-gap-sm)]"
+          >
+            {suggestions.length ? (
+              <div className="grid gap-1">
+                {suggestions.map((suggestion) => {
+                  const usableIndex = usableSuggestions.findIndex(
+                    (item) => item.key === suggestion.key,
+                  );
+                  const selected =
+                    usableIndex >= 0 &&
+                    usableIndex === Math.min(activeSuggestion, usableSuggestions.length - 1);
+                  return (
+                    <button
+                      key={suggestion.key}
+                      ref={selected ? selectedOptionRef : undefined}
+                      id={`${suggestionId}-${suggestion.key}`}
+                      type="button"
+                      role="option"
+                      aria-selected={selected}
+                      disabled={suggestion.disabled}
+                      tabIndex={-1}
+                      className={classes(
+                        'grid min-w-0 rounded-md px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-left text-sm hover:bg-accent focus-visible:outline-[length:var(--rui-focus-width)] focus-visible:outline-ring disabled:opacity-50',
+                        selected && 'bg-accent',
+                      )}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => selectSuggestion(suggestion)}
+                    >
+                      <span className="truncate font-medium">
+                        {trigger.kind === 'command' ? '/' : '@'}
+                        {suggestion.label}
+                      </span>
+                      {suggestion.description && (
+                        <span className="truncate text-xs text-muted-foreground">
+                          {suggestion.description}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-muted-foreground">
+                没有匹配项
+              </p>
+            )}
+          </div>
+        )}
+        <div className="flex min-w-0 flex-wrap items-center gap-2 px-[var(--rui-content-gap-sm)] pb-[var(--rui-content-gap-sm)]">
+          {toolbar && (
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">{toolbar}</div>
+          )}
+          {running ? (
+            <Button
+              type="button"
+              size="default"
+              variant="outline"
+              className="ml-auto"
+              aria-label={stopLabel}
+              disabled={disabled || !onStop}
+              onClick={(event) => {
+                event.preventDefault();
+                onStop?.();
+              }}
+            >
+              <Square className="size-3" aria-hidden="true" />
+              停止
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              size="default"
+              className="ml-auto"
+              aria-label={submitting ? '正在提交' : submitLabel}
+              disabled={disabled || submitting || !canSubmit}
+            >
+              {submitting ? (
+                <LoaderCircle className="size-3 motion-safe:animate-spin" aria-hidden="true" />
+              ) : (
+                <ArrowUp className="size-3" aria-hidden="true" />
+              )}
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
-    {errorMessage && <p id={errorId} role="alert" className="text-sm text-destructive">{errorMessage}</p>}
-    {hint && <div id={hintId} className="text-xs text-muted-foreground">{hint}</div>}
-  </form>;
+      {errorMessage && (
+        <p id={errorId} role="alert" className="text-sm text-destructive">
+          {errorMessage}
+        </p>
+      )}
+      {hint && (
+        <div id={hintId} className="text-xs text-muted-foreground">
+          {hint}
+        </div>
+      )}
+    </form>
+  );
 }

@@ -1,10 +1,11 @@
-"use client"
+'use client';
 
-import { tokenMetrics } from "@reito/tokens/metrics"
-import * as React from "react"
-import { Menu as MenuPrimitive } from "@base-ui/react/menu"
-import { Menubar as MenubarPrimitive } from "@base-ui/react/menubar"
-import { cn } from "../lib/utils.js"
+import { tokenMetrics } from '@reito/tokens/metrics';
+import * as React from 'react';
+import { Menu as MenuPrimitive } from '@base-ui/react/menu';
+import { Menubar as MenubarPrimitive } from '@base-ui/react/menubar';
+import { menuItemStateClassName } from '../lib/state.js';
+import { cn } from '../lib/utils.js';
 
 import {
   DropdownMenu,
@@ -20,59 +21,52 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "./dropdown-menu.js"
-import { CheckIcon } from "lucide-react"
+} from './dropdown-menu.js';
+import { CheckIcon } from 'lucide-react';
 
 function Menubar({ className, ...props }: MenubarPrimitive.Props) {
   return (
     <MenubarPrimitive
       data-slot="menubar"
       className={cn(
-        "flex h-[var(--rui-control-height)] items-center gap-0.5 rounded-lg border p-[var(--rui-control-inset)]",
-        className
+        'flex h-[calc(var(--rui-button-height)+var(--rui-control-inset)*2)] items-center gap-0.5 rounded-[var(--rui-component-menu-popup-radius)] border p-[var(--rui-control-inset)]',
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarMenu({ ...props }: React.ComponentProps<typeof DropdownMenu>) {
-  return <DropdownMenu data-slot="menubar-menu" {...props} />
+  return <DropdownMenu data-slot="menubar-menu" {...props} />;
 }
 
-function MenubarGroup({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuGroup>) {
-  return <DropdownMenuGroup data-slot="menubar-group" {...props} />
+function MenubarGroup({ ...props }: React.ComponentProps<typeof DropdownMenuGroup>) {
+  return <DropdownMenuGroup data-slot="menubar-group" {...props} />;
 }
 
-function MenubarPortal({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPortal>) {
-  return <DropdownMenuPortal data-slot="menubar-portal" {...props} />
+function MenubarPortal({ ...props }: React.ComponentProps<typeof DropdownMenuPortal>) {
+  return <DropdownMenuPortal data-slot="menubar-portal" {...props} />;
 }
 
-function MenubarTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof DropdownMenuTrigger>) {
+function MenubarTrigger({ className, ...props }: React.ComponentProps<typeof DropdownMenuTrigger>) {
   return (
     <DropdownMenuTrigger
       data-slot="menubar-trigger"
       className={cn(
-        "flex items-center rounded-sm px-1.5 py-0.5 text-sm font-medium outline-hidden select-none hover:bg-muted aria-expanded:bg-muted",
-        className
+        'flex items-center h-[var(--rui-button-height)] rounded-control px-2 text-[length:var(--rui-action-font-size)] font-normal outline-hidden select-none hover:bg-muted aria-expanded:bg-muted',
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarContent({
   className,
-  align = "start",
-  alignOffset = -tokenMetrics["space-1"],
-  sideOffset = tokenMetrics["space-2"],
+  align = 'start',
+  alignOffset = -tokenMetrics['space-1'],
+  sideOffset = tokenMetrics['space-2'],
   ...props
 }: React.ComponentProps<typeof DropdownMenuContent>) {
   return (
@@ -81,16 +75,31 @@ function MenubarContent({
       align={align}
       alignOffset={alignOffset}
       sideOffset={sideOffset}
-      className={cn("min-w-36 rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-[var(--rui-duration-fast)] data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95", className )}
+      className={cn(
+        [
+          // Layout
+          'min-w-36',
+          // Surface
+          'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
+          // Spacing
+          'p-[var(--rui-component-menu-popup-padding)]',
+          // Typography
+          'text-popover-foreground',
+          // Surface
+          'shadow-md ring-1 ring-foreground/10',
+          // Motion is inherited from DropdownMenuContent.
+        ],
+        className,
+      )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarItem({
   className,
   inset,
-  variant = "default",
+  variant = 'default',
   ...props
 }: React.ComponentProps<typeof DropdownMenuItem>) {
   return (
@@ -99,12 +108,29 @@ function MenubarItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "group/menubar-item gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-disabled:opacity-[var(--rui-opacity-disabled)] [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive!",
-        className
+        [
+          // Layout
+          'group/menubar-item',
+          // Spacing
+          'gap-[var(--rui-component-menu-item-gap)]',
+          // Surface
+          'rounded-[var(--rui-component-menu-item-radius)]',
+          // Spacing
+          'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
+          // Typography
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
+          // Component state
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
+          // Child and composition rules
+          "[&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
+          // Component state
+          'data-[variant=destructive]:*:[svg]:text-[var(--rui-component-menu-item-fg-destructive)]!',
+        ],
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarCheckboxItem({
@@ -114,34 +140,53 @@ function MenubarCheckboxItem({
   inset,
   ...props
 }: MenuPrimitive.CheckboxItem.Props & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <MenuPrimitive.CheckboxItem
       data-slot="menubar-checkbox-item"
       data-inset={inset}
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-1.5 pl-7 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)] [&_svg]:pointer-events-none [&_svg]:shrink-0",
-        className
+        [
+          // Layout
+          'relative flex cursor-default items-center',
+          // Spacing
+          'gap-[var(--rui-component-menu-item-gap)]',
+          // Surface
+          'rounded-[var(--rui-component-menu-item-radius)]',
+          // Spacing
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-[var(--rui-component-menu-inset-padding-x)]',
+          // Typography
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
+          // Surface
+          'outline-hidden',
+          // Layout
+          'select-none',
+          menuItemStateClassName,
+          // Component state
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
+          // Disabled state
+          'data-disabled:pointer-events-none',
+          // Child and composition rules
+          '[&_svg]:pointer-events-none [&_svg]:shrink-0',
+        ],
+        className,
       )}
       checked={checked}
       {...props}
     >
-      <span className="pointer-events-none absolute left-1.5 flex size-4 items-center justify-center [&_svg:not([class*='size-'])]:size-4">
+      <span className="pointer-events-none absolute left-[var(--rui-component-menu-item-padding-x)] flex size-[var(--rui-component-menu-icon-size)] items-center justify-center [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]">
         <MenuPrimitive.CheckboxItemIndicator>
-          <CheckIcon
-          />
+          <CheckIcon />
         </MenuPrimitive.CheckboxItemIndicator>
       </span>
       {children}
     </MenuPrimitive.CheckboxItem>
-  )
+  );
 }
 
-function MenubarRadioGroup({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuRadioGroup>) {
-  return <DropdownMenuRadioGroup data-slot="menubar-radio-group" {...props} />
+function MenubarRadioGroup({ ...props }: React.ComponentProps<typeof DropdownMenuRadioGroup>) {
+  return <DropdownMenuRadioGroup data-slot="menubar-radio-group" {...props} />;
 }
 
 function MenubarRadioItem({
@@ -150,27 +195,48 @@ function MenubarRadioItem({
   inset,
   ...props
 }: MenuPrimitive.RadioItem.Props & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <MenuPrimitive.RadioItem
       data-slot="menubar-radio-item"
       data-inset={inset}
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-1.5 pl-7 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-[var(--rui-opacity-disabled)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
+        [
+          // Layout
+          'relative flex cursor-default items-center',
+          // Spacing
+          'gap-[var(--rui-component-menu-item-gap)]',
+          // Surface
+          'rounded-[var(--rui-component-menu-item-radius)]',
+          // Spacing
+          'py-[var(--rui-component-menu-item-padding-y)] pr-[var(--rui-component-menu-item-padding-x)] pl-[var(--rui-component-menu-inset-padding-x)]',
+          // Typography
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
+          // Surface
+          'outline-hidden',
+          // Layout
+          'select-none',
+          menuItemStateClassName,
+          // Component state
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
+          // Disabled state
+          'data-disabled:pointer-events-none',
+          // Child and composition rules
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
+        ],
+        className,
       )}
       {...props}
     >
-      <span className="pointer-events-none absolute left-1.5 flex size-4 items-center justify-center [&_svg:not([class*='size-'])]:size-4">
+      <span className="pointer-events-none absolute left-[var(--rui-component-menu-item-padding-x)] flex size-[var(--rui-component-menu-icon-size)] items-center justify-center [&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]">
         <MenuPrimitive.RadioItemIndicator>
-          <CheckIcon
-          />
+          <CheckIcon />
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}
     </MenuPrimitive.RadioItem>
-  )
+  );
 }
 
 function MenubarLabel({
@@ -178,19 +244,19 @@ function MenubarLabel({
   inset,
   ...props
 }: React.ComponentProps<typeof DropdownMenuLabel> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <DropdownMenuLabel
       data-slot="menubar-label"
       data-inset={inset}
       className={cn(
-        "px-1.5 py-1 text-sm font-medium data-inset:pl-7",
-        className
+        'px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)] text-xs font-medium data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarSeparator({
@@ -200,10 +266,13 @@ function MenubarSeparator({
   return (
     <DropdownMenuSeparator
       data-slot="menubar-separator"
-      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      className={cn(
+        'mx-[var(--rui-component-menu-separator-inset)] my-[var(--rui-component-menu-separator-margin-y)] h-px bg-border',
+        className,
+      )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarShortcut({
@@ -214,18 +283,16 @@ function MenubarShortcut({
     <DropdownMenuShortcut
       data-slot="menubar-shortcut"
       className={cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground group-focus/menubar-item:text-accent-foreground",
-        className
+        'ml-auto text-xs tracking-widest text-muted-foreground group-focus/menubar-item:text-accent-foreground',
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-function MenubarSub({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuSub>) {
-  return <DropdownMenuSub data-slot="menubar-sub" {...props} />
+function MenubarSub({ ...props }: React.ComponentProps<typeof DropdownMenuSub>) {
+  return <DropdownMenuSub data-slot="menubar-sub" {...props} />;
 }
 
 function MenubarSubTrigger({
@@ -233,19 +300,24 @@ function MenubarSubTrigger({
   inset,
   ...props
 }: React.ComponentProps<typeof DropdownMenuSubTrigger> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <DropdownMenuSubTrigger
       data-slot="menubar-sub-trigger"
       data-inset={inset}
       className={cn(
-        "gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg:not([class*='size-'])]:size-4",
-        className
+        [
+          'gap-[var(--rui-component-menu-item-gap)] rounded-[var(--rui-component-menu-item-radius)] px-[var(--rui-component-menu-item-padding-x)] py-[var(--rui-component-menu-item-padding-y)]',
+          'text-[length:var(--rui-component-menu-font-size)] leading-[var(--rui-component-menu-item-line-height)]',
+          'data-inset:pl-[var(--rui-component-menu-inset-padding-x)]',
+          "[&_svg:not([class*='size-'])]:size-[var(--rui-component-menu-icon-size)]",
+        ],
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function MenubarSubContent({
@@ -255,10 +327,25 @@ function MenubarSubContent({
   return (
     <DropdownMenuSubContent
       data-slot="menubar-sub-content"
-      className={cn("min-w-32 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-[var(--rui-duration-fast)] data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className )}
+      className={cn(
+        [
+          // Layout
+          'min-w-32',
+          // Surface
+          'rounded-[var(--rui-component-menu-popup-radius)] bg-popover',
+          // Spacing
+          'p-[var(--rui-component-menu-popup-padding)]',
+          // Typography
+          'text-popover-foreground',
+          // Surface
+          'shadow-lg ring-1 ring-foreground/10',
+          // Motion is inherited from DropdownMenuSubContent.
+        ],
+        className,
+      )}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -278,4 +365,4 @@ export {
   MenubarSub,
   MenubarSubTrigger,
   MenubarSubContent,
-}
+};

@@ -82,9 +82,14 @@ export const NumericForm: Story = {
   },
 };
 
-export const Playground: StoryObj<{ value: string | null; size: 'default' | 'sm'; disabled: boolean; invalid: boolean; placeholder: string }> = {
+export const Playground: StoryObj<{ value: string | null; size: 'default' | 'sm' | 'xs'; disabled: boolean; invalid: boolean; placeholder: string }> = {
   name: "参数调试", args: { value: 'local', size: 'default', disabled: false, invalid: false, placeholder: '选择位置' },
-  argTypes: { value: { control: 'select', options: [null, 'local', 'worktree', 'cloud'] }, size: { control: 'select', options: ['default', 'sm'], table: { category: 'SelectTrigger' } }, disabled: { control: 'boolean' }, invalid: { control: 'boolean', table: { category: '组合示例' }, description: '映射 SelectTrigger 的 aria-invalid。' }, placeholder: { control: 'text', table: { category: 'SelectValue' } } },
+  argTypes: { value: { control: 'select', options: [null, 'local', 'worktree', 'cloud'] }, size: { control: 'select', options: ['default', 'sm', 'xs'], table: { category: 'SelectTrigger' } }, disabled: { control: 'boolean' }, invalid: { control: 'boolean', table: { category: '组合示例' }, description: '映射 SelectTrigger 的 aria-invalid。' }, placeholder: { control: 'text', table: { category: 'SelectValue' } } },
   parameters: { controls: { include: ['value', 'size', 'disabled', 'invalid', 'placeholder'] } },
   render: function Render(args) { const [, updateArgs] = useArgs(); return <SelectInput options={executionOptions} value={args.value} onValueChange={value => updateArgs({ value })} disabled={args.disabled} aria-label="选择执行位置" aria-invalid={args.invalid} size={args.size} className="w-60" placeholder={args.placeholder} />; },
+};
+
+export const ToolbarSize: Story = {
+  name: "尺寸 · 工具栏",
+  render: () => <div className="flex items-center gap-2"><Select defaultValue="local" items={[{ value: 'local', label: '本地' }]}><SelectTrigger size="xs" aria-label="工具栏位置"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="local">本地</SelectItem></SelectContent></Select><Button>执行</Button></div>,
 };

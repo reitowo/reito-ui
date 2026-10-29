@@ -80,6 +80,11 @@ test('Playground toggles virtualization and load errors without changing tabs', 
   await page.locator('[id="control-virtual"]').evaluate((element: HTMLInputElement) => element.click());
   await expect(frame.locator('[data-slot="listbox-viewport"]')).toHaveAttribute('data-virtual', 'true');
   expect(await frame.getByRole('option').count()).toBeLessThan(30);
+  await page.getByRole('combobox', { name: 'descriptionLayout' }).selectOption('stacked');
+  await expect(frame.locator('[data-slot="listbox-viewport"]')).toHaveAttribute('data-description-layout','stacked');
+  await expect.poll(()=>frame.getByRole('option').first().evaluate(n=>n.getBoundingClientRect().height)).toBe(52);
+  await page.getByRole('combobox', { name: 'descriptionLayout' }).selectOption('inline');
+  await expect.poll(()=>frame.getByRole('option').first().evaluate(n=>n.getBoundingClientRect().height)).toBe(32);
   await page.getByRole('combobox', { name: 'scenario' }).selectOption('error');
   await expect(frame.getByRole('alert')).toHaveText('无法读取选项');
   expect(new URL(page.url()).searchParams.get('path')).toBe(path);
@@ -89,7 +94,27 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 420, height: 620 });
   await open(page, 'virtual-large', `theme:${theme};density:${density}`);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  let violations: unknown;
+  await expect.poll(async () => {
+    try {
+      violations = await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations);
+      return true;
+    } catch (error) {
+      if (!String(error).includes('Axe is already running')) throw error;
+      return false;
+    }
+  }).toBe(true);
+  expect(violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/listbox-virtual/${theme}-${density}.png`, fullPage: true });
+});
+
+test('virtual description layout updates the measured row height', async ({ page }) => {
+  await page.goto('http://127.0.0.1:6007/iframe.html?id=基础-listbox--playground&viewMode=story&args=virtual:true;descriptionLayout:stacked');
+  const viewport=page.locator('[data-slot=listbox-viewport]');
+  await expect(viewport).toHaveAttribute('data-description-layout','stacked');
+  await expect(viewport).toHaveAttribute('data-virtual','true');
+  const row=page.getByRole('option').first();
+  expect(await row.evaluate(n=>n.getBoundingClientRect().height)).toBe(52);
+  expect(await page.getByRole('option').count()).toBeLessThan(30);
 });

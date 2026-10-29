@@ -1,6 +1,6 @@
 {
   "name": "reito-design-system",
-  "version": "0.5.1",
+  "version": "0.6.0-next.0",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -16,7 +16,8 @@
     "tokens:build": "node scripts/build-tokens.mjs",
     "tokens:check": "node scripts/build-tokens.mjs --check",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "check": "npm run tokens:check && npm run catalog:check && node scripts/check-design.mjs && npm run tokens:audit && npm run typecheck",
+    "docs:check": "node --experimental-strip-types --no-warnings=ExperimentalWarning apps/lab/site/check-docs.ts",
+    "check": "npm run recipe:check && npm run components:check && npm run tokens:check && npm run catalog:check && npm run docs:check && node scripts/check-design.mjs && npm run tokens:audit && npm run typecheck",
     "tokens:audit": "node scripts/audit-design-tokens.mjs --check",
     "build": "npm run tokens:build && npm run catalog:build && npm run build --workspace @reito/ui && npm run build --workspace @reito/lab && npm run build --workspace @reito/storybook && npm run build --workspace @reito/workbench",
     "test:ui": "playwright test",
@@ -27,7 +28,13 @@
     "test:storybook:controls": "node scripts/check-storybook-controls.mjs",
     "catalog:build": "node scripts/build-catalog.mjs",
     "catalog:check": "node scripts/build-catalog.mjs --check",
-    "dev:workbench": "npm run dev --workspace @reito/workbench"
+    "dev:workbench": "npm run dev --workspace @reito/workbench",
+    "components:format": "prettier --write packages/ui/src",
+    "components:check": "prettier --check packages/ui/src && node scripts/check-component-source.mjs",
+    "recipe:build": "node scripts/sync-composition-recipe.mjs",
+    "recipe:check": "node scripts/sync-composition-recipe.mjs --check",
+    "consumer:build": "vite build --config tests/consumer/vite.config.ts",
+    "test:composition": "playwright test --config playwright.composition.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
@@ -37,6 +44,7 @@
     "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "6.1.1",
     "axe-core": "4.13.0",
+    "prettier": "3.6.2",
     "shadcn": "4.21.0",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",

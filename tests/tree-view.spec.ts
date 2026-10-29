@@ -51,7 +51,7 @@ test('Playground Controls update selection and expansion without changing tabs',
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: compact rows, axe and narrow tree`, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 }); const tree = await open(page, `theme:${theme};density:${density}`);
   const first = tree.getByRole('treeitem', { name: 'src' });
-  expect(await first.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 32);
+  expect(await first.locator(':scope > [data-slot="tree-item-row"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 24 : 28);
   await first.focus(); await first.press('End'); await expect(tree.getByRole('treeitem', { name: /README.md/ })).toBeFocused();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);

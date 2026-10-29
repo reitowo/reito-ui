@@ -8,7 +8,7 @@
 
 [Floating UI 官方 Combobox 说明](https://floating-ui.com/docs/floatingfocusmanager#comboboxes) 明确区分 DOM 焦点与读屏虚拟光标：Combobox 的 DOM 焦点不被锁在浮层里；虚拟光标可以限制在浮层范围，便于触屏读屏访问被 Portal 渲染的选项。这支持它是一种有意的上游策略；并不等于本项目已完成真实读屏验收。
 
-[Base UI 官方 Combobox 文档](https://base-ui.com/react/components/combobox) 提供外部输入和 Popup 内输入两种组合。当前固定安装版本为 `@base-ui/react@1.8.0`，已核对以下实际源码，而非只据文档推测：
+[Base UI 官方 Combobox 文档](https://base-ui.com/react/components/combobox) 提供外部输入和 Popup 内输入两种组合。当前固定安装版本为 `@base-ui/react@1.9.0`（2026-10-21 由 1.8.0 升级，Combobox 相关变更仅为异步高亮、typeahead 重置和挂载性能修复，本项目不使用 `actionsRef`），已核对以下实际源码，而非只据文档推测：
 
 | 本地源码位置 | 实际行为 |
 | --- | --- |

@@ -52,7 +52,11 @@ function initials(value: ReactNode) {
   if (typeof value !== 'string') return <UserRound aria-hidden="true" className="size-3.5" />;
   const parts = value.trim().split(/\s+/u).filter(Boolean);
   if (!parts.length) return <UserRound aria-hidden="true" className="size-3.5" />;
-  return parts.slice(0, 2).map(part => part.at(0) ?? '').join('').toLocaleUpperCase();
+  return parts
+    .slice(0, 2)
+    .map((part) => part.at(0) ?? '')
+    .join('')
+    .toLocaleUpperCase();
 }
 
 /** A compact, non-interactive identity row with separately accessible host actions. */
@@ -93,34 +97,59 @@ export function UserInfo({
         <AvatarFallback>{fallback ?? initials(name)}</AvatarFallback>
       </Avatar>
       <div className="grid min-w-0 flex-1 gap-[var(--rui-space-1)] group-data-[size=sm]/user-info:gap-0">
-        <div className="min-w-0 truncate font-medium" title={nameText}>{name}</div>
-        {(description || status) && <div className="flex min-w-0 items-center gap-[var(--rui-space-2)] text-xs text-muted-foreground">
-          {description && <span className="min-w-0 truncate" title={descriptionText}>{description}</span>}
-          {status && <span className="inline-flex shrink-0 items-center gap-[var(--rui-space-1)]">
-            <span aria-hidden="true" className={cx('size-2 rounded-full', statusToneClass[statusTone])} />
-            <span>{status}</span>
-          </span>}
-        </div>}
+        <div className="min-w-0 truncate font-medium" title={nameText}>
+          {name}
+        </div>
+        {(description || status) && (
+          <div className="flex min-w-0 items-center gap-[var(--rui-space-2)] text-xs text-muted-foreground">
+            {description && (
+              <span className="min-w-0 truncate" title={descriptionText}>
+                {description}
+              </span>
+            )}
+            {status && (
+              <span className="inline-flex shrink-0 items-center gap-[var(--rui-space-1)]">
+                <span
+                  aria-hidden="true"
+                  className={cx('size-2 rounded-full', statusToneClass[statusTone])}
+                />
+                <span>{status}</span>
+              </span>
+            )}
+          </div>
+        )}
       </div>
-      {actions.length > 0 && <div role="group" aria-label={actionsLabel} className="flex shrink-0 items-center gap-[var(--rui-space-1)]">
-        {actions.map(action => {
-          const busy = Boolean(action.loading);
-          return <Button
-            key={action.id}
-            type="button"
-            size={showActionLabels || !action.icon ? 'xs' : 'icon-xs'}
-            variant={action.variant ?? 'ghost'}
-            disabled={disabled || action.disabled || busy}
-            aria-label={showActionLabels || !action.icon ? undefined : action.label}
-            aria-busy={busy || undefined}
-            title={action.label}
-            onClick={action.onSelect}
-          >
-            {busy ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" /> : action.icon}
-            {(showActionLabels || !action.icon) && action.label}
-          </Button>;
-        })}
-      </div>}
+      {actions.length > 0 && (
+        <div
+          role="group"
+          aria-label={actionsLabel}
+          className="flex shrink-0 items-center gap-[var(--rui-space-1)]"
+        >
+          {actions.map((action) => {
+            const busy = Boolean(action.loading);
+            return (
+              <Button
+                key={action.id}
+                type="button"
+                size={showActionLabels || !action.icon ? 'xs' : 'icon-xs'}
+                variant={action.variant ?? 'ghost'}
+                disabled={disabled || action.disabled || busy}
+                aria-label={showActionLabels || !action.icon ? undefined : action.label}
+                aria-busy={busy || undefined}
+                title={action.label}
+                onClick={action.onSelect}
+              >
+                {busy ? (
+                  <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+                ) : (
+                  action.icon
+                )}
+                {(showActionLabels || !action.icon) && action.label}
+              </Button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

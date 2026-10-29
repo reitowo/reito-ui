@@ -4,13 +4,13 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
   await page.addInitScript(density => localStorage.setItem('reito-density', density), density);
   await page.goto('/?layer=basic&component=input');
   const input = page.getByRole('textbox', { name: '项目名称', exact: true });
-  await expect(input).toHaveCSS('height', density === 'compact' ? '32px' : '40px');
-  await expect(input).toHaveCSS('font-size', '14px');
+  await expect(input).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
+  await expect(input).toHaveCSS('font-size', '13px');
   await page.evaluate(() => {
     const root = document.documentElement.style;
     root.setProperty('--rui-control-height', '44px');
     root.setProperty('--rui-font-interface', '18px');
-    root.setProperty('--rui-radius-lg', '3px');
+    root.setProperty('--rui-radius-control', '3px');
     root.setProperty('--rui-space-1', '5px');
   });
   await expect(input).toHaveCSS('height', '44px');
@@ -19,15 +19,28 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
   await expect(input).toHaveCSS('padding-left', '12.5px');
   await input.fill('修改 token 后仍然能输入');
   await expect(input).toHaveValue('修改 token 后仍然能输入');
+  const readonly = page.getByRole('textbox', { name: '只读项目编号', exact: true });
+  const surfaces = await readonly.evaluate((el) => {
+    const rest = document.querySelector('input:not([readonly]):not([disabled])');
+    return {
+      readonly: getComputedStyle(el).backgroundColor,
+      rest: rest ? getComputedStyle(rest).backgroundColor : '',
+      opacity: getComputedStyle(el).opacity,
+    };
+  });
+  expect(surfaces.readonly).not.toBe(surfaces.rest);
+  expect(surfaces.opacity).toBe('1');
 
   await page.goto('/?layer=basic&component=button');
   const button = page.getByRole('button', { name: '保存更改', exact: true });
+  await expect(button).toBeVisible();
   await page.evaluate(() => {
     const root = document.documentElement.style;
-    root.setProperty('--rui-control-height', '44px');
+    root.setProperty('--rui-button-height', '44px');
+    root.setProperty('--rui-action-font-size', '18px');
     root.setProperty('--rui-font-interface', '18px');
-    root.setProperty('--rui-radius-lg', '3px');
-    root.setProperty('--rui-font-weight-medium', '600');
+    root.setProperty('--rui-radius-sm', '3px');
+    root.setProperty('--rui-font-weight-regular', '600');
   });
   await expect(button).toHaveCSS('height', '44px');
   await expect(button).toHaveCSS('font-size', '18px');
@@ -50,12 +63,25 @@ for (const density of ['compact', 'comfortable']) test(`tokens drive actual cont
 
 test('generated container breakpoints preserve desktop and narrow workspace layout', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('http://127.0.0.1:5175/');
-  const panels = page.locator('.workbench-shell > div').first();
-  await expect(panels).toHaveCSS('flex-direction', 'row');
+  await page.goto(process.env.REITO_WORKBENCH_URL || 'http://127.0.0.1:5175/');
+  const dashboard = page.locator('[data-slot="dashboard-group"]');
+  await expect(dashboard).toHaveAttribute('data-layout', 'wide');
   const navigation = page.getByRole('navigation', { name: '工作台导航' });
   expect((await navigation.boundingBox())!.width).toBeLessThan(300);
   await page.setViewportSize({ width: 640, height: 720 });
-  await expect(panels).toHaveCSS('flex-direction', 'column');
-  await expect(page.getByRole('textbox', { name: '消息草稿', exact: true })).toBeVisible();
+  await expect(dashboard).toHaveAttribute('data-layout', 'narrow');
+  const draft = page.getByRole('textbox', { name: '消息草稿', exact: true });
+  await expect(draft).toBeVisible();
+  await draft.fill('窄屏导航保持会话草稿');
+  const before = await draft.boundingBox();
+  await page.getByRole('button', { name: '打开导航', exact: true }).click();
+  const drawer = page.getByRole('dialog');
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole('navigation', { name: '工作台导航' })).toBeVisible();
+  const after = await page.locator('textarea[aria-label="消息草稿"]').boundingBox();
+  expect(after?.width).toBe(before?.width);
+  await page.keyboard.press('Escape');
+  await expect(drawer).toBeHidden();
+  await expect(draft).toHaveValue('窄屏导航保持会话草稿');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

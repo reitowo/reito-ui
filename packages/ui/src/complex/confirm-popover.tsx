@@ -106,7 +106,7 @@ export function ConfirmPopover({
         align={align}
         aria-busy={busy || undefined}
         className={cx(
-          'w-[var(--rui-container-2xs)] max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-content-gap-sm)] p-[var(--rui-content-padding)]',
+          'w-[var(--rui-container-2xs)] max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-content-gap-sm)] px-[var(--rui-compact-surface-padding-x)] py-[var(--rui-compact-surface-padding-y)]',
           className,
         )}
       >
@@ -116,15 +116,22 @@ export function ConfirmPopover({
         </div>
         {details && <div className="text-sm text-muted-foreground">{details}</div>}
         {visibleError && (
-          <p role="alert" className="flex items-start gap-[var(--rui-space-1)] text-xs text-destructive">
+          <p
+            role="alert"
+            className="flex items-start gap-[var(--rui-space-1)] text-xs text-destructive"
+          >
             <CircleAlert aria-hidden="true" className="mt-px size-3 shrink-0" />
             <span className="min-w-0">{visibleError}</span>
           </p>
         )}
-        {busy && <p role="status" className="sr-only">{pendingLabel}</p>}
-        <div className="flex flex-wrap justify-end gap-[var(--rui-content-gap-sm)] border-t border-border pt-[var(--rui-content-gap-sm)]">
+        {busy && (
+          <p role="status" className="sr-only">
+            {pendingLabel}
+          </p>
+        )}
+        <div className="flex flex-wrap justify-end gap-[var(--rui-content-gap-sm)] border-t border-border pt-[var(--rui-compact-surface-padding-y)]">
           <PopoverClose
-            render={<Button type="button" variant="ghost" size="sm" />}
+            render={<Button type="button" variant="ghost" size="default" />}
             disabled={busy}
             onClick={onCancel}
           >
@@ -133,10 +140,12 @@ export function ConfirmPopover({
           <Button
             type="button"
             variant={destructive ? 'destructive' : 'default'}
-            size="sm"
+            size="default"
             disabled={busy || disabled}
             aria-busy={busy || undefined}
-            onClick={() => { void confirm(); }}
+            onClick={() => {
+              void confirm();
+            }}
           >
             {busy && <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />}
             {busy ? pendingLabel : confirmLabel}

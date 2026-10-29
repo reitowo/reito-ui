@@ -7,7 +7,7 @@
 1. npm ci，固定 Node 24.11.1。
 2. 完整构建后运行 npm run check，确保类型声明已生成。
 3. git diff --exit-code 检查生成目录漂移。
-4. Chromium 核心交互回归：主页、SelectInput、表格、表单、属性编辑、Popover 列表和 Tabs／表格／滚动焦点，共 165 项；不是全库所有测试。
+4. Chromium 核心交互回归：主页、SelectInput、表格、表单、属性编辑、Popover 列表、Tabs／表格／滚动焦点、设置组合和组件总览，共 239 项；包含配色说明页、138 组件族的默认状态扫描和四种主题、密度的尺寸稳定性回归，其中三项逐层载入整个组件目录。0.5.5 新增组件 token 继承、紧凑菜单、引用图校验、错误渐变与滚动内距门禁。不是全库所有状态测试。
 5. 构建两个 tgz，检查公开入口、白名单文件、README、许可证及公开 registry 设置，上传 npm-packages artifact。
 
 PR 不使用发布凭据。失败保留 Playwright 诊断。CI 同分支新提交取消旧检查；发布流程串行且不取消。

@@ -2,6 +2,7 @@ import { chooseSelectOption } from './select-option';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { axeViolations } from './axe-scan';
 
 const axeSource = readFileSync(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
 const screenshotDirectory = new URL('../.logs/form/', import.meta.url);
@@ -246,16 +247,14 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     const fields = await openForm(page);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('html')).toHaveAttribute('data-density', density);
-    await expect(fields.name).toHaveCSS('height', density === 'compact' ? '32px' : '40px');
+    await expect(fields.name).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
     await fields.name.fill('x');
     await fields.save.click();
     await expectAssociatedError(fields.name, '名称至少需要 2 个字符');
     await page.evaluate(async () => { await document.fonts.ready; });
     await page.addScriptTag({ content: axeSource });
-    const violations = await page.evaluate(async () => {
-      const result = await (window as any).axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } });
-      return result.violations.map((violation: any) => ({ id: violation.id, targets: violation.nodes.map((node: any) => node.target) }));
-    });
+    const violations = (await axeViolations(page, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } }, { context: 'document' }))
+      .map(violation => ({ id: violation.id, targets: violation.nodes.map(node => node.target) }));
     expect(violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     await page.setViewportSize({ width: 1280, height: 1000 });

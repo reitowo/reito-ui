@@ -1,4 +1,13 @@
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode, type UIEvent } from 'react';
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type UIEvent,
+} from 'react';
 import { ArrowDown, CircleAlert, CornerDownLeft, LoaderCircle, Square, Trash2 } from 'lucide-react';
 import { Button } from '../primitives/button.js';
 import { Input } from '../primitives/input.js';
@@ -90,7 +99,10 @@ export function TerminalPrompt({
   const [historyIndex, setHistoryIndex] = useState<number | null>(null);
   const text = value === undefined ? internalValue : value;
   const following = follow === undefined ? internalFollow : follow;
-  const availableHistory = useMemo(() => (history ?? entries.map(entry => entry.command)).filter(command => command.trim()), [entries, history]);
+  const availableHistory = useMemo(
+    () => (history ?? entries.map((entry) => entry.command)).filter((command) => command.trim()),
+    [entries, history],
+  );
   const currentText = useRef(text);
   const draftBeforeHistory = useRef(text);
   const inFlight = useRef(false);
@@ -225,45 +237,214 @@ export function TerminalPrompt({
     if (atEnd !== following) changeFollow(atEnd);
   }
 
-  return <section data-slot="terminal-prompt" aria-label={`${label}终端`} aria-busy={submitting || running || cancelling} className={cx('min-w-0 overflow-hidden rounded-lg border border-border bg-card font-sans text-foreground', className)}>
-    <div className="flex h-[var(--rui-control-height-sm)] items-center gap-[var(--rui-space-1)] border-b border-border px-[var(--rui-cell-padding-x)]">
-      <h3 className="min-w-0 flex-1 truncate text-xs font-medium">{outputLabel}</h3>
-      {!following && entries.length > 0 && <Button type="button" variant="ghost" size="xs" disabled={disabled} onClick={() => { changeFollow(true); requestAnimationFrame(scrollToLatest); }}><ArrowDown aria-hidden="true" />回到最新</Button>}
-      {onClear && <Button type="button" variant="ghost" size="icon-xs" aria-label="清除命令记录" title="清除命令记录" disabled={disabled || running || submitting || entries.length === 0} onClick={onClear}><Trash2 aria-hidden="true" /></Button>}
-    </div>
-    <div ref={viewport} role="region" aria-label={outputLabel} tabIndex={0} onScroll={onOutputScroll} className={cx('min-w-0 overflow-auto bg-background outline-none focus-visible:ring-inset focus-visible:ring-[length:var(--rui-outline-width)] focus-visible:ring-ring/50', viewportClassName)}>
-      {welcome && <div className="border-b border-border px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs leading-relaxed text-muted-foreground">{welcome}</div>}
-      {entries.length > 0 ? <div role="log" aria-live="polite" aria-relevant="additions text"><ol className="divide-y divide-border">
-        {entries.map(entry => {
-          const status = entry.status ?? 'success';
-          return <li key={entry.id} data-terminal-id={entry.id} data-status={status} aria-busy={status === 'running' || undefined} className="min-w-0 px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] font-mono text-xs">
-            <div className="flex min-w-0 items-start gap-[var(--rui-space-2)]">
-              <span aria-hidden="true" className="shrink-0 text-muted-foreground">{entry.prompt ?? prompt}</span>
-              <code className="min-w-0 flex-1 whitespace-pre-wrap break-words text-foreground">{entry.command}</code>
-              <span className={cx('inline-flex shrink-0 items-center gap-[var(--rui-space-1)] font-sans text-[length:var(--rui-text-xs)]', status === 'error' ? 'text-destructive' : 'text-muted-foreground')}>
-                {status === 'running' && <LoaderCircle aria-hidden="true" className="size-3 motion-safe:animate-spin" />}
-                {status === 'error' && <CircleAlert aria-hidden="true" className="size-3" />}
-                {entry.time && <span>{entry.time}</span>}
-                <span>{statusLabels[status]}</span>
-              </span>
-            </div>
-            {entry.output !== undefined && <div className={cx('mt-[var(--rui-space-1)] min-w-0 whitespace-pre-wrap break-words ps-[var(--rui-space-4)] leading-relaxed', status === 'error' ? 'text-destructive' : 'text-muted-foreground')}>{entry.output}</div>}
-            {status === 'running' && entry.output === undefined && <p className="mt-[var(--rui-space-1)] ps-[var(--rui-space-4)] text-muted-foreground">正在等待宿主响应…</p>}
-          </li>;
-        })}
-      </ol></div> : <p role="status" className="px-[var(--rui-cell-padding-x)] py-[var(--rui-empty-padding)] text-center text-sm text-muted-foreground">{emptyMessage}</p>}
-    </div>
-    <form onSubmit={event => { event.preventDefault(); if (!composing.current) void submit(); }} className="border-t border-border">
-      <label htmlFor={inputId} className="sr-only">{label}</label>
-      <div className="flex min-w-0 items-center gap-[var(--rui-space-1)] px-[var(--rui-cell-padding-x)] py-[var(--rui-space-1)]">
-        <span aria-hidden="true" className="shrink-0 font-mono text-xs text-muted-foreground">{prompt}</span>
-        <Input id={inputId} name={name} autoFocus={autoFocus} aria-describedby={visibleError ? errorId : undefined} aria-invalid={Boolean(visibleError) || undefined} aria-keyshortcuts={running && onCancel ? 'Escape' : undefined} value={text} readOnly={readOnly || running} disabled={inputDisabled} placeholder={placeholder} autoComplete="off" spellCheck={false}
-          onChange={event => publish(event.target.value)} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }} onKeyDown={onInputKeyDown}
-          className="h-[var(--rui-control-height-xs)] min-w-0 flex-1 rounded-none border-0 bg-transparent px-[var(--rui-space-1)] font-mono text-xs shadow-none focus-visible:ring-0 dark:bg-transparent" />
-        {running && onCancel ? <Button type="button" variant="ghost" size="xs" aria-label={cancelLabel} title={cancelLabel} disabled={disabled || cancelling} onClick={() => void cancel()}>{cancelling ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" /> : <Square aria-hidden="true" />}取消</Button>
-          : <Button type="submit" variant="ghost" size="xs" aria-label={submitLabel} title={submitLabel} disabled={disabled || readOnly || submitting || !text.trim()}>{submitting ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" /> : <CornerDownLeft aria-hidden="true" />}运行</Button>}
+  return (
+    <section
+      data-slot="terminal-prompt"
+      aria-label={`${label}终端`}
+      aria-busy={submitting || running || cancelling}
+      className={cx(
+        'min-w-0 overflow-hidden rounded-lg border border-border bg-card font-sans text-foreground',
+        className,
+      )}
+    >
+      <div className="flex h-[var(--rui-control-height-sm)] items-center gap-[var(--rui-space-1)] border-b border-border px-[var(--rui-cell-padding-x)]">
+        <h3 className="min-w-0 flex-1 truncate text-xs font-medium">{outputLabel}</h3>
+        {!following && entries.length > 0 && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="xs"
+            disabled={disabled}
+            onClick={() => {
+              changeFollow(true);
+              requestAnimationFrame(scrollToLatest);
+            }}
+          >
+            <ArrowDown aria-hidden="true" />
+            回到最新
+          </Button>
+        )}
+        {onClear && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            aria-label="清除命令记录"
+            title="清除命令记录"
+            disabled={disabled || running || submitting || entries.length === 0}
+            onClick={onClear}
+          >
+            <Trash2 aria-hidden="true" />
+          </Button>
+        )}
       </div>
-      {visibleError && <div id={errorId} role="alert" className="flex items-start gap-[var(--rui-space-1)] border-t border-destructive/30 px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-destructive"><CircleAlert aria-hidden="true" className="mt-px size-3 shrink-0" /><span className="min-w-0">{visibleError}</span></div>}
-    </form>
-  </section>;
+      <div
+        ref={viewport}
+        role="region"
+        aria-label={outputLabel}
+        tabIndex={0}
+        onScroll={onOutputScroll}
+        className={cx(
+          'min-w-0 overflow-auto bg-background outline-none focus-visible:ring-inset focus-visible:ring-[length:var(--rui-focus-width)] focus-visible:ring-ring/50',
+          viewportClassName,
+        )}
+      >
+        {welcome && (
+          <div className="border-b border-border px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs leading-relaxed text-muted-foreground">
+            {welcome}
+          </div>
+        )}
+        {entries.length > 0 ? (
+          <div role="log" aria-live="polite" aria-relevant="additions text">
+            <ol className="divide-y divide-border">
+              {entries.map((entry) => {
+                const status = entry.status ?? 'success';
+                return (
+                  <li
+                    key={entry.id}
+                    data-terminal-id={entry.id}
+                    data-status={status}
+                    aria-busy={status === 'running' || undefined}
+                    className="min-w-0 px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] font-mono text-xs"
+                  >
+                    <div className="flex min-w-0 items-start gap-[var(--rui-space-2)]">
+                      <span aria-hidden="true" className="shrink-0 text-muted-foreground">
+                        {entry.prompt ?? prompt}
+                      </span>
+                      <code className="min-w-0 flex-1 whitespace-pre-wrap break-words text-foreground">
+                        {entry.command}
+                      </code>
+                      <span
+                        className={cx(
+                          'inline-flex shrink-0 items-center gap-[var(--rui-space-1)] font-sans text-[length:var(--rui-text-xs)]',
+                          status === 'error' ? 'text-destructive' : 'text-muted-foreground',
+                        )}
+                      >
+                        {status === 'running' && (
+                          <LoaderCircle
+                            aria-hidden="true"
+                            className="size-3 motion-safe:animate-spin"
+                          />
+                        )}
+                        {status === 'error' && (
+                          <CircleAlert aria-hidden="true" className="size-3" />
+                        )}
+                        {entry.time && <span>{entry.time}</span>}
+                        <span>{statusLabels[status]}</span>
+                      </span>
+                    </div>
+                    {entry.output !== undefined && (
+                      <div
+                        className={cx(
+                          'mt-[var(--rui-space-1)] min-w-0 whitespace-pre-wrap break-words ps-[var(--rui-space-4)] leading-relaxed',
+                          status === 'error' ? 'text-destructive' : 'text-muted-foreground',
+                        )}
+                      >
+                        {entry.output}
+                      </div>
+                    )}
+                    {status === 'running' && entry.output === undefined && (
+                      <p className="mt-[var(--rui-space-1)] ps-[var(--rui-space-4)] text-muted-foreground">
+                        正在等待宿主响应…
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ) : (
+          <p
+            role="status"
+            className="px-[var(--rui-cell-padding-x)] py-[var(--rui-empty-padding)] text-center text-sm text-muted-foreground"
+          >
+            {emptyMessage}
+          </p>
+        )}
+      </div>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!composing.current) void submit();
+        }}
+        className="border-t border-border"
+      >
+        <label htmlFor={inputId} className="sr-only">
+          {label}
+        </label>
+        <div className="flex min-w-0 items-center gap-[var(--rui-space-1)] px-[var(--rui-cell-padding-x)] py-[var(--rui-space-1)]">
+          <span aria-hidden="true" className="shrink-0 font-mono text-xs text-muted-foreground">
+            {prompt}
+          </span>
+          <Input
+            id={inputId}
+            name={name}
+            autoFocus={autoFocus}
+            aria-describedby={visibleError ? errorId : undefined}
+            aria-invalid={Boolean(visibleError) || undefined}
+            aria-keyshortcuts={running && onCancel ? 'Escape' : undefined}
+            value={text}
+            readOnly={readOnly || running}
+            disabled={inputDisabled}
+            placeholder={placeholder}
+            autoComplete="off"
+            spellCheck={false}
+            onChange={(event) => publish(event.target.value)}
+            onCompositionStart={() => {
+              composing.current = true;
+            }}
+            onCompositionEnd={() => {
+              composing.current = false;
+            }}
+            onKeyDown={onInputKeyDown}
+            className="h-[var(--rui-control-height-xs)] min-w-0 flex-1 rounded-none border-0 bg-transparent px-[var(--rui-space-1)] font-mono text-xs shadow-none focus-visible:ring-0 dark:bg-transparent"
+          />
+          {running && onCancel ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              aria-label={cancelLabel}
+              title={cancelLabel}
+              disabled={disabled || cancelling}
+              onClick={() => void cancel()}
+            >
+              {cancelling ? (
+                <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+              ) : (
+                <Square aria-hidden="true" />
+              )}
+              取消
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              variant="ghost"
+              size="xs"
+              aria-label={submitLabel}
+              title={submitLabel}
+              disabled={disabled || readOnly || submitting || !text.trim()}
+            >
+              {submitting ? (
+                <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+              ) : (
+                <CornerDownLeft aria-hidden="true" />
+              )}
+              运行
+            </Button>
+          )}
+        </div>
+        {visibleError && (
+          <div
+            id={errorId}
+            role="alert"
+            className="flex items-start gap-[var(--rui-space-1)] border-t border-destructive/30 px-[var(--rui-cell-padding-x)] py-[var(--rui-cell-padding-y)] text-xs text-destructive"
+          >
+            <CircleAlert aria-hidden="true" className="mt-px size-3 shrink-0" />
+            <span className="min-w-0">{visibleError}</span>
+          </div>
+        )}
+      </form>
+    </section>
+  );
 }

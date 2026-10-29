@@ -17,7 +17,9 @@ Exports:
 - `@reito/tokens/css`: generated CSS custom properties.
 - `@reito/tokens/tailwind`: generated Tailwind theme bridge.
 - `@reito/tokens/json`: source token definitions.
+- `@reito/tokens/catalog`: generated inspection metadata for every source definition, including source paths, aliases, CSS bindings and scope. Color recipes are identified as recipes rather than independent CSS variables.
 - `@reito/tokens/metrics`: numeric positioning and timing values with TypeScript declarations.
+- `@reito/tokens/themes`: runtime theme bindings, color palettes and typed semantic/component overrides. CSS aliases keep their base-variable references; numeric metrics remain build-time defaults.
 
 [Design language and examples](https://reitowo.github.io/reito-ui/) · [Source](https://github.com/reitowo/reito-ui)
 

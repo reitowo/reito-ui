@@ -1,6 +1,7 @@
 import { chooseSelectOption, storybookUrl } from './select-option';
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { axeViolations } from './axe-scan';
 async function open(page: Page, args = '', globals = 'theme:dark;density:compact') {
   await page.goto(`${storybookUrl}/iframe.html?id=复杂-form-表单管理--dynamic-playground&viewMode=story&args=${args}&globals=${globals}`);
   const form = page.getByRole('form', { name: '动态工作区设置' });
@@ -51,7 +52,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   const f = await open(page, 'initialMode:team;initialNotifications:true', `theme:${theme};density:${density}`);
   await f.save.click(); await expect(page.getByRole('alert')).toHaveCount(2);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations)).toEqual([]);
+  expect(await axeViolations(page, { rules: { region: { enabled: false } } })).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/form-dynamic/${theme}-${density}.png`, fullPage: true });
 });

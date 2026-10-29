@@ -57,7 +57,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 390, height: 900 });
   const f = await open(page, 'rows:1000;columns:500', `theme:${theme};density:${density}`);
   const first = page.getByRole('gridcell', { name: 'R1 · C1', exact: true });
-  const expected = density === 'compact' ? { width: 160, height: 36 } : { width: 192, height: 46 };
+  const expected = density === 'compact' ? { width: 160, height: 36 } : { width: 192, height: 40 };
   expect(await first.evaluate(element => ({ width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height }))).toEqual(expected);
   await f.grid.focus(); await f.grid.press('End'); await expect(page.getByText('R1000 · C500', { exact: true })).toBeVisible();
   await f.grid.press('Home'); await expect(page.getByText('R1 · C1', { exact: true })).toBeVisible();

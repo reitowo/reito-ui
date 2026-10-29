@@ -1,12 +1,52 @@
 {
   "counts": {
-    "basic": 72,
-    "complex": 42,
+    "basic": 76,
+    "complex": 44,
     "ai": 24
   },
-  "total": 138,
-  "stories": 1428,
+  "total": 144,
+  "stories": 1480,
   "entries": [
+    {
+      "layer": "basic",
+      "id": "dashboard",
+      "name": "Dashboard / 工作台区域",
+      "description": "统一可用宽度、完整侧栏、导航行、桌面折叠、窄屏抽屉与主区域滚动。",
+      "storyId": "基础-dashboard--default",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "DashboardDemo",
+      "stories": 2
+    },
+    {
+      "layer": "basic",
+      "id": "composition",
+      "name": "Composition / 页面积木",
+      "description": "Dashboard 管理完整导航与滚动，Page 与 Panel 分别持有页面和面板区域的主题间距。",
+      "storyId": "基础-composition--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "CompositionDemo",
+      "stories": 10
+    },
+    {
+      "layer": "basic",
+      "id": "section-label",
+      "name": "SectionLabel",
+      "description": "高密列表中的轮次、日期等轻量分组标签。",
+      "storyId": "basic-section-label--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "SectionLabelDemo",
+      "stories": 4
+    },
+    {
+      "layer": "basic",
+      "id": "jump-to-latest",
+      "name": "JumpToLatest",
+      "description": "离开底部后出现的浮动“回到最新”胶囊。",
+      "storyId": "basic-jump-to-latest--playground",
+      "sourceFile": "packages/ui/src/basic/catalog.tsx",
+      "demo": "JumpToLatestDemo",
+      "stories": 4
+    },
     {
       "layer": "basic",
       "id": "scroll-top",
@@ -35,7 +75,7 @@
       "storyId": "基础-button--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ButtonDemo",
-      "stories": 18
+      "stories": 23
     },
     {
       "layer": "basic",
@@ -55,7 +95,7 @@
       "storyId": "基础-badge--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "BadgeDemo",
-      "stories": 9
+      "stories": 10
     },
     {
       "layer": "basic",
@@ -65,7 +105,7 @@
       "storyId": "基础-input--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputDemo",
-      "stories": 8
+      "stories": 9
     },
     {
       "layer": "basic",
@@ -145,7 +185,7 @@
       "storyId": "基础-listbox--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ListboxDemo",
-      "stories": 25
+      "stories": 26
     },
     {
       "layer": "basic",
@@ -235,7 +275,7 @@
       "storyId": "基础-toggle--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ToggleDemo",
-      "stories": 8
+      "stories": 9
     },
     {
       "layer": "basic",
@@ -245,7 +285,7 @@
       "storyId": "基础-toggle-group--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "ToggleGroupDemo",
-      "stories": 9
+      "stories": 10
     },
     {
       "layer": "basic",
@@ -255,7 +295,7 @@
       "storyId": "基础-select--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "SelectDemo",
-      "stories": 11
+      "stories": 12
     },
     {
       "layer": "basic",
@@ -305,7 +345,7 @@
       "storyId": "基础-collapsible--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CollapsibleDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "basic",
@@ -325,7 +365,7 @@
       "storyId": "基础-dialog--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "DialogDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "basic",
@@ -345,7 +385,7 @@
       "storyId": "基础-dropdown-menu--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "DropdownMenuDemo",
-      "stories": 6
+      "stories": 7
     },
     {
       "layer": "basic",
@@ -405,7 +445,7 @@
       "storyId": "基础-card--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CardDemo",
-      "stories": 5
+      "stories": 6
     },
     {
       "layer": "basic",
@@ -729,6 +769,26 @@
     },
     {
       "layer": "complex",
+      "id": "mini-timeline",
+      "name": "MiniTimeline 迷你时间线",
+      "description": "按通道排列的小刻度事件总览与键盘选择",
+      "storyId": "complex-mini-timeline--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "MiniTimelineDemo",
+      "stories": 3
+    },
+    {
+      "layer": "complex",
+      "id": "kanban",
+      "name": "Kanban 看板",
+      "description": "任务卡片、跨列移动与受控保存",
+      "storyId": "复杂-kanban-看板--playground",
+      "sourceFile": "packages/ui/src/complex/catalog.tsx",
+      "demo": "KanbanDemo",
+      "stories": 5
+    },
+    {
+      "layer": "complex",
       "id": "scheduler",
       "name": "Scheduler 排程",
       "description": "日周月排程、受控编辑和保存恢复",
@@ -925,7 +985,7 @@
       "storyId": "复杂-transfer-穿梭选择--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "TransferDemo",
-      "stories": 15
+      "stories": 17
     },
     {
       "layer": "complex",
@@ -1065,7 +1125,7 @@
       "storyId": "复杂-settingssection-设置分组--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "SettingsSectionDemo",
-      "stories": 6
+      "stories": 10
     },
     {
       "layer": "complex",
@@ -1185,7 +1245,7 @@
       "storyId": "ai-toolcall--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "ToolCallDemo",
-      "stories": 9
+      "stories": 11
     },
     {
       "layer": "ai",
@@ -1275,7 +1335,7 @@
       "storyId": "ai-codeblock--playground",
       "sourceFile": "packages/ui/src/ai/catalog.tsx",
       "demo": "CodeBlockDemo",
-      "stories": 30
+      "stories": 31
     },
     {
       "layer": "ai",

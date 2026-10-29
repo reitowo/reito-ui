@@ -1,38 +1,15 @@
 # 复用与迁移
 
-当前版本为 0.5.1，面向 React 19 / ESM，尚未发布 npm。0.3 的 shadcn / Base UI 重建替换了 0.2 自定义 Radix 包装 API；0.4 在其上扩展组件并调整共享密度默认值。
+当前工作分支提供 0.6.0-next.0 本地候选，npm 发布状态需单独核实。
+新应用按 [组合契约](composition.md)接入，portable skill 位于 skills/reito-ui。
 
-## 安装打包产物
+执行 npm ci、npm run pack:library，取得匹配的 UI 与 tokens tarball 并一起安装。
+应用只导入 @reito/tokens/css、@reito/ui/styles.css，并设置 ReitoThemeProvider root；
+包内样式已编译，消费应用不需要 Tailwind 插件或额外字体规则。
 
-在组件库执行 `npm ci`，然后 `npm run pack:library`。在消费项目同时安装两个 tarball：
-
-```powershell
-npm install <库路径>/artifacts/reito-tokens-0.5.1.tgz <库路径>/artifacts/reito-ui-0.5.1.tgz
-```
-
-应用入口只引入一次：
-
-```tsx
-import '@reito/tokens/css';
-import '@reito/ui/styles.css';
-import { Button, Input, Label, TooltipProvider } from '@reito/ui/basic';
-
-export function Example() {
-  return <TooltipProvider><div className="reito-root">
-    <Label htmlFor="project-name">工程名称</Label>
-    <Input id="project-name" defaultValue="我的工作区" />
-    <Button variant="outline" size="sm">保存草稿</Button>
-  </div></TooltipProvider>;
-}
-```
-
-主题和密度放在 `<html data-theme="dark" data-density="compact">`，供所有 portal 继承。切换值为 dark/light、compact/comfortable；持久化由应用实现。TooltipProvider 可放在应用根，`delay` 是 Base UI 属性，不能沿用旧 `delayDuration`。
-
-密度是组件库提供的尺寸能力，不要求消费产品显示切换控件。产品可以固定 `compact`，只有明确的产品需求才添加密度设置；Lab / Storybook 的切换器用于检查组件状态，不应照搬到业务页。
-
-CSS 已编译，包含 Tailwind Preflight、共享密度与 Inter Variable 字体。包内控件不依赖消费项目扫描 class；中文使用系统字体。代码字体由系统等宽字体回退。全局 Preflight 会规范原生元素，请在接入已有站点时检查其布局；不要通过页面改写 `[data-slot]` 修复共享组件。
-
-默认设置 `data-density="compact"` 即可，不要因为组件库支持两种密度就自动添加「紧凑 / 舒适」切换。仅在用户明确要求时提供密度选择入口；不要把 Lab / Storybook 的检查工具复制到产品标题栏、工具栏或设置页。
+[工作台示例](../skills/reito-ui/assets/workbench.tsx)只使用公开组件，直接替换数据和操作即可。
+主题及密度由 Provider 管理，嵌套 Provider 和浮层保持继承。产品默认 compact，主题遵循产品选择。
+0.5.8 的默认按钮高度、表面圆角及部分固定间距在本候选中有意统一，升级边界见组合契约。
 
 ## 0.5：统一产品单选
 
@@ -88,7 +65,7 @@ import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
 | `asChild` 的 Radix 组合 | 阅读相应 Base UI `render` API，不机械替换 |
 | `rui-*` 组件选择器 | 不从页面依赖内部选择器，使用公开 props、className、语义 tokens |
 
-组件高度 XS/SM/default/LG：compact 为 24/28/32/36px，comfortable 为 32/36/40/44px（16px 根字号）。基础 Button 的尺寸由共享样式与 `data-size` 控制；图标按钮宽高同步。日历单元格等专用控件保持各自组合契约。
+当前控件高度和默认行为以 [组合契约](composition.md) 和 token 源为准。
 
 0.3 之前的工作文件已备份到 `.logs/v0.2-before-shadcn`，旧组件实现不作为并行公开 API 保留。消费工程应逐项迁移并检查自己的流程。
 
@@ -96,7 +73,7 @@ import { Composer, ToolCall, ArtifactPanel } from '@reito/ui/ai';
 
 先选层：可跨业务组合的原语进入基础；有数据/表单/布局契约的组合进入复杂；与 AI 会话、上下文和执行有关的组合进入 AI。新组件需要实际导出类型、共享 Demo、可发现 stories、适用状态和交互验证。保持基础 → 复杂 / AI 的依赖方向；基础不依赖业务层。
 
-新增组件后，将 Demo 注册到对应 `catalog.tsx`，补充该层 stories，再运行 `npm run catalog:build`。生成的 `apps/lab/src/catalog-manifest.json` 连接族、计数和实际 story ID；`npm run check` 包含 `catalog:check`，会发现目录漂移。Lab 深链格式为 `?layer=complex&component=diff-viewer`，不要另外维护一份手写 Storybook ID 映射。
+新增组件后，将 Demo 注册到对应 `catalog.tsx`，补充该层 stories，再运行 `npm run catalog:build`。生成的 `apps/lab/src/catalog-manifest.json` 连接族、计数和实际 story ID；`npm run check` 包含 `catalog:check`，会发现目录漂移。Lab 深链格式为 `/components/diff-viewer`（旧的 `?layer=complex&component=diff-viewer` 会改写过去），不要另外维护一份手写 Storybook ID 映射。
 
 用 `npm run dev` 打开 5173 的 Lab 逐组件确认；用 `npm run dev:workbench` 打开 5175 的 Agent / 文件与差异 / 设置组合例工程，检查组件进入实际工作流后的布局。Workbench 使用本地示例状态；它不是模型客户端或文件系统编辑器。
 
@@ -107,3 +84,7 @@ Storybook 按“基础 / 复杂 / AI → 组件 → 参数调试”浏览。在�
 更新 tokens 后运行 `npm run tokens:build`，同时生成 CSS、Tailwind 桥接与数字 API 的 `@reito/tokens/metrics`。`npm run tokens:audit` 可单独检查所有组件和示例中的视觉硬编码，已纳入 `npm run check`；查看 [全组件审计与允许例外](token-audit.md)。完成 `npm run check`、相关 Playwright / Storybook 检查、`npm run build` 后再打包；根构建包含 UI、Lab、Storybook 和 Workbench。Storybook 四组合扫描包含页面错误、console error、交互 play、完整 iframe body 的 axe（包括仍打开的 portal）和页面溢出；它不等于完整手工无障碍验收。各次实际结果记录在 [validation.md](validation.md)，这些流程说明不代表本次检查已经通过。
 
 打包时 UI 与 tokens 精确版本必须同步。第三方声明随 UI 包发布，禁止把 Multica 受限源码、产品品牌素材或私有字体夹入包中。
+
+## 运行时主题
+
+当前工作区的 `@reito/ui` 与 `@reito/ui/basic` 导出 `ReitoThemeProvider`、`useReitoTheme` 及 ThemeMode / ThemeColors / ThemeColor 等类型。使用 `root mode="system" colors={{primary:'violet',neutral:'zinc'}}` 即可主题化整个应用；嵌套 Provider 控制局部内容并传递到共享 Portal。`Button color="green" variant="outline"` 可以独立配色。配色默认灰白 / Graphite，Provider 默认紧凑；存储由应用管理。完整示例、可配色基础组件、色阶来源及未实现项见 [theme-guide.md](theme-guide.md)。这部分尚未随新版本发布。

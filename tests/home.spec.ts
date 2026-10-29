@@ -1,3 +1,4 @@
+import { chooseThemeMode } from './theme-menu';
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const axe = readFileSync('node_modules/axe-core/axe.min.js', 'utf8');
@@ -11,16 +12,19 @@ test('homepage preview filters, updates state, switches code and opens tokens', 
   await expect(page.getByText('没有匹配的任务')).toBeVisible();
   await page.getByRole('tab', { name: '查看代码' }).click();
   await expect(page.locator('[data-slot="code-content"]').first()).toContainText('SearchBar');
-  await page.getByRole('button', { name: '查看设计 Tokens' }).click();
+  await page.getByRole('button', { name: '查看设计变量' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('button', { name: '查看设计 Tokens' })).toBeFocused();
+  await expect(page.getByRole('button', { name: '查看设计变量' })).toBeFocused();
 });
 
-test('component links still open Lab, and Lab brand returns home', async ({ page }) => {
-  await page.goto('/'); await page.getByRole('link', { name: '浏览组件', exact: true }).click();
+test('component links open the gallery, and Lab brand returns home', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: '浏览组件', exact: true }).click();
+  await expect(page).toHaveURL(/\/gallery\/?$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('组件库');
+  await page.goto('/components/button');
   await expect(page.getByTestId('component-preview')).toBeVisible();
-  await expect(page).toHaveURL(/layer=basic&component=button/);
   await page.locator('.lab-brand').click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText('构建一致的界面');
 });
@@ -29,8 +33,10 @@ for (const theme of ['dark', 'light']) for (const width of [1440, 390]) {
   test(`${theme}/${width}: readable layout, theme persistence and accessible controls`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
-    if (await page.locator('html').getAttribute('data-theme') !== theme) await page.getByRole('button', { name: '切换明暗主题' }).click();
+    await expect(page.getByRole('heading',{level:1})).toBeVisible({timeout:30_000});
+    if (await page.locator('html').getAttribute('data-theme') !== theme) await chooseThemeMode(page,theme as 'dark'|'light');
     await page.reload();
+    await expect(page.getByRole('heading',{level:1})).toBeVisible({timeout:30_000});
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

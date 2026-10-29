@@ -135,49 +135,62 @@ export function SplitButton({
             />
           }
         >
-          {menuLoading
-            ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
-            : <ChevronDown aria-hidden="true" />}
+          {menuLoading ? (
+            <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+          ) : (
+            <ChevronDown aria-hidden="true" />
+          )}
         </DropdownMenuTrigger>
       </ButtonGroup>
       <DropdownMenuContent side={side} align={align} className={cx('w-max', contentClassName)}>
         {menuLoading ? (
-          <DropdownMenuItem disabled label={typeof loadingLabel === 'string' ? loadingLabel : undefined}>
+          <DropdownMenuItem
+            disabled
+            label={typeof loadingLabel === 'string' ? loadingLabel : undefined}
+          >
             <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
             <span role="status">{loadingLabel}</span>
           </DropdownMenuItem>
         ) : items.length === 0 ? (
-          <DropdownMenuItem disabled label={typeof emptyLabel === 'string' ? emptyLabel : undefined}>
+          <DropdownMenuItem
+            disabled
+            label={typeof emptyLabel === 'string' ? emptyLabel : undefined}
+          >
             {emptyLabel}
           </DropdownMenuItem>
-        ) : items.map(item => {
-          const itemUnavailable = item.disabled || item.loading;
-          const textValue = item.textValue ?? (typeof item.label === 'string' ? item.label : undefined);
-          return (
-            <DropdownMenuItem
-              key={item.id}
-              data-split-button-item={item.id}
-              disabled={itemUnavailable}
-              variant={item.variant}
-              label={textValue}
-              aria-label={item.loading && textValue ? `${textValue}，正在执行` : undefined}
-              aria-keyshortcuts={item.shortcut}
-              aria-busy={item.loading || undefined}
-              closeOnClick={item.closeOnSelect}
-              onClick={() => {
-                if (itemUnavailable) return;
-                item.onSelect?.();
-                onItemSelect?.(item);
-              }}
-            >
-              {item.loading
-                ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
-                : item.icon}
-              <span className="min-w-0 flex-1 truncate">{item.label}</span>
-              {item.shortcut && <DropdownMenuShortcut>{item.shortcut}</DropdownMenuShortcut>}
-            </DropdownMenuItem>
-          );
-        })}
+        ) : (
+          items.map((item) => {
+            const itemUnavailable = item.disabled || item.loading;
+            const textValue =
+              item.textValue ?? (typeof item.label === 'string' ? item.label : undefined);
+            return (
+              <DropdownMenuItem
+                key={item.id}
+                data-split-button-item={item.id}
+                disabled={itemUnavailable}
+                variant={item.variant}
+                label={textValue}
+                aria-label={item.loading && textValue ? `${textValue}，正在执行` : undefined}
+                aria-keyshortcuts={item.shortcut}
+                aria-busy={item.loading || undefined}
+                closeOnClick={item.closeOnSelect}
+                onClick={() => {
+                  if (itemUnavailable) return;
+                  item.onSelect?.();
+                  onItemSelect?.(item);
+                }}
+              >
+                {item.loading ? (
+                  <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+                ) : (
+                  item.icon
+                )}
+                <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                {item.shortcut && <DropdownMenuShortcut>{item.shortcut}</DropdownMenuShortcut>}
+              </DropdownMenuItem>
+            );
+          })
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

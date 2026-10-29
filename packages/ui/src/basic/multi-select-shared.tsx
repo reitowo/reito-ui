@@ -1,6 +1,11 @@
 import { Check, Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../primitives/button.js';
-import { ComboboxGroup, ComboboxItem, ComboboxLabel, ComboboxList } from '../primitives/combobox.js';
+import {
+  ComboboxGroup,
+  ComboboxItem,
+  ComboboxLabel,
+  ComboboxList,
+} from '../primitives/combobox.js';
 
 export interface MultiSelectOption {
   value: string;
@@ -10,7 +15,9 @@ export interface MultiSelectOption {
   disabled?: boolean;
 }
 
-export interface MultiSelectEnhancementProps<TOption extends MultiSelectOption = MultiSelectOption> {
+export interface MultiSelectEnhancementProps<
+  TOption extends MultiSelectOption = MultiSelectOption,
+> {
   showSelectAll?: boolean;
   selectAllLabel?: string;
   clearAllLabel?: string;
@@ -30,36 +37,66 @@ export interface MultiSelectVirtualRange {
   visibleEndIndex: number;
 }
 
-export function filterMultiSelectOptions<TOption extends MultiSelectOption>(options: TOption[], query: string) {
+export function filterMultiSelectOptions<TOption extends MultiSelectOption>(
+  options: TOption[],
+  query: string,
+) {
   const term = query.trim().toLocaleLowerCase();
   if (!term) return options;
-  return options.filter(option => [option.label, option.description, option.group].some(value => value?.toLocaleLowerCase().includes(term)));
+  return options.filter((option) =>
+    [option.label, option.description, option.group].some((value) =>
+      value?.toLocaleLowerCase().includes(term),
+    ),
+  );
 }
 
-export function mergeMultiSelectOptions<TOption extends MultiSelectOption>(options: TOption[], created: TOption[]) {
+export function mergeMultiSelectOptions<TOption extends MultiSelectOption>(
+  options: TOption[],
+  created: TOption[],
+) {
   const merged = new Map<string, TOption>();
   for (const option of [...created, ...options]) merged.set(option.value, option);
   return [...merged.values()];
 }
 
 export function toggleVisibleSelection(selected: string[], visibleOptions: MultiSelectOption[]) {
-  const available = visibleOptions.filter(option => !option.disabled).map(option => option.value);
+  const available = visibleOptions
+    .filter((option) => !option.disabled)
+    .map((option) => option.value);
   const selectedSet = new Set(selected);
-  const allSelected = available.length > 0 && available.every(value => selectedSet.has(value));
-  if (allSelected) return selected.filter(value => !available.includes(value));
-  return [...selected, ...available.filter(value => !selectedSet.has(value))];
+  const allSelected = available.length > 0 && available.every((value) => selectedSet.has(value));
+  if (allSelected) return selected.filter((value) => !available.includes(value));
+  return [...selected, ...available.filter((value) => !selectedSet.has(value))];
 }
 
-export function clearRemovableSelection(selected: string[], optionMap: Map<string, MultiSelectOption>) {
-  return selected.filter(value => optionMap.get(value)?.disabled);
+export function clearRemovableSelection(
+  selected: string[],
+  optionMap: Map<string, MultiSelectOption>,
+) {
+  return selected.filter((value) => optionMap.get(value)?.disabled);
 }
 
 export function hasExactMultiSelectOption(options: MultiSelectOption[], query: string) {
   const term = query.trim().toLocaleLowerCase();
-  return !term || options.some(option => option.label.trim().toLocaleLowerCase() === term || option.value.trim().toLocaleLowerCase() === term);
+  return (
+    !term ||
+    options.some(
+      (option) =>
+        option.label.trim().toLocaleLowerCase() === term ||
+        option.value.trim().toLocaleLowerCase() === term,
+    )
+  );
 }
 
-export function MultiSelectActions({ selected, visibleOptions, optionMap, showSelectAll, selectAllLabel = '全选当前结果', clearAllLabel = '清除已选', onValueChange }: {
+export function MultiSelectActions({
+  selected,
+  visibleOptions,
+  optionMap,
+  showSelectAll,
+  selectAllLabel = '全选当前结果',
+  clearAllLabel = '清除已选',
+  onValueChange,
+}: {
   selected: string[];
   visibleOptions: MultiSelectOption[];
   optionMap: Map<string, MultiSelectOption>;
@@ -68,53 +105,138 @@ export function MultiSelectActions({ selected, visibleOptions, optionMap, showSe
   clearAllLabel?: string;
   onValueChange: (value: string[]) => void;
 }) {
-  const available = visibleOptions.filter(option => !option.disabled);
-  const selectedCount = available.filter(option => selected.includes(option.value)).length;
+  const available = visibleOptions.filter((option) => !option.disabled);
+  const selectedCount = available.filter((option) => selected.includes(option.value)).length;
   const allSelected = available.length > 0 && selectedCount === available.length;
   const partiallySelected = selectedCount > 0 && !allSelected;
-  const removableCount = selected.filter(value => !optionMap.get(value)?.disabled).length;
+  const removableCount = selected.filter((value) => !optionMap.get(value)?.disabled).length;
   if (!showSelectAll) return null;
-  return <div data-slot="multi-select-actions" className="flex min-w-0 items-center gap-1 border-b border-border px-1 py-1">
-    {showSelectAll && <Button type="button" variant="ghost" size="xs" role="checkbox" aria-checked={partiallySelected ? 'mixed' : allSelected} disabled={available.length === 0} onMouseDown={event => event.preventDefault()} onClick={() => onValueChange(toggleVisibleSelection(selected, visibleOptions))} className="min-w-0 justify-start">
-      {partiallySelected ? <Minus aria-hidden="true" /> : <Check aria-hidden="true" className={allSelected ? undefined : 'opacity-40'} />}
-      <span className="truncate">{selectAllLabel}</span>
-      <span className="text-muted-foreground">{selectedCount}/{available.length}</span>
-    </Button>}
-    {removableCount > 0 && <Button type="button" variant="ghost" size="xs" onMouseDown={event => event.preventDefault()} onClick={() => onValueChange(clearRemovableSelection(selected, optionMap))} className="ml-auto shrink-0 text-muted-foreground"><Trash2 aria-hidden="true" />{clearAllLabel}</Button>}
-  </div>;
+  return (
+    <div
+      data-slot="multi-select-actions"
+      className="flex min-w-0 items-center gap-1 border-b border-border px-1 py-1"
+    >
+      {showSelectAll && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          role="checkbox"
+          aria-checked={partiallySelected ? 'mixed' : allSelected}
+          disabled={available.length === 0}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => onValueChange(toggleVisibleSelection(selected, visibleOptions))}
+          className="min-w-0 justify-start"
+        >
+          {partiallySelected ? (
+            <Minus aria-hidden="true" />
+          ) : (
+            <Check aria-hidden="true" className={allSelected ? undefined : 'opacity-40'} />
+          )}
+          <span className="truncate">{selectAllLabel}</span>
+          <span className="text-muted-foreground">
+            {selectedCount}/{available.length}
+          </span>
+        </Button>
+      )}
+      <Button
+        type="button"
+        variant="ghost"
+        size="xs"
+        onMouseDown={(event) => event.preventDefault()}
+        disabled={removableCount === 0}
+        onClick={() => onValueChange(clearRemovableSelection(selected, optionMap))}
+        className="ml-auto shrink-0 text-muted-foreground"
+      >
+        <Trash2 aria-hidden="true" />
+        {clearAllLabel}
+      </Button>
+    </div>
+  );
 }
 
-export function MultiSelectCreateAction({ label, creating, onCreate }: { label: string; creating: boolean; onCreate: () => void }) {
-  return <div data-slot="multi-select-create" className="border-t border-border p-1">
-    <Button type="button" variant="ghost" size="xs" disabled={creating} onMouseDown={event => event.preventDefault()} onClick={onCreate} className="w-full justify-start">
-      {creating ? <span className="size-3 animate-spin rounded-full border border-current border-r-transparent motion-reduce:animate-none" aria-hidden="true" /> : <Plus aria-hidden="true" />}
-      <span className="truncate">{label}</span>
-    </Button>
-  </div>;
+export function MultiSelectCreateAction({
+  label,
+  creating,
+  onCreate,
+}: {
+  label: string;
+  creating: boolean;
+  onCreate: () => void;
+}) {
+  return (
+    <div data-slot="multi-select-create" className="border-t border-border p-1">
+      <Button
+        type="button"
+        variant="ghost"
+        size="xs"
+        disabled={creating}
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={onCreate}
+        className="w-full justify-start"
+      >
+        {creating ? (
+          <span
+            className="size-3 animate-spin rounded-full border border-current border-r-transparent motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+        ) : (
+          <Plus aria-hidden="true" />
+        )}
+        <span className="truncate">{label}</span>
+      </Button>
+    </div>
+  );
 }
 
-export function MultiSelectOptionList({ options, virtual = false, overscan = 4, highlightedValue, onRangeChange }: { options: MultiSelectOption[]; virtual?: boolean; overscan?: number; highlightedValue?: string; onRangeChange?: (range: MultiSelectVirtualRange) => void }) {
+export function MultiSelectOptionList({
+  options,
+  virtual = false,
+  overscan = 4,
+  highlightedValue,
+  onRangeChange,
+}: {
+  options: MultiSelectOption[];
+  virtual?: boolean;
+  overscan?: number;
+  highlightedValue?: string;
+  onRangeChange?: (range: MultiSelectVirtualRange) => void;
+}) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
-  const highlightedIndex = options.findIndex(option => option.value === highlightedValue);
+  const highlightedIndex = options.findIndex((option) => option.value === highlightedValue);
   const virtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>({
     count: options.length,
     getScrollElement: () => viewportRef.current,
     estimateSize: () => 40,
-    getItemKey: index => options[index]?.value ?? index,
+    getItemKey: (index) => options[index]?.value ?? index,
     overscan: Math.max(0, Math.floor(Number.isFinite(overscan) ? overscan : 0)),
     enabled: virtual,
-    rangeExtractor: React.useCallback((range: Range) => {
-      const indexes = defaultRangeExtractor(range);
-      return highlightedIndex >= 0 && !indexes.includes(highlightedIndex) ? [...indexes, highlightedIndex].sort((a, b) => a - b) : indexes;
-    }, [highlightedIndex]),
+    rangeExtractor: React.useCallback(
+      (range: Range) => {
+        const indexes = defaultRangeExtractor(range);
+        return highlightedIndex >= 0 && !indexes.includes(highlightedIndex)
+          ? [...indexes, highlightedIndex].sort((a, b) => a - b)
+          : indexes;
+      },
+      [highlightedIndex],
+    ),
   });
-  virtualizer.shouldAdjustScrollPositionOnItemSizeChange = item => item.start < (virtualizer.scrollOffset ?? 0) + 1;
-  const measureElement = React.useCallback((element: HTMLDivElement | null) => {
-    if (element) requestAnimationFrame(() => { if (element.isConnected) virtualizer.measureElement(element); });
-  }, [virtualizer]);
+  virtualizer.shouldAdjustScrollPositionOnItemSizeChange = (item) =>
+    item.start < (virtualizer.scrollOffset ?? 0) + 1;
+  const measureElement = React.useCallback(
+    (element: HTMLDivElement | null) => {
+      if (element)
+        requestAnimationFrame(() => {
+          if (element.isConnected) virtualizer.measureElement(element);
+        });
+    },
+    [virtualizer],
+  );
   React.useEffect(() => {
     if (!virtual || highlightedIndex < 0) return;
-    const frame = requestAnimationFrame(() => virtualizer.scrollToIndex(highlightedIndex, { align: 'auto' }));
+    const frame = requestAnimationFrame(() =>
+      virtualizer.scrollToIndex(highlightedIndex, { align: 'auto' }),
+    );
     return () => cancelAnimationFrame(frame);
   }, [highlightedIndex, virtual, virtualizer]);
   const rows = virtualizer.getVirtualItems();
@@ -125,30 +247,113 @@ export function MultiSelectOptionList({ options, virtual = false, overscan = 4, 
   const rangeCallback = React.useRef(onRangeChange);
   rangeCallback.current = onRangeChange;
   React.useEffect(() => {
-    if (virtual) rangeCallback.current?.({ startIndex: rangeStart, endIndex: rangeEnd, visibleStartIndex, visibleEndIndex });
+    if (virtual)
+      rangeCallback.current?.({
+        startIndex: rangeStart,
+        endIndex: rangeEnd,
+        visibleStartIndex,
+        visibleEndIndex,
+      });
   }, [rangeEnd, rangeStart, virtual, visibleEndIndex, visibleStartIndex]);
-  if (virtual) return <ComboboxList ref={viewportRef} data-virtual="true" className="relative h-64 p-1">
-    <div role="presentation" className="relative min-w-0" style={{ height: virtualizer.getTotalSize() }}>
-      {rows.map(row => {
-        const option = options[row.index];
-        if (!option) return null;
-        const previousGroup = row.index > 0 ? options[row.index - 1]?.group : undefined;
-        return <MultiSelectOptionItem key={option.value} option={option} index={row.index} setSize={options.length} measure={measureElement} style={{ position: 'absolute', left: 0, top: 0, width: '100%', transform: `translateY(${row.start}px)` }} showGroup={Boolean(option.group && option.group !== previousGroup)} />;
-      })}
-    </div>
-  </ComboboxList>;
+  if (virtual)
+    return (
+      <ComboboxList ref={viewportRef} data-virtual="true" className="relative h-64 p-1">
+        <div
+          role="presentation"
+          className="relative min-w-0"
+          style={{ height: virtualizer.getTotalSize() }}
+        >
+          {rows.map((row) => {
+            const option = options[row.index];
+            if (!option) return null;
+            const previousGroup = row.index > 0 ? options[row.index - 1]?.group : undefined;
+            return (
+              <MultiSelectOptionItem
+                key={option.value}
+                option={option}
+                index={row.index}
+                setSize={options.length}
+                measure={measureElement}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: '100%',
+                  transform: `translateY(${row.start}px)`,
+                }}
+                showGroup={Boolean(option.group && option.group !== previousGroup)}
+              />
+            );
+          })}
+        </div>
+      </ComboboxList>
+    );
   const groups = new Map<string, MultiSelectOption[]>();
-  for (const option of options) { const group = option.group ?? ''; groups.set(group, [...(groups.get(group) ?? []), option]); }
-  return <ComboboxList>{[...groups.entries()].map(([group, groupOptions]) => group ? <ComboboxGroup key={group}>
-    <ComboboxLabel>{group}</ComboboxLabel>{groupOptions.map(option => <MultiSelectOptionItem key={option.value} option={option} />)}
-  </ComboboxGroup> : groupOptions.map(option => <MultiSelectOptionItem key={option.value} option={option} />))}</ComboboxList>;
+  for (const option of options) {
+    const group = option.group ?? '';
+    groups.set(group, [...(groups.get(group) ?? []), option]);
+  }
+  return (
+    <ComboboxList>
+      {[...groups.entries()].map(([group, groupOptions]) =>
+        group ? (
+          <ComboboxGroup key={group}>
+            <ComboboxLabel>{group}</ComboboxLabel>
+            {groupOptions.map((option) => (
+              <MultiSelectOptionItem key={option.value} option={option} />
+            ))}
+          </ComboboxGroup>
+        ) : (
+          groupOptions.map((option) => <MultiSelectOptionItem key={option.value} option={option} />)
+        ),
+      )}
+    </ComboboxList>
+  );
 }
 
-function MultiSelectOptionItem({ option, index, setSize, measure, style, showGroup = false }: { option: MultiSelectOption; index?: number; setSize?: number; measure?: (element: HTMLDivElement | null) => void; style?: React.CSSProperties; showGroup?: boolean }) {
-  return <ComboboxItem ref={measure} data-index={index} index={index} aria-posinset={index === undefined ? undefined : index + 1} aria-setsize={setSize} value={option.value} disabled={option.disabled} style={style} className={showGroup ? 'pt-[var(--rui-control-height-xs)]' : undefined}>
-    {showGroup && <span data-slot="combobox-virtual-group" className="pointer-events-none absolute left-2 top-1 text-xs text-muted-foreground">{option.group}</span>}
-    <span className="min-w-0"><span className="block truncate">{option.label}</span>{option.description && <span className="block truncate text-xs text-muted-foreground">{option.description}</span>}</span>
-  </ComboboxItem>;
+function MultiSelectOptionItem({
+  option,
+  index,
+  setSize,
+  measure,
+  style,
+  showGroup = false,
+}: {
+  option: MultiSelectOption;
+  index?: number;
+  setSize?: number;
+  measure?: (element: HTMLDivElement | null) => void;
+  style?: React.CSSProperties;
+  showGroup?: boolean;
+}) {
+  return (
+    <ComboboxItem
+      ref={measure}
+      data-index={index}
+      index={index}
+      aria-posinset={index === undefined ? undefined : index + 1}
+      aria-setsize={setSize}
+      value={option.value}
+      disabled={option.disabled}
+      style={style}
+      className={showGroup ? 'pt-[var(--rui-control-height-xs)]' : undefined}
+    >
+      {showGroup && (
+        <span
+          data-slot="combobox-virtual-group"
+          className="pointer-events-none absolute left-2 top-1 text-xs text-muted-foreground"
+        >
+          {option.group}
+        </span>
+      )}
+      <span className="min-w-0">
+        <span className="block truncate">{option.label}</span>
+        {option.description && (
+          <span className="block truncate text-xs text-muted-foreground">{option.description}</span>
+        )}
+      </span>
+    </ComboboxItem>
+  );
 }
 import * as React from 'react';
 import { defaultRangeExtractor, useVirtualizer, type Range } from '@tanstack/react-virtual';

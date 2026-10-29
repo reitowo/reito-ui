@@ -51,9 +51,8 @@ export function schemaResolver<Input extends FieldValues, Context, Output>(
         errors: Object.assign({} as FieldErrors<Input>, {
           _form: {
             type: 'validate',
-            message: reason instanceof Error && reason.message
-              ? reason.message
-              : '表单校验失败，请重试。',
+            message:
+              reason instanceof Error && reason.message ? reason.message : '表单校验失败，请重试。',
           },
         }),
       };

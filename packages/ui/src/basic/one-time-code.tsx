@@ -25,9 +25,23 @@ export interface OneTimeCodeProps {
 }
 
 /** Display a host-owned one-time code without putting locked or expired values in the DOM. */
-export function OneTimeCode({ label, code, remainingSeconds, locked = false, loading = false, disabled = false, onCopy,
-  lockedLabel = '解锁后可查看', loadingLabel = '正在刷新', expiredLabel = '已过期，等待刷新', emptyLabel = '暂无验证码',
-  copyLabel = `复制${label}`, copiedLabel = '已复制', copyErrorLabel = '复制失败，请重试', className }: OneTimeCodeProps) {
+export function OneTimeCode({
+  label,
+  code,
+  remainingSeconds,
+  locked = false,
+  loading = false,
+  disabled = false,
+  onCopy,
+  lockedLabel = '解锁后可查看',
+  loadingLabel = '正在刷新',
+  expiredLabel = '已过期，等待刷新',
+  emptyLabel = '暂无验证码',
+  copyLabel = `复制${label}`,
+  copiedLabel = '已复制',
+  copyErrorLabel = '复制失败，请重试',
+  className,
+}: OneTimeCodeProps) {
   const [copying, setCopying] = useState(false);
   const [feedback, setFeedback] = useState<'copied' | 'error' | null>(null);
   const inFlight = useRef(false);
@@ -37,7 +51,10 @@ export function OneTimeCode({ label, code, remainingSeconds, locked = false, loa
   const hasTime = remainingSeconds !== undefined;
   const expired = hasTime && (!Number.isFinite(remainingSeconds) || remainingSeconds <= 0);
   const available = !locked && !loading && !expired && Boolean(code);
-  useEffect(() => { revision.current += 1; setFeedback(null); }, [code, locked, loading, expired]);
+  useEffect(() => {
+    revision.current += 1;
+    setFeedback(null);
+  }, [code, locked, loading, expired]);
 
   async function copy() {
     if (!available || disabled || !onCopy || !code || inFlight.current) return;
@@ -46,8 +63,14 @@ export function OneTimeCode({ label, code, remainingSeconds, locked = false, loa
     inFlight.current = true;
     setCopying(true);
     setFeedback(null);
-    const stillCurrent = () => revision.current === copiedRevision && current.current.code === copiedCode && !current.current.locked && !current.current.loading
-      && (current.current.remainingSeconds === undefined || Number.isFinite(current.current.remainingSeconds) && current.current.remainingSeconds > 0);
+    const stillCurrent = () =>
+      revision.current === copiedRevision &&
+      current.current.code === copiedCode &&
+      !current.current.locked &&
+      !current.current.loading &&
+      (current.current.remainingSeconds === undefined ||
+        (Number.isFinite(current.current.remainingSeconds) &&
+          current.current.remainingSeconds > 0));
     try {
       await onCopy(copiedCode);
       if (stillCurrent()) setFeedback('copied');
@@ -59,14 +82,57 @@ export function OneTimeCode({ label, code, remainingSeconds, locked = false, loa
     }
   }
 
-  return <div role="group" aria-label={label} data-slot="one-time-code" className={cn('grid gap-1 text-sm', className)}>
-    <div className="flex min-w-0 items-center gap-2">
-      {available ? <>
-        <code className="break-all font-mono text-sm tabular-nums">{code}</code>
-        {hasTime && <span className="text-xs tabular-nums text-muted-foreground" aria-label={`剩余 ${Math.ceil(remainingSeconds!)} 秒`}>{Math.ceil(remainingSeconds!)}s</span>}
-        {onCopy && <Button variant="ghost" size="icon-xs" aria-label={copyLabel} title={copyLabel} disabled={disabled || copying} aria-busy={copying || undefined} onClick={() => void copy()}>{copying ? <Spinner /> : <Copy aria-hidden="true" />}</Button>}
-      </> : <span className="inline-flex items-center gap-2 text-muted-foreground">{locked && <LockKeyhole className="size-3.5" aria-hidden="true" />}{locked ? lockedLabel : loading ? loadingLabel : expired ? expiredLabel : emptyLabel}</span>}
+  return (
+    <div
+      role="group"
+      aria-label={label}
+      data-slot="one-time-code"
+      className={cn('grid gap-1 text-sm', className)}
+    >
+      <div className="flex min-h-[var(--rui-control-height-xs)] min-w-0 items-center gap-2">
+        {available ? (
+          <>
+            <code className="break-all font-mono text-sm tabular-nums">{code}</code>
+            {hasTime && (
+              <span
+                className="text-xs tabular-nums text-muted-foreground"
+                aria-label={`剩余 ${Math.ceil(remainingSeconds!)} 秒`}
+              >
+                {Math.ceil(remainingSeconds!)}s
+              </span>
+            )}
+            {onCopy && (
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                aria-label={copyLabel}
+                title={copyLabel}
+                disabled={disabled || copying}
+                aria-busy={copying || undefined}
+                onClick={() => void copy()}
+              >
+                {copying ? <Spinner /> : <Copy aria-hidden="true" />}
+              </Button>
+            )}
+          </>
+        ) : (
+          <span className="inline-flex items-center gap-2 text-muted-foreground">
+            {locked && <LockKeyhole className="size-3.5" aria-hidden="true" />}
+            {locked ? lockedLabel : loading ? loadingLabel : expired ? expiredLabel : emptyLabel}
+          </span>
+        )}
+        {available && feedback && (
+          <span
+            role="status"
+            className={cn(
+              'text-xs',
+              feedback === 'error' ? 'text-destructive' : 'text-muted-foreground',
+            )}
+          >
+            {feedback === 'error' ? copyErrorLabel : copiedLabel}
+          </span>
+        )}
+      </div>
     </div>
-    {available && feedback && <span role="status" className={cn('text-xs', feedback === 'error' ? 'text-destructive' : 'text-muted-foreground')}>{feedback === 'error' ? copyErrorLabel : copiedLabel}</span>}
-  </div>;
+  );
 }

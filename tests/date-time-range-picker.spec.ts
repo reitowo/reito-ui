@@ -90,7 +90,7 @@ test('Playground changes precision and zone without switching Story', async ({ p
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: range fits a narrow work surface and passes axe`, async ({ page }) => {
   await page.setViewportSize({ width: 480, height: 900 });
   await open(page, 'time-zone-metadata', `theme:${theme};density:${density}`);
-  const expectedHeight = density === 'compact' ? 32 : 40;
+  const expectedHeight = density === 'compact' ? 32 : 36;
   for (const slot of ['input-date', 'input-time']) {
     const heights = await page.locator(`[data-slot="${slot}"]`).evaluateAll(elements => elements.map(element => element.getBoundingClientRect().height));
     expect(heights).toEqual([expectedHeight, expectedHeight]);

@@ -1,122 +1,201 @@
-# Reito Graphite portable design contract
+# Composition contract
 
-Baseline: Reito UI 0.4.1, revised 2026-09-06. The basic layer contains 50 pinned shadcn / Base UI base-nova generated families and 4 local Base UI compositions; complex / AI layers share Tailwind 4 and the same tokens. Read installed types and current token source before using exact values. This document travels with the Skill; it does not depend on a machine-specific repository location.
+Graphite uses neutral surfaces, readable content and quiet chrome. Choose components around the
+actual task. The library supplies visual behavior; the application supplies business facts. The
+core rules in [SKILL.md](../SKILL.md) apply to everything below.
 
-## Visual rules and token roles
+## Mandatory paths
 
-Graphite uses neutral grayscale surfaces, compact desktop controls, readable content and quiet window chrome. Blue is reserved for focus, links and information that needs emphasis; ordinary navigation selection uses a neutral surface. Support dark and light with compact and comfortable density. These are original choices, not official Cursor, Claude, or Multica tokens.
+These screen types have one supported structure. Use it even for a quick prototype.
 
-| Purpose | Tokens |
-| --- | --- |
-| Canvas, panel, overlay surface | `--rui-bg`, `--rui-surface`, `--rui-elevated` |
-| Hover and pressed surface | `--rui-hover`, `--rui-active` |
-| Primary, secondary, supporting text | `--rui-text`, `--rui-text-secondary`, `--rui-text-muted` |
-| Soft dividers and optional stronger boundary | `--rui-border`, `--rui-border-strong` |
-| Main action and its text | `--rui-primary`, `--rui-on-primary` |
-| Accent, accent surface, focus | `--rui-accent`, `--rui-accent-soft`, `--rui-focus` |
-| Conversation composer surface and radius | `--rui-composer-bg`, `--rui-radius-composer` |
-| Feedback | `--rui-success`, `--rui-warning`, `--rui-danger` with matching `-soft` surfaces |
-
-The source structure is `palette` → `themes` aliases, plus shared `foundation` and `density` groups. Components consume generated semantic variables. Add a component alias only for a real reusable decision; there is no requirement to manufacture a token for every CSS declaration.
-
-At a 16 px root font size, compact controls are 24/28/32/36 px for xs/sm/default/lg; comfortable controls are 32/36/40/44 px. The shared interface font is 14 px and reading text is 16 px. Spacing follows 4 px steps; radius tokens are 6/8/12 px and a 14 px composer role. The CSS ships open-source Inter Variable with system Chinese and monospace fallbacks. Do not add page-specific font or SVG overrides, or download proprietary fonts.
-
-The 0.3 → 0.4 upgrade changes content spacing defaults while retaining those control heights. Use these shared density roles instead of fixed page padding. Values below are pixels at a 16 px root, generated from rem tokens.
-
-| Role | CSS token | Compact | Comfortable |
-| --- | --- | ---: | ---: |
-| Content padding | `--rui-content-padding` | 12 | 20 |
-| Content gap | `--rui-content-gap` | 12 | 16 |
-| Small content gap | `--rui-content-gap-sm` | 8 | 12 |
-| Cell horizontal padding | `--rui-cell-padding-x` | 10 | 16 |
-| Cell vertical padding | `--rui-cell-padding-y` | 6 | 10 |
-| Table header vertical padding | `--rui-table-head-padding-y` | 4 | 6 |
-| Table header height role | `--rui-table-head-height` | 36 | 48 |
-| Message gap | `--rui-message-gap` | 16 | 24 |
-| Composer input minimum height | `--rui-composer-input-height` | 80 | 112 |
-| Empty-state padding | `--rui-empty-padding` | 24 | 40 |
-| Preview padding | `--rui-preview-padding` | 16 | 24 |
-
-Use `p-[var(--rui-content-padding)]` and `gap-[var(--rui-content-gap)]` for general composed content, cell roles for table rows, and the appropriate conversation/preview role for those surfaces. Table row height remains content-dependent. The older panel-padding and row-height tokens are distinct layout roles, not universal component padding or data-row heights. Inside an existing artifact frame, `CodeBlock variant="embedded"` removes its outer frame while retaining code text padding; the parent should not add another layer of content padding around that code view.
-
-Default controls and dividers have soft boundaries. Use a stronger edge only when needed for recognition; keep an explicit focus indicator. Surface contrast, readable text, control recognition and keyboard focus have distinct roles. Avoid applying a bright permanent outline to every input and button in an attempt to improve accessibility.
-
-Density changes dimensions and spacing, not the user's zoom level. Set theme and density on the document root. Popovers and dialogs portal outside ordinary component wrappers, so a local wrapper alone cannot guarantee theme consistency.
-
-Use compact density by default. Density is a styling capability, not a required product preference: do not add a compact/comfortable switch to a header, toolbar or settings page unless the user explicitly requests one. Keep both densities available for host configuration and validation. Lab and Storybook may expose inspection controls; consuming applications and Workbench examples should not inherit those controls by default.
-
-## Choose existing components by meaning
-
-This is a selection aid, not an exhaustive API reference. Verify each component in installed types.
-
-| Need | Start with | Distinction that matters |
+| Screen | Required structure | Reference |
 | --- | --- | --- |
-| Action | Basic `Button` | Variants: default/outline/secondary/ghost/destructive/link. Icons use size icon/icon-sm/icon-xs and an accessible name. Loading is composed with Spinner + disabled; there is no universal loading prop. |
-| Form value | Basic `Field`, `Input`, `Textarea`, `Select`, `Combobox` | Compose FieldLabel/FieldDescription/FieldError. Select composes Trigger/Value/Content/Item; verify Base UI items/value APIs. |
-| Multiple values / number | Basic `MultiSelect`, `NumberField` | Both require label. MultiSelect uses options and optional controlled string[] value; NumberField preserves Base UI nullable value, range, step and commit contracts. |
-| Boolean option | Basic `Checkbox`, `Switch` | Compose Label or aria-label; do not assume a label prop. Checkbox means selection, switch an immediate setting. |
-| Related view / information | Basic `Tabs`, `Accordion`; complex `WorkspacePane` | Use TabsList/Trigger/Content and AccordionItem/Trigger/Content. WorkspacePane offers title/actions/footer/children. |
-| Contextual action | Basic `DropdownMenu`, `Tooltip`, `Dialog` | Compound components; Base UI render composition differs from Radix asChild. TooltipProvider uses delay. |
-| Feedback | Basic `Badge`, `Alert`, `Progress`, `Spinner`, `Skeleton`, `Empty` | Distinguish status, loading, progress and absence. Status needs a label, not only color. |
-| Notifications / measurement | Basic `ToastProvider`, `useToastManager`, `Meter` | Toasts live in a labelled provider region; the manager controls their lifecycle. Meter describes a bounded measurement, not asynchronous progress. |
-| Data / forms | Complex `DataTable`, `SearchFilterBar`, `PropertyList`, `DateRangePicker`, `FileUpload` | Read controlled-value, validation and async callback contracts. DataTable is local, not virtualized or a server protocol; uploads are local queues. |
-| Resource collection / arbitrary keys | Complex `ResourceList`, `KeyValueEditor` | ResourceList filters, sorts and selects local items by stable ID; row actions belong to the host. KeyValueEditor edits a controlled entry array, preserves invalid drafts, validates required/duplicate keys and optionally masks values; masking is not secure storage. |
-| Diff / logs | Complex `DiffViewer`, `LogViewer` | DiffViewer requires explicit hunks with line numbers and before/after pairing; it does not calculate diff. LogViewer filters host entries and pauses/resumes following; it is not a terminal executor. |
-| Navigation / commands | Basic `Sidebar`, `Breadcrumb`, `CommandDialog`; complex `DisclosureTree`, `CommandSearch` | DisclosureTree is a native disclosure list, not an ARIA tree. Printed shortcuts do not register app hotkeys. |
-| Conversation / execution | AI `Composer`, `Conversation`, `ToolCall`, `PermissionRequest`, `ArtifactPanel` | Composer uses onSubmit(text): void or Promise<void>, toolbar and context slots. Rejection preserves the draft. The host owns model requests, streaming, execution, permissions and persistence. |
-| Message controls | AI `MessageActions`, `MessageBranch` | Actions copy caller text and invoke host edit/retry/feedback callbacks. Branch selection uses controlled zero-based index/count; it does not create or persist conversation forks. |
-| Queue / restore decision | AI `TaskQueue`, `Checkpoint` | Queue operations pass task IDs to host callbacks. Checkpoint confirms and awaits onRestore, preserving failure context; neither component schedules work or writes files. |
+| Complex dashboard / split workspace | `DashboardGroup` → `DashboardSidebar` + `DashboardPanel` → `WorkspaceLayout`; slot content in `Stack inset` | [layouts/dashboard.md](layouts/dashboard.md) |
+| List-detail with inspector | Same shell: list or `DataTable` in the `workspace` slot, the selected record in the `inspector` slot. Narrow widths switch the active panel; do not build a second responsive layout | [layouts/dashboard.md](layouts/dashboard.md) |
+| Settings | `Page inset` → `Page.Header` + `Page.Content` → `SettingsSection` → `SettingsRow`; read-only facts in `PropertyList` | [layouts/settings.md](layouts/settings.md) |
+| Page body without a shell | `Page inset` → `Page.Header` + `Page.Content` → `Panel`/`Grid` | [../assets/workbench.tsx](../assets/workbench.tsx) |
+| Form | `Form` + `FormField` (validated) or `FieldGroup` + `Field` (local) | [§ Forms](#forms) |
+| Conversation | `Conversation` + `Message` + one `Composer` | [§ Conversation](#conversation) |
 
-Public layer imports are @reito/ui/basic, @reito/ui/complex and @reito/ui/ai. The root also exports them. Catalog demos stay outside the public runtime entry points. CSS ships compiled utilities and Tailwind Preflight; load it once. An application using Tailwind 4 can import @reito/tokens/tailwind for its own semantic utilities. Fix values in tokens.json, not in a second @theme palette.
+The Storybook story `复杂/DashboardRecipe 工作面配方` and `docs/recipes/dashboard-workspace.md` are the
+maintained source for the dashboard shell. Copy relationships from them, not from screenshots.
 
-The current library checkout also runs `tokens:audit` in `check`: standard spacing, typography, radii, shadows and motion must use its generated bridge; exact structural exceptions live in `docs/design-token-policy.json`. Container query sizes must be compiled from token values because runtime CSS variables are invalid inside query conditions. Numeric-only APIs use generated `@reito/tokens/metrics` defaults (px/ms, rem at a 16px baseline); inspect the installed version before importing that newer entry point. Workspace changes do not retroactively update older tarballs.
+## Choose public components
 
-Chinese example content: workspace “研究工作台”; a long source name “沪深市场分钟行情与复权因子同步”; error “连接失败，请检查地址后重试”; empty state “还没有数据源” with action “添加数据源”. Use actual domain text rather than repeated placeholder labels. Some built-in library wording is English; do not claim full localization or invent unsupported locale props.
+| Need | Components | Composition rule |
+| --- | --- | --- |
+| Ordinary ops/list/form shell | DashboardGroup, DashboardSidebar, DashboardPanel, DashboardNavbar | Host height; named navigation and scrolling regions |
+| Complete page | Page.Header, Page.Content | Page owns edge and header-to-content spacing |
+| Standalone heading | PageHeader | For a container that already owns layout; no outside margins |
+| Page tabs | Tabs, TabsList, TabsTrigger, TabsContent | line for page navigation; no gap compensation |
+| Vertical flow | Stack | gap="small/normal/section/none"; inset supplies the outer content edge |
+| Actions, metadata, form row | Inline | Wraps; baseline for author/time, end for fields/actions |
+| Peer sections | Grid | minColumnWidth="xs/sm/md"; collapses inside narrow containers |
+| Section | Panel.Header, Panel.Content, Panel.Footer | Panel owns title identity and inset; flush for self-inset content |
+| Widget | Card and slots | Header/body/footer own their insets; avoid cards around every record |
+| Text | Text, Heading | Role controls style; heading level controls document semantics |
+| Form | FieldGroup, Field, FieldLabel, FieldDescription, FieldError | Field owns related spacing |
+| Validated form | Form, FormField, FormError, useForm | Field visuals with validation and submit state |
+| Value | Input, Textarea, SelectInput, NumberField | Default controls align without page overrides |
+| Records | ItemGroup, Item, ItemContent, ItemActions, ItemSeparator | Content determines height |
+| Data | Table, DataTable | Tables own cell geometry, selection and loading/empty/error |
+| Empty content | Empty and slots | Put directly in a flush Panel or standalone |
+| Application shell | DashboardGroup, DashboardSidebar, DashboardPanel, WorkspaceLayout | Fixed tree; see layouts/dashboard.md |
+| Scrolling workspace | WorkspacePane, ResizableWorkspace | Own scroll regions and panes |
+| Settings | SettingsSection, SettingsRow, PropertyList | Reuse existing form and feedback behavior |
+| Search across the app | ApplicationSearch | Pages, records and actions in one dialog |
+| Conversation | Conversation, Message, RichMessage, Composer | Continuous content with one composer |
+| Contextual actions | Dialog, Popover, DropdownMenu, Tooltip | Use the nearest provider's theme |
 
-## Compose screens
+Composition, primitives and `ReitoThemeProvider` are exported by `@reito/ui/basic`. Shells, data,
+forms and settings use `@reito/ui/complex`; conversation components use `@reito/ui/ai`. Consult
+installed types for complete APIs.
 
-Choose the structure from the user's working context. The library Lab organizes 54 basic, 15 complex and 19 AI component families (88 total); named compound exports are not separate families. Workbench demonstrates shared components in Agent, file review and settings flows using local data and callbacks. Select the structure required by the application. Forms, settings, tables and document views use the structure their work needs; this contract does not require every application to become a chat product.
+## Panel or Card
 
-Keep the primary work prominent, with short toolbars and lightweight sidebar rows. Secondary metadata should not compete with task titles or body text. Open artifacts, diffs and inspectors when relevant; navigation, active work and supporting context do not have to be three permanent columns. Start from shared layout dimensions; allow secondary panels to collapse when width or zoom makes multiple columns unusable. Keep one clear scroll owner per pane and constrain long-form reading width.
+| Use | When |
+| --- | --- |
+| `Panel` | A titled section of a page: filters, a list, a table, a chart, a group of fields |
+| `Panel flush` | The body is a list, `ItemGroup`, `DataTable`, `Table` or `Empty` that owns its edge |
+| `Card` | A standalone, self-contained widget that can move independently (a summary tile in a grid of peers, a preview) |
+| Neither | Individual records, messages, settings rows, form fields, single numbers |
 
-In conversation layouts, the composer is the main soft container. Keep input, attachments or context, mode/model controls and send action together. Let body text flow on the canvas; reserve cards for a meaningful grouped tool result or artifact. Large statistics strips, uppercase eyebrows and decorative filename tabs do not establish desktop character. Use real tabs, metrics or code labels when the actual work calls for them.
+A page of five cards each holding one number is a statistics strip; start with the work instead.
+Never nest `Panel` in `Panel` or `Card` in `Card`. Inside a `WorkspacePane`, the pane already has a
+title bar: put content straight into `Stack inset` and use `Panel` only for distinct sub-sections.
 
-Long names must not push actions offscreen. Wrap narrative content; constrain horizontal overflow to code/table containers where necessary. A consumer may add page layout using shared spacing and role tokens; it must not override `[data-slot]` internals to create a divergent component theme.
+## Typography roles
 
-## Interaction and review gates
+Use the same role for the same meaning across the product. Never set font size, weight or line
+height with utilities.
 
-For each applicable component, inspect default, hover, focus-visible, active, disabled, loading, invalid and empty states. Do not create irrelevant states for static components.
+| Meaning | Component | Notes |
+| --- | --- | --- |
+| Screen title | `PageHeader title` (renders `Heading level={1} size="page"`) | Once per screen; omit when a pane title already names it |
+| Section title | `Panel title`, `Heading size="section"` | Pane and panel titles |
+| Record / item title | `Heading level={3} size="item"` | List rows, card titles, author names |
+| Body copy | `Text` (variant `body`) | Descriptions, messages, paragraphs |
+| Interface text | `Text variant="interface"` | Labels and short UI strings next to controls |
+| Metadata | `Text variant="caption" tone="muted"` | Time, owner, counts, hints |
+| Long-form reading | `Text variant="reading"` | Articles, documentation, notes |
+| Secondary description | `tone="muted"` on any `Text` | Never `text-muted-foreground` on a span |
 
-- Four combinations: dark/light × compact/comfortable. Include open menus, selects and dialogs in the inspection.
-- Responsive views: 1280 × 800 and 960 × 720, plus browser 200% zoom. No accidental page-wide horizontal overflow or inaccessible essential control. Local code/table scrolling may be intentional.
-- Keyboard: Tab reaches meaningful controls; menus/Tabs/selects keep appropriate arrow-key behavior; Escape closes overlays; closing an overlay returns focus to a sensible place.
-- Chinese IME: candidate-confirmation Enter must not submit a message or execute a command. Composer supports Shift+Enter for a newline. A real OS IME check remains necessary when only synthetic events have been tested.
-- Loading: no duplicate submit; feedback remains labelled. Error and success do not depend solely on color. Reduced-motion preference removes unnecessary animation.
-- Every added public component has a discoverable Storybook example and applicable state coverage. Register its Demo in the correct catalog, run `npm run catalog:build`, and keep `catalog:check` clean; the generated manifest supplies family counts and real Storybook IDs. Relevant automated accessibility violations are resolved or explicitly tracked; automated checks are not a full accessibility certification.
-- Token-generation consistency, typecheck and production build exit successfully for code changes. Record actual command results and manual coverage; never convert “configured” into “passed”.
-- For visual work, inspect a reference of the selected working context and compare the actual composed page. Record the source, whether it is an application screenshot or website demo, theme, viewport and remaining differences in structure, grayscale, boundary strength, typography, reading space and composer. Passing build, interaction or accessibility tests does not establish visual similarity.
+`Heading level` is document semantics, `size` is visual weight; choose them independently. Use
+`as="span"` for inline text inside `Inline`. Headings and text have no browser margins and wrap
+completely; explicit truncation must preserve access to the full content. Code keeps the shared
+monospace font.
 
-## Consumption and maintenance
+## Inset ownership
 
-Load the public package CSS in this order:
+Exactly one component supplies each content edge.
+
+- `Stack inset` supplies the edge of a pane body or a page. `Stack` and `Inline` otherwise only
+  separate children.
+- A padded `Panel` body supplies its own edge. Do not put `Stack inset` inside it.
+- Lists, tables and `Empty` already own their edge: use `Panel flush` and place them directly.
+- `DashboardPanel` header/footer, `WorkspacePane` header/footer, `SettingsRow`, `Item` and table cells
+  own their padding.
+- Related text uses `gap="small"`; separate sections use `gap="section"`. No pixel values need to
+  be copied into the app.
+
+Page supplies section-gap between its header and body, and content-gap between body sections.
+PageHeader uses compact-surface-gap between title and description. Tabs supplies content-gap between
+navigation and panels. Use Page consistently for ordinary pages instead of native headings with
+per-page margins. Use inset only when the outer container does not already supply the page edge.
+Both Tabs variants scroll long labels internally; line labels keep their natural width and share
+one baseline with the active indicator. Preserve drafts with application state and keepMounted when
+the form DOM must remain present. Theme overrides use the same public spacing roles.
+
+## Forms
+
+- Validated or submitted data: `Form form={useForm()}` with one `FormField` per value and a single
+  `FormError`. `FormField` renders the label, description and error; pass `controlProps` to the
+  control. Local filters: `FieldGroup` → `Field` → `FieldLabel` + control + `FieldDescription`/
+  `FieldError`.
+- A filter row: `Inline align="end"` with `Field`s and the submit `Button`; fields grow, the button
+  keeps its default size and aligns with the inputs.
+- Submit/reset actions sit in one `Inline` after the fields. Default control sizes align; do not
+  set heights or font sizes.
+- A form in a dashboard belongs in the `inspector` slot or a `Dialog`, not in a floating card.
+- Preserve drafts on failed submit and Chinese IME composition; `SelectInput` uses
+  `onValueChange`.
+
+## Conversation
+
+- `Conversation` owns the reading width, scroll following and "jump to latest". `Message` owns role
+  styling. Messages are continuous content: do not wrap each message in a `Card` or `Panel`.
+- `Composer` is the main rounded container; its input and supporting actions belong inside it.
+  Use one composer per conversation.
+- Keep the conversation inside a `WorkspaceLayout` slot when it is part of a larger application.
+- Do not present demo content as a real AI response or external integration.
+
+## Theme
+
+The theme is code. One root provider defines the global theme; nested providers define local
+scopes. Classes and CSS variables in application code are not a theme mechanism.
 
 ```tsx
-import '@reito/tokens/css';
-import '@reito/ui/styles.css';
+import { ReitoThemeProvider, type ThemeTokenOverrides } from '@reito/ui/basic';
+
+export const appTheme = {
+  semantic: { 'radius-surface': 'var(--rui-radius-lg)' },
+  components: { button: { radius: 'var(--rui-radius-md)' } },
+} satisfies ThemeTokenOverrides;
+
+<ReitoThemeProvider root mode="system" colors={{ primary: 'blue' }} tokens={appTheme}>
+  <App />
+</ReitoThemeProvider>;
+
+// Local scope: inherits mode, colors and tokens; merges only what it sets.
+<ReitoThemeProvider density="comfortable" tokens={{ semantic: { 'content-padding': 'var(--rui-space-5)' } }}>
+  <Onboarding />
+</ReitoThemeProvider>;
 ```
 
-Use `<html lang="zh-CN" data-theme="dark" data-density="compact">`. The consuming application owns preference persistence, routing and business effects.
+- `root` is set once; it applies the theme to the document so portals and body backgrounds match.
+- A nested provider without `mode`, `colors` or `density` inherits the parent's value. `tokens`
+  merge per key: semantic tokens by name, component tokens per component and property.
+- Dialogs, popovers and menus opened inside a scope keep that scope's theme.
+- Token names are typed from `packages/tokens/src/tokens.json`; values should reference other
+  `--rui-*` tokens rather than literal colors or pixels.
+- Planned in [#20](https://github.com/reitowo/reito-ui/issues/20) (AI-THEME-01..03): `Theme` as an
+  alias of the nested provider, `createTheme` for a reusable preset object, and component prop
+  defaults. They are not exported yet; use `ReitoThemeProvider` and a typed object today.
 
-For local distribution in the library repository, run `npm run pack:library`: it generates tokens, builds UI and packs both `@reito/tokens` and `@reito/ui` into `artifacts/`. Install both tarballs together. The lower-level `pack:ui` script alone does not distribute the token dependency. The current UI depends on tokens at an exact version, so bump the dependency when bumping tokens. Do not overwrite an already-used version with different content. The 0.x library is experimental; document breaking defaults/API/token changes and validate each consuming product before upgrade.
+radius-control is the rectangular control role; radius-surface is the panel/card role. Menus and
+composers retain explicit roles.
+Global curvature follows Nuxt UI's --ui-radius model: every radius step is a multiple of
+--rui-radius (default 0.25rem; control = ×1.5, surface = ×2), so set
+`<ReitoThemeProvider radius="0.375rem">` instead of per-component radius CSS.
 
-The repository's `npm ci` postinstall generates tokens. `npm run test:ui` starts or reuses the example dev server according to Playwright configuration; verify an existing server belongs to the current checkout. `npm run test:storybook` requires a running Storybook server. Inspect current scripts before claiming either test passed.
+## Don't
 
-Repository preview commands: `npm run dev` opens Lab on 5173, `npm run storybook` serves Storybook on 6006, and `npm run dev:workbench` serves Workbench on 5175. A Lab deep link has the shape `?layer=complex&component=diff-viewer`; take component IDs and corresponding story IDs from the generated manifest. Default demo content is local; previews do not establish a live integration or prove product acceptance. Preserve historical version records and record 0.x density/API changes when upgrading consumers.
+- Don't build an application shell, sidebar or split view from divs; use the dashboard layout.
+- Don't write `p-*`, `m-*`, `gap-*`, `space-*`, `text-{size}`, `font-{weight}`, `leading-*` or
+  `tracking-*` on product UI.
+- Don't add `className` or `style` to change a component's padding, height, font or radius; change
+  the theme tokens or fix the component.
+- Don't pad inside a padded `Panel`, or put a list/table/`Empty` in a non-flush `Panel`.
+- Don't wrap every record, message, setting or number in a `Card`.
+- Don't add `overflow-auto` inside workspace panes or make the page body scroll around the shell.
+- Don't render empty, loading or error states as raw text or custom spinners.
+- Don't use palette utilities or literal colors; use semantic utilities only when a reference
+  layout requires a structural class.
+- Don't add a density or theme switch, a statistics strip, decorative tabs or uppercase eyebrows to
+  the product unless explicitly requested.
+- Don't style `data-slot` selectors or copy component source into the application.
+- Don't use Radix `asChild`; Base UI uses `render`.
 
-## Reference boundaries
+## Local 0.6 candidate changes
 
-The 0.2 visual contract was informed by actually inspected official images: [Cursor 2.0 application view](https://cursor.com/blog/2-0), [Cursor Agents Window application views](https://cursor.com/docs/agent/agents-window), and [Claude Desktop Chat and Code views](https://academy.claude.com/tutorials/navigating-the-claude-desktop-app). These establish context-specific observations about task flow, quiet chrome, composer structure and reading space. They are not a specification to copy.
+Default Button/Input/Select align at 32/36/24px for compact/comfortable/dense and share the interface
+font role. Explicit sizes remain deliberate variants. Card and Empty use surface radius rather than
+composer radius. Empty, fields and list spacing respond to density. These are intentional visual
+changes from 0.5.8: validate an existing consumer before upgrading and then remove compensating CSS.
+Current numerical scales come from packages/tokens/src/tokens.json and its generated public catalog.
 
-The [Cursor product page](https://cursor.com/product) was also rendered and inspected in dark mode. Its task sidebar and composer are a website demo, not a verified screenshot of the installed desktop app. No exact desktop dark palette or official reusable token package was established. Never present sampled image pixels, approximate dimensions or the library's own token values as official product tokens. The library repository's `docs/references.md` keeps the exact inspected image URLs and provenance.
+## Executable recipe
 
-Other provenance: [Cursor themes](https://cursor.com/help/customization/themes), [Claude Artifacts](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them), [Multica license](https://raw.githubusercontent.com/multica-ai/multica/main/LICENSE), [DTCG 2025.10 format](https://www.designtokens.org/tr/2025.10/format/), [Radix styling (0.2 reference)](https://www.radix-ui.com/primitives/docs/guides/styling), [Storybook accessibility](https://storybook.js.org/docs/writing-tests/accessibility-testing). Multica's additional UI/branding/service conditions are why this library uses original styling instead of extracted Multica source. DTCG 2025.10 is a stable Community Group format report, not a W3C Standard.
+[workbench.tsx](../assets/workbench.tsx) uses public imports and has no stylesheet, private selector
+or custom reset. Replace its local example state with product content and callbacks. Lab and
+Storybook theme controls are inspection tools; the resulting product does not need those controls.

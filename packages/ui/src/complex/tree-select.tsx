@@ -5,8 +5,17 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '../primitives/inpu
 import { Label } from '../primitives/label.js';
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '../primitives/popover.js';
 import { cn } from '../lib/utils.js';
-import { AsyncTreeView, type AsyncTreeLoadContext, type AsyncTreeViewNode } from './async-tree-view.js';
-import { TreeView, type TreeViewCheckPropagation, type TreeViewNode, type TreeViewSelectionMode } from './tree-view.js';
+import {
+  AsyncTreeView,
+  type AsyncTreeLoadContext,
+  type AsyncTreeViewNode,
+} from './async-tree-view.js';
+import {
+  TreeView,
+  type TreeViewCheckPropagation,
+  type TreeViewNode,
+  type TreeViewSelectionMode,
+} from './tree-view.js';
 
 export interface TreeSelectProps {
   nodes: AsyncTreeViewNode[];
@@ -21,7 +30,10 @@ export interface TreeSelectProps {
   expanded?: string[];
   defaultExpanded?: string[];
   onExpandedChange?: (ids: string[]) => void;
-  loadChildren?: (node: AsyncTreeViewNode, context: AsyncTreeLoadContext) => Promise<AsyncTreeViewNode[]>;
+  loadChildren?: (
+    node: AsyncTreeViewNode,
+    context: AsyncTreeLoadContext,
+  ) => Promise<AsyncTreeViewNode[]>;
   refreshKey?: string | number;
   query?: string;
   defaultQuery?: string;
@@ -57,7 +69,7 @@ function visitNodes(nodes: TreeViewNode[], visit: (node: TreeViewNode) => void) 
 
 function nodeMap(nodes: TreeViewNode[]) {
   const map = new Map<string, TreeViewNode>();
-  visitNodes(nodes, node => map.set(node.id, node));
+  visitNodes(nodes, (node) => map.set(node.id, node));
   return map;
 }
 
@@ -82,7 +94,9 @@ function matchingNodeIds(nodes: TreeViewNode[], query: string) {
 
 function branchIds(nodes: TreeViewNode[], visible: Set<string>) {
   const branches: string[] = [];
-  visitNodes(nodes, node => { if (visible.has(node.id) && node.children) branches.push(node.id); });
+  visitNodes(nodes, (node) => {
+    if (visible.has(node.id) && node.children) branches.push(node.id);
+  });
   return branches;
 }
 
@@ -141,17 +155,50 @@ export function TreeSelect({
   const isOpen = open === undefined ? internalOpen : open;
   const normalizedQuery = currentQuery.trim().toLocaleLowerCase();
 
-  React.useEffect(() => { if (!normalizedQuery) setResolvedNodes(nodes); }, [nodes, normalizedQuery]);
+  React.useEffect(() => {
+    if (!normalizedQuery) setResolvedNodes(nodes);
+  }, [nodes, normalizedQuery]);
   const index = React.useMemo(() => nodeMap(resolvedNodes), [resolvedNodes]);
-  const visibleNodeIds = React.useMemo(() => normalizedQuery ? matchingNodeIds(resolvedNodes, normalizedQuery) : undefined, [normalizedQuery, resolvedNodes]);
-  const displayExpanded = React.useMemo(() => visibleNodeIds ? [...new Set([...currentExpanded, ...branchIds(resolvedNodes, new Set(visibleNodeIds))])] : currentExpanded, [currentExpanded, resolvedNodes, visibleNodeIds]);
-  const handleResolvedNodesChange = React.useCallback((next: AsyncTreeViewNode[]) => { if (!normalizedQuery) setResolvedNodes(next); }, [normalizedQuery]);
-  const chosenNodes = selectionMode === 'checkbox' ? selectedChecked.map(item => index.get(item)).filter((item): item is TreeViewNode => Boolean(item)) : selected ? [index.get(selected)].filter((item): item is TreeViewNode => Boolean(item)) : [];
-  const leafChoices = chosenNodes.filter(node => !node.children?.length);
-  const triggerText = selectionMode === 'checkbox'
-    ? leafChoices.length === 1 ? leafChoices[0].label : leafChoices.length > 1 ? `已选择 ${leafChoices.length} 项` : selectedChecked.length ? `已选择 ${selectedChecked.length} 项` : placeholder
-    : chosenNodes[0]?.label ?? placeholder;
-  const describedBy = [description ? `${id}-description` : undefined, error ? `${id}-error` : undefined].filter(Boolean).join(' ') || undefined;
+  const visibleNodeIds = React.useMemo(
+    () => (normalizedQuery ? matchingNodeIds(resolvedNodes, normalizedQuery) : undefined),
+    [normalizedQuery, resolvedNodes],
+  );
+  const displayExpanded = React.useMemo(
+    () =>
+      visibleNodeIds
+        ? [...new Set([...currentExpanded, ...branchIds(resolvedNodes, new Set(visibleNodeIds))])]
+        : currentExpanded,
+    [currentExpanded, resolvedNodes, visibleNodeIds],
+  );
+  const handleResolvedNodesChange = React.useCallback(
+    (next: AsyncTreeViewNode[]) => {
+      if (!normalizedQuery) setResolvedNodes(next);
+    },
+    [normalizedQuery],
+  );
+  const chosenNodes =
+    selectionMode === 'checkbox'
+      ? selectedChecked
+          .map((item) => index.get(item))
+          .filter((item): item is TreeViewNode => Boolean(item))
+      : selected
+        ? [index.get(selected)].filter((item): item is TreeViewNode => Boolean(item))
+        : [];
+  const leafChoices = chosenNodes.filter((node) => !node.children?.length);
+  const triggerText =
+    selectionMode === 'checkbox'
+      ? leafChoices.length === 1
+        ? leafChoices[0].label
+        : leafChoices.length > 1
+          ? `已选择 ${leafChoices.length} 项`
+          : selectedChecked.length
+            ? `已选择 ${selectedChecked.length} 项`
+            : placeholder
+      : (chosenNodes[0]?.label ?? placeholder);
+  const describedBy =
+    [description ? `${id}-description` : undefined, error ? `${id}-error` : undefined]
+      .filter(Boolean)
+      .join(' ') || undefined;
 
   function changeOpen(next: boolean) {
     if (open === undefined) setInternalOpen(next);
@@ -196,23 +243,110 @@ export function TreeSelect({
     emptyMessage,
   } as const;
 
-  return <div data-slot="tree-select" data-invalid={error ? true : undefined} className={cn('grid min-w-0 gap-[var(--rui-space-2)]', className)}>
-    <Label htmlFor={`${id}-trigger`}>{label}</Label>
-    <Popover open={isOpen} onOpenChange={changeOpen}>
-      <PopoverTrigger render={<Button id={`${id}-trigger`} type="button" role="combobox" aria-autocomplete="none" variant="outline" disabled={disabled} aria-required={required || undefined} aria-invalid={error ? true : undefined} aria-describedby={describedBy} className="w-full min-w-0 justify-between font-normal" />}><span className={cn('truncate', chosenNodes.length === 0 && 'text-muted-foreground')}>{triggerText}</span><ChevronDown aria-hidden="true" className="shrink-0" /></PopoverTrigger>
-      <PopoverContent align="start" className="w-80 max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-content-gap-sm)] p-[var(--rui-content-padding)]">
-        <PopoverTitle className="sr-only">{label}</PopoverTitle>
-        <InputGroup><InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon><InputGroupInput type="search" aria-label={searchLabel} placeholder={searchPlaceholder} value={currentQuery} onChange={event => changeQuery(event.target.value)} /></InputGroup>
-        <div className="max-h-64 min-w-0 overflow-auto rounded-lg border border-border">
-          {loadChildren
-            ? <AsyncTreeView {...treeProps} nodes={nodes} loadChildren={loadChildren} refreshKey={refreshKey} loadingLabel={loadingLabel} retryLabel={retryLabel} onResolvedNodesChange={handleResolvedNodesChange} />
-            : <TreeView {...treeProps} nodes={nodes} />}
-        </div>
-        <div className="flex items-center justify-between gap-[var(--rui-space-2)] border-t border-border pt-[var(--rui-content-gap-sm)]"><Button type="button" variant="ghost" size="sm" disabled={selectionMode === 'checkbox' ? selectedChecked.length === 0 : !selected} onClick={clear}>{clearLabel}</Button>{selectionMode === 'checkbox' && <Button type="button" size="sm" onClick={() => changeOpen(false)}>{doneLabel}</Button>}</div>
-      </PopoverContent>
-    </Popover>
-    {name && (selectionMode === 'checkbox' ? selectedChecked.map(item => <input key={item} type="hidden" name={name} form={form} value={item} disabled={disabled} />) : <input type="hidden" name={name} form={form} value={selected ?? ''} disabled={disabled} />)}
-    {description && <p id={`${id}-description`} className="text-sm text-muted-foreground">{description}</p>}
-    {error && <p id={`${id}-error`} role="alert" className="text-sm text-destructive">{error}</p>}
-  </div>;
+  return (
+    <div
+      data-slot="tree-select"
+      data-invalid={error ? true : undefined}
+      className={cn('grid min-w-0 gap-[var(--rui-space-2)]', className)}
+    >
+      <Label htmlFor={`${id}-trigger`}>{label}</Label>
+      <Popover open={isOpen} onOpenChange={changeOpen}>
+        <PopoverTrigger
+          render={
+            <Button
+              id={`${id}-trigger`}
+              type="button"
+              role="combobox"
+              aria-autocomplete="none"
+              variant="outline"
+              disabled={disabled}
+              aria-required={required || undefined}
+              aria-invalid={error ? true : undefined}
+              aria-describedby={describedBy}
+              className="w-full min-w-0 justify-between font-normal"
+            />
+          }
+        >
+          <span className={cn('truncate', chosenNodes.length === 0 && 'text-muted-foreground')}>
+            {triggerText}
+          </span>
+          <ChevronDown aria-hidden="true" className="shrink-0" />
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="w-80 max-w-[calc(100vw-var(--rui-space-8))] gap-[var(--rui-content-gap-sm)] px-[var(--rui-compact-surface-padding-x)] py-[var(--rui-compact-surface-padding-y)]"
+        >
+          <PopoverTitle className="sr-only">{label}</PopoverTitle>
+          <InputGroup>
+            <InputGroupAddon>
+              <Search aria-hidden="true" />
+            </InputGroupAddon>
+            <InputGroupInput
+              type="search"
+              aria-label={searchLabel}
+              placeholder={searchPlaceholder}
+              value={currentQuery}
+              onChange={(event) => changeQuery(event.target.value)}
+            />
+          </InputGroup>
+          <div className="max-h-64 min-w-0 overflow-auto rounded-lg border border-border">
+            {loadChildren ? (
+              <AsyncTreeView
+                {...treeProps}
+                nodes={nodes}
+                loadChildren={loadChildren}
+                refreshKey={refreshKey}
+                loadingLabel={loadingLabel}
+                retryLabel={retryLabel}
+                onResolvedNodesChange={handleResolvedNodesChange}
+              />
+            ) : (
+              <TreeView {...treeProps} nodes={nodes} />
+            )}
+          </div>
+          <div className="flex items-center justify-between gap-[var(--rui-space-2)] border-t border-border pt-[var(--rui-compact-surface-padding-y)]">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={selectionMode === 'checkbox' ? selectedChecked.length === 0 : !selected}
+              onClick={clear}
+            >
+              {clearLabel}
+            </Button>
+            {selectionMode === 'checkbox' && (
+              <Button type="button" size="sm" onClick={() => changeOpen(false)}>
+                {doneLabel}
+              </Button>
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+      {name &&
+        (selectionMode === 'checkbox' ? (
+          selectedChecked.map((item) => (
+            <input
+              key={item}
+              type="hidden"
+              name={name}
+              form={form}
+              value={item}
+              disabled={disabled}
+            />
+          ))
+        ) : (
+          <input type="hidden" name={name} form={form} value={selected ?? ''} disabled={disabled} />
+        ))}
+      {description && (
+        <p id={`${id}-description`} className="text-sm text-muted-foreground">
+          {description}
+        </p>
+      )}
+      {error && (
+        <p id={`${id}-error`} role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+    </div>
+  );
 }

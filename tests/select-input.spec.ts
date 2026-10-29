@@ -1,3 +1,4 @@
+import { themeTokens } from '@reito/tokens/themes';
 import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { chooseSelectOption, storybookUrl } from './select-option';
@@ -15,10 +16,21 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     const menu = page.getByRole('listbox');
     await expect(menu).toBeVisible();
     expect(await menu.evaluate(element => getComputedStyle(element.closest('[data-slot="select-content"]')!).backgroundColor)).toBe(
-      theme === 'dark' ? 'rgb(38, 38, 38)' : 'rgb(255, 255, 255)',
+      'rgb('+[1,3,5].map(i=>parseInt(themeTokens.themes[theme as 'dark'|'light'].elevated.slice(i,i+2),16)).join(', ')+')',
     );
     await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-    expect(await page.evaluate(async () => (await (window as any).axe.run(document.body, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } })).violations)).toEqual([]);
+    // Wait only for Storybook's in-flight scan; real violations still fail immediately.
+    let violations: unknown;
+    await expect.poll(async () => {
+      try {
+        violations = await page.evaluate(async () => (await (window as any).axe.run(document.body, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } })).violations);
+        return true;
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('Axe is already running')) return false;
+        throw error;
+      }
+    }, { timeout: 5_000 }).toBe(true);
+    expect(violations).toEqual([]);
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
     await expect(input).toBeFocused();

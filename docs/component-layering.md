@@ -1,20 +1,22 @@
 # 组件分层与组合契约
 
-Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复杂组件族、24 个 AI 组件族**，共 137 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。这里按组件族计数：`Conversation / Message` 属于一个族，`MarkdownContent / RichMessage` 属于一个族，`MessageParts / StructuredMessage` 属于一个族，`AppShell / WorkspacePane / ResizableWorkspace / WorkspacePreset` 属于一个族；计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，目录中的演示数据与交互示例单独维护。
+本库采用分层组合式设计系统：交互原语由底层库提供，基础层统一视觉与 API 适配，复杂和 AI 层组合基础能力，宿主负责业务执行与持久化。相关设计模式与源码组织规则见 [组件源码组织](component-source-policy.md)。组件族数量以[生成目录](../apps/lab/src/catalog-manifest.json)为准。
+
+Reito UI 工作区按应用场景提供 **76 个基础组件族、44 个复杂组件族、24 个 AI 组件族**，共 144 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。Dashboard 是独立基础族；WorkspacePane／ResizableWorkspace／WorkspaceLayout 属于工作区族。计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
-| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 71 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 21 个本地组合族；统一主题、尺寸和必要修复。 |
-| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 42 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
+| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 72 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 22 个本地组合族；统一主题、尺寸和必要修复。 |
+| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 43 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、结构化 parts、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 24 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
 
 `@reito/ui` 根入口同时导出三层。新页面可以按上表选择子入口，让依赖用途清晰。`basic/catalog.tsx`、`complex/catalog.tsx` 和 `ai/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
 
 所有层都消费同一份语义主题。颜色、字体和密度的主源是 [`packages/tokens/src/tokens.json`](../packages/tokens/src/tokens.json)，基础组件不再使用旧版 `components.tsx` API。常规控件保留实际 Base UI 的 `render`、受控值和组合结构；日历、命令搜索、分栏分别依赖 React DayPicker、cmdk、react-resizable-panels，静态展示组件使用普通语义元素。不能把全部基础组件都描述成 Base UI 包装器。
 
-## 基础层：71 个组件族
+## 基础层：72 个组件族
 
-基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 0.4 新增的 21 个本地组合族，不能将它们标为 CLI 生成源码。
+基础公共入口见 [`basic.ts`](../packages/ui/src/basic.ts)。以下 50 个官方生成族按使用用途分组，导出位于 [`primitives/index.ts`](../packages/ui/src/primitives/index.ts)；后表列出 22 个本地组合族，不能将它们标为 CLI 生成源码。
 
 | 用途 | 组件族 |
 | --- | --- |
@@ -49,7 +51,7 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 
 需要按钮尺寸、输入焦点、菜单键盘行为或主题修复时，先改共享 token 或对应基础组件。新增产品页面应组合已有 API；选择器的 `onValueChange`、复选框的 `onCheckedChange` 等必须按实际类型使用，不能沿用旧 API 名称。
 
-## 复杂层：42 个组件族
+## 复杂层：43 个组件族
 
 公共导出见 [`complex/index.ts`](../packages/ui/src/complex/index.ts)，可交互演示见 [`complex/catalog.tsx`](../packages/ui/src/complex/catalog.tsx)。
 
@@ -75,9 +77,9 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 | [`Timeline`](../packages/ui/src/complex/timeline.tsx) | `events` 包含稳定 ID、标题、说明、可选时间与内容；`status` 为 `complete / current / error / pending`。按传入顺序呈现，不自动按日期重排，也不执行事件。 |
 | [`Stepper`](../packages/ui/src/complex/stepper.tsx) | 必填 `steps`、`value`；可选 `onValueChange` 控制导航。每步可设 `disabled`、`error` 和说明。允许跳步及业务验证由宿主决定；它不负责保存整个流程。 |
 | [`SettingsSection / SettingsRow`](../packages/ui/src/complex/settings-section.tsx) | `SettingsSection` 提供必填 `title` 与可选 `description`、`actions`、`children`。`SettingsRow` 提供 `label`、`description` 和控件区域。行标题不会自动成为内部控件的 label，宿主仍须提供 `aria-label` 或显式 `<label>` 关联。 |
-| [`AppShell / WorkspacePane / ResizableWorkspace / WorkspacePreset`](../packages/ui/src/complex/workspace.tsx) | `AppShell` 提供自由窗口区域；`WorkspacePane` 提供独立滚动区。`ResizableWorkspace` 保留水平/垂直两栏、键盘调整及受控百分比。`WorkspacePreset` 组合 navigation/workspace/inspector 三槽，在宽容器显隐辅助面板、窄容器切换单一活动面板；`useWorkspacePresetState` 独立保存显隐与当前面板，`useWorkspaceLayoutState` 继续保存 Sidebar 与基础分栏比例。 |
+| [`DashboardPanel / WorkspacePane / ResizableWorkspace / WorkspaceLayout`](../packages/ui/src/complex/workspace.tsx) | `DashboardPanel` 提供自由窗口区域；`WorkspacePane` 提供独立滚动区。`ResizableWorkspace` 保留水平/垂直两栏、键盘调整及受控百分比。`WorkspaceLayout` 组合 navigation/workspace/inspector 三槽，在宽容器显隐辅助面板、窄容器切换单一活动面板；`useWorkspaceLayoutState` 独立保存显隐与当前面板，`useResizableWorkspaceState` 继续保存 Sidebar 与基础分栏比例。 |
 | [`CommandSearch / ApplicationSearch`](../packages/ui/src/complex/command-search.tsx) | `CommandSearch` 是可内嵌的分组搜索面，支持当前范围、加载/失败/重试与受控查询；命令具备稳定 ID、标签、说明、关键词、禁用项、动作标签及快捷键提示。`ApplicationSearch` 将其组合为应用级 Dialog，注册可配置的全局快捷键，处理异步动作、失败恢复与焦点归还。搜索结果、查询传输和动作副作用均由宿主注入；中文 IME 的候选确认不会触发命令。 |
-| [`ContentNavigation`](../packages/ui/src/complex/content-navigation.tsx) | `sections` 提供稳定 ID、标题、说明、正文和嵌套章节；目录复用 TreeView，正文复用 WorkspacePreset 的单一滚动区。`value / onValueChange` 支持路由和滚动双向同步，并用 `reason` 区分 navigation/scroll。长标题、禁用项、空文档/章节、宽窄布局和目录显隐有明确状态；Markdown 解析、路由写入和远程内容由宿主负责。 |
+| [`ContentNavigation`](../packages/ui/src/complex/content-navigation.tsx) | `sections` 提供稳定 ID、标题、说明、正文和嵌套章节；目录复用 TreeView，正文复用 WorkspaceLayout 的单一滚动区。`value / onValueChange` 支持路由和滚动双向同步，并用 `reason` 区分 navigation/scroll。长标题、禁用项、空文档/章节、宽窄布局和目录显隐有明确状态；Markdown 解析、路由写入和远程内容由宿主负责。 |
 | [`DiffViewer`](../packages/ui/src/complex/diff-viewer.tsx) | 必填 `hunks: DiffHunk[]`，每行由宿主明确提供 `kind`、修改前后文本及行号；`view / onViewChange` 可控制 `unified / split`。提供换行切换、局部滚动、文本增删语义和 `binary / error / emptyMessage` 状态。**组件不计算 diff，也不推断修改前后行的配对。** |
 | [`LogViewer`](../packages/ui/src/complex/log-viewer.tsx) | `entries: LogEntry[]` 来自宿主，级别为 `debug / info / warning / error`。`query / levels / follow` 分别可受控；本地搜索与级别筛选，上滚暂停、明确操作恢复跟随。`onClear` 请求宿主清除数据，支持 `loading / error / disabled`。它不连接日志服务，也不执行终端命令。 |
 | [`KeyValueEditor`](../packages/ui/src/complex/key-value-editor.tsx) | `value: KeyValueEntry[] / onValueChange` 必填，数组与稳定 ID 保留重复键和无效草稿。值支持 `text / number / boolean / select / date`，可带嵌套 `path`、逐项禁用/只读和验证；`onDraftValueChange` 报告键或值草稿的路径。`secret` 只遮罩文本显示，`onSubmit` 支持 Promise；组件不负责安全存储或嵌套对象写回。 |
@@ -90,9 +92,9 @@ Reito UI 0.4 工作区按应用场景提供 **71 个基础组件族、42 个复�
 
 ### 应用配方
 
-[Dashboard 工作面配方](recipes/dashboard-workspace.md) 在 Storybook 中组合 Sidebar、AppShell、WorkspacePreset、DataTable、Form 与 ApplicationSearch，覆盖真实本地交互、偏好恢复和窄布局。[Content 工作面配方](recipes/content-workspace.md) 组合 ResourceView、ContentNavigation、MarkdownContent、Toolbar 与应用搜索，连接文档集合、目录、阅读和相邻操作。两者属于示例层，不新增公共 Dashboard / Content 原语，也不改变复杂层 40 个组件族的计数。
+[Dashboard 工作面配方](recipes/dashboard-workspace.md) 在 Storybook 中组合 Sidebar、DashboardPanel、WorkspaceLayout、DataTable、Form 与 ApplicationSearch，覆盖真实本地交互、偏好恢复和窄布局。[Content 工作面配方](recipes/content-workspace.md) 组合 ResourceView、ContentNavigation、MarkdownContent、Toolbar 与应用搜索，连接文档集合、目录、阅读和相邻操作。配方数据属于示例层；Dashboard 是独立公共基础族，Content 复用已有复杂组件。
 
-## AI 层：21 个组件族
+## AI 层：24 个组件族
 
 公共导出见 [`ai/index.ts`](../packages/ui/src/ai/index.ts)，演示入口见 [`ai/catalog.tsx`](../packages/ui/src/ai/catalog.tsx)。这层没有模型客户端或后台 Agent；组件通过宿主传入的数据和回调工作。
 
@@ -205,7 +207,7 @@ export function RequestComposer() {
 }
 ```
 
-需要组合数据页或工作区时，继续使用复杂层的 `AppShell`、`WorkspacePane` 和 `ResizableWorkspace`。`useWorkspaceLayoutState` 可保存本地布局偏好；账号同步、数据获取、模型认证、实际上传、执行授权、取消请求与错误恢复仍由宿主负责。
+需要组合数据页或工作区时，继续使用复杂层的 `DashboardPanel`、`WorkspacePane` 和 `ResizableWorkspace`。`useResizableWorkspaceState` 可保存本地布局偏好；账号同步、数据获取、模型认证、实际上传、执行授权、取消请求与错误恢复仍由宿主负责。
 
 ## 核对依据
 

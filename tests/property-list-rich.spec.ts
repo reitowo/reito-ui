@@ -1,6 +1,7 @@
 import { chooseSelectOption, storybookUrl } from './select-option';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { axeViolations } from './axe-scan';
 
 const prefix = '复杂-propertylist-属性编辑';
 
@@ -106,13 +107,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await open(page, 'narrow', `theme:${theme};density:${density}`);
   await expect(page.getByText('editor.appearance.fontSize', { exact: true })).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
-  expect(await page.evaluate(async () => {
-    for (let attempt = 0; attempt < 20; attempt++) {
-      try { return (await (window as any).axe.run(document.body, { rules: { region: { enabled: false } } })).violations; }
-      catch (error) { if (!String(error).includes('Axe is already running')) throw error; await new Promise(resolve => setTimeout(resolve, 50)); }
-    }
-    throw new Error('等待现有 axe 扫描结束超时');
-  })).toEqual([]);
+  expect(await axeViolations(page, { rules: { region: { enabled: false } } })).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `.logs/property-list/${theme}-${density}.png`, fullPage: true });
 });

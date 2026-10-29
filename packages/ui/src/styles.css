@@ -1,47 +1,214 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "@fullcalendar/react/skeleton.css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter/index.css";
-@import "../../tokens/dist/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fullcalendar/react/skeleton.css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/inter/index.css';
+@import '../../tokens/dist/tailwind.css';
+@import './ai/markdown-content.css';
+@import './complex/rich-text-editor.css';
 @source "./";
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+/* Flat selectors, not @scope: nested @scope loses the utility selector once
+   Tailwind output is flattened for production. The nearest theme wins for
+   dark → light → dark nesting; deeper alternation is not resolved. */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *, .dark, .dark *):not(
+      :where([data-theme='dark'] [data-theme='light'], [data-theme='dark'] [data-theme='light'] *)
+    ),
+  &:where(
+    [data-theme='dark'] [data-theme='light'] [data-theme='dark'],
+    [data-theme='dark'] [data-theme='light'] [data-theme='dark'] *
+  ) {
+    @slot;
+  }
+}
+/* Discrete dense restyles; numeric dense values come from density tokens.
+   A nested non-dense density scope inside a dense one still matches. */
+@custom-variant dense (&:where([data-density='dense'], [data-density='dense'] *));
 
 @layer base {
-  * { @apply border-border outline-ring/50; }
-  body { @apply bg-background text-foreground font-sans; font-size: var(--rui-font-interface); line-height: var(--rui-line-height); }
-  button, input, select, textarea { font: inherit; }
-  button:not(:disabled), [role="button"]:not([aria-disabled="true"]) { cursor: pointer; }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-size: var(--rui-font-interface);
+    line-height: var(--rui-line-height);
+  }
+  /* Defaults stay below component utilities, so code and explicit typography can override them. */
+  [data-slot] {
+    font-family: var(--rui-font-sans);
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
 }
 
 /* Shared host contract. Portals inherit the same root tokens and real font. */
-.reito-root { font-family: var(--rui-font-sans); font-size: var(--rui-font-interface); line-height: var(--rui-line-height); color: var(--rui-text); }
-[data-slot] { font-family: var(--rui-font-sans); }
+.reito-root {
+  font-family: var(--rui-font-sans);
+  font-size: var(--rui-font-interface);
+  line-height: var(--rui-line-height);
+  color: var(--rui-text);
+}
 
-/* Reading surfaces are not form fields. Keep a keyboard-only inset marker,
-   without a rounded ring around the whole pane or focus-within on its children. */
-.rui-scroll-focus { outline: none; }
-.rui-scroll-focus:focus-visible { box-shadow: inset var(--rui-outline-width) 0 0 var(--rui-focus); }
-/* Opaque descendants can cover an inset shadow. Reserve a leading edge before
-   focus, so these surfaces keep a visible marker without moving their content. */
-.rui-scroll-focus-border { border-inline-start: var(--rui-border-width) solid transparent; }
-.rui-scroll-focus-border:focus-visible { border-inline-start-color: var(--rui-focus); box-shadow: none; }
+/* Validation belongs inside the control. Preserve the independent keyboard
+   ring, and apply the glow once to composite fields rather than their inputs. */
+.rui-validation:is([aria-invalid='true'], :has([aria-invalid='true'])) {
+  border-color: var(--rui-component-input-border-invalid);
+  box-shadow:
+    inset 0 0 var(--rui-validation-glow-blur) var(--rui-validation-glow-width)
+      color-mix(
+        in srgb,
+        var(--rui-danger) calc(var(--rui-validation-glow-opacity) * 100%),
+        transparent
+      ),
+    var(--tw-ring-offset-shadow, 0 0 transparent),
+    var(--tw-ring-shadow, 0 0 transparent),
+    var(--tw-shadow, 0 0 transparent);
+}
+.rui-validation[data-slot='input-group-control'] {
+  box-shadow: none;
+}
+.rui-validation:is(:focus-visible, :has(:focus-visible)) {
+  border-color: var(--rui-focus);
+}
 @media (forced-colors: active) {
-  /* Forced-colors removes box shadows: retain an explicit system-color cue. */
-  .rui-scroll-focus:focus-visible { outline: var(--rui-outline-width) solid Highlight; outline-offset: calc(-1 * var(--rui-outline-width)); }
+  .rui-validation:is([aria-invalid='true'], :has([aria-invalid='true'])) {
+    border-color: Mark;
+  }
+  .rui-validation:is(:focus-visible, :has(:focus-visible)) {
+    outline: var(--rui-focus-width) solid Highlight;
+    outline-offset: var(--rui-focus-width);
+  }
+}
+
+/* Keyboard focus is neutral and symmetric; pointer reading stays quiet. */
+.rui-scroll-focus {
+  outline: none;
+}
+.rui-scroll-focus:focus-visible {
+  outline: var(--rui-focus-width) solid var(--rui-focus);
+  outline-offset: calc(-1 * var(--rui-focus-width));
+}
+@media (forced-colors: active) {
+  .rui-scroll-focus:focus-visible {
+    outline: var(--rui-outline-width) solid Highlight;
+    outline-offset: calc(-1 * var(--rui-outline-width));
+  }
+}
+
+/* Tree focus belongs to the direct row, never descendants of a focused branch. */
+.rui-tree-item:focus-visible > [data-slot='tree-item-row'],
+.rui-navigation-row:focus-visible {
+  box-shadow: inset 0 0 0 var(--rui-focus-width) var(--rui-focus);
+  background-color: var(--rui-hover);
+}
+@media (forced-colors: active) {
+  .rui-tree-item:focus-visible > [data-slot='tree-item-row'],
+  .rui-navigation-row:focus-visible {
+    outline: var(--rui-outline-width) solid Highlight;
+    outline-offset: calc(-1 * var(--rui-outline-width));
+  }
 }
 
 /* Local syntax roles share the active theme; tokenization never sets layout. */
-[data-slot="code-content"] { font-family: var(--rui-font-mono); }
-[data-slot="code-content"] .token:is(.comment, .prolog, .doctype, .cdata) { color: var(--rui-syntax-comment); }
-[data-slot="code-content"] .token:is(.keyword, .boolean, .important, .atrule, .tag) { color: var(--rui-syntax-keyword); }
-[data-slot="code-content"] .token:is(.string, .char, .template-string, .attr-value, .regex, .url, .inserted) { color: var(--rui-syntax-string); }
-[data-slot="code-content"] .token:is(.number, .constant) { color: var(--rui-syntax-number); }
-[data-slot="code-content"] .token:is(.function, .function-variable) { color: var(--rui-syntax-function); }
-[data-slot="code-content"] .token:is(.class-name, .builtin, .namespace) { color: var(--rui-syntax-type); }
-[data-slot="code-content"] .token:is(.property, .literal-property, .attr-name, .selector, .symbol) { color: var(--rui-syntax-property); }
-[data-slot="code-content"] .token:is(.operator, .entity) { color: var(--rui-syntax-operator); }
-[data-slot="code-content"] .token.punctuation { color: var(--rui-syntax-punctuation); }
+[data-slot='code-content'] {
+  font-family: var(--rui-font-mono);
+}
+[data-slot='code-content'] .token:is(.comment, .prolog, .doctype, .cdata) {
+  color: var(--rui-syntax-comment);
+}
+[data-slot='code-content'] .token:is(.keyword, .boolean, .important, .atrule, .tag) {
+  color: var(--rui-syntax-keyword);
+}
+[data-slot='code-content']
+  .token:is(.string, .char, .template-string, .attr-value, .regex, .url, .inserted) {
+  color: var(--rui-syntax-string);
+}
+[data-slot='code-content'] .token:is(.number, .constant) {
+  color: var(--rui-syntax-number);
+}
+[data-slot='code-content'] .token:is(.function, .function-variable) {
+  color: var(--rui-syntax-function);
+}
+[data-slot='code-content'] .token:is(.class-name, .builtin, .namespace) {
+  color: var(--rui-syntax-type);
+}
+[data-slot='code-content'] .token:is(.property, .literal-property, .attr-name, .selector, .symbol) {
+  color: var(--rui-syntax-property);
+}
+[data-slot='code-content'] .token:is(.operator, .entity) {
+  color: var(--rui-syntax-operator);
+}
+[data-slot='code-content'] .token.punctuation {
+  color: var(--rui-syntax-punctuation);
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.rui-organization-node:focus-visible > [data-slot='organization-chart-node'] {
+  outline: var(--rui-focus-width) solid var(--rui-focus);
+  outline-offset: calc(-1 * var(--rui-focus-width));
+}
+@media (forced-colors: active) {
+  .rui-organization-node:focus-visible > [data-slot='organization-chart-node'] {
+    outline-color: Highlight;
+  }
+}
+
+/* Explicit component colors share one recipe; uncolored controls retain their defaults. */
+[data-rui-color][data-slot='button'][data-variant='outline'],
+[data-rui-color][data-slot='badge'][data-variant='outline'] {
+  color: var(--rui-color-text);
+  border-color: var(--rui-color-border);
+  background-color: transparent;
+}
+[data-rui-color][data-slot='button'][data-variant='secondary'],
+[data-rui-color][data-slot='badge'][data-variant='secondary'] {
+  color: var(--rui-color-text);
+  background-color: var(--rui-color-soft);
+}
+[data-rui-color][data-slot='button']:is([data-variant='ghost'], [data-variant='link']),
+[data-rui-color][data-slot='badge']:is([data-variant='ghost'], [data-variant='link']) {
+  color: var(--rui-color-text);
+}
+[data-rui-color][data-slot='button']:is([data-variant='outline'], [data-variant='ghost']):hover:not(
+    :disabled
+  ) {
+  background-color: var(--rui-color-soft);
+}
+[data-rui-color][data-slot='toggle'][aria-pressed='true'] {
+  background-color: var(--rui-color-soft);
+  color: var(--rui-color-text);
+}
+
+/* Filled actions follow component state tokens so palette overrides stay paired. */
+[data-slot='button'][data-variant='default']:hover:not(:disabled) {
+  background-color: var(--rui-component-button-primary-bg-hover);
+}
+[data-slot='button'][data-variant='default']:active:not(:disabled):not([aria-haspopup]) {
+  background-color: var(--rui-component-button-primary-bg-pressed);
+}
+[data-rui-color][data-slot='badge'][data-variant='default'][href]:hover {
+  background-color: var(--rui-primary-hover);
+}
+[data-slot='button'][data-variant='accent']:hover:not(:disabled) {
+  background-color: var(--rui-component-button-accent-bg-hover);
+}
+[data-slot='button'][data-variant='accent']:active:not(:disabled):not([aria-haspopup]) {
+  background-color: var(--rui-component-button-accent-bg-pressed);
 }

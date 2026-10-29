@@ -111,7 +111,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 420, height: 520 });
   await open(page, 'stepped', `theme:${theme};density:${density}`);
   const group = page.locator('[data-slot="input-time"]');
-  expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await group.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });
   // Storybook's a11y addon can still own axe while its initial scan finishes.
   await expect(async () => {

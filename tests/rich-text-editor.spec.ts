@@ -1,10 +1,11 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { storybookUrl } from './select-option';
 
 const prefix = '复杂-richtexteditor-富文本编辑';
 
 async function open(page: Page, story = 'default', globals = 'theme:dark;density:compact') {
-  await page.goto(`http://127.0.0.1:6007/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
+  await page.goto(`${storybookUrl}/iframe.html?id=${prefix}--${story}&viewMode=story&globals=${globals}`);
   const surface = page.locator('[data-slot="rich-text-editor"]');
   await expect(surface).toBeVisible({ timeout: 15_000 });
   await expect(surface.getByRole('textbox')).toBeVisible({ timeout: 15_000 });
@@ -269,6 +270,32 @@ test('read-only task checkboxes retain their original checked state', async ({ p
   await expect(checkboxes.first()).not.toBeChecked();
   await expect(checkboxes.nth(1)).toBeChecked();
 });
+
+for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) {
+  test(`${theme}/${density}: task controls align with the first text line and focus adds no outer halo`, async ({ page }) => {
+    const surface = await open(page, 'task-list-markdown', `theme:${theme};density:${density}`);
+    const editor = await editorOf(surface);
+    const frame = surface.locator('[data-slot="rich-text-editor-surface"]');
+    const before = await frame.boundingBox();
+    const ordinaryBorder = await frame.evaluate(node => getComputedStyle(node).borderColor);
+    for (const item of await editor.locator('li[data-type="taskItem"]').all()) {
+      const alignment = await item.evaluate(node => {
+        const input = node.querySelector('input')!;
+        const paragraph = node.querySelector('p')!;
+        const control = input.getBoundingClientRect();
+        const text = paragraph.getBoundingClientRect();
+        return Math.abs(control.top + control.height / 2 - (text.top + parseFloat(getComputedStyle(paragraph).lineHeight) / 2));
+      });
+      expect(alignment).toBeLessThan(0.5);
+    }
+    await editor.click();
+    await expect(editor).toBeFocused();
+    await expect(frame).toHaveCSS('box-shadow', 'none');
+    expect(await frame.boundingBox()).toEqual(before);
+    await surface.getByRole('button', { name: '任务列表', exact: true }).focus();
+    await expect(frame).toHaveCSS('border-color', ordinaryBorder);
+  });
+}
 
 test('link UI restores the editor selection, writes href, and can unlink it', async ({ page }) => {
   const surface = await open(page, 'link-selection');

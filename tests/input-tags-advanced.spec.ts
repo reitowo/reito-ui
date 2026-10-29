@@ -147,7 +147,7 @@ test('Playground toggles batch paste and suggestion props without leaving the st
 for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfortable']) test(`${theme}/${density}: suggestion popup keeps token height, accessibility and containment`, async ({ page }) => {
   await page.setViewportSize({ width: 560, height: 720 });
   const input = await open(page, 'keyboard-navigation', `theme:${theme};density:${density}`);
-  expect(await page.locator('[data-slot="input-tags"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await page.locator('[data-slot="input-tags"]').evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await input.fill('tail');
   await expect(page.getByRole('option', { name: /Tailwind CSS/ })).toBeVisible();
   await page.addScriptTag({ content: readFileSync('node_modules/axe-core/axe.min.js', 'utf8') });

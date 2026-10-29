@@ -1,6 +1,8 @@
 export * from './primitives/index.js';
 export * from './basic/select-input.js';
 export * from './basic/feedback.js';
+export * from './basic/composition.js';
+export * from './basic/dashboard.js';
 export * from './basic/one-time-code.js';
 export * from './basic/input-tags.js';
 export * from './basic/async-combobox.js';
@@ -23,3 +25,26 @@ export * from './basic/image-gallery.js';
 export * from './basic/carousel.js';
 export * from './basic/image-compare.js';
 export * from './basic/scroll-top.js';
+export * from './basic/section-label.js';
+export * from './basic/jump-to-latest.js';
+
+export {
+  ReitoThemeProvider,
+  Theme,
+  createTheme,
+  useReitoTheme,
+  useThemeDefaults,
+} from './theme.js';
+export type {
+  ThemeMode,
+  ThemeColor,
+  ThemeColors,
+  ThemeTokenOverrides,
+  ThemeConfig,
+  ThemeComponentDefaults,
+  ThemeProps,
+  ReitoThemeProviderProps,
+  ColorPalette,
+  DensityMode,
+  NeutralPalette,
+} from './theme.js';

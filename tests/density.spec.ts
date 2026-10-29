@@ -11,19 +11,21 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     for (const layer of ['basic', 'complex']) {
       await page.goto(`/?layer=${layer}&component=${layer === 'basic' ? 'table' : 'data-table'}`);
       const cell = page.locator('.lab-demo tbody td').first();
-      await expect(cell).toHaveCSS('padding-top', compact ? '6px' : '10px');
-      await expect(cell).toHaveCSS('padding-left', compact ? '10px' : '16px');
+      await expect(cell).toHaveCSS('padding-top', compact ? '6px' : '8px');
+      await expect(cell).toHaveCSS('padding-left', compact ? '10px' : '12px');
     }
     await page.goto('/?layer=ai&component=artifact');
-    await expect(page.getByRole('tabpanel')).toHaveCSS('padding', compact ? '12px' : '20px');
+    await expect(page.getByRole('tabpanel')).toHaveCSS('padding-left', compact ? '12px' : '16px');
+    await expect(page.getByRole('tabpanel')).toHaveCSS('padding-top', compact ? '8px' : '10px');
     await page.getByRole('tab', {name: '代码', exact: true}).click();
     await expect(page.getByRole('tabpanel')).toHaveCSS('padding', '0px');
-    await expect(page.getByRole('tabpanel').locator('pre')).toHaveCSS('padding', compact ? '12px' : '20px');
+    await expect(page.getByRole('tabpanel').locator('pre')).toHaveCSS('padding', compact ? '12px' : '16px');
     await page.goto('/?layer=ai&component=permission');
-    await expect(page.getByRole('region', {name: /^权限请求：/})).toHaveCSS('padding', compact ? '12px' : '20px');
+    await expect(page.getByRole('region', {name: /^权限请求：/})).toHaveCSS('padding-left', compact ? '12px' : '16px');
+    await expect(page.getByRole('region', {name: /^权限请求：/})).toHaveCSS('padding-top', compact ? '8px' : '10px');
     await page.goto('/?layer=ai&component=composer');
     const input = page.getByRole('textbox', {name: '消息草稿', exact: true});
-    await expect(input).toHaveCSS('min-height', compact ? '80px' : '112px');
+    await expect(input).toHaveCSS('min-height', compact ? '80px' : '96px');
     await expect(input).toHaveCSS('font-size', '16px');
     await input.fill('测试共享密度后的输入');
     await page.getByRole('button', {name: '发送消息', exact: true}).click();

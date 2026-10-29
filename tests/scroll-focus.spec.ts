@@ -21,8 +21,10 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     // Navigate out and back through the normal tab order, not a synthetic focus event.
     await page.keyboard.press('Tab'); await page.keyboard.press('Shift+Tab');
     await expect(viewport).toBeFocused();
-    await expect(viewport).toHaveCSS('outline-style', 'none');
-    await expect.poll(() => viewport.evaluate(el => getComputedStyle(el).boxShadow)).toContain('inset');
+    await expect(viewport).toHaveCSS('outline-style', 'solid');
+    await expect(viewport).toHaveCSS('outline-width', '1px');
+    await expect(viewport).toHaveCSS('outline-offset', '-1px');
+    await expect(viewport).toHaveCSS('box-shadow', 'none');
     const rect = await viewport.boundingBox();
     await page.screenshot({ path: testInfo.outputPath('keyboard-focus.png') });
     await page.keyboard.press('Tab');

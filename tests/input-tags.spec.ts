@@ -127,7 +127,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
   await page.setViewportSize({ width: 560, height: 720 });
   const input = await open(page, 'editable', `theme:${theme};density:${density}`);
   const field = page.locator('[data-slot="input-tags"]');
-  expect(await field.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 40);
+  expect(await field.evaluate(element => element.getBoundingClientRect().height)).toBe(density === 'compact' ? 32 : 36);
   await input.fill('Graphite');
   await input.press('Enter');
   await expect(page.getByRole('button', { name: '编辑标签 Graphite' })).toBeVisible();

@@ -5,6 +5,7 @@ This repository is an original, reusable desktop component library informed by C
 - Read `docs/design-language.md` and the relevant existing component before a UI change.
 - Tokens in `packages/tokens/src/tokens.json` are the source of truth. Run `npm run tokens:build`; never edit generated tokens CSS by hand.
 - Standard Tailwind spacing, typography, radius, shadow and motion must use the generated token bridge. Numeric-only positioning/delay APIs use `@reito/tokens/metrics`; container-query sizes are compiled from tokens because CSS queries cannot resolve runtime `var()`. Run `npm run tokens:audit`; exact structural exceptions require a reason in `docs/design-token-policy.json`, never a blanket baseline.
+- For application composition, follow `docs/composition.md` and the public composition recipe. Keep the recipe, skill and compiled consumer test in sync.
 - Shared fixes belong in tokens, `packages/ui`, or layout primitives, not page-specific overrides.
 - Use semantic Tailwind utilities (bg-background, text-muted-foreground, border-border) or --rui-* tokens. Do not introduce palette utilities or literal colors in components/examples. The generated @theme bridge maps both to the same token source.
 - Make active work the primary visual surface. Use lightweight sidebar rows and short toolbars; open artifact previews and inspectors when relevant. The Lab is a component inspection tool; consuming applications should organize the actual work. Statistics strips, decorative filename tabs and uppercase eyebrows are not a generic desktop identity.

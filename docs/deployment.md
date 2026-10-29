@@ -1,14 +1,27 @@
 # GitHub Pages 部署
 
-`.github/workflows/pages.yml` 在 main 推送或手动触发时检查、构建并发布主页、Lab 和 Storybook。仓库 Settings → Pages 的构建来源必须设为 GitHub Actions。
+`.github/workflows/pages.yml` 在 main 推送或手动触发时检查、构建并发布主页、文档、组件库、Lab 和 Storybook。仓库 Settings → Pages 的构建来源必须设为 GitHub Actions（当前仓库已启用）。
 
 - 主页：`https://reitowo.github.io/reito-ui/`
-- Lab：`https://reitowo.github.io/reito-ui/?layer=basic&component=button`
+- 文档：`https://reitowo.github.io/reito-ui/docs/introduction`
+- 安装：`https://reitowo.github.io/reito-ui/docs/installation`
+- 主题：`https://reitowo.github.io/reito-ui/docs/theming`
+- 与 AI 协作：`https://reitowo.github.io/reito-ui/docs/ai`
+- 组件库：`https://reitowo.github.io/reito-ui/gallery`
+- 示例索引：`https://reitowo.github.io/reito-ui/templates`
+- 工作台：`https://reitowo.github.io/reito-ui/templates/dashboard/home`
+- 南窗（旧 `?view=gallery` 会打开这一页）：`https://reitowo.github.io/reito-ui/templates/nanchuang/dashboard`
+- Lab：`https://reitowo.github.io/reito-ui/components/button`
 - Storybook：`https://reitowo.github.io/reito-ui/storybook/`
+- AI 索引：`https://reitowo.github.io/reito-ui/llms.txt`
+- AI 全文：`https://reitowo.github.io/reito-ui/llms-full.txt`
+- 单页 Markdown：`https://reitowo.github.io/reito-ui/docs/installation.md`
+
+从非 `main` 分支预览：GitHub → Actions → **Deploy website to GitHub Pages** → Run workflow，在 `ref` 填入分支名（例如 PR 分支）。该操作会更新同一生产站点 URL，部署完成后打开上面的示例索引或工作台即可交互试用。构建会把 `index.html` 复制到 `404.html`，并为已知路径各写一份 `index.html`，这样直接打开 `/templates/dashboard/inbox` 或 `/components/button` 也能回到应用。
 
 构建根目录是仓库根目录。Node 24.11.1，先 `npm ci`、`npm run build`，再 `npm run check`（Storybook 类型检查依赖构建生成的组件库声明）。将 `apps/storybook/storybook-static` 复制到 `apps/lab/dist/storybook`，上传 `apps/lab/dist`。
 
-Lab 的 `VITE_BASE_PATH` 由 configure-pages 的 base_path 提供，可适配项目子路径或自定义域名。站内链接使用 Vite BASE_URL；生产默认 Storybook 地址为 BASE_URL 下的 storybook，开发仍使用 localhost:6007。需要单独托管 Storybook 时，在构建环境设置 VITE_STORYBOOK_URL。
+Lab 的 `VITE_BASE_PATH` 由 configure-pages 的 base_path 提供，可适配项目子路径或自定义域名。站内链接使用 Vite BASE_URL；生产默认 Storybook 地址为 BASE_URL 下的 storybook，开发仍使用 localhost:6007。需要单独托管 Storybook 时，在构建环境设置 `VITE_STORYBOOK_URL`。`llms.txt` 等绝对链接默认指向 `https://reitowo.github.io/reito-ui`，自定义域名时设置 `VITE_SITE_URL`。构建会为文档页写入带标题与 `rel=alternate` Markdown 链接的 `index.html`，并把 `llms.txt`、`llms-full.txt` 与 `/docs/**.md` 放进 `apps/lab/dist`。
 
 GitHub Pages 发布的是构建后的公开静态内容，不发布后端或 npm 包。私有仓库需要支持私有仓库 Pages 的 GitHub 套餐；不要为了开启 Pages 自动改动源码仓库可见性。
 

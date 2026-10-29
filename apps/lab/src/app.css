@@ -19,7 +19,7 @@
 .lab-nav-item svg { margin-left: auto; flex-shrink: 0; color: var(--rui-success); }
 .lab-nav-item:hover { background: var(--rui-hover); color: var(--rui-text); }
 .lab-nav-item.is-active { background: var(--rui-active); color: var(--rui-text); }
-.lab-nav-item:focus-visible, .lab-layer-tabs button:focus-visible, a:focus-visible { outline: var(--rui-outline-width) solid var(--rui-focus); outline-offset: calc(var(--rui-outline-width) * -1); }
+.lab-nav-item:focus-visible, .lab-layer-tabs button:focus-visible, a:focus-visible { outline: var(--rui-focus-width) solid var(--rui-focus); outline-offset: calc(var(--rui-outline-width) * -1); }
 .lab-sidebar-footer { margin-top: auto; display: flex; gap: calc(var(--rui-space-1) * 1.5); align-items: center; border-top: var(--rui-border-width) solid var(--rui-border); padding: calc(var(--rui-space-1) * 2.5) var(--rui-space-3); font-size: var(--rui-font-caption); color: var(--rui-text-muted); }
 .lab-sidebar-footer > span:last-child { margin-left: auto; }
 .lab-status-dot { width: var(--rui-space-1); height: var(--rui-space-1); border-radius: 50%; background: var(--rui-success); }

@@ -139,7 +139,7 @@ test('RichMessage uses the same Markdown scale inside the compact user bubble', 
   await expect(article).toHaveAttribute('aria-label', '你的消息');
   await expect(content.locator('strong')).toHaveText('Markdown');
   const fontSize = await content.evaluate(element => getComputedStyle(element).fontSize);
-  expect(fontSize).toBe('14px');
+  expect(fontSize).toBe('13px');
 });
 
 test('Playground Controls update renderer props without leaving the Story', async ({ page }) => {

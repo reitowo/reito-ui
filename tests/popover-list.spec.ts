@@ -29,8 +29,8 @@ async function expectInlineRows(rows: Locator, density: string) {
     };
   }));
   for (const row of geometry) {
-    expect(row.height).toBeGreaterThanOrEqual(density === 'compact' ? 30 : 38);
-    expect(row.height).toBeLessThanOrEqual(density === 'compact' ? 34 : 42);
+    expect(row.height).toBeGreaterThanOrEqual(density === 'compact' ? 30 : 34);
+    expect(row.height).toBeLessThanOrEqual(density === 'compact' ? 34 : 38);
     expect(row.centers).toBeLessThanOrEqual(2);
     expect(row.gap).toBeGreaterThanOrEqual(0);
     expect(row.contained).toBe(true);

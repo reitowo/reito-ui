@@ -7,7 +7,9 @@ import { cx } from './shared.js';
 
 export type InlineEditValue = string | number;
 export type InlineEditKind = 'text' | 'number';
-export interface InlineEditSubmitContext { signal: AbortSignal; }
+export interface InlineEditSubmitContext {
+  signal: AbortSignal;
+}
 export interface InlineEditEditorArgs {
   draft: string;
   onDraftChange: (draft: string) => void;
@@ -89,7 +91,9 @@ export function InlineEdit({
   const restoreDisplayFocus = useRef(false);
   const errorId = `${id}-error`;
 
-  useEffect(() => { if (!active) setDraft(String(value)); }, [active, value]);
+  useEffect(() => {
+    if (!active) setDraft(String(value));
+  }, [active, value]);
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => {
     if (!previousActive.current && active) focusEditor();
@@ -106,7 +110,11 @@ export function InlineEdit({
   }
 
   function focusEditor() {
-    requestAnimationFrame(() => form.current?.querySelector<HTMLElement>('[data-inline-edit-editor], input, textarea, select')?.focus());
+    requestAnimationFrame(() =>
+      form.current
+        ?.querySelector<HTMLElement>('[data-inline-edit-editor], input, textarea, select')
+        ?.focus(),
+    );
   }
 
   function open() {
@@ -145,7 +153,8 @@ export function InlineEdit({
     event.preventDefault();
     if (busy || disabled || readOnly) return;
     const parsed = parse();
-    const problem = parsed.error ?? (parsed.value !== undefined ? validate?.(parsed.value) : undefined);
+    const problem =
+      parsed.error ?? (parsed.value !== undefined ? validate?.(parsed.value) : undefined);
     if (problem || parsed.value === undefined) {
       setError(problem ?? '输入无效');
       focusEditor();
@@ -175,13 +184,37 @@ export function InlineEdit({
   }
 
   const display = renderDisplay?.(value) ?? (String(value) || emptyLabel);
-  if (!active) return <div data-slot="inline-edit" data-state="display" data-readonly={readOnly || undefined} className={cx('min-w-0', className)}>
-    {readOnly
-      ? <span data-slot="inline-edit-display" className="block min-w-0 break-words text-sm">{display}</span>
-      : <Button ref={editButton} type="button" size="sm" variant="ghost" disabled={disabled} aria-label={editLabel} className="max-w-full justify-start px-[var(--rui-space-1)] font-normal" onClick={open}>
-          <span data-slot="inline-edit-display" className="min-w-0 truncate">{display}</span><Pencil aria-hidden="true" className="text-muted-foreground" />
-        </Button>}
-  </div>;
+  if (!active)
+    return (
+      <div
+        data-slot="inline-edit"
+        data-state="display"
+        data-readonly={readOnly || undefined}
+        className={cx('min-w-0', className)}
+      >
+        {readOnly ? (
+          <span data-slot="inline-edit-display" className="block min-w-0 break-words text-sm">
+            {display}
+          </span>
+        ) : (
+          <Button
+            ref={editButton}
+            type="button"
+            size="sm"
+            variant="ghost"
+            disabled={disabled}
+            aria-label={editLabel}
+            className="max-w-full justify-start px-[var(--rui-space-1)] font-normal"
+            onClick={open}
+          >
+            <span data-slot="inline-edit-display" className="min-w-0 truncate">
+              {display}
+            </span>
+            <Pencil aria-hidden="true" className="text-muted-foreground" />
+          </Button>
+        )}
+      </div>
+    );
 
   const inputProps: InlineEditEditorArgs['inputProps'] = {
     id,
@@ -191,18 +224,89 @@ export function InlineEdit({
     'aria-describedby': error ? errorId : undefined,
     'data-inline-edit-editor': '',
   };
-  return <form ref={form} data-slot="inline-edit" data-state="editing" aria-busy={busy || undefined} noValidate onSubmit={submit} onKeyDown={event => {
-    if (event.key === 'Escape') { event.preventDefault(); cancel(); }
-    if (event.key === 'Enter' && (composing.current || event.nativeEvent.isComposing || event.keyCode === 229)) event.preventDefault();
-  }} className={cx('grid min-w-0 gap-[var(--rui-space-1)]', className)}>
-    <Field data-invalid={Boolean(error) || undefined} data-disabled={disabled || busy || undefined}>
-      <FieldLabel htmlFor={id} className="sr-only">{label}</FieldLabel>
-      {renderEditor?.({ draft, onDraftChange: next => { setDraft(next); setError(''); }, inputProps }) ?? <Input {...inputProps} type={kind} value={draft} min={min} max={max} step={step} required={required} placeholder={placeholder} onChange={event => { setDraft(event.target.value); setError(''); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }} />}
-      {error && <FieldError id={errorId} className="text-xs">{error}</FieldError>}
-    </Field>
-    <div className="flex items-center gap-[var(--rui-space-1)]">
-      <Button type="submit" size="xs" disabled={disabled || busy} aria-busy={busy || undefined}>{busy ? <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" /> : <Check aria-hidden="true" />}{busy ? '正在保存…' : saveLabel}</Button>
-      <Button type="button" size="xs" variant="ghost" disabled={disabled} onClick={cancel}><X aria-hidden="true" />{cancelLabel}</Button>
-    </div>
-  </form>;
+  return (
+    <form
+      ref={form}
+      data-slot="inline-edit"
+      data-state="editing"
+      aria-busy={busy || undefined}
+      noValidate
+      onSubmit={submit}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          cancel();
+        }
+        if (
+          event.key === 'Enter' &&
+          (composing.current || event.nativeEvent.isComposing || event.keyCode === 229)
+        )
+          event.preventDefault();
+      }}
+      className={cx('grid min-w-0 gap-[var(--rui-space-1)]', className)}
+    >
+      <Field
+        data-invalid={Boolean(error) || undefined}
+        data-disabled={disabled || busy || undefined}
+      >
+        <FieldLabel htmlFor={id} className="sr-only">
+          {label}
+        </FieldLabel>
+        {renderEditor?.({
+          draft,
+          onDraftChange: (next) => {
+            setDraft(next);
+            setError('');
+          },
+          inputProps,
+        }) ?? (
+          <Input
+            {...inputProps}
+            type={kind}
+            value={draft}
+            min={min}
+            max={max}
+            step={step}
+            required={required}
+            placeholder={placeholder}
+            onChange={(event) => {
+              setDraft(event.target.value);
+              setError('');
+            }}
+            onCompositionStart={() => {
+              composing.current = true;
+            }}
+            onCompositionEnd={() => {
+              composing.current = false;
+            }}
+          />
+        )}
+        {error && (
+          <FieldError id={errorId} className="text-xs">
+            {error}
+          </FieldError>
+        )}
+      </Field>
+      <div className="flex items-center gap-[var(--rui-space-1)]">
+        <Button
+          type="submit"
+          size="xs"
+          disabled={disabled || busy}
+          aria-busy={busy || undefined}
+          aria-label={busy ? '正在保存…' : undefined}
+        >
+          {busy ? (
+            <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+          ) : (
+            <Check aria-hidden="true" />
+          )}
+          {saveLabel}
+        </Button>
+        <Button type="button" size="xs" variant="ghost" disabled={disabled} onClick={cancel}>
+          <X aria-hidden="true" />
+          {cancelLabel}
+        </Button>
+      </div>
+    </form>
+  );
 }

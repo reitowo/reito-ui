@@ -1,11 +1,22 @@
+import { AsyncOptionsFeedback } from './async-options-feedback.js';
 import { useId, useMemo, type ReactNode } from 'react';
-import { AlertCircle, RotateCcw } from 'lucide-react';
-import { Button } from '../primitives/button.js';
-import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '../primitives/combobox.js';
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '../primitives/combobox.js';
 import { Label } from '../primitives/label.js';
-import { Spinner } from '../primitives/spinner.js';
 import { cn } from '../lib/utils.js';
-import { useAsyncOptions, type AsyncOptionsLoadContext, type AsyncOptionsLoader, type AsyncOptionsStatus, type AsyncSelectOption } from './async-options.js';
+import {
+  useAsyncOptions,
+  type AsyncOptionsLoadContext,
+  type AsyncOptionsLoader,
+  type AsyncOptionsStatus,
+  type AsyncSelectOption,
+} from './async-options.js';
 
 export type AsyncComboboxOption = AsyncSelectOption;
 export type AsyncComboboxLoadContext = AsyncOptionsLoadContext;
@@ -40,25 +51,144 @@ export interface AsyncComboboxProps {
 }
 
 /** Host-loaded single select with controlled query, cancellation and stale-result protection. */
-export function AsyncCombobox({ label, loadOptions, value, defaultValue, onValueChange, query: controlledQuery, defaultQuery, onQueryChange, initialOptions = [], selectedOption, minQueryLength = 0, debounceMs = 200, name, placeholder = '输入关键词搜索…', idleMessage, loadingMessage = '正在查询…', emptyMessage = '没有匹配的选项', retryLabel = '重试', description, error, disabled = false, required = false, className, onLoadError }: AsyncComboboxProps) {
+export function AsyncCombobox({
+  label,
+  loadOptions,
+  value,
+  defaultValue,
+  onValueChange,
+  query: controlledQuery,
+  defaultQuery,
+  onQueryChange,
+  initialOptions = [],
+  selectedOption,
+  minQueryLength = 0,
+  debounceMs = 200,
+  name,
+  placeholder = '输入关键词搜索…',
+  idleMessage,
+  loadingMessage = '正在查询…',
+  emptyMessage = '没有匹配的选项',
+  retryLabel = '重试',
+  description,
+  error,
+  disabled = false,
+  required = false,
+  className,
+  onLoadError,
+}: AsyncComboboxProps) {
   const id = useId();
-  const initialSelection = selectedOption ?? initialOptions.find(option => option.value === (value ?? defaultValue));
-  const { query, changeQuery, options, status, loadError, retry, cache } = useAsyncOptions({ loadOptions, query: controlledQuery, defaultQuery: defaultQuery ?? initialSelection?.label, onQueryChange, initialOptions, selectedOptions: selectedOption ? [selectedOption] : [], minQueryLength, debounceMs, onLoadError });
+  const initialSelection =
+    selectedOption ?? initialOptions.find((option) => option.value === (value ?? defaultValue));
+  const { query, changeQuery, options, status, loadError, retry, cache } = useAsyncOptions({
+    loadOptions,
+    query: controlledQuery,
+    defaultQuery: defaultQuery ?? initialSelection?.label,
+    onQueryChange,
+    initialOptions,
+    selectedOptions: selectedOption ? [selectedOption] : [],
+    minQueryLength,
+    debounceMs,
+    onLoadError,
+  });
 
-  const optionMap = useMemo(() => new Map(options.map(option => [option.value, option])), [options]);
-  const items = useMemo(() => options.map(option => option.value), [options]);
-  const describedBy = [description ? `${id}-description` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined;
+  const optionMap = useMemo(
+    () => new Map(options.map((option) => [option.value, option])),
+    [options],
+  );
+  const items = useMemo(() => options.map((option) => option.value), [options]);
+  const describedBy =
+    [description ? `${id}-description` : '', error ? `${id}-error` : '']
+      .filter(Boolean)
+      .join(' ') || undefined;
   const resolvedIdle = idleMessage ?? `请输入至少 ${Math.max(1, minQueryLength)} 个字符`;
 
-  return <div data-slot="async-combobox" data-status={status} className={cn('grid min-w-0 gap-2 text-sm', className)}>
-    <Label htmlFor={id}>{label}</Label>
-    <Combobox<string> items={items} filteredItems={items} filter={null} value={value} defaultValue={defaultValue} onValueChange={next => { const option = next ? optionMap.get(next) ?? cache.current.get(next) : undefined; if (option) cache.current.set(option.value, option); changeQuery(option?.label ?? ''); onValueChange?.(next); }} inputValue={query} onInputValueChange={(next, details) => { if (details.reason === 'input-change' || details.reason === 'input-clear' || details.reason === 'clear-press') changeQuery(next); }} itemToStringLabel={item => cache.current.get(item)?.label ?? item} disabled={disabled} name={name}>
-      <ComboboxInput id={id} aria-label={label} placeholder={placeholder} showClear showTrigger={false} disabled={disabled} required={required} aria-invalid={Boolean(error)} aria-describedby={describedBy} aria-busy={status === 'loading'} />
-      <ComboboxContent>
-        {status === 'idle' ? <p className="px-[var(--rui-content-padding)] py-[var(--rui-content-gap-sm)] text-sm text-muted-foreground">{resolvedIdle}</p> : status === 'loading' ? <div role="status" className="flex items-center gap-[var(--rui-space-2)] px-[var(--rui-content-padding)] py-[var(--rui-content-gap-sm)] text-sm text-muted-foreground"><Spinner aria-hidden="true" />{loadingMessage}</div> : status === 'error' ? <div className="grid gap-[var(--rui-space-2)] px-[var(--rui-content-padding)] py-[var(--rui-content-gap-sm)]"><p role="alert" className="flex items-start gap-[var(--rui-space-2)] text-sm text-destructive"><AlertCircle aria-hidden="true" className="mt-[var(--rui-space-1)] size-3 shrink-0" />{loadError}</p><Button type="button" variant="outline" size="xs" className="justify-self-start" onClick={retry}><RotateCcw aria-hidden="true" />{retryLabel}</Button></div> : <><ComboboxEmpty>{emptyMessage}</ComboboxEmpty><ComboboxList>{(item: string) => { const option = optionMap.get(item); return <ComboboxItem key={item} value={item} disabled={option?.disabled}><span className="min-w-0"><span className="block truncate">{option?.label ?? item}</span>{option?.description && <span className="block truncate text-xs text-muted-foreground">{option.description}</span>}</span></ComboboxItem>; }}</ComboboxList></>}
-      </ComboboxContent>
-    </Combobox>
-    {description && <p id={`${id}-description`} className="text-xs leading-relaxed text-muted-foreground">{description}</p>}
-    {error && <p id={`${id}-error`} role="alert" className="text-xs text-destructive">{error}</p>}
-  </div>;
+  return (
+    <div
+      data-slot="async-combobox"
+      data-status={status}
+      className={cn('grid min-w-0 gap-2 text-sm', className)}
+    >
+      <Label htmlFor={id}>{label}</Label>
+      <Combobox<string>
+        items={items}
+        filteredItems={items}
+        filter={null}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={(next) => {
+          const option = next ? (optionMap.get(next) ?? cache.current.get(next)) : undefined;
+          if (option) cache.current.set(option.value, option);
+          changeQuery(option?.label ?? '');
+          onValueChange?.(next);
+        }}
+        inputValue={query}
+        onInputValueChange={(next, details) => {
+          if (
+            details.reason === 'input-change' ||
+            details.reason === 'input-clear' ||
+            details.reason === 'clear-press'
+          )
+            changeQuery(next);
+        }}
+        itemToStringLabel={(item) => cache.current.get(item)?.label ?? item}
+        disabled={disabled}
+        name={name}
+      >
+        <ComboboxInput
+          id={id}
+          aria-label={label}
+          placeholder={placeholder}
+          showClear
+          showTrigger={false}
+          disabled={disabled}
+          required={required}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
+          aria-busy={status === 'loading'}
+        />
+        <ComboboxContent>
+          <AsyncOptionsFeedback
+            status={status}
+            idleMessage={resolvedIdle}
+            loadingMessage={loadingMessage}
+            error={loadError}
+            retryLabel={retryLabel}
+            onRetry={retry}
+          >
+            <>
+              <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
+              <ComboboxList>
+                {(item: string) => {
+                  const option = optionMap.get(item);
+                  return (
+                    <ComboboxItem key={item} value={item} disabled={option?.disabled}>
+                      <span className="min-w-0">
+                        <span className="block truncate">{option?.label ?? item}</span>
+                        {option?.description && (
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {option.description}
+                          </span>
+                        )}
+                      </span>
+                    </ComboboxItem>
+                  );
+                }}
+              </ComboboxList>
+            </>
+          </AsyncOptionsFeedback>
+        </ComboboxContent>
+      </Combobox>
+      {description && (
+        <p id={`${id}-description`} className="text-xs leading-relaxed text-muted-foreground">
+          {description}
+        </p>
+      )}
+      {error && (
+        <p id={`${id}-error`} role="alert" className="text-xs text-destructive">
+          {error}
+        </p>
+      )}
+    </div>
+  );
 }

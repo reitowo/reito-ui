@@ -34,7 +34,9 @@ export const Large: Story = { name: "大尺寸", args: { 'aria-label': '粗体',
 
 export const Playground: Story = {
   name: "参数调试", args: { 'aria-label': '粗体', variant: 'default', size: 'default', pressed: false, disabled: false },
-  argTypes: { variant: { control: 'select', options: ['default', 'outline'] }, size: { control: 'select', options: ['default', 'sm', 'lg'] }, pressed: { control: 'boolean' }, disabled: { control: 'boolean' } },
+  argTypes: { variant: { control: 'select', options: ['default', 'outline'] }, size: { control: 'select', options: ['default', 'sm', 'md', 'lg'] }, pressed: { control: 'boolean' }, disabled: { control: 'boolean' } },
   parameters: { controls: { include: ['variant', 'size', 'pressed', 'disabled'] } },
   render: function Render(args) { const [, updateArgs] = useArgs(); return <Toggle {...args} onPressedChange={pressed => updateArgs({ pressed })}><Bold /></Toggle>; },
 };
+
+export const Medium: Story = { name: "尺寸 · MD", args: { size: "md", children: <Bold />, "aria-label": "粗体" } };

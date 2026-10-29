@@ -67,13 +67,13 @@ function utilityContract(full) {
   if (/^(?:(?:p|m)[xytrblse]?|(?:min-|max-)?[wh]|size|gap(?:-[xy])?|space-[xy]|border-spacing(?:-[xy])?|inset(?:-[xyse])?|top|right|bottom|left|start|end|translate-[xy]|scroll-[mp][xytrblse]?|leading|indent|basis|slide-(?:in|out)-(?:from|to)-(?:top|right|bottom|left))-\d+(?:\.\d+)?$/.test(value)) return { kind: 'scale-utility', theme: '--spacing', reason: 'Numeric Tailwind spacing multiplies the generated token-backed base unit.' };
   let match = value.match(/^(?:p[xytrblse]?|m[xytrblse]?|(?:min-|max-)?[wh]|size|inset(?:-[xy])?|top|right|bottom|left|translate-[xy])-px$/);
   if (match) return { kind: 'hairline-utility', status: 'structural', reason: 'One physical pixel is an optical alignment/hairline contract, not a spacing role.' };
-  match = value.match(/^text-(xs|sm|base|lg|xl|[2-9]xl)(?:\/.*)?$/);
+  match = value.match(/^text-(2xs|xs|sm|base|lg|xl|[2-9]xl)(?:\/.*)?$/);
   if (match) return { kind: 'typography-utility', theme: `--text-${match[1]}`, reason: 'Font size must resolve through the generated typography bridge.' };
   match = value.match(/^font-(sans|serif|mono|thin|extralight|light|normal|medium|semibold|bold|extrabold|black)$/);
   if (match) return { kind: 'typography-utility', theme: `--${['sans','serif','mono'].includes(match[1]) ? 'font' : 'font-weight'}-${match[1]}`, reason: 'Font family/weight must resolve through the generated typography bridge.' };
   match = value.match(/^(leading|tracking)-(none|tight|snug|normal|relaxed|loose|tighter|wide|wider|widest)$/);
   if (match) return { kind: 'typography-utility', theme: `--${match[1]}-${match[2]}`, reason: 'Line-height/letter-spacing must resolve through the generated typography bridge.' };
-  match = value.match(/^rounded(?:-(?:t|r|b|l|s|e|tl|tr|br|bl|ss|se|es|ee))?(?:-(none|full|[234]?xs|sm|md|lg|xl|[234]xl))?$/);
+  match = value.match(/^rounded(?:-(?:t|r|b|l|s|e|tl|tr|br|bl|ss|se|es|ee))?(?:-(none|full|[234]?xs|sm|md|lg|xl|[234]xl|control|surface))?$/);
   if (match) return match[1] === 'none' ? { kind: 'structural-utility', status: 'structural', reason: 'Square corner reset.' } : { kind: 'radius-utility', theme: `--radius-${match[1] ?? 'DEFAULT'}`, reason: 'Corner radius must resolve through the generated radius bridge.' };
   match = value.match(/^shadow(?:-(none|2xs|xs|sm|md|lg|xl|2xl))?$/);
   if (match) return match[1] === 'none' ? { kind: 'structural-utility', status: 'structural', reason: 'Shadow reset.' } : { kind: 'shadow-utility', theme: `--shadow-${match[1] ?? 'DEFAULT'}`, reason: 'Elevation must resolve through the generated shadow bridge.' };
@@ -247,6 +247,7 @@ function selfTest() {
   assert.equal(utilityContract('text-[0.8rem]').kind, 'arbitrary-literal');
   assert.equal(utilityContract('[&_svg]:size-3.5').theme, '--spacing');
   assert.equal(utilityContract('text-sm').theme, '--text-sm');
+  assert.equal(utilityContract('text-2xs').theme, '--text-2xs');
   assert.equal(utilityContract('shadow-lg').theme, '--shadow-lg');
   assert.equal(utilityContract('focus-visible:ring-3').status, 'violation');
   assert.equal(utilityContract('z-50').status, 'violation');
@@ -283,7 +284,7 @@ function selfTest() {
   assert.equal(compileTimeTokenBridge('--container-sm', 'var(--rui-container-sm)', dimensionSource), false);
   assert(utilityContracts('@2xl:flex-row').some(contract => contract.theme === '--container-2xl'));
   assert(utilityContracts('@lg/task-queue:px-2').some(contract => contract.theme === '--container-lg'));
-  console.log('Design token audit self-test: 33 assertions passed.');
+  console.log('Design token audit self-test: 34 assertions passed.');
 }
 
 async function main() {

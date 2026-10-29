@@ -1,3 +1,4 @@
+import { ValidationGlowExample } from './validation-glow-example';
 import { useArgs } from "storybook/preview-api";
 import { Input, Field, FieldError } from '../../../../packages/ui/src/basic.js';
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -51,3 +52,5 @@ export const Playground: Story = {
   parameters: { controls: { include: ['value', 'placeholder', 'type', 'disabled', 'readOnly', 'aria-invalid'] } },
   render: function Render(args) { const [, updateArgs] = useArgs(); return <Input {...args} onChange={event => updateArgs({ value: event.target.value })} className="max-w-sm" />; },
 };
+
+export const ValidationGlow: Story = { name: '状态 · 内边缘渐变', render: () => <ValidationGlowExample/> };

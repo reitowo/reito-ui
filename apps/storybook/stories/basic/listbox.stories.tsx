@@ -21,7 +21,7 @@ const meta = { id: "基础-listbox",
   title: "基础/Listbox 列表选择",
   component: Listbox,
   tags: ['autodocs'],
-  args: { label: '技术栈', options },
+  args: { descriptionLayout: 'inline', label: '技术栈', options },
   parameters: { docs: { description: { component: '常驻单选或多选列表。列表自身持有焦点，活动项通过 aria-activedescendant 暴露；支持分组、搜索、富选项、禁用项与连续范围选择。' } } },
 } satisfies Meta<typeof Listbox>;
 export default meta;
@@ -30,13 +30,13 @@ type Story = StoryObj<typeof meta>;
 type PlaygroundArgs = {
   label: string; selectionMode: 'single' | 'multiple'; selected: string; searchable: boolean; query: string;
   rangeSelection: boolean; bulkSelection: boolean; clearable: boolean; disabled: boolean; readOnly: boolean;
-  required: boolean; virtual: boolean; overscan: number; scenario: 'ready' | 'loading' | 'error'; description: string; error: string;
+  descriptionLayout: 'inline' | 'stacked'; required: boolean; virtual: boolean; overscan: number; scenario: 'ready' | 'loading' | 'error'; description: string; error: string;
 };
 export const Playground: StoryObj<PlaygroundArgs> = {
   name: "参数调试",
-  args: { label: '技术栈', selectionMode: 'multiple', selected: 'react,typescript', searchable: true, query: '', rangeSelection: true, bulkSelection: true, clearable: true, disabled: false, readOnly: false, required: false, virtual: false, overscan: 4, scenario: 'ready', description: '方向键移动；Space 切换；Shift 连选。', error: '' },
-  argTypes: { label: textControl, selectionMode: choiceControl(['single', 'multiple']), selected: textControl, searchable: booleanControl, query: textControl, rangeSelection: booleanControl, bulkSelection: booleanControl, clearable: booleanControl, disabled: booleanControl, readOnly: booleanControl, required: booleanControl, virtual: booleanControl, overscan: { control: { type: 'number', min: 0, max: 20 } }, scenario: choiceControl(['ready', 'loading', 'error']), description: textControl, error: textControl },
-  parameters: { controls: { include: ['label', 'selectionMode', 'selected', 'searchable', 'query', 'rangeSelection', 'bulkSelection', 'clearable', 'disabled', 'readOnly', 'required', 'virtual', 'overscan', 'scenario', 'description', 'error'] } },
+  args: { descriptionLayout: 'inline', label: '技术栈', selectionMode: 'multiple', selected: 'react,typescript', searchable: true, query: '', rangeSelection: true, bulkSelection: true, clearable: true, disabled: false, readOnly: false, required: false, virtual: false, overscan: 4, scenario: 'ready', description: '方向键移动；Space 切换；Shift 连选。', error: '' },
+  argTypes: { descriptionLayout: choiceControl(['inline','stacked']), label: textControl, selectionMode: choiceControl(['single', 'multiple']), selected: textControl, searchable: booleanControl, query: textControl, rangeSelection: booleanControl, bulkSelection: booleanControl, clearable: booleanControl, disabled: booleanControl, readOnly: booleanControl, required: booleanControl, virtual: booleanControl, overscan: { control: { type: 'number', min: 0, max: 20 } }, scenario: choiceControl(['ready', 'loading', 'error']), description: textControl, error: textControl },
+  parameters: { controls: { include: ['descriptionLayout','label', 'selectionMode', 'selected', 'searchable', 'query', 'rangeSelection', 'bulkSelection', 'clearable', 'disabled', 'readOnly', 'required', 'virtual', 'overscan', 'scenario', 'description', 'error'] } },
   render: function Render(args) {
     const [, update] = useArgs<PlaygroundArgs>();
     const values = args.selected.split(',').map(value => value.trim()).filter(Boolean);
@@ -98,3 +98,5 @@ function RangeCallbackExample() {
   return <div className="grid max-w-md gap-[var(--rui-content-gap-sm)]"><Listbox label="资源" options={largeOptions} virtual overscan={2} onRangeChange={next => setRange(`${next.visibleStartIndex}-${next.visibleEndIndex} / ${next.startIndex}-${next.endIndex}`)} /><output data-testid="range-value" className="font-mono text-xs text-muted-foreground">range={range}</output></div>;
 }
 export const VirtualRange: Story = { name: "可见范围回调", render: () => <RangeCallbackExample /> };
+
+export const StackedDescriptions: Story = { name: "布局 · 双行说明", render: () => <Stateful label="详细选项" options={options} descriptionLayout="stacked" /> };
