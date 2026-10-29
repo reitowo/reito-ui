@@ -85,4 +85,4 @@ Affect Button **不再**映射到 `primitives/button`。它使用 Base UI `Butto
 
 ## 与文档站的关系
 
-[PR #25](https://github.com/reitowo/reito-ui/pull/25) 的 `/gallery`、`/docs`、llms 路由若尚未合并，本层先挂在现有 Lab `/components/<id>` 与 Storybook `模式/` 目录。合并后应把同一 catalog 接到文档站画廊。
+已与 PR #25 的公开站点整合：模式层使用同一 catalog 接入 `/gallery` 的模式筛选、组件详情、`/docs/components/<id>`、Markdown 镜像与 llms 索引；Lab 和 Storybook 继续复用相同示例。

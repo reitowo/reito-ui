@@ -196,34 +196,26 @@ export function TaskBoard({
                 </Text>
               </Inline>
               {column.map((task) => (
-                <button
+                <div
                   key={task.key}
-                  type="button"
-                  onClick={() => setOpen(task.key)}
                   className={cn(
-                    'grid gap-1 rounded-[var(--rui-radius)] border border-border bg-card p-[var(--rui-compact-surface-padding-x)] text-left',
+                    'relative grid gap-1 rounded-[var(--rui-radius)] border border-border bg-card p-[var(--rui-compact-surface-padding-x)] text-left',
                     compact && 'py-1',
                   )}
                 >
-                  <Inline className="justify-between">
+                  <Inline className="min-h-[var(--rui-control-height-sm)] justify-between pr-[var(--rui-control-height-sm)]">
                     <Text variant="caption" tone="muted">
                       {task.key}
                     </Text>
-                    <Button
-                      type="button"
-                      size="icon-sm"
-                      variant="ghost"
-                      aria-pressed={task.starred}
-                      aria-label="星标"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        patch(task.key, { starred: !task.starred });
-                      }}
-                    >
-                      {task.starred ? '★' : '☆'}
-                    </Button>
                   </Inline>
-                  <Text>{task.title}</Text>
+                  <button
+                    type="button"
+                    aria-label={`打开任务 ${task.title}`}
+                    onClick={() => setOpen(task.key)}
+                    className="text-left outline-none after:absolute after:inset-0 after:rounded-[var(--rui-radius)] focus-visible:after:ring-[length:var(--rui-focus-width)] focus-visible:after:ring-ring"
+                  >
+                    {task.title}
+                  </button>
                   {!compact ? (
                     <Inline>
                       {task.labels?.map((id) => (
@@ -241,7 +233,24 @@ export function TaskBoard({
                       ) : null}
                     </Inline>
                   ) : null}
-                </button>
+                  <Button
+                    type="button"
+                    className={cn(
+                      'absolute right-[var(--rui-compact-surface-padding-x)]',
+                      compact ? 'top-1' : 'top-[var(--rui-compact-surface-padding-x)]',
+                    )}
+                    size="icon-sm"
+                    variant="ghost"
+                    aria-pressed={task.starred}
+                    aria-label="星标"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      patch(task.key, { starred: !task.starred });
+                    }}
+                  >
+                    {task.starred ? '★' : '☆'}
+                  </Button>
+                </div>
               ))}
               {adding === status.id ? (
                 <form

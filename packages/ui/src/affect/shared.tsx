@@ -63,11 +63,8 @@ export function formatAgo(at: number, now: number) {
 export function useTickingNow(active: boolean, now?: number) {
   const [tick, setTick] = useState(() => now ?? Date.now());
   useEffect(() => {
-    if (now != null) {
-      setTick(now);
-      return;
-    }
-    if (!active) return;
+    // Supplied timestamps are controlled values, not local state to mirror.
+    if (now != null || !active) return;
     const timer = window.setInterval(() => setTick(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, [active, now]);

@@ -6,8 +6,7 @@
     "affect": 123
   },
   "total": 267,
-  "total": 267,
-  "stories": 1601,
+  "stories": 1604,
   "entries": [
     {
       "layer": "basic",
@@ -2047,7 +2046,7 @@
       "storyId": "模式-trace-waterfall--default",
       "sourceFile": "packages/ui/src/affect/catalog.tsx",
       "demo": "TraceWaterfallDemo",
-      "stories": 1
+      "stories": 2
     },
     {
       "layer": "affect",

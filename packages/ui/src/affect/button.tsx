@@ -56,8 +56,9 @@ export function Button({
         </span>
       ) : null}
       {hasLabel ? (
-        <span className="affect-button__label" data-text={text}>
+        <span className="affect-button__label">
           {children}
+          {text && <span className="affect-button__shine" aria-hidden="true" data-text={text} />}
         </span>
       ) : null}
       {!loading && iconRight ? (

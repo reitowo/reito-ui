@@ -18,6 +18,8 @@ const config: StorybookConfig = {
         { find: /^@reito\/ui\/styles\.css$/, replacement: workspaceFile('packages/ui/src/styles.css') },
         { find: /^@reito\/ui\/basic$/, replacement: workspaceFile('packages/ui/src/basic.ts') },
         { find: /^@reito\/ui\/affect$/, replacement: workspaceFile('packages/ui/src/affect/index.ts') },
+        { find: /^@reito\/ui\/complex$/, replacement: workspaceFile('packages/ui/src/complex/index.ts') },
+        { find: /^@reito\/ui\/ai$/, replacement: workspaceFile('packages/ui/src/ai/index.ts') },
         { find: /^@reito\/ui$/, replacement: workspaceFile('packages/ui/src/index.ts') },
         { find: /^@reito\/tokens\/css$/, replacement: workspaceFile('packages/tokens/dist/tokens.css') },
       ],

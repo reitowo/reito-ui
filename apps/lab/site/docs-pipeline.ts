@@ -45,6 +45,7 @@ const layerInfo = {
   basic: { name: '基础', importPath: '@reito/ui/basic' },
   complex: { name: '复杂', importPath: '@reito/ui/complex' },
   ai: { name: 'AI', importPath: '@reito/ui/ai' },
+  affect: { name: '模式', importPath: '@reito/ui/affect' },
 } as const;
 
 const read = (file: string) => fs.readFileSync(path.join(repoRoot, file), 'utf8').replace(/\r\n/g, '\n');
