@@ -6,7 +6,7 @@
     "affect": 123
   },
   "total": 267,
-  "stories": 1600,
+  "stories": 1603,
   "entries": [
     {
       "layer": "basic",
@@ -216,7 +216,7 @@
       "storyId": "基础-field--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "FieldDemo",
-      "stories": 7
+      "stories": 10
     },
     {
       "layer": "basic",

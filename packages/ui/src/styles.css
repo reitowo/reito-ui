@@ -8,8 +8,17 @@
 @import './complex/rich-text-editor.css';
 @import './affect/affect.css';
 @source "./";
+/* Flat selectors, not @scope: nested @scope loses the utility selector once
+   Tailwind output is flattened for production. The nearest theme wins for
+   dark → light → dark nesting; deeper alternation is not resolved. */
 @custom-variant dark {
-  @scope ([data-theme="dark"], .dark) to ([data-theme], .dark) {
+  &:where([data-theme='dark'], [data-theme='dark'] *, .dark, .dark *):not(
+      :where([data-theme='dark'] [data-theme='light'], [data-theme='dark'] [data-theme='light'] *)
+    ),
+  &:where(
+    [data-theme='dark'] [data-theme='light'] [data-theme='dark'],
+    [data-theme='dark'] [data-theme='light'] [data-theme='dark'] *
+  ) {
     @slot;
   }
 }

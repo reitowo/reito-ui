@@ -8,9 +8,9 @@ export default defineConfig({
   workers: 2,
   expect: { timeout: 10_000 },
   testMatch: [
-    'axe-scan.spec.ts', 'kanban-model.spec.ts', 'kanban.spec.ts',
+    'axe-scan.spec.ts', 'field-control-layout.spec.ts', 'kanban-model.spec.ts', 'kanban.spec.ts',
     'overview.spec.ts', 'overview-catalog.spec.ts', 'surface-consistency.spec.ts', 'overview-loading.spec.ts', 'button-card-defaults.spec.ts', 'component-geometry-audit.spec.ts', 'tree-row-focus.spec.ts', 'neutral-focus-contract.spec.ts', 'state-stability.spec.ts', 'catalog-state-probes.spec.ts',
-    'home.spec.ts', 'theme-guide.spec.ts', 'scroll-focus.spec.ts', 'select-input.spec.ts',
+    'home.spec.ts', 'docs-site.spec.ts', 'theme-guide.spec.ts', 'scroll-focus.spec.ts', 'select-input.spec.ts',
     'popover-list.spec.ts', 'tabs-table-focus.spec.ts', 'settings-composition.spec.ts',
     'data-table-column-filters.spec.ts', 'data-table-column-management.spec.ts',
     'data-table-controlled.spec.ts', 'data-table-editing.spec.ts', 'data-table-preferences.spec.ts',

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('hero actions use the extra-large button', async ({ page }) => {
   await page.goto('/');
-  const primary = page.getByRole('button', { name: '查看示例', exact: true });
+  const primary = page.getByRole('button', { name: '阅读文档', exact: true });
   const secondary = page.getByRole('button', { name: '浏览组件', exact: true });
   await expect(primary).toHaveAttribute('data-size', 'xl');
   await expect(secondary).toHaveAttribute('data-size', 'xl');

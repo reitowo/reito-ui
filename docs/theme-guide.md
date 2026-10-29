@@ -96,7 +96,7 @@ Provider 默认仅影响自身子树；root 同时设置 html 的主题、密度
 
 `Button / Badge / Switch / Checkbox / RadioGroup / Slider / Progress / Toggle` 支持独立 color。Button 与 Badge 的颜色独立于 variant：实心、柔和、描边、轻量和链接复用共享配色规则；destructive 保留危险状态含义。其他复杂和 AI 组件通过共享语义变量继承全局或局部主题，不宣称每个复合组件都有独立 color 参数。
 
-Dialog、AlertDialog、Sheet、Select、Combobox、DropdownMenu、ContextMenu、Popover、Tooltip、HoverCard、NavigationMenu（Menubar 使用共享菜单 Portal）传递最近的 React 主题。作用域使用 display: contents，不增加布局容器。根作用域继承 html token，避免重复密度声明挡住宿主的运行时 padding 覆盖。局部主题明确重绑语义别名与文字色；dark variant 使用有边界的 CSS @scope，防止深色祖先污染局部浅色组件。独立组件色使用 CSS light-dark 随所在作用域解析。目标是支持这些 CSS 能力的现代浏览器。
+Dialog、AlertDialog、Sheet、Select、Combobox、DropdownMenu、ContextMenu、Popover、Tooltip、HoverCard、NavigationMenu（Menubar 使用共享菜单 Portal）传递最近的 React 主题。作用域使用 display: contents，不增加布局容器。根作用域继承 html token，避免重复密度声明挡住宿主的运行时 padding 覆盖。局部主题明确重绑语义别名与文字色；dark variant 使用扁平选择器（不再使用 @scope：嵌套 @scope 在生产构建展开后会丢失 utility 选择器，导致 Pages 上 `dark:` 样式失效），最近的主题作用域优先，支持 深色 → 浅色 → 深色 三层嵌套，防止深色祖先污染局部浅色组件。独立组件色使用 CSS light-dark 随所在作用域解析。目标是支持这些 CSS 能力的现代浏览器。
 
 ## 来源与实际视觉检查
 
