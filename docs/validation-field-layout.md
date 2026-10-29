@@ -53,3 +53,7 @@
 在 Node 24 / npm 11.9 下，现有锁文件缺少两个 emnapi 传递依赖条目，`npm ci` 未通过；本次使用 `npm install --package-lock=false` 安装后运行上述检查，没有改动依赖声明或锁文件。未运行自动无障碍扫描、原生 200% 缩放或完整屏幕阅读器验收。
 
 本次为组件源码和示例修复，不包含版本发布。消费应用需升级组件包并采用以上结构；原生 fieldset/div 组合不会自动获得该布局。
+
+## 2026-10-29 合并 main 复核
+
+已合并当前 0.6 候选主线，保留主线 Field 的 space-1 标签/控件间距，避免恢复旧版 8/12px 间距。FieldControlRow 和描边 FieldSet 保留。当前锁文件下 npm ci、完整 npm run build、npm run check 均通过。新增自动回归 5 项，覆盖深浅主题 × compact/comfortable 的控件/操作垂直居中、标签聚焦、Tab/Enter 删除与恢复、360px 无横向溢出，以及错误说明关联和禁用态；5 项全部通过（12.9s）。原表格是旧分支测量，当前间距以主线 tokens 为准。
