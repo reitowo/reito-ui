@@ -4,7 +4,7 @@ const manifest = JSON.parse(readFileSync('apps/lab/src/catalog-manifest.json', '
 // Under CI load Chromium can refuse some of the hundreds of dev-server module requests a preview makes;
 // the lazy route import then rejects and nothing mounts. Only that network-level refusal is retried.
 const refusedModuleLoad = 'net::ERR_INSUFFICIENT_RESOURCES';
-for (const layer of ['basic', 'complex', 'ai']) test(`standalone overview previews render the entire ${layer} catalog`, async ({ page }) => {
+for (const layer of ['basic', 'complex', 'ai', 'affect']) test(`standalone overview previews render the entire ${layer} catalog`, async ({ page }) => {
   test.setTimeout(240_000);
   const failures: string[] = [];
   let current = '';

@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 const workspaceFile = (path: string) => fileURLToPath(new URL(`../../../${path}`, import.meta.url));
 
 const config: StorybookConfig = {
-  stories: ['../stories/{basic,complex,ai}/**/*.stories.@(ts|tsx)'],
+  stories: ['../stories/{basic,complex,ai,affect}/**/*.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y'],
   framework: { name: '@storybook/react-vite', options: {} },
   core: { disableTelemetry: true },
@@ -17,6 +17,7 @@ const config: StorybookConfig = {
       alias: [
         { find: /^@reito\/ui\/styles\.css$/, replacement: workspaceFile('packages/ui/src/styles.css') },
         { find: /^@reito\/ui\/basic$/, replacement: workspaceFile('packages/ui/src/basic.ts') },
+        { find: /^@reito\/ui\/affect$/, replacement: workspaceFile('packages/ui/src/affect/index.ts') },
         { find: /^@reito\/ui$/, replacement: workspaceFile('packages/ui/src/index.ts') },
         { find: /^@reito\/tokens\/css$/, replacement: workspaceFile('packages/tokens/dist/tokens.css') },
       ],

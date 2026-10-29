@@ -3,7 +3,7 @@ import ts from 'typescript';
 const unwrap = node => node && (ts.isSatisfiesExpression(node) || ts.isAsExpression(node) || ts.isParenthesizedExpression(node)) ? unwrap(node.expression) : node;
 const ids = new Set();
 let families = 0, stories = 0;
-for (const layer of ['basic', 'complex', 'ai']) {
+for (const layer of ['basic', 'complex', 'ai', 'affect']) {
   const dir = `apps/storybook/stories/${layer}`;
   for (const file of await readdir(dir)) {
     if (!file.endsWith('.stories.tsx')) continue;
@@ -18,8 +18,8 @@ for (const layer of ['basic', 'complex', 'ai']) {
         const key = declaration.name.getText(source), node = unwrap(declaration.initializer);
         if (key === 'meta') {
           const title = string(property(node, 'title')), id = string(property(node, 'id'));
-          const expected = { basic: '基础', complex: '复杂', ai: 'AI' }[layer];
-          if (!title?.startsWith(`${expected}/`) || !/^(基础|复杂|AI)\/[A-Za-z][A-Za-z0-9]* [\u3400-\u9fff][^/]*$/.test(title)) throw Error(`${path}: use 层级/EnglishAPI 中文用途`);
+          const expected = { basic: '基础', complex: '复杂', ai: 'AI', affect: '模式' }[layer];
+          if (!title?.startsWith(`${expected}/`) || !/^(基础|复杂|AI|模式)\/[A-Za-z][A-Za-z0-9]* [\u3400-\u9fff][^/]*$/.test(title)) throw Error(`${path}: use 层级/EnglishAPI 中文用途`);
           if (!id || ids.has(id)) throw Error(`${path}: missing or duplicate stable meta.id`);
           ids.add(id); families++;
         } else if (statement.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {

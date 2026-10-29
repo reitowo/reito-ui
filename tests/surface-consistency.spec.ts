@@ -9,8 +9,8 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
     await page.setViewportSize({ width: 1303, height: 1244 });
     const x = density === 'compact' ? '12px' : '16px';
     const y = density === 'compact' ? '8px' : '10px';
-    const menuX = density === 'compact' ? '8px' : '10px';
-    const menuY = density === 'compact' ? '4px' : '6px';
+    const menuX = density === 'compact' ? '16px' : '20px';
+    const menuY = density === 'compact' ? '8px' : '10px';
     for (const id of ['alert', 'card']) {
       await page.goto('/?layer=basic&component=' + id);
       const surfaces = page.locator(id === 'alert' ? '[data-slot="alert"]' : '[data-slot="card-footer"]');
@@ -35,8 +35,8 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       await expect(item).toHaveCSS('padding-left', menuX);
       await expect(item).toHaveCSS('padding-right', menuX);
       await expect(item).toHaveCSS('padding-top', menuY);
-      await expect(item).toHaveCSS('font-size', '13px');
-      await expect(item).toHaveCSS('height', density === 'compact' ? '28px' : '32px');
+      await expect(item).toHaveCSS('font-size', '14px');
+      await expect(item).toHaveCSS('height', density === 'compact' ? '32px' : '36px');
       await expect(item).toHaveCSS('border-radius', '4px');
       if (id === 'context-menu') await page.locator('[data-slot="context-menu-content"]').screenshot({ path: '.logs/feedback-menu-' + theme + '-' + density + '.png' });
       await page.keyboard.press('ArrowDown');
@@ -50,7 +50,7 @@ for (const theme of ['dark', 'light']) for (const density of ['compact', 'comfor
       await trigger.click();
       const item=page.locator('[data-slot="' + (id === 'select' ? 'select-item' : 'combobox-item') + '"]').first();
       await expect(item).toBeVisible();
-      await expect(item).toHaveCSS('font-size','13px');
+      await expect(item).toHaveCSS('font-size','14px');
       await expect(item).toHaveCSS('padding-top',menuY);
       await expect(item).toHaveCSS('padding-bottom',menuY);
       expect(await trigger.evaluate(n=>n.getBoundingClientRect().height)).toBe(triggerHeight);

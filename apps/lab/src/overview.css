@@ -28,7 +28,7 @@
 .atlas-swatches code { font-size: var(--rui-font-caption); font-family: var(--rui-font-mono); color: var(--rui-text-muted); }
 .atlas-component-section { margin-top: var(--rui-space-6); }
 .atlas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--rui-container-md)), 1fr)); gap: var(--rui-space-4); align-items: start; }
-.atlas-grid-complex, .atlas-grid-ai { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--rui-container-xl)), 1fr)); }
+.atlas-grid-complex, .atlas-grid-ai, .atlas-grid-affect { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--rui-container-xl)), 1fr)); }
 .atlas-tile { min-width: 0; border: var(--rui-border-width) solid var(--rui-border); border-radius: var(--rui-radius-md); background: var(--rui-bg); overflow: hidden; scroll-margin-top: var(--rui-space-4); }
 .atlas-tile.is-expanded { grid-column: 1 / -1; }
 .atlas-tile > header { padding: var(--rui-space-3); display: flex; gap: var(--rui-space-2); align-items: flex-start; border-bottom: var(--rui-border-width) solid var(--rui-border); background: var(--rui-surface); }

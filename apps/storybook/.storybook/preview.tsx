@@ -46,7 +46,7 @@ const preview: Preview = {
     a11y: { test: 'error' },
     options: { storySort: (a, b) => {
       if (a.title !== b.title) {
-        const layers = ['基础', '复杂', 'AI'];
+        const layers = ['基础', '复杂', 'AI', '模式'];
         const layer = layers.indexOf(a.title.split('/')[0]) - layers.indexOf(b.title.split('/')[0]);
         return layer || a.title.localeCompare(b.title, 'en', { numeric: true });
       }

@@ -143,7 +143,7 @@ test('workbench theme persists with compact density and no density switch', asyn
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('html')).toHaveAttribute('data-density', 'compact');
-  await expect(page.getByRole('button', { name: '查看任务队列' })).toHaveCSS('height', '28px');
+  await expect(page.getByRole('button', { name: '查看任务队列' })).toHaveCSS('height', '32px');
   await page.screenshot({ path: '.logs/density-controls/workbench-light-compact.png' });
 });
 

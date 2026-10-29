@@ -2,7 +2,7 @@
 
 应用搭建入口：[页面组合与默认主题](docs/composition.md) · [可安装 skill](skills/reito-ui/SKILL.md)。
 
-基于 **shadcn/ui + Base UI + Tailwind CSS 4** 的个人 React 组件库。以 Cursor 的紧凑工作界面为主要方向，按 **基础 → 复杂 → AI** 分层。提供中性深浅主题、两档密度、真实字体、Storybook 与可操作的组件例工程。
+基于 **shadcn/ui + Base UI + Tailwind CSS 4** 的个人 React 组件库。以 Cursor 的紧凑工作界面为主要方向，按 **基础 → 复杂 → AI → 模式** 分层。提供中性深浅主题、两档密度、真实字体、Storybook 与可操作的组件例工程。
 
 0.3 建立了 shadcn / Base UI 重建基础；0.4 持续补充高频与富功能组件，并将表格、内容区和 AI 组件的密度统一到共享 tokens。基础层包含 50 个固定版本官方 CLI 生成族和 20 个本地组合族，复杂与 AI 层在其上组合。这里的外观与 API 是本库实现，不能称作 Cursor / Claude 的官方组件。
 
@@ -20,15 +20,16 @@ npm run storybook
 ```
 
 - [公开站点](http://127.0.0.1:5173/)：首页、[文档](http://127.0.0.1:5173/docs/introduction)、[组件库](http://127.0.0.1:5173/gallery)，以及给编码助手的 [`/llms.txt`](http://127.0.0.1:5173/llms.txt)。
-- [组件 Lab](http://127.0.0.1:5173/components/button)：139 个组件族，按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
-- [Storybook](http://127.0.0.1:6006/)：139 个组件族以“参数调试”为入口，在同一个预览的 Controls 中调整 props；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
+- [组件 Lab](http://127.0.0.1:5173/components/button)：267 个组件族（含模式层），按层浏览、中文搜索、主题/密度切换、逐组件确认与备注、确认记录导出、Tokens 查看与导出。
+- [Storybook](http://127.0.0.1:6006/)：267 个组件族以“参数调试”为入口，模式层先提供默认示例；独立变体作为预设保留。主题与密度通过工具栏统一切换；Lab 与 Storybook 复用相同组件实现，实际 story 数量见[生成目录](apps/lab/src/catalog-manifest.json)。
 - [Workbench](http://127.0.0.1:5175/)：另开终端运行 `npm run dev:workbench`，查看 Agent、文件与差异、设置三个组合工作面。消息、文件与任务均为本地示例，主题和密度保存在当前浏览器。
 
 | 层 | 组件族 | 代表内容 | 公共入口 |
 | --- | ---: | --- | --- |
-| 基础 | 72 | Button、表单、InputTags、AsyncCombobox、ColorPicker、日期时间输入、PasswordInput、InputMask、Listbox、MeterGroup、Rating、Knob、Gallery、Carousel、ImageCompare、菜单、弹层与布局 | `@reito/ui/basic` |
-| 复杂 | 43 | Form、数据表格/树表格、虚拟列表/网格、树与层级选择、富文本、终端、SplitButton、ConfirmPopover、User 信息行、设置、工作区与数据工具 | `@reito/ui/complex` |
+| 基础 | 76 | Button、Dashboard、表单、InputTags、AsyncCombobox、ColorPicker、日期时间输入、PasswordInput、InputMask、Listbox、MeterGroup、Rating、Knob、Gallery、Carousel、ImageCompare、菜单、弹层与布局 | `@reito/ui/basic` |
+| 复杂 | 44 | Form、数据表格/树表格、虚拟列表/网格、树与层级选择、富文本、终端、SplitButton、ConfirmPopover、User 信息行、设置、工作区与数据工具 | `@reito/ui/complex` |
 | AI | 24 | Composer、消息、结构化 parts、工具、上下文、权限、产物、任务流，以及 MarkdownContent / RichMessage | `@reito/ui/ai` |
+| 模式 | 123 | affectUI 风格的控件、blocks、插画、motion，以及按公开文档重建的 Pro AI 表面 | `@reito/ui/affect` |
 
 “组件族”按使用用途统计，包含多个组合子组件，不等于命名导出数量。计数和 Storybook 链接来自生成的 [catalog manifest](apps/lab/src/catalog-manifest.json)。Lab 支持 [直接打开 DiffViewer](http://127.0.0.1:5173/?layer=complex&component=diff-viewer)。见 [分层、契约和组合示例](docs/component-layering.md)。
 

@@ -11,6 +11,7 @@ const Demo = lazy(async () => {
   if (entry?.layer === 'basic') component = (await import('../../../packages/ui/src/basic/catalog')).basicCatalog.find(item => item.id === entry.id)?.component;
   if (entry?.layer === 'complex') component = (await import('../../../packages/ui/src/complex/catalog')).complexCatalog.find(item => item.id === entry.id)?.component;
   if (entry?.layer === 'ai') component = (await import('../../../packages/ui/src/ai/catalog')).aiCatalog.find(item => item.id === entry.id)?.component;
+  if (entry?.layer === 'affect') component = (await import('../../../packages/ui/src/affect/catalog')).affectCatalog.find(item => item.id === entry.id)?.component;
   return { default: component || (() => <p role="alert">未找到组件。</p>) };
 });
 

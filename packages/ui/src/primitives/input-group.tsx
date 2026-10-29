@@ -16,7 +16,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
       className={cn(
         [
           // Layout
-          'group/input-group relative flex h-[var(--rui-control-height)] w-full min-w-0 items-center',
+          'group/input-group relative flex h-[var(--rui-button-height)] w-full min-w-0 items-center',
           // Surface
           'rounded-[var(--rui-component-input-radius)] border border-input',
           // Motion
@@ -56,9 +56,9 @@ const inputGroupAddonVariants = cva(
         'inline-start': 'order-first pl-2 has-[>button]:-ml-1 has-[>kbd]:-ml-0.5',
         'inline-end': 'order-last pr-2 has-[>button]:-mr-1 has-[>kbd]:-mr-0.5',
         'block-start':
-          'order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2',
+          'order-first w-full justify-start px-[var(--rui-component-input-padding-x)] pt-[var(--rui-compact-surface-padding-y)] group-has-[>input]/input-group:pt-[var(--rui-compact-surface-padding-y)] [.border-b]:pb-[var(--rui-compact-surface-padding-y)]',
         'block-end':
-          'order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2',
+          'order-last w-full justify-start px-[var(--rui-component-input-padding-x)] pb-[var(--rui-compact-surface-padding-y)] group-has-[>input]/input-group:pb-[var(--rui-compact-surface-padding-y)] [.border-t]:pt-[var(--rui-compact-surface-padding-y)]',
       },
     },
     defaultVariants: {
@@ -154,7 +154,7 @@ function InputGroupTextarea({ className, ...props }: React.ComponentProps<'texta
     <Textarea
       data-slot="input-group-control"
       className={cn(
-        'flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent',
+        'flex-1 resize-none rounded-none border-0 bg-transparent py-[var(--rui-compact-surface-padding-y)] shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent',
         className,
       )}
       {...props}

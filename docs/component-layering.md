@@ -2,15 +2,16 @@
 
 本库采用分层组合式设计系统：交互原语由底层库提供，基础层统一视觉与 API 适配，复杂和 AI 层组合基础能力，宿主负责业务执行与持久化。相关设计模式与源码组织规则见 [组件源码组织](component-source-policy.md)。组件族数量以[生成目录](../apps/lab/src/catalog-manifest.json)为准。
 
-Reito UI 工作区按应用场景提供 **76 个基础组件族、44 个复杂组件族、24 个 AI 组件族**，共 144 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。Dashboard 是独立基础族；WorkspacePane／ResizableWorkspace／WorkspaceLayout 属于工作区族。计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，演示数据与交互示例单独维护。
+Reito UI 工作区按应用场景提供 **76 个基础组件族、44 个复杂组件族、24 个 AI 组件族、123 个模式组件族**，共 267 族。Storybook 将核心样式、尺寸和适用状态拆为独立 stories，当前数量见[生成目录](../apps/lab/src/catalog-manifest.json)。Dashboard 是独立基础族；WorkspacePane／ResizableWorkspace／WorkspaceLayout 属于工作区族。计数不等于 JavaScript 导出数量。Lab 和 Storybook 使用同一份组件源码，演示数据与交互示例单独维护。
 
 | 需要解决的问题 | 使用层 | 发布包入口 | 这一层负责什么 |
 | --- | --- | --- | --- |
-| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 72 | `@reito/ui/basic` | 50 个官方 shadcn Base UI / base-nova 生成族，加 22 个本地组合族；统一主题、尺寸和必要修复。 |
-| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 43 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
+| 按钮、表单字段、菜单、弹层、Tabs 等通用交互 | 基础 76 | `@reito/ui/basic` | 官方 shadcn Base UI / base-nova 生成族与本地组合族；统一主题、尺寸和必要修复。 |
+| 本地数据表/树表格、筛选、层级选择、属性编辑、设置、分栏等通用工作流 | 复杂 44 | `@reito/ui/complex` | 组合基础控件，提供明确的数据、状态和回调契约。 |
 | 草稿、消息、结构化 parts、上下文、工具状态、权限选择、产物等 AI 工作面 | AI 24 | `@reito/ui/ai` | AI 场景的呈现和交互；模型请求、执行与业务状态由宿主接管。 |
+| affectUI 风格的桌面模式、插画与 motion | 模式 123 | `@reito/ui/affect` | 免费 MIT 行为移植与公开文档重建；主题、密度和圆角走共享 tokens。许可边界见 [affect-surface.md](affect-surface.md)。 |
 
-`@reito/ui` 根入口同时导出三层。新页面可以按上表选择子入口，让依赖用途清晰。`basic/catalog.tsx`、`complex/catalog.tsx` 和 `ai/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
+`@reito/ui` 根入口同时导出基础、复杂与 AI。模式层只从 `@reito/ui/affect` 导入，避免与已有 `Button` / `MessageActions` 撞名。`basic/catalog.tsx`、`complex/catalog.tsx`、`ai/catalog.tsx` 和 `affect/catalog.tsx` 供仓库 Lab 使用，不属于发布包公共 API。
 
 所有层都消费同一份语义主题。颜色、字体和密度的主源是 [`packages/tokens/src/tokens.json`](../packages/tokens/src/tokens.json)，基础组件不再使用旧版 `components.tsx` API。常规控件保留实际 Base UI 的 `render`、受控值和组合结构；日历、命令搜索、分栏分别依赖 React DayPicker、cmdk、react-resizable-panels，静态展示组件使用普通语义元素。不能把全部基础组件都描述成 Base UI 包装器。
 
@@ -208,6 +209,18 @@ export function RequestComposer() {
 ```
 
 需要组合数据页或工作区时，继续使用复杂层的 `DashboardPanel`、`WorkspacePane` 和 `ResizableWorkspace`。`useResizableWorkspaceState` 可保存本地布局偏好；账号同步、数据获取、模型认证、实际上传、执行授权、取消请求与错误恢复仍由宿主负责。
+
+## 模式层：123 个组件族
+
+公共导出见 [`affect/index.ts`](../packages/ui/src/affect/index.ts)，可交互演示见 [`affect/catalog.tsx`](../packages/ui/src/affect/catalog.tsx)。这一层消费基础、复杂和 AI 原语，不反向依赖。
+
+| 分组 | 组件族 | 边界 |
+| --- | --- | --- |
+| 免费控件 | Button、ChangeSummary、CommentThread、DecisionInbox、EmailDraft、FilterMenu、MessageActions、NotificationStack、OtpInput、ProfileMenu、ProgressTracker、ReactionBar、SegmentedControl、SmartRecommendation、ThinkingLoader、TipsPanel、ToolCallCard | MIT 行为参考；`appearance` 统一 default/clean；已有 Button / InputOTP / ToggleGroup / CodeBlock 用适配而不是第二套样式。 |
+| Blocks | LogoMarquee、TestimonialWall、AgentGallery、AiWorkspace、AppDirectory、ClientContext、InvoiceCredit、KpiBoard、MetricsDashboard、PricingPlans、TaskBoard | 循环在减少动效时改为静止排布。Pro blocks 只对照公开文档重建。 |
+| Motion | GridBackground、NumberTicker、ShimmerLoader、TextReveal、BlurCrossfade、GradientFloor、GradientText、TiltCard | 时长走 `@reito/tokens/metrics`；尊重 `prefers-reduced-motion`。 |
+| 插画 | AgentTeam、CoverFlow、EmptyCalendar、EnrichmentOrbit、FrostCloud、GhostedChat、GlowCloud、IntegrationBeam、IntegrationGrid、LayerStack、LeadSourcing、LogoCluster、ModelWheel、RegionDach、SideFolder、TabOverload、TeamInvite、GlassFolder、GlowKeyboard、IntegrationFlow、OutreachBranches、ProjectFlow、VoiceOrb、WorldMap | 保留公开 API 与交互意图；标记是通用色块，不是品牌 SVG。 |
+| 公开文档重建 | ThinkingState、ChatComposer、AgentPlan、ApprovalCard、CommandMenu、ModelPicker、ReviewCenter、AgentInbox、AIAnswer、CitedAnswer、WritingAssistant、PermissionRequest、AgentSteering、AgentTree、AgentLanes、AutonomyDial、InlineDiff、MemoryPanel、ParallelAttempts、TraceWaterfall、CommentsPanel、PromptLibrary、AgentCursors、AgentGraph、AgentLedger、AgentQueue、ConflictRadar、ContextMap、ContextWindow、DecisionTree、DelegateBoard、FanoutGrid、ProjectCard、IntegrationPicker、SetupGuide、BillingSchedule、BreakdownChart、Combobox、CompactBreakdown、DataTable、DateRangePicker、Dropzone、ExperimentCard、IntegrationSettings、KpiChart、StepperForm、Toaster、UsageMeter、AgentChatScreen、AgentRunScreen、AnalyticsScreen、AppShellFlat、AppShell、AppShellWorkspaceFlat、AppShellWorkspace、AssistantHomeScreen、CrmScreen、EvalsScreen、FolderScreen、FilesScreen、IntegrationsScreen、OnboardingScreen、SettingsBillingScreen、AgentGallery、AiWorkspace、AppDirectory、ClientContext、InvoiceCredit、KpiBoard、MetricsDashboard、PricingPlans、TaskBoard、GlassFolder、GlowKeyboard、IntegrationFlow、OutreachBranches、ProjectFlow、VoiceOrb、WorldMap、BlurCrossfade、GradientFloor、GradientText、TiltCard | 只对照 affectui.com 公开页 / llms.txt。不是 Pro 源码，不声称逐行一致。与基础 / 复杂兄弟撞名的用 Lab `affect-*` id。 |
 
 ## 核对依据
 

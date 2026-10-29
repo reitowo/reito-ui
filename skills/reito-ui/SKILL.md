@@ -77,7 +77,9 @@ Read the installed `@reito/ui` and `@reito/tokens` versions; they must match. Th
 application authors should not need private component CSS.
 
 Imports: Dashboard components and named Page/Panel regions, basic components and `ReitoThemeProvider` from `@reito/ui/basic`; split workspaces,
-`DataTable`, `Form`, settings and search from `@reito/ui/complex`; conversation from `@reito/ui/ai`.
+`DataTable`, `Form`, settings and search from `@reito/ui/complex`; conversation from `@reito/ui/ai`;
+affectUI-shaped patterns from `@reito/ui/affect` (token-backed ports and public-docs recreations on
+`--rui-*`, not a second visual system).
 
 ## Compose
 
