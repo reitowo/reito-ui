@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { TraceWaterfall } from '@reito/ui/affect';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TraceWaterfallDemo } from '../../../../packages/ui/src/affect/catalog.js';
 import { StoryFrame } from '../ai/story-frame.js';
@@ -22,3 +24,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { name: '默认示例' };
+
+function LiveTrace() {
+  const [startedAt] = useState(() => Date.now() - 7000);
+  return (
+    <TraceWaterfall
+      startedAt={startedAt}
+      root={{ id: 'live-run', name: '运行中的轨迹', kind: 'agent', status: 'running', start: 0 }}
+    />
+  );
+}
+export const Live: Story = { name: '状态 · 运行中', render: () => <LiveTrace /> };
