@@ -6,12 +6,14 @@ import './app.css';
 import { adoptLocation } from './routes';
 
 const Home = React.lazy(() => import('./Home').then((module) => ({ default: module.Home })));
+const Docs = React.lazy(() => import('./site/Docs').then((module) => ({ default: module.Docs })));
+const Gallery = React.lazy(() => import('./site/Gallery').then((module) => ({ default: module.Gallery })));
 const Lab = React.lazy(() => import('./App').then((module) => ({ default: module.App })));
 const Overview = React.lazy(() => import('./Overview').then((module) => ({ default: module.Overview })));
 const ThemeGuide = React.lazy(() => import('./ThemeGuide').then((module) => ({ default: module.ThemeGuide })));
 const TemplatesIndex = React.lazy(() => import('./templates/TemplatesIndex').then((module) => ({ default: module.TemplatesIndex })));
 const DenseExamples = React.lazy(() => import('./examples/nanchuang').then((module) => ({ default: module.DenseExamples })));
-const Gallery = React.lazy(() => import('./examples/nanchuang').then((module) => ({ default: module.Gallery })));
+const NanchuangGallery = React.lazy(() => import('./examples/nanchuang').then((module) => ({ default: module.Gallery })));
 const Dashboard = React.lazy(() => import('./templates/dashboard/Dashboard').then((module) => ({ default: module.Dashboard })));
 const Chat = React.lazy(() => import('./templates/chat/Chat').then((module) => ({ default: module.Chat })));
 const Landing = React.lazy(() => import('./templates/landing/Landing').then((module) => ({ default: module.Landing })));
@@ -21,6 +23,8 @@ const route = adoptLocation();
 
 function Site() {
   if (route.name === 'preview') return <Preview />;
+  if (route.name === 'docs') return <Docs slug={route.slug} />;
+  if (route.name === 'gallery') return <Gallery id={route.id} />;
   if (route.name === 'theme-guide') return <ThemeGuide />;
   if (route.name === 'overview') return <Overview />;
   if (route.name === 'component') return <Lab />;
@@ -32,7 +36,7 @@ function Site() {
   if (route.name === 'template' && route.id === 'chat') return <Chat />;
   if (route.name === 'template' && route.id === 'landing') return <Landing />;
   if (route.name === 'template' && route.id === 'nanchuang') {
-    return route.lockedDensity === 'dense' ? <DenseExamples /> : <Gallery />;
+    return route.lockedDensity === 'dense' ? <DenseExamples /> : <NanchuangGallery />;
   }
   return <Home />;
 }

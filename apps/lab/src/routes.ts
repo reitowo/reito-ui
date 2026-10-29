@@ -56,6 +56,8 @@ export function currentSegments() {
 
 export type SiteRoute =
   | { name: 'home' }
+  | { name: 'docs'; slug: string }
+  | { name: 'gallery'; id?: string }
   | { name: 'overview' }
   | { name: 'theme-guide' }
   | { name: 'preview' }
@@ -80,6 +82,8 @@ export function parseRoute(segments = currentSegments(), search = location.searc
     if (params.has('preview')) return { name: 'preview' };
     return { name: 'home' };
   }
+  if (root === 'docs') return { name: 'docs', slug: segments.slice(1).map(decodeURIComponent).join('/') || 'introduction' };
+  if (root === 'gallery') return { name: 'gallery', id: second ? decodeURIComponent(second) : undefined };
   if (root === 'overview') return { name: 'overview' };
   if (root === 'theme-guide') return { name: 'theme-guide' };
   if (root === 'components' && second) return { name: 'component', id: decodeURIComponent(second) };
@@ -121,6 +125,10 @@ export function routePath(route: SiteRoute) {
   switch (route.name) {
     case 'home':
       return sitePath();
+    case 'docs':
+      return sitePath(`docs/${route.slug}`);
+    case 'gallery':
+      return sitePath(route.id ? `gallery/${route.id}` : 'gallery');
     case 'overview':
       return sitePath('overview');
     case 'theme-guide':
@@ -161,11 +169,12 @@ export function adoptLocation(): SiteRoute {
 }
 
 export function staticSitePaths(componentIds: string[]) {
-  const paths = ['overview', 'theme-guide', 'templates', 'examples'];
+  /** `docs/**` shells are written by the docs plugin with per-page metadata. */
+  const paths = ['overview', 'theme-guide', 'templates', 'examples', 'gallery'];
   for (const template of templates) {
     paths.push(`templates/${template.id}`);
     for (const page of template.pages) paths.push(`templates/${template.id}/${page}`);
   }
-  for (const id of componentIds) paths.push(`components/${id}`);
+  for (const id of componentIds) paths.push(`components/${id}`, `gallery/${id}`);
   return paths;
 }
