@@ -2,7 +2,15 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: ['composition.spec.ts', 'page-tabs-spacing.spec.ts', 'page-regions.spec.ts'],
+  testMatch: [
+    'composition.spec.ts',
+    'page-tabs-spacing.spec.ts',
+    'page-regions.spec.ts',
+    'table-controls.spec.ts',
+    'input-group-states.spec.ts',
+    'timeline-markers.spec.ts',
+    'panel-slots.spec.ts',
+  ],
   outputDir: '.dev/composition-results',
   use: {
     baseURL: 'http://127.0.0.1:5189',

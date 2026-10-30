@@ -18,6 +18,7 @@ import {
 } from '@reito/tokens/themes';
 import type { VariantProps } from 'class-variance-authority';
 import type { buttonVariants } from './primitives/button.js';
+import { ButtonSizeContext } from './lib/button-size-context.js';
 
 export type {
   ColorPalette,
@@ -297,7 +298,11 @@ export function ReitoThemeProvider({
 /** Carries the nearest React theme through a Base UI portal without adding layout. */
 export function ThemePortalScope({ children }: { children: ReactNode }) {
   const theme = useContext(ThemeContext);
-  if (!theme) return children;
+  // 弹层是独立操作区域，不继承表格的行内按钮尺寸；用户主题仍完整保留。
+  const content = (
+    <ButtonSizeContext.Provider value={undefined}>{children}</ButtonSizeContext.Provider>
+  );
+  if (!theme) return content;
   return (
     <div
       className="reito-root contents"
@@ -308,7 +313,7 @@ export function ThemePortalScope({ children }: { children: ReactNode }) {
       }
       style={theme.documentRoot ? undefined : theme.style}
     >
-      {children}
+      {content}
     </div>
   );
 }

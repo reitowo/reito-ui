@@ -2,6 +2,9 @@
 
 import * as React from 'react';
 import { cn } from '../lib/utils.js';
+import { ButtonSizeContext } from '../lib/button-size-context.js';
+import { Button } from './button.js';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
   return (
@@ -65,7 +68,38 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   );
 }
 
-function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
+type TableSortButtonProps = React.ComponentProps<typeof Button> & {
+  direction?: 'ascending' | 'descending' | 'none';
+};
+
+/** TableHead owns the cell inset; sorting adds no second horizontal control inset. */
+function TableSortButton({
+  direction = 'none',
+  className,
+  children,
+  ...props
+}: TableSortButtonProps) {
+  const SortIcon =
+    direction === 'ascending' ? ArrowUp : direction === 'descending' ? ArrowDown : ArrowUpDown;
+  return (
+    <Button
+      variant="ghost"
+      size="xs"
+      {...props}
+      data-slot="table-sort-button"
+      data-direction={direction}
+      className={cn('w-full justify-start border-0 px-0', className)}
+    >
+      {children}
+      <SortIcon
+        aria-hidden="true"
+        className={direction === 'none' ? 'text-muted-foreground' : undefined}
+      />
+    </Button>
+  );
+}
+
+function TableCell({ className, children, ...props }: React.ComponentProps<'td'>) {
   return (
     <td
       data-slot="table-cell"
@@ -74,7 +108,9 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
         className,
       )}
       {...props}
-    />
+    >
+      <ButtonSizeContext.Provider value="xs">{children}</ButtonSizeContext.Provider>
+    </td>
   );
 }
 
@@ -88,4 +124,15 @@ function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) 
   );
 }
 
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption };
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableSortButton,
+  TableRow,
+  TableCell,
+  TableCaption,
+};
+export type { TableSortButtonProps };

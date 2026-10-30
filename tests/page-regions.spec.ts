@@ -17,6 +17,12 @@ for (const theme of ['light', 'dark']) {
       const errors: string[] = [];
       page.on('pageerror', (error) => errors.push(error.message));
       await page.goto(`/?page=regions&theme=${theme}&density=${density}`);
+      const edge = { compact: 14, comfortable: 18, dense: 10 }[density];
+      const vertical = { compact: 12, comfortable: 16, dense: 8 }[density];
+      await expect(page.locator('[data-slot=page]')).toHaveCSS('padding-left', `${edge}px`);
+      await expect(page.locator('[data-slot=page]')).toHaveCSS('padding-right', `${edge}px`);
+      await expect(page.locator('[data-slot=page]')).toHaveCSS('padding-top', `${vertical}px`);
+      await expect(page.locator('[data-slot=page]')).toHaveCSS('padding-bottom', `${vertical}px`);
       const region = page.getByRole('region', { name: '申请记录', exact: true });
       await expect(region).toBeVisible();
       expect(await page.locator('[data-slot=page-content]').count()).toBe(1);

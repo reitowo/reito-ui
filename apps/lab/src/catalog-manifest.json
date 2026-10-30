@@ -6,7 +6,7 @@
     "affect": 123
   },
   "total": 267,
-  "stories": 1604,
+  "stories": 1608,
   "entries": [
     {
       "layer": "basic",
@@ -26,7 +26,7 @@
       "storyId": "基础-composition--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "CompositionDemo",
-      "stories": 10
+      "stories": 11
     },
     {
       "layer": "basic",
@@ -226,7 +226,7 @@
       "storyId": "基础-input-group--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "InputGroupDemo",
-      "stories": 7
+      "stories": 8
     },
     {
       "layer": "basic",
@@ -536,7 +536,7 @@
       "storyId": "基础-table--playground",
       "sourceFile": "packages/ui/src/basic/catalog.tsx",
       "demo": "TableDemo",
-      "stories": 4
+      "stories": 5
     },
     {
       "layer": "basic",
@@ -1106,7 +1106,7 @@
       "storyId": "复杂-timeline-时间线--playground",
       "sourceFile": "packages/ui/src/complex/catalog.tsx",
       "demo": "TimelineDemo",
-      "stories": 7
+      "stories": 8
     },
     {
       "layer": "complex",

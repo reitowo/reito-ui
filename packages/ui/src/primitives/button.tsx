@@ -2,6 +2,8 @@ import { useThemeColor, useThemeDefaults, type ThemeColor } from '../theme.js';
 import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils.js';
+import { useContext } from 'react';
+import { ButtonSizeContext } from '../lib/button-size-context.js';
 
 const buttonVariants = cva(
   [
@@ -109,9 +111,10 @@ function Button({
     typeof buttonVariants
   >) {
   const themed = useThemeDefaults('Button');
+  const scopedSize = useContext(ButtonSizeContext);
   const color = colorProp ?? themed.color;
   const variant = variantProp ?? themed.variant ?? 'default';
-  const size = sizeProp ?? themed.size ?? 'default';
+  const size = sizeProp ?? themed.size ?? scopedSize ?? 'default';
   const colorStyle = useThemeColor(color);
   return (
     <ButtonPrimitive

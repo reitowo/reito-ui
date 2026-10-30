@@ -2,10 +2,12 @@ import { textControl, booleanControl, choiceControl, recipeControl } from '../fe
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Timeline } from '../../../../packages/ui/src/complex/index.js';
 import { TimelineDemo } from '../../../../packages/ui/src/complex/catalog.js';
+import { TimelineMarkersExample } from '../basic/timeline-markers-example.js';
 const meta = { id: "复杂-timeline-时间线", title: "复杂/Timeline 时间线", component: TimelineDemo } satisfies Meta<typeof TimelineDemo>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const States: Story = { name: "状态对比 · 完成、进行中与等待" };
+export const AvatarMarkers: Story = { name: '标记 · 用户头像与系统状态', render: () => <TimelineMarkersExample /> };
 export const Error: Story = { name: "失败与说明", render: () => <Timeline events={[{ id: 'failed', title: '本地校验失败', status: 'error', description: '配置文件缺少名称。修改后可以重新运行校验。', time: '09:42' }]} /> };
 export const Empty: Story = { name: "无事件", render: () => <Timeline events={[]} /> };
 

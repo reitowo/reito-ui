@@ -86,6 +86,12 @@ const textRoles = {
   caption: 'text-[length:var(--rui-font-caption)] leading-[var(--rui-line-caption)]',
   reading: 'text-[length:var(--rui-font-reading)] leading-[var(--rui-line-reading)]',
 };
+const textTones = {
+  default: 'text-foreground',
+  muted: 'text-muted-foreground',
+  danger: 'text-destructive',
+};
+export type TextTone = keyof typeof textTones;
 
 /** Text roles are independent of HTML semantics and retain full content by default. */
 export function Text({
@@ -97,7 +103,7 @@ export function Text({
 }: ComponentProps<'p'> & {
   as?: 'p' | 'span';
   variant?: keyof typeof textRoles;
-  tone?: 'default' | 'muted';
+  tone?: TextTone;
 }) {
   return (
     <Tag
@@ -105,7 +111,7 @@ export function Text({
       className={cn(
         'm-0 min-w-0 break-words font-normal',
         textRoles[variant],
-        tone === 'muted' ? 'text-muted-foreground' : 'text-foreground',
+        textTones[tone],
         className,
       )}
       {...props}
@@ -196,7 +202,8 @@ function PageRoot({
         data-slot="page"
         className={cn(
           'flex min-w-0 flex-col gap-[var(--rui-section-gap)]',
-          inset && 'p-[var(--rui-content-padding)]',
+          inset &&
+            'px-[calc(var(--rui-content-padding)+var(--rui-space-1)/2)] py-[var(--rui-content-padding)]',
           className,
         )}
         {...props}

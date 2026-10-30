@@ -25,8 +25,8 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
           'outline-none',
           // Keyboard focus
           'in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0',
-          // Disabled state
-          'has-disabled:bg-input/50 has-disabled:opacity-[var(--rui-opacity-disabled)]',
+          // Toolbar actions have independent availability; only the input disables the group.
+          'has-[[data-slot=input-group-control]:disabled]:bg-input/50 has-[[data-slot=input-group-control]:disabled]:opacity-[var(--rui-opacity-disabled)]',
           // Keyboard focus
           'has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[length:var(--rui-focus-width)] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
           // Validation state
@@ -36,7 +36,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
           // Dark theme
           'dark:bg-input/30',
           // Disabled state
-          'dark:has-disabled:bg-input/80',
+          'dark:has-[[data-slot=input-group-control]:disabled]:bg-input/80',
           // Validation state
           // Child and composition rules
           'has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5',
