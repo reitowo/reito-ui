@@ -5,6 +5,8 @@ import { cx } from './shared.js';
 export interface TimelineEvent {
   id: string;
   title: string;
+  /** A supplied marker can show an avatar; other entries retain their status icon. */
+  marker?: ReactNode;
   description?: ReactNode;
   time?: string;
   dateTime?: string;
@@ -54,16 +56,19 @@ export function Timeline({
             )}
             <span
               className={cx(
-                'relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full border border-border bg-background',
+                'relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full bg-background',
+                !event.marker && 'border border-border',
                 status === 'error' ? 'text-destructive' : 'text-muted-foreground',
               )}
-              aria-label={statusLabels[status]}
-              role="img"
+              aria-label={event.marker ? undefined : statusLabels[status]}
+              role={event.marker ? undefined : 'img'}
             >
-              <Icon
-                aria-hidden="true"
-                className={cx('size-3.5', status === 'current' && 'motion-safe:animate-spin')}
-              />
+              {event.marker || (
+                <Icon
+                  aria-hidden="true"
+                  className={cx('size-3.5', status === 'current' && 'motion-safe:animate-spin')}
+                />
+              )}
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-baseline justify-between gap-2">

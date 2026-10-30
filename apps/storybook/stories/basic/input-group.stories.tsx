@@ -2,6 +2,7 @@ import * as P from "@reito/ui/basic";
 import { Folder, Search, ArrowUp } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InputGroupDemo } from "../../../../packages/ui/src/basic/catalog.js";
+import { InputGroupStatesExample } from './input-group-states-example.js';
 
 const meta = { id: "基础-input-group",
   title: "基础/InputGroup 输入组合",
@@ -22,6 +23,11 @@ type Story = StoryObj<typeof meta>;
 export const Overview: Story = {
   name: "总览对比",
   render: () => <InputGroupDemo />,
+};
+
+export const IndependentDisabledActions: Story = {
+  name: '状态 · 输入与操作独立禁用',
+  render: () => <InputGroupStatesExample />,
 };
 
 export const Default: Story = {

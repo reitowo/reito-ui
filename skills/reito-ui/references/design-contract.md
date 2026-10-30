@@ -1,5 +1,9 @@
 # Composition contract
 
+InputGroup follows the disabled state of its input control. Addon buttons have independent
+availability: disabling Send must not fade an editable field. Set disabled on the relevant
+control; do not override the group's opacity in the application.
+
 Graphite uses neutral surfaces, readable content and quiet chrome. Choose components around the
 actual task. The library supplies visual behavior; the application supplies business facts. The
 core rules in [SKILL.md](../SKILL.md) apply to everything below.
@@ -38,8 +42,9 @@ maintained source for the dashboard shell. Copy relationships from them, not fro
 | Validated form | Form, FormField, FormError, useForm | Field visuals with validation and submit state |
 | Value | Input, Textarea, SelectInput, NumberField | Default controls align without page overrides |
 | Records | ItemGroup, Item, ItemContent, ItemActions, ItemSeparator | Content determines height |
-| Data | Table, DataTable | Tables own cell geometry, selection and loading/empty/error |
+| Data | Table, DataTable | Cell buttons default to XS; explicit size/theme win, portals keep form sizing |
 | Empty content | Empty and slots | Put directly in a flush Panel or standalone |
+| Loading or error text beside data | Panel.Content flush={false}, Panel.Footer | The region owns the inset; keep flush only on the table/list region. Use Text tone="danger" for failures |
 | Application shell | DashboardGroup, DashboardSidebar, DashboardPanel, WorkspaceLayout | Fixed tree; see layouts/dashboard.md |
 | Scrolling workspace | WorkspacePane, ResizableWorkspace | Own scroll regions and panes |
 | Settings | SettingsSection, SettingsRow, PropertyList | Reuse existing form and feedback behavior |
@@ -99,6 +104,9 @@ Exactly one component supplies each content edge.
   be copied into the app.
 
 Page supplies section-gap between its header and body, and content-gap between body sections.
+Page inset uses content-padding vertically and content-padding plus half of space-1 horizontally:
+compact 12px/14px, comfortable 16px/18px and dense 8px/10px at the default root font size.
+The component derives this from theme tokens; applications do not add horizontal padding overrides.
 PageHeader uses compact-surface-gap between title and description. Tabs supplies content-gap between
 navigation and panels. Use Page consistently for ordinary pages instead of native headings with
 per-page margins. Use inset only when the outer container does not already supply the page edge.

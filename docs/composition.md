@@ -1,5 +1,14 @@
 # 页面组合与默认主题
 
+TableHead 持有单元格内距；可排序表头使用 TableSortButton，direction 对应 none／ascending／descending。
+该公开控件使用 SVG 箭头且不叠加按钮横向内距。父 TableHead 的 aria-sort 与方向保持一致；页面只提供标签和排序动作。
+
+TimelineEvent.marker 支持头像等公开组件；未提供时继续显示原状态图标，布局、连线与尺寸由 Timeline 管理。
+
+InputGroup 的整组禁用视觉只由 InputGroupInput／InputGroupTextarea 的 disabled 状态决定。
+工具栏中的保存、发送等 Button 独立禁用；一个动作暂不可用时，其余输入与操作保持正常视觉。
+应用通过各控件的 disabled 表达权限和可用性，不覆盖输入容器的 opacity。
+
 当前候选为 0.6.0-next.0，包含有意的默认视觉变化。应用只选择组件、内容和公开属性；
 普通表单、列表、空状态、标题和内容面板不需要应用 CSS。
 
@@ -49,6 +58,10 @@ DashboardBody 管滚动且不增加 padding；Page 管页面边缘，Panel.Conte
 组件拥有导航的容器断点、移动端弹层和焦点，不要求应用实现 matchMedia、hidden 或固定定位。
 Page.Content 的 gap 继承 Page.gap；Panel.Content 的 flush 继承 Panel 与主题默认值，并可显式覆盖。
 Panel 提供标题或 aria-label，命名区域是各自根组件的后代；嵌套面板的身份与内距保持独立。
+内距由 Panel 的区域持有：flush 只用于表格、列表或 Empty 所在的 Panel.Content；同一 Panel 可以有多个区域。
+加载、错误等文字放在默认 Panel.Content（flush={false}）或 Panel.Footer 中，由该区域提供内距；组件库不提供单独的状态组件。
+错误文字使用 Text tone="danger"。
+
 Page／Panel 的简写属性继续复用同一区域实现。高级拆分面板使用 WorkspaceLayout 或 ResizableWorkspace。
 可运行例子见 DashboardDemo／RegionPageDemo；便携示例、Storybook 和编译消费测试保持同源。
 
@@ -74,8 +87,11 @@ npm run recipe:check 检查其内容和公共导入，避免文档里的接口�
 | 角色 | compact | comfortable | dense |
 | --- | ---: | ---: | ---: |
 | 默认 Button / Input / Select 高度 | 32px | 36px | 24px |
+| TableCell 行内默认 Button 高度（XS） | 24px | 28px | 18px |
 | 默认控件字号 | 13px | 13px | 12px |
 | 通用内容内距 | 12px | 16px | 8px |
+| Page inset 左右内距 | 14px | 18px | 10px |
+| Page inset 上下内距 | 12px | 16px | 8px |
 | Page 页头到内容 | 16px | 20px | 12px |
 | 标题到说明 | 4px | 6px | 2px |
 | Tabs 导航到面板 | 12px | 16px | 8px |
@@ -83,7 +99,11 @@ npm run recipe:check 检查其内容和公共导入，避免文档里的接口�
 | 正文字号 | 14px | 14px | 14px |
 
 按 16px 根字号折算，真实值由 tokens.json 生成。密度调整控件和空间，保留独立正文角色。
+Page 的水平内距为 content-padding 加 space-1 的一半；上下使用 content-padding，主题覆盖继续生效。
 radius-control 默认引用 6px 小圆角，radius-surface 默认引用 8px 中圆角；菜单和 composer 有明确角色。
+TableCell 为未指定 size 的 Button 提供 XS 默认值；调用者显式 size 与 Provider 的 Button size 优先。
+Dialog、Popover 等公开弹层清除行内尺寸默认值，表单操作继续使用原主题的常规尺寸。
+应用可以直接组合 TableCell 与 Button，不需要为每个操作列添加高度或 padding 样式。
 Card、Empty、Panel 消费 surface 角色，Input、Select、Button 消费 control 角色。
 基础字体规则位于 CSS base 层，不能压过等宽字体或组件自己的文字角色。
 

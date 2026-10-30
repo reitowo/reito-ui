@@ -13,6 +13,10 @@ import {
   DashboardDemo,
 } from '../../skills/reito-ui/assets/workbench.js';
 import { ThemeApiDemo } from './theme-api.js';
+import { TableControlsDemo } from './table-controls.js';
+import { InputGroupStatesExample } from '../../apps/storybook/stories/basic/input-group-states-example.js';
+import { TimelineMarkersExample } from '../../apps/storybook/stories/basic/timeline-markers-example.js';
+import { PanelSlotsExample } from '../../apps/storybook/stories/basic/panel-slots-example.js';
 
 const query = new URLSearchParams(location.search);
 const mode = query.get('theme') === 'dark' ? 'dark' : 'light';
@@ -29,7 +33,15 @@ createRoot(document.getElementById('root')!).render(
         query.has('pageGap') ? { semantic: { 'section-gap': 'var(--rui-space-6)' } } : undefined
       }
     >
-      {query.get('page') === 'regions' ? (
+      {query.get('page') === 'panel-slots' ? (
+        <PanelSlotsExample />
+      ) : query.get('page') === 'timeline-markers' ? (
+        <TimelineMarkersExample />
+      ) : query.get('page') === 'input-group-states' ? (
+        <InputGroupStatesExample />
+      ) : query.get('page') === 'table-controls' ? (
+        <TableControlsDemo />
+      ) : query.get('page') === 'regions' ? (
         <RegionPageDemo
           page={query.get('kind') === 'admissions' ? 'admissions' : 'requests'}
           state={(query.get('state') as 'empty' | 'loading' | 'error' | 'records') || 'empty'}

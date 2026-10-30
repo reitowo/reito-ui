@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { PanelSlotsExample } from './panel-slots-example.js';
 import {
   CompositionDemo,
   PageTabsDemo,
@@ -37,6 +38,10 @@ export const AdmissionRegions: Story = {
 export const LoadingRegions: Story = {
   name: '区域加载态',
   render: () => <RegionPageDemo state="loading" />,
+};
+export const PanelSlots: Story = {
+  name: '表格区域与提示区域的内距',
+  render: () => <PanelSlotsExample />,
 };
 export const ErrorRegions: Story = {
   name: '区域错误态',
